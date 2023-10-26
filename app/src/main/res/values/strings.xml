@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">RealEstateManager</string>
+
+    <!-- LABELS -->
+    <string name="type">TYPE</string>
+    <string name="agent">AGENT</string>
+
+    <!-- TYPES OF PROPERTIES -->
+    <string name="flat">FLAT</string>
+    <string name="house">HOUSE</string>
+    <string name="duplex">DUPLEX</string>
+    <string name="penthouse">PENTHOUSE</string>
+    <string name="loft">LOFT</string>
+    <string name="manor">MANOR</string>
+    <string name="castle">CASTLE</string>
+    <string name="hostel">HOSTEL</string>
+
+    <!-- POINTS OF INTEREST -->
+    <string name="hospital">HOSPITAL</string>
+    <string name="school">SCHOOL</string>
+    <string name="restaurant">RESTAURANT</string>
+    <string name="shop">SHOP</string>
+    <string name="railway_station">RAILWAY STATION</string>
+    <string name="car_park">CAR PARK</string>
+
+</resources>

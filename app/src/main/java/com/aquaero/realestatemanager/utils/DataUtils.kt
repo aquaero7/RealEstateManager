@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager
+package com.aquaero.realestatemanager.utils
 
 import com.aquaero.realestatemanager.data.fakeAgents
 

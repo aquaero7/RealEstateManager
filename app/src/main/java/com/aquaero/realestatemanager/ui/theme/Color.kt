@@ -11,3 +11,5 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val BoxBackground = Color(0xFFFFFF99)
+val ListBackground = Color(0xFFEEEEEE)
+val SelectionBackground = Color(0xFFAA5577)

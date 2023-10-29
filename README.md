@@ -12,6 +12,7 @@ MVVM
 
 # **Components** #
 Kotlin
+
 Jetpack Compose
 
 # **How to get and open the project in Android Studio** #

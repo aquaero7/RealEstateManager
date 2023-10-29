@@ -43,7 +43,7 @@ object Loan: AppDestination {
     override val route = "loan"
 }
 
-// Not displayed in the bottom TabRow
+// Destination not displayed in the bottom TabRow
 object Detail: AppDestination {
     override val icon = Icons.Filled.Details
     override val route = "detail"
@@ -52,7 +52,7 @@ object Detail: AppDestination {
     val arguments = listOf(navArgument(propertyKey) { type = NavType.StringType })
 }
 
-// Not displayed in the bottom TabRow
+// Destination not displayed in the bottom TabRow
 object EditDetail: AppDestination {
     override val icon = Icons.Filled.EditNote
     override val route ="edit_detail"
@@ -61,8 +61,18 @@ object EditDetail: AppDestination {
     val arguments = listOf(navArgument(propertyEditKey) { type = NavType.StringType })
 }
 
+// Destination not displayed in the bottom TabRow
+object AppContent: AppDestination {
+    override val icon = Icons.Filled.ViewList
+    override val route = "list_and_detail"
+    const val propertyKey = "single_property"
+    val routeWithArgs = "$route/{$propertyKey}"
+    val arguments = listOf(navArgument(propertyKey) { type = NavType.StringType })
+}
+
 /**
- * Destination created to be used as the default one in BottomTabRow
+ * Destination not displayed in the bottom TabRow.
+ * Created to be used as the default one in BottomTabRow
  * when screens Detail or Edit are selected
  */
 object Other: AppDestination {
@@ -71,4 +81,6 @@ object Other: AppDestination {
 }
 
 // Screens displayed in the bottom TabRow
-val tabRowScreens = listOf(PropertyList, PropertyMap, SearchCriteria, Loan)
+// val tabRowScreens = listOf(PropertyList, PropertyMap, SearchCriteria, Loan)
+val tabRowScreensListOnly = listOf(PropertyList, PropertyMap, SearchCriteria, Loan)
+val tabRowScreensListWithDetail = listOf(AppContent, PropertyMap, SearchCriteria, Loan)

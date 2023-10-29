@@ -107,7 +107,6 @@ private fun AppTab(
     }
 }
 
-
 private val tabHeight = 56.dp
 private const val TAB_FADE_IN_ANIMATION_DURATION = 150
 private const val TAB_FADE_OUT_ANIMATION_DURATION = 100

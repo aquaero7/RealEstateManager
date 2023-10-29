@@ -20,7 +20,7 @@ fun AppContent(
         ListScreen(contentType = contentType, onPropertyClick = onPropertyClick)
     } else {
         ListAndDetailScreen(
-            contentType = contentType,
+            // contentType = contentType,
             onPropertyClick = onPropertyClick,
             propertyId = propertyId,
             onEditButtonClick = onEditButtonClick,

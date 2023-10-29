@@ -14,8 +14,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.data.fakeProperties
@@ -25,12 +28,14 @@ import com.aquaero.realestatemanager.utils.AppContentType
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ListAndDetailScreen(
-    contentType: AppContentType,
+    // contentType: AppContentType,
     onPropertyClick: (Long) -> Unit = {},
     propertyId: String?,
     onEditButtonClick: () -> Unit = {},
     onBackPressed: () -> Unit = {}
 ) {
+    var selectedId by remember { mutableStateOf(-1L) }
+
     Row {
         Column(
             modifier = Modifier.weight(1F)
@@ -51,7 +56,7 @@ fun ListAndDetailScreen(
                 ) }
                 */
 
-                items(items = fakeProperties) { property ->
+                items(items = fakeProperties)  {property ->
                     PropertyCard(
                         property.pId,
                         property.pType,
@@ -59,8 +64,10 @@ fun ListAndDetailScreen(
                         property.pPrice,
                         // property.photos?.get(0)?.phId,
                         R.drawable.ic_launcher_background.toLong(),
-                        contentType,
-                        onPropertyClick
+                        //contentType,
+                        selectedId == property.pId || propertyId == property.pId.toString(),
+                        { selectedId = property.pId },
+                        onPropertyClick,
                     )
                 }
             }

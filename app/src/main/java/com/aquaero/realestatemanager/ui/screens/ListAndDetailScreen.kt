@@ -28,64 +28,30 @@ import com.aquaero.realestatemanager.utils.AppContentType
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ListAndDetailScreen(
-    // contentType: AppContentType,
+    contentType: AppContentType,
     onPropertyClick: (Long) -> Unit = {},
     propertyId: String?,
     onEditButtonClick: () -> Unit = {},
     onBackPressed: () -> Unit = {}
 ) {
-    var selectedId by remember { mutableStateOf(-1L) }
-
     Row {
         Column(
             modifier = Modifier.weight(1F)
         ) {
-            Text(text = "ListScreen")
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            LazyColumn(
-                modifier = Modifier
-                    // .padding(vertical = 20.dp)
-                    .fillMaxWidth()
-            ) {
-                /*
-                item { Text(
-                    text = "ListScreen",
-                    Modifier.padding(vertical = 20.dp)
-                ) }
-                */
-
-                items(items = fakeProperties)  {property ->
-                    PropertyCard(
-                        property.pId,
-                        property.pType,
-                        property.pAddress.city,
-                        property.pPrice,
-                        // property.photos?.get(0)?.phId,
-                        R.drawable.ic_launcher_background.toLong(),
-                        //contentType,
-                        selectedId == property.pId || propertyId == property.pId.toString(),
-                        { selectedId = property.pId },
-                        onPropertyClick,
-                    )
-                }
-            }
+            ListScreen(
+                contentType = contentType,
+                propertyId = propertyId,
+                onPropertyClick = onPropertyClick
+            )
         }
-
         Column(
             modifier = Modifier.weight(2F)
         ) {
-            Text(text = "DetailScreen  for $propertyId")
-            Button(
-                onClick = onEditButtonClick
-            ) {
-                Text(text = "EditScreen")
-            }
-            BackHandler(true) {
-                Log.w("TAG", "OnBackPressed")
-                run(onBackPressed)
-            }
+            DetailScreen(
+                propertyId = propertyId,
+                onEditButtonClick = onEditButtonClick,
+                onBackPressed = onBackPressed
+            )
         }
     }
 }

@@ -9,7 +9,7 @@ import com.aquaero.realestatemanager.utils.AppContentType
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AppContent(
+fun ContentScreen(
     contentType: AppContentType,
     onPropertyClick: (Long) -> Unit = {},
     propertyId: String?,
@@ -17,16 +17,15 @@ fun AppContent(
     onBackPressed: () -> Unit = {}
 ) {
     if (contentType == AppContentType.SCREEN_ONLY) {
-        ListScreen(contentType = contentType, onPropertyClick = onPropertyClick)
+        ListScreen(contentType = contentType, propertyId = null, onPropertyClick = onPropertyClick)
     } else {
         ListAndDetailScreen(
-            // contentType = contentType,
+            contentType = contentType,
             onPropertyClick = onPropertyClick,
             propertyId = propertyId,
             onEditButtonClick = onEditButtonClick,
             onBackPressed = onBackPressed
         )
     }
-
 }
 

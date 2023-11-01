@@ -56,20 +56,20 @@ fun RealEstateManagerApp(
         val currentBackStack by navController.currentBackStackEntryAsState()
         val currentDestination = currentBackStack?.destination
         // Use 'Other' as a backup screen if the returned value is null
-        val currentScreen = tabRowScreens.find { it.route == currentDestination?.route } ?: AppContent /* Other   //PropertyList */
+        val currentScreen = tabRowScreens.find { it.route == currentDestination?.route } ?: ScreenContent /* Other   //PropertyList */
 
         /**
          * Navigate single top to tabs, purging Detail and Edit routes from back stack
          */
         fun navigateSingleTopWithDetailBackStackPurge(currentScreen: AppDestination, newScreen: AppDestination) {
             // We purge the back stack once if current screen is Detail or Edit
-            if (currentScreen != AppContent && tabRowScreens
+            if (currentScreen != ScreenContent && tabRowScreens
                 .find { it.route == currentDestination?.route } == null) { navController.popBackStack() }
             // We purge the back stack twice if current screen was Detail and is Edit now
-            if (currentScreen != AppContent && tabRowScreens
+            if (currentScreen != ScreenContent && tabRowScreens
                 .find { it.route == currentDestination?.route } == null) { navController.popBackStack() }    // If current screen is Detail
 
-            if (newScreen == AppContent) {
+            if (newScreen == ScreenContent) {
                 navController.navigateSingleTopToListAndDetail(fakeProperties[0].pId.toString())
             } else {
                 navController.navigateSingleTopTo(newScreen.route)

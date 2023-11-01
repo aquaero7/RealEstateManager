@@ -62,7 +62,7 @@ object EditDetail: AppDestination {
 }
 
 // Destination not displayed in the bottom TabRow
-object AppContent: AppDestination {
+object ScreenContent: AppDestination {
     override val icon = Icons.Filled.ViewList
     override val route = "list_and_detail"
     const val propertyKey = "single_property"
@@ -83,4 +83,4 @@ object Other: AppDestination {
 // Screens displayed in the bottom TabRow
 // val tabRowScreens = listOf(PropertyList, PropertyMap, SearchCriteria, Loan)
 val tabRowScreensListOnly = listOf(PropertyList, PropertyMap, SearchCriteria, Loan)
-val tabRowScreensListWithDetail = listOf(AppContent, PropertyMap, SearchCriteria, Loan)
+val tabRowScreensListWithDetail = listOf(ScreenContent, PropertyMap, SearchCriteria, Loan)

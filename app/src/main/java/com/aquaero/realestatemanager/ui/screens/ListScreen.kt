@@ -25,27 +25,19 @@ import com.aquaero.realestatemanager.utils.AppContentType
 @Composable
 fun ListScreen(
     contentType: AppContentType,
+    propertyId: String?,
     onPropertyClick: (Long) -> Unit = {}
 ) {
-    var selectedId by remember { mutableStateOf(-1L) }  // For compatibility with ListAndDetailScreen only
-
     Column {
+        var selectedId by remember { mutableStateOf(-1L) }  // For compatibility with ListAndDetailScreen only
+
         Text(text = "ListScreen")
-
         Spacer(modifier = Modifier.height(20.dp))
-
         LazyColumn(
             modifier = Modifier
                 // .padding(vertical = 20.dp)
                 .fillMaxWidth()
         ) {
-            /*
-            item { Text(
-                text = "ListScreen",
-                Modifier.padding(vertical = 20.dp)
-            ) }
-            */
-
             items(items = fakeProperties) { property ->
                 PropertyCard(
                     property.pId,
@@ -55,7 +47,7 @@ fun ListScreen(
                     // property.photos?.get(0)?.phId,
                     R.drawable.ic_launcher_background.toLong(),
                     // contentType,
-                    selectedId == property.pId, // For compatibility with ListAndDetailScreen only
+                    selectedId == property.pId || propertyId == property.pId.toString(), // For compatibility with ListAndDetailScreen only
                     { selectedId = property.pId },      // For compatibility with ListAndDetailScreen only
                     onPropertyClick,
                 )

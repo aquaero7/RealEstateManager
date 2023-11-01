@@ -26,14 +26,13 @@ fun AppNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = AppContent.routeWithArgs,
-
-
+        startDestination = ScreenContent.routeWithArgs,
         modifier = modifier
     ) {
         composable(route = PropertyList.route) {
             ListScreen(
                 contentType = contentType,
+                propertyId = null,
                 onPropertyClick =  { propertyId ->
                     navController.navigateToDetail(propertyId.toString())
                 }
@@ -81,13 +80,13 @@ fun AppNavHost(
         }
 
         composable(
-            route = AppContent.routeWithArgs,
-            arguments = AppContent.arguments
+            route = ScreenContent.routeWithArgs,
+            arguments = ScreenContent.arguments
         ) { navBackStackEntry ->
             val propertyId = navBackStackEntry.arguments?.getString(Detail.propertyKey)
                 ?: fakeProperties[0].pId.toString()
 
-            AppContent(
+            ContentScreen(
                 contentType = contentType,
                 onPropertyClick =  { propertyId ->
                     if (contentType == AppContentType.SCREEN_ONLY) {
@@ -122,7 +121,7 @@ fun NavHostController.navigateToDetailEdit(propertyId: String) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun NavHostController.navigateSingleTopToListAndDetail(propertyId: String? = fakeProperties[0].pId.toString()) {
-    val route = "${AppContent.route}/${propertyId}"
+    val route = "${ScreenContent.route}/${propertyId}"
     this.navigate(route) {
         popUpTo(this@navigateSingleTopToListAndDetail.graph.findStartDestination().id) { saveState = false }
         launchSingleTop = true

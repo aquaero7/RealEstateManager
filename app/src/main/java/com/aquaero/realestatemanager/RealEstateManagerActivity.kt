@@ -15,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.aquaero.realestatemanager.data.fakeProperties
 import com.aquaero.realestatemanager.ui.components.AppTabRow
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
 import com.aquaero.realestatemanager.utils.AppContentType
@@ -39,49 +38,37 @@ fun RealEstateManagerApp(
 ) {
     RealEstateManagerTheme {
         /**
-         * To choose dynamically, on screen state changes, whether to show
+         * Init content type, according to window's width,
+         * to choose dynamically, on screen state changes, whether to show
          * just a list content, or both a list and detail content
          */
-        //
         val contentType: AppContentType = when (windowSize) {
             WindowWidthSizeClass.Expanded -> { AppContentType.SCREEN_WITH_DETAIL }
             else -> { AppContentType.SCREEN_ONLY }
         }
 
-        val tabRowScreens =
-            if (contentType == AppContentType.SCREEN_WITH_DETAIL) tabRowScreensListWithDetail
-            else tabRowScreensListOnly
+        // Init screens list for tabRow
+        val tabRowScreens = tabRowScreens
+        // Init navController
         val navController = rememberNavController()
         // Fetch current destination
         val currentBackStack by navController.currentBackStackEntryAsState()
         val currentDestination = currentBackStack?.destination
-        // Use 'Other' as a backup screen if the returned value is null
-        val currentScreen = tabRowScreens.find { it.route == currentDestination?.route } ?: ScreenContent /* Other   //PropertyList */
+        // Use 'ListAndDetail' as a backup screen if the returned value is null
+        val currentScreen = tabRowScreens.find { it.route == currentDestination?.route } ?: ListAndDetail
 
         /**
-         * Navigate single top to tabs, purging Detail and Edit routes from back stack
+         * Navigate single top to tabs
          */
-        fun navigateSingleTopWithDetailBackStackPurge(currentScreen: AppDestination, newScreen: AppDestination) {
-            // We purge the back stack once if current screen is Detail or Edit
-            if (currentScreen != ScreenContent && tabRowScreens
-                .find { it.route == currentDestination?.route } == null) { navController.popBackStack() }
-            // We purge the back stack twice if current screen was Detail and is Edit now
-            if (currentScreen != ScreenContent && tabRowScreens
-                .find { it.route == currentDestination?.route } == null) { navController.popBackStack() }    // If current screen is Detail
-
-            if (newScreen == ScreenContent) {
-                navController.navigateSingleTopToListAndDetail(fakeProperties[0].pId.toString())
-            } else {
-                navController.navigateSingleTopTo(newScreen.route)
-            }
+        fun navigateSingleTop(newScreen: AppDestination) {
+            navController.navigateSingleTopTo(newScreen)
         }
 
         Scaffold (
             bottomBar = {
                 AppTabRow(
                     allScreens = tabRowScreens,
-                    onTabSelected = { newScreen ->
-                        navigateSingleTopWithDetailBackStackPurge(currentScreen, newScreen) },
+                    onTabSelected = { newScreen -> navigateSingleTop(newScreen) },
                     currentScreen = currentScreen
                 )
             }

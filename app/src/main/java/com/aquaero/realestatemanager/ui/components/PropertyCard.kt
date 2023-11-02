@@ -19,16 +19,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.ui.theme.ListBackground
 import com.aquaero.realestatemanager.ui.theme.SelectionBackground
+import com.aquaero.realestatemanager.utils.AppContentType
 
 @Composable
 fun PropertyCard(
-    pId: Long, pType: String, pCity: String, pPrice: Int, phId: Long?, // contentType: AppContentType,
-    selected: Boolean = false, onSelection: () -> Unit, onPropertyClick: (Long) -> Unit
+    pId: Long, pType: String, pCity: String, pPrice: Int, phId: Long?, contentType: AppContentType,
+    selected: Boolean = false, unselectedByDefaultDisplay: Boolean = false,
+    onSelection: () -> Unit, onPropertyClick: (Long) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -37,8 +40,7 @@ fun PropertyCard(
             .wrapContentHeight()
             .clickable {
                 onSelection()
-                onPropertyClick(pId)
-                       },
+                onPropertyClick(pId) },
         shape = RoundedCornerShape(0.dp),   // = MaterialTheme.shapes.medium // = CutCornerShape(topEnd = 10.dp)
         elevation = CardDefaults.cardElevation(),
         colors = CardDefaults.cardColors()
@@ -56,7 +58,8 @@ fun PropertyCard(
                     contentScale = ContentScale.Fit
                 )
                 Surface(
-                    color = if (selected) SelectionBackground else ListBackground,
+                    color = if (selected && contentType == AppContentType.SCREEN_WITH_DETAIL && !unselectedByDefaultDisplay)
+                        SelectionBackground else ListBackground,
                     modifier = Modifier.fillMaxSize()
                     ) {
                     Column(
@@ -83,7 +86,9 @@ fun PropertyCard(
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
                                 text = pPrice.toString(),
                                 style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.error
+                                // color = MaterialTheme.colorScheme.error
+                                color = if (selected && contentType == AppContentType.SCREEN_WITH_DETAIL && !unselectedByDefaultDisplay)
+                                    Color.White else Color.Red,
                             )
                         }
                     }

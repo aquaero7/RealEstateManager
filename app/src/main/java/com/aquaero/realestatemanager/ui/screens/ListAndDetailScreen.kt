@@ -44,14 +44,16 @@ fun ListAndDetailScreen(
                 onPropertyClick = onPropertyClick
             )
         }
-        Column(
-            modifier = Modifier.weight(2F)
-        ) {
-            DetailScreen(
-                propertyId = propertyId,
-                onEditButtonClick = onEditButtonClick,
-                onBackPressed = onBackPressed
-            )
+        if (contentType == AppContentType.SCREEN_WITH_DETAIL) {
+            Column(
+                modifier = Modifier.weight(2F)
+            ) {
+                DetailScreen(
+                    propertyId = propertyId,
+                    onEditButtonClick = onEditButtonClick,
+                    onBackPressed = onBackPressed
+                )
+            }
         }
     }
 }

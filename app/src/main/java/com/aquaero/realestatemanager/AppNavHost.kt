@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import com.aquaero.realestatemanager.data.fakeProperties
 import com.aquaero.realestatemanager.ui.screens.DetailScreen
 import com.aquaero.realestatemanager.ui.screens.EditScreen
-import com.aquaero.realestatemanager.ui.screens.ListScreen
+import com.aquaero.realestatemanager.ui.screens.ListAndDetailScreen
 import com.aquaero.realestatemanager.ui.screens.LoanScreen
 import com.aquaero.realestatemanager.ui.screens.MapScreen
 import com.aquaero.realestatemanager.ui.screens.SearchScreen
@@ -26,20 +26,34 @@ fun AppNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = ScreenContent.routeWithArgs,
+        startDestination = ListAndDetail.routeWithArgs,
         modifier = modifier
     ) {
-        composable(route = PropertyList.route) {
-            ListScreen(
-                contentType = contentType,
-                propertyId = null,
-                onPropertyClick =  { propertyId ->
-                    navController.navigateToDetail(propertyId.toString())
-                }
-            )
+
+        composable(
+            route = ListAndDetail.routeWithArgs,
+            arguments = ListAndDetail.arguments
+        ) { navBackStackEntry ->
+            (navBackStackEntry.arguments!!.getString(Detail.propertyKey)
+                ?: fakeProperties[0].pId.toString()).also {
+
+                ListAndDetailScreen(
+                    contentType = contentType,
+                    onPropertyClick =  { propertyId ->
+                        if (contentType == AppContentType.SCREEN_ONLY) {
+                            navController.navigateToDetail(propertyId.toString())
+                        } else {
+                            navController.navigateSingleTopTo(ListAndDetail, propertyId.toString())
+                        }
+                    },
+                    propertyId = it,
+                    onEditButtonClick = { navController.navigateToDetailEdit(it) },
+                    onBackPressed = { navController.popBackStack() }
+                )
+            }
         }
 
-        composable(route = PropertyMap.route) {
+        composable(route = GeolocMap.route) {
             MapScreen()
         }
 
@@ -58,7 +72,7 @@ fun AppNavHost(
             route = Detail.routeWithArgs,
             arguments = Detail.arguments
         ) { navBackStackEntry ->
-            val propertyId = navBackStackEntry.arguments?.getString(Detail.propertyKey)
+            val propertyId = navBackStackEntry.arguments!!.getString(Detail.propertyKey)
 
             DetailScreen(
                 propertyId = propertyId,
@@ -71,39 +85,19 @@ fun AppNavHost(
             route = EditDetail.routeWithArgs,
             arguments = EditDetail.arguments
         ) { navBackStackEntry ->
-            val propertyId = navBackStackEntry.arguments?.getString(EditDetail.propertyEditKey)
+            val propertyId = navBackStackEntry.arguments!!.getString(EditDetail.propertyEditKey)
 
             EditScreen(
                 propertyId = propertyId,
                 onBackPressed = { navController.popBackStack() }
             )
         }
-
-        composable(
-            route = ScreenContent.routeWithArgs,
-            arguments = ScreenContent.arguments
-        ) { navBackStackEntry ->
-            val propertyId = navBackStackEntry.arguments?.getString(Detail.propertyKey)
-                ?: fakeProperties[0].pId.toString()
-
-            ContentScreen(
-                contentType = contentType,
-                onPropertyClick =  { propertyId ->
-                    if (contentType == AppContentType.SCREEN_ONLY) {
-                        navController.navigateToDetail(propertyId.toString())
-                    } else {
-                        navController.navigateSingleTopToListAndDetail(propertyId.toString())
-                    }
-                },
-                propertyId = propertyId,
-                onEditButtonClick = { navController.navigateToDetailEdit(propertyId) },
-                onBackPressed = { navController.popBackStack() }
-            )
-        }
     }
 }
 
-fun NavHostController.navigateSingleTopTo(route: String) /* = this.navigate(route) */ {
+@RequiresApi(Build.VERSION_CODES.O)
+fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String = fakeProperties[0].pId.toString()) {
+    val route = if (destination == ListAndDetail) "${destination.route}/${propertyId}" else destination.route
     this.navigate(route) {
         popUpTo(this@navigateSingleTopTo.graph.findStartDestination().id) { saveState = false }
         launchSingleTop = true
@@ -119,14 +113,6 @@ fun NavHostController.navigateToDetailEdit(propertyId: String) {
     this.navigate("${EditDetail.route}/$propertyId")
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-fun NavHostController.navigateSingleTopToListAndDetail(propertyId: String? = fakeProperties[0].pId.toString()) {
-    val route = "${ScreenContent.route}/${propertyId}"
-    this.navigate(route) {
-        popUpTo(this@navigateSingleTopToListAndDetail.graph.findStartDestination().id) { saveState = false }
-        launchSingleTop = true
-        restoreState = false
-    }
-}
+
 
 

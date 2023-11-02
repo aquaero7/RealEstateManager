@@ -23,12 +23,16 @@ interface AppDestination {
 /**
 * App navigation destinations
 */
-object PropertyList: AppDestination {
+
+object ListAndDetail: AppDestination {
     override val icon = Icons.Filled.ViewList
     override val route = "list"
+    const val propertyKey = "single_property"
+    val routeWithArgs = "$route/{$propertyKey}"
+    val arguments = listOf(navArgument(propertyKey) { type = NavType.StringType })
 }
 
-object PropertyMap: AppDestination {
+object GeolocMap: AppDestination {
     override val icon = Icons.Filled.Map
     override val route = "map"
 }
@@ -61,15 +65,6 @@ object EditDetail: AppDestination {
     val arguments = listOf(navArgument(propertyEditKey) { type = NavType.StringType })
 }
 
-// Destination not displayed in the bottom TabRow
-object ScreenContent: AppDestination {
-    override val icon = Icons.Filled.ViewList
-    override val route = "list_and_detail"
-    const val propertyKey = "single_property"
-    val routeWithArgs = "$route/{$propertyKey}"
-    val arguments = listOf(navArgument(propertyKey) { type = NavType.StringType })
-}
-
 /**
  * Destination not displayed in the bottom TabRow.
  * Created to be used as the default one in BottomTabRow
@@ -81,6 +76,4 @@ object Other: AppDestination {
 }
 
 // Screens displayed in the bottom TabRow
-// val tabRowScreens = listOf(PropertyList, PropertyMap, SearchCriteria, Loan)
-val tabRowScreensListOnly = listOf(PropertyList, PropertyMap, SearchCriteria, Loan)
-val tabRowScreensListWithDetail = listOf(ScreenContent, PropertyMap, SearchCriteria, Loan)
+val tabRowScreens = listOf(ListAndDetail, GeolocMap, SearchCriteria, Loan)

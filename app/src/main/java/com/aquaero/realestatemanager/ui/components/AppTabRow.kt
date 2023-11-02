@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -31,6 +32,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.AppDestination
+import com.aquaero.realestatemanager.ui.theme.SelectedTabColor
 import java.util.Locale
 
 @Composable
@@ -46,7 +48,8 @@ fun AppTabRow(
     ) {
         Row(
             modifier = Modifier.selectableGroup(),
-            horizontalArrangement = Arrangement.Center,
+            //horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.SpaceAround
         ) {
             allScreens.forEach { screen ->
                 AppTab(
@@ -67,7 +70,9 @@ private fun AppTab(
     onSelected: () -> Unit,
     selected: Boolean
 ) {
-    val color = MaterialTheme.colorScheme.onSurface
+    // val color = MaterialTheme.colorScheme.onSurface
+    val color = if (selected) SelectedTabColor else MaterialTheme.colorScheme.onSurface
+
     val durationMillis = if (selected) TAB_FADE_IN_ANIMATION_DURATION else TAB_FADE_OUT_ANIMATION_DURATION
     val animSpec = remember {
         tween<Color>(
@@ -81,6 +86,7 @@ private fun AppTab(
         animationSpec = animSpec, label = "tab_color_anim"
     )
     Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             // .padding(16.dp)
             .padding(vertical = 16.dp ,horizontal = 20.dp)
@@ -107,7 +113,7 @@ private fun AppTab(
     }
 }
 
-private val tabHeight = 56.dp
+private val tabHeight = 64.dp   //56.dp
 private const val TAB_FADE_IN_ANIMATION_DURATION = 150
 private const val TAB_FADE_OUT_ANIMATION_DURATION = 100
 private const val TAB_FADE_IN_ANIMATION_DELAY = 100

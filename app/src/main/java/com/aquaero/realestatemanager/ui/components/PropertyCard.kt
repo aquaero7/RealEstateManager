@@ -23,8 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.aquaero.realestatemanager.ui.theme.ListBackground
-import com.aquaero.realestatemanager.ui.theme.SelectionBackground
+import com.aquaero.realestatemanager.ui.theme.ListItemBackground
+import com.aquaero.realestatemanager.ui.theme.SelectedItemBackground
 import com.aquaero.realestatemanager.utils.AppContentType
 
 @Composable
@@ -59,7 +59,7 @@ fun PropertyCard(
                 )
                 Surface(
                     color = if (selected && contentType == AppContentType.SCREEN_WITH_DETAIL && !unselectedByDefaultDisplay)
-                        SelectionBackground else ListBackground,
+                        SelectedItemBackground else ListItemBackground,
                     modifier = Modifier.fillMaxSize()
                     ) {
                     Column(

@@ -2,25 +2,53 @@
     <string name="app_name">RealEstateManager</string>
 
     <!-- LABELS -->
-    <string name="type">TYPE</string>
-    <string name="agent">AGENT</string>
+    <string name="type">Type</string>
+    <string name="agent">Agent</string>
+    <string name="media">Media</string>
+    <string name="description">Description</string>
+    <string name="surface_unit">sq.m</string>
+    <string name="surface">Surface</string>
+    <string name="rooms">Nb. of rooms</string>
+    <string name="bathrooms">Nb. of bathrooms</string>
+    <string name="bedrooms">Nb. of bedrooms</string>
+    <string name="price">Price</string>
 
     <!-- TYPES OF PROPERTIES -->
-    <string name="flat">FLAT</string>
-    <string name="house">HOUSE</string>
-    <string name="duplex">DUPLEX</string>
-    <string name="penthouse">PENTHOUSE</string>
-    <string name="loft">LOFT</string>
-    <string name="manor">MANOR</string>
-    <string name="castle">CASTLE</string>
-    <string name="hostel">HOSTEL</string>
+    <string name="flat">Flat</string>
+    <string name="house">House</string>
+    <string name="duplex">Duplex</string>
+    <string name="penthouse">Penthouse</string>
+    <string name="loft">Loft</string>
+    <string name="manor">Manor</string>
+    <string name="castle">Castle</string>
+    <string name="hostel">Hostel</string>
 
     <!-- POINTS OF INTEREST -->
-    <string name="hospital">HOSPITAL</string>
-    <string name="school">SCHOOL</string>
-    <string name="restaurant">RESTAURANT</string>
-    <string name="shop">SHOP</string>
-    <string name="railway_station">RAILWAY STATION</string>
-    <string name="car_park">CAR PARK</string>
+    <string name="hospital">Hospital</string>
+    <string name="school">School</string>
+    <string name="restaurant">Restaurant</string>
+    <string name="shop">Shop</string>
+    <string name="railway_station">Railway station</string>
+    <string name="car_park">Car park</string>
+
+    <!-- DROPDOWN MENU -->
+    <string name="export">Export data</string>
+
+
+    <!-- *** NOT TRANSLATABLE *** -->
+
+    <!-- CONTENT DESCRIPTION -->
+    <string name="cd_more" translatable="false">more</string>
+    <string name="cd_export" translatable="false">export</string>
+    <string name="cd_surface" translatable="false">surface</string>
+    <string name="cd_rooms" translatable="false">rooms</string>
+    <string name="cd_bathrooms" translatable="false">bathrooms</string>
+    <string name="cd_bedrooms" translatable="false">bedrooms</string>
+    <string name="cd_type" translatable="false">type</string>
+    <string name="cd_price" translatable="false">price</string>
+
+    <!-- CURRENCIES -->
+    <string name="dollar" translatable="false">$</string>
+    <string name="euro" translatable="false">€</string>
 
 </resources>

@@ -3,11 +3,11 @@ package com.aquaero.realestatemanager.data
 import com.aquaero.realestatemanager.utils.agentsToStrings
 
 val pTypes: MutableSet<String?> = mutableSetOf(
-    "", "FLAT", "HOUSE", "DUPLEX", "PENTHOUSE", "LOFT", "MANOR", "CASTLE", "HOSTEL"
+    "", "Flat", "House", "Duplex", "Penthouse", "Loft", "Manor", "Castle", "Hostel"
 )
 
 val poi: MutableSet<String?> = mutableSetOf(
-    "HOSPITAL", "SCHOOL", "RESTAURANT", "SHOP", "RAILWAY STATION", "CAR PARK",
+    "Hospital", "School", "Restaurant", "Shop", "Railway station", "Car park",
 )
 
 val agents: MutableSet<String?> = agentsToStrings()

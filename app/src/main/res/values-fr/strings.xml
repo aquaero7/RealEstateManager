@@ -2,25 +2,36 @@
     <string name="app_name">RealEstateManager</string>
 
     <!-- LABELS -->
-    <string name="type">TYPE</string>
-    <string name="agent">AGENT</string>
+    <string name="type">Type</string>
+    <string name="agent">Agent</string>
+    <string name="media">Media</string>
+    <string name="description">Description</string>
+    <string name="surface_unit">m²</string>
+    <string name="surface">Surface</string>
+    <string name="rooms">Nb. de pièces</string>
+    <string name="bathrooms">Nb. de salles de bain</string>
+    <string name="bedrooms">Nb. de chambres</string>
+    <string name="price">Prix</string>
 
     <!-- TYPES OF PROPERTIES -->
-    <string name="flat">APPARTEMENT</string>
-    <string name="house">MAISON</string>
-    <string name="duplex">DUPLEX</string>
-    <string name="penthouse">PENTHOUSE</string>
-    <string name="loft">LOFT</string>
-    <string name="manor">MANOIR</string>
-    <string name="castle">CHATEAU</string>
-    <string name="hostel">HOTEL</string>
+    <string name="flat">Appartement</string>
+    <string name="house">Maison</string>
+    <string name="duplex">Duplex</string>
+    <string name="penthouse">Penthouse</string>
+    <string name="loft">Loft</string>
+    <string name="manor">Manoir</string>
+    <string name="castle">Château</string>
+    <string name="hostel">Hôtel</string>
 
     <!-- POINTS OF INTEREST -->
-    <string name="hospital">HOPITAL</string>
-    <string name="school">ECOLE</string>
-    <string name="restaurant">RESTAURANT</string>
-    <string name="shop">COMMERCE</string>
-    <string name="railway_station">GARE</string>
-    <string name="car_park">PARKING</string>
+    <string name="hospital">Hôpital</string>
+    <string name="school">Ecole</string>
+    <string name="restaurant">Restaurant</string>
+    <string name="shop">Commerce</string>
+    <string name="railway_station">Gare</string>
+    <string name="car_park">Parking</string>
+
+    <!-- DROPDOWN MENU -->
+    <string name="export">Exporter les données</string>
 
 </resources>

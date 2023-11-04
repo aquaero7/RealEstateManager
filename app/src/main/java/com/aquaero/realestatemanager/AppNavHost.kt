@@ -59,8 +59,8 @@ fun AppNavHost(
 
         composable(route = SearchCriteria.route) {
             SearchScreen(
-                onButton1Click = { navController.navigateToDetail("propertyId1") },
-                onButton2Click = { navController.navigateToDetail("propertyId2") }
+                onButton1Click = { navController.navigateToDetail("1") },
+                onButton2Click = { navController.navigateToDetail("2") }
             )
         }
 

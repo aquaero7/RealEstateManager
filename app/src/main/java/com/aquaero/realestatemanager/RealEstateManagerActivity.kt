@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -14,9 +14,11 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.aquaero.realestatemanager.ui.components.AppTabRow
+import com.aquaero.realestatemanager.ui.components.AppTopBar
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
 import com.aquaero.realestatemanager.utils.AppContentType
 
@@ -32,6 +34,7 @@ class RealEstateManagerActivity: ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RealEstateManagerApp(
@@ -48,9 +51,9 @@ fun RealEstateManagerApp(
             else -> { AppContentType.SCREEN_ONLY }
         }
 
-        // Init screens list for tabRow
+        // Init data
+        val context = LocalContext.current
         val tabRowScreens = tabRowScreens
-        // Init navController
         val navController = rememberNavController()
         // Fetch current destination
         val currentBackStack by navController.currentBackStackEntryAsState()
@@ -66,6 +69,11 @@ fun RealEstateManagerApp(
         }
 
         Scaffold (
+            topBar = {
+                AppTopBar(
+                    context = context
+                )
+            },
             bottomBar = {
                 AppTabRow(
                     allScreens = tabRowScreens,
@@ -78,7 +86,7 @@ fun RealEstateManagerApp(
                 contentType = contentType,
                 navController = navController,
                 modifier = Modifier.padding(innerPadding)
-                )
+            )
         }
     }
 }

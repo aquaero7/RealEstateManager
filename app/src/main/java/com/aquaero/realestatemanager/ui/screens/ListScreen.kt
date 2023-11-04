@@ -32,8 +32,7 @@ fun ListScreen(
     Column {
         var selectedId by remember { mutableLongStateOf(-1L) }  // For compatibility with ListAndDetailScreen
 
-        Text(text = "ListScreen")
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         LazyColumn(
             modifier = Modifier
                 // .padding(vertical = 20.dp)

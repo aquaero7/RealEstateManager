@@ -12,6 +12,12 @@
     <string name="bathrooms">Nb. of bathrooms</string>
     <string name="bedrooms">Nb. of bedrooms</string>
     <string name="price">Price</string>
+    <string name="address">Location</string>
+    <string name="registration_date">Registration date</string>
+    <string name="sale_date">Sale date</string>
+    <string name="status">Status</string>
+    <string name="sold">Sold</string>
+    <string name="for_sale">For sale</string>
 
     <!-- TYPES OF PROPERTIES -->
     <string name="flat">Flat</string>
@@ -46,6 +52,11 @@
     <string name="cd_bedrooms" translatable="false">bedrooms</string>
     <string name="cd_type" translatable="false">type</string>
     <string name="cd_price" translatable="false">price</string>
+    <string name="cd_address" translatable="false">location</string>
+    <string name="cd_agent" translatable="false">agent</string>
+    <string name="cd_registration_date" translatable="false">registration_date</string>
+    <string name="cd_sale_date" translatable="false">sale_date</string>
+    <string name="cd_status" translatable="false">status</string>
 
     <!-- CURRENCIES -->
     <string name="dollar" translatable="false">$</string>

@@ -42,7 +42,7 @@ import com.aquaero.realestatemanager.ui.theme.BoxBackground
 
 @Composable
 fun EditScreen(
-    propertyId: String?,
+    propertyId: String,
     onBackPressed: () -> Unit = {},
 ) {
     Column {
@@ -51,7 +51,6 @@ fun EditScreen(
             Spacer(modifier = Modifier.width(200.dp))
             Text(text = Locale.current.language)
         }
-
 
         Spacer(modifier = Modifier.height(40.dp))
         AppDropdownMenu(stringResource(id = R.string.type), pTypes)

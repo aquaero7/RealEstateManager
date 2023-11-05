@@ -40,7 +40,7 @@ import com.aquaero.realestatemanager.utils.AppContentType
 fun ListAndDetailScreen(
     contentType: AppContentType,
     onPropertyClick: (Long) -> Unit = {},
-    propertyId: String?,
+    propertyId: String,
     onEditButtonClick: () -> Unit = {},
     onBackPressed: () -> Unit = {}
 ) {
@@ -55,14 +55,14 @@ fun ListAndDetailScreen(
             )
         }
         if (contentType == AppContentType.SCREEN_WITH_DETAIL) {
-            Spacer(modifier = Modifier.width(2.dp))
+            // Spacer(modifier = Modifier.width(2.dp))
             Divider(
                 modifier = Modifier
                     .width(2.dp)
                     .fillMaxHeight(),
                 color = Color.LightGray
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            // Spacer(modifier = Modifier.width(2.dp))
             Column(
                 modifier = Modifier.weight(2F)
             ) {

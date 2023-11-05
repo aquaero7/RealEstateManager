@@ -72,11 +72,11 @@ fun AppNavHost(
             route = Detail.routeWithArgs,
             arguments = Detail.arguments
         ) { navBackStackEntry ->
-            val propertyId = navBackStackEntry.arguments!!.getString(Detail.propertyKey)
+            val propertyId = navBackStackEntry.arguments!!.getString(Detail.propertyKey)!!
 
             DetailScreen(
                 propertyId = propertyId,
-                onEditButtonClick = { navController.navigateToDetailEdit(propertyId!!) },
+                onEditButtonClick = { navController.navigateToDetailEdit(propertyId) },
                 onBackPressed = { navController.popBackStack() }
             )
         }
@@ -85,7 +85,7 @@ fun AppNavHost(
             route = EditDetail.routeWithArgs,
             arguments = EditDetail.arguments
         ) { navBackStackEntry ->
-            val propertyId = navBackStackEntry.arguments!!.getString(EditDetail.propertyEditKey)
+            val propertyId = navBackStackEntry.arguments!!.getString(EditDetail.propertyEditKey)!!
 
             EditScreen(
                 propertyId = propertyId,

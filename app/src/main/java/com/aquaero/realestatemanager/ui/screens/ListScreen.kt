@@ -26,7 +26,7 @@ import com.aquaero.realestatemanager.utils.AppContentType
 @Composable
 fun ListScreen(
     contentType: AppContentType,
-    propertyId: String?,
+    propertyId: String,
     onPropertyClick: (Long) -> Unit = {}
 ) {
     Column {

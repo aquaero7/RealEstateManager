@@ -245,7 +245,7 @@ val fakeProperties = listOf(
         listOf(fakePhotos[0], fakePhotos[1], fakePhotos[2], fakePhotos[3], fakePhotos[4],
             fakePhotos[5], fakePhotos[6], fakePhotos[7]),
         LocalDate.of(2023, 9, 17),  // LocalDate.parse("2023-09-17"),
-        null,
+        LocalDate.of(2023, 9, 30),  // LocalDate.parse("2023-09-17"),
         false,
         fakeAgents[1]
     ),

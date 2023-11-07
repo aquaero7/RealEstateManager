@@ -9,7 +9,7 @@ import com.aquaero.realestatemanager.model.Property
 
 //TODO HERE : Report Java methods from initial project converted to functions...
 
-fun agentsToStrings(): MutableSet<String?> {
+fun agentsToString(): MutableSet<String?> {
     // val agentsSet: MutableSet<String?> = mutableSetOf()
     val agentsSet: MutableSet<String?> = mutableSetOf("Not assigned...") // Empty field for unassigned agent case
     for (agent in fakeAgents) {
@@ -32,4 +32,16 @@ fun getPropertyPictures(propertyId: Long): MutableList<Photo?> {
         photos.add(photo)
     }
     return photos
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun poiSelected(propertyId: String, poi: String): Boolean {
+    var isSelected = false
+    for (poiItem in getProperty(propertyId.toLong()).pPoi) {
+        if (poiItem == poi) {
+            isSelected = true
+            break
+        }
+    }
+    return isSelected
 }

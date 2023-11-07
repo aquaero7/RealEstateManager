@@ -1,13 +1,11 @@
-package com.aquaero.realestatemanager.ui.components
+package com.aquaero.realestatemanager.ui.components.detail_screen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AspectRatio
 import androidx.compose.material.icons.filled.Bathtub
@@ -15,9 +13,10 @@ import androidx.compose.material.icons.filled.Bed
 import androidx.compose.material.icons.filled.House
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.OtherHouses
-import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.DefaultTintColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
@@ -40,6 +39,9 @@ fun DetailScreenColumn1(
             contentDesc = stringResource(id = R.string.cd_status),
             label = stringResource(id = R.string.status),
             value = if (property.saleDate != null) stringResource(id = R.string.sold) else stringResource(id = R.string.for_sale),
+            // iconColor = if (property.saleDate != null) GrayDisabled else Pink40,
+            valueColor = if (property.saleDate != null) Color.White else Color.Black,
+            valueBackgroundColor = if (property.saleDate != null) Color.Magenta else DefaultTintColor
         )
 
         Spacer(modifier = Modifier.height(16.dp))

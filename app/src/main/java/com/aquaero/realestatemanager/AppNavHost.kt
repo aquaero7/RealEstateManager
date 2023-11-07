@@ -20,14 +20,14 @@ import com.aquaero.realestatemanager.utils.AppContentType
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavHost(
+    modifier: Modifier = Modifier,
     contentType: AppContentType,
     navController: NavHostController,
-    modifier: Modifier = Modifier
 ) {
     NavHost(
+        modifier = modifier,
         navController = navController,
         startDestination = ListAndDetail.routeWithArgs,
-        modifier = modifier
     ) {
 
         composable(

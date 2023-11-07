@@ -6,6 +6,8 @@
     <string name="agent">Agent</string>
     <string name="media">Media</string>
     <string name="description">Description</string>
+    <string name="poi">Points of interest</string>
+    <string name="map_thumbnail">Location</string>
     <string name="surface_unit">sq.m</string>
     <string name="surface">Surface</string>
     <string name="rooms">Nb. of rooms</string>
@@ -39,6 +41,8 @@
 
     <!-- DROPDOWN MENU -->
     <string name="export">Export data</string>
+    <string name="create">Create property</string>
+    <string name="edit">Edit property</string>
 
 
     <!-- *** NOT TRANSLATABLE *** -->
@@ -57,9 +61,26 @@
     <string name="cd_registration_date" translatable="false">registration_date</string>
     <string name="cd_sale_date" translatable="false">sale_date</string>
     <string name="cd_status" translatable="false">status</string>
+    <string name="cd_create" translatable="false">create</string>
+    <string name="cd_edit" translatable="false">edit</string>
+    <string name="cd_hospital" translatable="false">hospital</string>
+    <string name="cd_school" translatable="false">school</string>
+    <string name="cd_restaurant" translatable="false">restaurant</string>
+    <string name="cd_shop" translatable="false">shop</string>
+    <string name="cd_railway_station" translatable="false">railway_station</string>
+    <string name="cd_car_park" translatable="false">car_park</string>
+
 
     <!-- CURRENCIES -->
     <string name="dollar" translatable="false">$</string>
     <string name="euro" translatable="false">€</string>
+
+    <!-- POINTS OF INTEREST KEYS -->
+    <string name="key_hospital" translatable="false">hospital</string>
+    <string name="key_school" translatable="false">school</string>
+    <string name="key_restaurant" translatable="false">restaurant</string>
+    <string name="key_shop" translatable="false">shop</string>
+    <string name="key_railway_station" translatable="false">railway_station</string>
+    <string name="key_car_park" translatable="false">car_park</string>
 
 </resources>

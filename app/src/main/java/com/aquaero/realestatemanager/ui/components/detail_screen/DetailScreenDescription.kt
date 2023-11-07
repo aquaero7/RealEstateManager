@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.ui.components
+package com.aquaero.realestatemanager.ui.components.detail_screen
 
 import android.os.Build
 import androidx.annotation.RequiresApi

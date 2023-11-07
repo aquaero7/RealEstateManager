@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.aquaero.realestatemanager.ui.components.AppTabRow
-import com.aquaero.realestatemanager.ui.components.AppTopBar
+import com.aquaero.realestatemanager.ui.components.app.AppTabRow
+import com.aquaero.realestatemanager.ui.components.app.AppTopBar
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
 import com.aquaero.realestatemanager.utils.AppContentType
 
@@ -58,8 +58,10 @@ fun RealEstateManagerApp(
         // Fetch current destination
         val currentBackStack by navController.currentBackStackEntryAsState()
         val currentDestination = currentBackStack?.destination
+        val currentScreen = currentDestination?.route
+
         // Use 'ListAndDetail' as a backup screen if the returned value is null
-        val currentScreen = tabRowScreens.find { it.route == currentDestination?.route } ?: ListAndDetail
+        val currentTabScreen = tabRowScreens.find { it.route == currentScreen } ?: ListAndDetail
 
         /**
          * Navigate single top to tabs
@@ -71,14 +73,16 @@ fun RealEstateManagerApp(
         Scaffold (
             topBar = {
                 AppTopBar(
-                    context = context
+                    context = context,
+                    currentScreen = currentScreen,
+                    contentType = contentType
                 )
             },
             bottomBar = {
                 AppTabRow(
                     allScreens = tabRowScreens,
                     onTabSelected = { newScreen -> navigateSingleTop(newScreen) },
-                    currentScreen = currentScreen
+                    currentScreen = currentTabScreen
                 )
             }
         ) { innerPadding ->

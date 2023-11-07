@@ -36,8 +36,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.data.agents
-import com.aquaero.realestatemanager.data.pTypes
+import com.aquaero.realestatemanager.data.agentsSet
+import com.aquaero.realestatemanager.data.pTypesSet
 import com.aquaero.realestatemanager.ui.theme.BoxBackground
 
 @Composable
@@ -53,9 +53,9 @@ fun EditScreen(
         }
 
         Spacer(modifier = Modifier.height(40.dp))
-        AppDropdownMenu(stringResource(id = R.string.type), pTypes)
+        AppDropdownMenu(stringResource(id = R.string.type), pTypesSet as MutableSet<Any?>)
         Spacer(modifier = Modifier.height(200.dp))
-        AppDropdownMenu(stringResource(id = R.string.agent), agents)
+        AppDropdownMenu(stringResource(id = R.string.agent), agentsSet as MutableSet<Any?>)
 
         Spacer(modifier = Modifier.height(200.dp))
 
@@ -74,7 +74,7 @@ fun EditScreen(
 
 
 @Composable
-fun AppDropdownMenu(label: String, itemsSet: MutableSet<String?>) {
+fun AppDropdownMenu(label: String, itemsSet: MutableSet<Any?>) {
 
     var expanded by remember { mutableStateOf(false)}
     var selectedIndex by remember { mutableIntStateOf(0) }
@@ -106,7 +106,8 @@ fun AppDropdownMenu(label: String, itemsSet: MutableSet<String?>) {
                 // itemsList[selectedIndex]?.let {             // In case of a list instead of a set
                 itemsSet.elementAt(selectedIndex)?.let {
                     Text(
-                        it,
+                        text = if (it is String) it else stringResource(id = it as Int),
+                        // stringResource(id = it as Int),
                         textAlign = TextAlign.Center,
                         fontSize = 14.sp,
                         modifier = Modifier
@@ -125,14 +126,14 @@ fun AppDropdownMenu(label: String, itemsSet: MutableSet<String?>) {
                 ) {
                     itemsSet.forEachIndexed { index, s ->
                         DropdownMenuItem(
+                            text = {
+                                if (s != null) {
+                                    Text(text = if (s is String) s else stringResource(id = s as Int))
+                                }
+                            },
                             onClick = {
                                 selectedIndex = index
                                 expanded = false
-                            },
-                            text = {
-                                if (s != null) {
-                                    Text(text = s)
-                                }
                             },
                         )
                         Divider(

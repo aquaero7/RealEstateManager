@@ -127,7 +127,8 @@ val fakeProperties = listOf(
             fakePhotos[5], fakePhotos[6], fakePhotos[7]),
         LocalDate.of(2023, 9, 10),  // LocalDate.parse("2023-09-10"),
         null,
-        false,
+        // false,                                                           //TODO: To be deleted
+        listOf("hospital", "restaurant", "shop", "car_park"),
         fakeAgents[0]
     ),
     Property(
@@ -144,7 +145,8 @@ val fakeProperties = listOf(
             fakePhotos[5], fakePhotos[6], fakePhotos[7]),
         LocalDate.of(2023, 9, 11),  // LocalDate.parse("2023-09-11"),
         null,
-        false,
+        // false,                                                           //TODO: To be deleted
+        listOf("hospital", "restaurant", "shop", "car_park"),
         fakeAgents[1]
     ),
     Property(
@@ -161,7 +163,8 @@ val fakeProperties = listOf(
             fakePhotos[5], fakePhotos[6], fakePhotos[7]),
         LocalDate.of(2023, 9, 12),  // LocalDate.parse("2023-09-12"),
         null,
-        false,
+        // false,                                                           //TODO: To be deleted
+        listOf("hospital", "restaurant", "shop", "car_park"),
         fakeAgents[2]
     ),
     Property(
@@ -178,7 +181,8 @@ val fakeProperties = listOf(
             fakePhotos[5], fakePhotos[6], fakePhotos[7]),
         LocalDate.of(2023, 9, 13),  // LocalDate.parse("2023-09-13"),
         null,
-        false,
+        // false,                                                           //TODO: To be deleted
+        listOf("hospital", "restaurant", "shop", "car_park"),
         fakeAgents[0]
     ),
     Property(
@@ -195,7 +199,8 @@ val fakeProperties = listOf(
             fakePhotos[5], fakePhotos[6], fakePhotos[7]),
         LocalDate.of(2023, 9, 14),  // LocalDate.parse("2023-09-14"),
         null,
-        false,
+        // false,                                                           //TODO: To be deleted
+        listOf("hospital", "restaurant", "shop", "car_park"),
         fakeAgents[1]
     ),
     Property(
@@ -212,7 +217,8 @@ val fakeProperties = listOf(
             fakePhotos[5], fakePhotos[6], fakePhotos[7]),
         LocalDate.of(2023, 9, 15),  // LocalDate.parse("2023-09-15"),
         null,
-        false,
+        // false,                                                           //TODO: To be deleted
+        listOf("hospital", "restaurant", "shop", "car_park"),
         fakeAgents[2]
     ),
     Property(
@@ -229,7 +235,8 @@ val fakeProperties = listOf(
             fakePhotos[5], fakePhotos[6], fakePhotos[7]),
         LocalDate.of(2023, 9, 16),  // LocalDate.parse("2023-09-16"),
         null,
-        false,
+        // false,                                                           //TODO: To be deleted
+        listOf("hospital", "shop", "car_park"),
         fakeAgents[0]
     ),
     Property(
@@ -246,7 +253,8 @@ val fakeProperties = listOf(
             fakePhotos[5], fakePhotos[6], fakePhotos[7]),
         LocalDate.of(2023, 9, 17),  // LocalDate.parse("2023-09-17"),
         LocalDate.of(2023, 9, 30),  // LocalDate.parse("2023-09-17"),
-        false,
+        // false,                                                           //TODO: To be deleted
+        listOf("restaurant", "shop", "car_park"),
         fakeAgents[1]
     ),
     Property(
@@ -263,7 +271,8 @@ val fakeProperties = listOf(
             fakePhotos[5], fakePhotos[6], fakePhotos[7]),
         LocalDate.of(2023, 9, 18),  // LocalDate.parse("2023-09-18"),
         null,
-        false,
+        // false,                                                           //TODO: To be deleted
+        listOf("hospital", "restaurant", "shop", "car_park"),
         fakeAgents[2]
     ),
     Property(
@@ -280,7 +289,8 @@ val fakeProperties = listOf(
             fakePhotos[5], fakePhotos[6], fakePhotos[7]),
         LocalDate.of(2023, 9, 19),  // LocalDate.parse("2023-09-19"),
         null,
-        false,
+        // false,                                                           //TODO: To be deleted
+        listOf("hospital", "restaurant", "shop", "car_park"),
         fakeAgents[2]
     )
 )

@@ -16,3 +16,4 @@ val SelectedItemBackground = Color(0xFFFF5555)
 val SelectedTabColor = Color(0xFF0044AA)    // Color(0xFF4444FF)
 
 val Gray66Trans66 = Color(0x66666666)
+val GrayDisabled = Color(0xFFCCCCCC)

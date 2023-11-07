@@ -15,7 +15,8 @@ data class Property(
     val photos: List<Photo>?,
     val registrationDate: LocalDate,
     val saleDate: LocalDate?,
-    val statusSold: Boolean,
+    // val statusSold: Boolean,
+    val pPoi: List<String>,
     val agent: Agent
 ) {
 

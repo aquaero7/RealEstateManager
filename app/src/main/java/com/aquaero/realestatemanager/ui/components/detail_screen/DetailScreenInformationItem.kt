@@ -1,7 +1,8 @@
-package com.aquaero.realestatemanager.ui.components
+package com.aquaero.realestatemanager.ui.components.detail_screen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,10 +22,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.DefaultTintColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aquaero.realestatemanager.ui.theme.Pink40
+import com.aquaero.realestatemanager.ui.theme.Purple40
+import com.aquaero.realestatemanager.ui.theme.PurpleGrey40
+import com.aquaero.realestatemanager.ui.theme.PurpleGrey80
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -33,7 +39,10 @@ fun DetailScreenInformationItem(
     contentDesc: String,
     label: String,
     value: String,
-    suffix: String? = null
+    suffix: String? = null,
+    iconColor: Color = Pink40,
+    valueColor: Color = Color.Black,
+    valueBackgroundColor: Color = DefaultTintColor
 ) {
     Row(
         modifier = Modifier.wrapContentSize()
@@ -46,7 +55,7 @@ fun DetailScreenInformationItem(
             Icon(
                 imageVector = image,
                 contentDescription = contentDesc,
-                tint = Color.Gray,
+                tint = iconColor,
                 modifier = Modifier.size(40.dp),
             )
         }
@@ -63,27 +72,28 @@ fun DetailScreenInformationItem(
                     text = label,
                     fontSize = 12.sp,
                     color = Color.Black,
-                    modifier = Modifier.padding(start = 4.dp)
+                    modifier = Modifier.padding(horizontal = 2.dp)
                 )
             }
             // Data value
             Row(
                 verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.background(valueBackgroundColor)
             ) {
                 Text(
                     text = value,
                     fontSize = 12.sp,
-                    color = Color.Black,
+                    color = valueColor,
                     fontWeight = FontWeight.Bold,
                     lineHeight = 14.sp,
-                    modifier = Modifier.padding(start = 4.dp)
+                    modifier = Modifier.padding(horizontal = 2.dp)
                 )
                 if (suffix != null) {
                     Text(
                         text = suffix,
                         fontSize = 12.sp,
                         color = Color.Black,
-                        modifier = Modifier.padding(start = 4.dp)
+                        modifier = Modifier.padding(horizontal = 2.dp)
                     )
                 }
             }

@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.ui.components
+package com.aquaero.realestatemanager.ui.components.app
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -37,12 +37,13 @@ import java.util.Locale
 
 @Composable
 fun AppTabRow(
+    modifier: Modifier = Modifier,
     allScreens: List<AppDestination>,
     onTabSelected: (AppDestination) -> Unit,
     currentScreen: AppDestination
 ) {
     Surface(
-        Modifier
+        modifier = modifier
             .height(tabHeight)
             .fillMaxWidth()
     ) {
@@ -65,6 +66,7 @@ fun AppTabRow(
 
 @Composable
 private fun AppTab(
+    modifier: Modifier = Modifier,
     text: String,
     icon: ImageVector,
     onSelected: () -> Unit,
@@ -86,8 +88,7 @@ private fun AppTab(
         animationSpec = animSpec, label = "tab_color_anim"
     )
     Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             // .padding(16.dp)
             .padding(vertical = 16.dp ,horizontal = 20.dp)
             .animateContentSize()
@@ -103,7 +104,8 @@ private fun AppTab(
                     color = Color.Unspecified
                 )
             )
-            .clearAndSetSemantics { contentDescription = text }
+            .clearAndSetSemantics { contentDescription = text },
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(imageVector = icon, contentDescription = text, tint = tabTintColor)
         if (selected) {

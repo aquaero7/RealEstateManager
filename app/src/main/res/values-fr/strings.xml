@@ -39,9 +39,9 @@
     <string name="railway_station">Gare</string>
     <string name="car_park">Parking</string>
 
-    <!-- DROPDOWN MENU -->
-    <string name="export">Exporter les données</string>
+    <!-- ACTION -->
     <string name="create">Créer une propriété</string>
     <string name="edit">Editer la propriété</string>
+    <string name="valid">Valider la saisie</string>
 
 </resources>

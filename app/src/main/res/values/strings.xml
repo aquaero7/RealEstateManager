@@ -39,10 +39,10 @@
     <string name="railway_station">Railway station</string>
     <string name="car_park">Car park</string>
 
-    <!-- DROPDOWN MENU -->
-    <string name="export">Export data</string>
+    <!-- ACTION -->
     <string name="create">Create property</string>
     <string name="edit">Edit property</string>
+    <string name="valid">Valid input</string>
 
 
     <!-- *** NOT TRANSLATABLE *** -->
@@ -69,7 +69,7 @@
     <string name="cd_shop" translatable="false">shop</string>
     <string name="cd_railway_station" translatable="false">railway_station</string>
     <string name="cd_car_park" translatable="false">car_park</string>
-
+    <string name="cd_check" translatable="false">check</string>
 
     <!-- CURRENCIES -->
     <string name="dollar" translatable="false">$</string>

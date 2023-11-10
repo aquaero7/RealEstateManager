@@ -28,7 +28,7 @@ import com.aquaero.realestatemanager.ui.theme.Pink40
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DetailScreenPoi(selectedPoi: List<String>    /*property: Property*/) {
+fun DetailScreenPoi(selectedPoi: List<String>) {
     Text(
         text = stringResource(R.string.poi),
         modifier = Modifier

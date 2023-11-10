@@ -75,11 +75,5 @@ fun DetailScreenColumn2(
             label = stringResource(id = R.string.sale_date),
             value = if (property.saleDate != null) property.saleDate.toString() else "-",
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-
-
-
     }
 }

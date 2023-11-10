@@ -30,6 +30,9 @@ class AppViewModel(
     */
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    val fakeProperties = propertyRepository.fakeProperties
+
     /**
      * Init content type, according to window's width,
      * to choose dynamically, on screen state changes, whether to show

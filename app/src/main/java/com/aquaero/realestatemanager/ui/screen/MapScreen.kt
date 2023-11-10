@@ -5,5 +5,10 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun MapScreen() {
-    Text(text = "MapScreen")
+    Text(text = "MapScreen")    // TODO: To be deleted after screen implementation
+
+
+
+
+
 }

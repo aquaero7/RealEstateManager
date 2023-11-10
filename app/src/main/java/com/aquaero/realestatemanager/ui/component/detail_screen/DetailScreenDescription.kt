@@ -21,7 +21,7 @@ import com.aquaero.realestatemanager.model.Property
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreenDescription(
-    property: Property
+    description: String?
 ) {
     Text(
         text = stringResource(R.string.description),
@@ -38,7 +38,7 @@ fun DetailScreenDescription(
                 enabled = true
             )
     ) {
-        property.description?.let {
+        description?.let {
             Text(
                 text = it,
                 textAlign = TextAlign.Justify,

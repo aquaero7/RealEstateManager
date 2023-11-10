@@ -8,7 +8,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.aquaero.realestatemanager.repository.fakeProperties
 import com.aquaero.realestatemanager.ui.screen.DetailScreen
 import com.aquaero.realestatemanager.ui.screen.EditScreen
 import com.aquaero.realestatemanager.ui.screen.ListAndDetailScreen
@@ -43,7 +42,7 @@ fun AppNavHost(
             arguments = ListAndDetail.arguments
         ) { navBackStackEntry ->
             (navBackStackEntry.arguments!!.getString(Detail.propertyKey)
-                ?: fakeProperties[0].pId.toString()).also {
+                ?: appViewModel.fakeProperties[0].pId.toString()).also {
 
                 ListAndDetailScreen(
                     listViewModel = listViewModel,
@@ -109,7 +108,7 @@ fun AppNavHost(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String = fakeProperties[0].pId.toString()) {
+fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String/* = fakeProperties[0].pId.toString()*/) {
     val route = if (destination == ListAndDetail) "${destination.route}/${propertyId}" else destination.route
     this.navigate(route) {
         popUpTo(this@navigateSingleTopTo.graph.findStartDestination().id) { saveState = false }

@@ -4,13 +4,16 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.repository.AgentRepository
+import com.aquaero.realestatemanager.repository.PropertyRepository
 
 class EditViewModel(
-    private val agentRepository: AgentRepository
+    private val agentRepository: AgentRepository,
+    private val propertyRepository: PropertyRepository
 ): ViewModel() {
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
     val agentSet = agentRepository.agentsSet
+    val pTypeSet = propertyRepository.pTypesSet
 
 }

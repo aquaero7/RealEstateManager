@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
-import com.aquaero.realestatemanager.repository.pTypesSet
 import com.aquaero.realestatemanager.ui.theme.BoxBackground
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
 
@@ -47,6 +46,7 @@ fun EditScreen(
     property: Property,
     onBackPressed: () -> Unit = {},
 ) {
+    // TODO: To be deleted after screen implementation
     Column {
         Row {
             Text(text = "EditScreen for ${property.pId}")
@@ -55,18 +55,19 @@ fun EditScreen(
         }
 
         Spacer(modifier = Modifier.height(40.dp))
-        AppDropdownMenu(stringResource(id = R.string.type)) { pTypesSet }
-        Spacer(modifier = Modifier.height(200.dp))
+        AppDropdownMenu(stringResource(id = R.string.type)) { editViewModel.pTypeSet }
+        Spacer(modifier = Modifier.height(40.dp))
         AppDropdownMenu(stringResource(id = R.string.agent), editViewModel.agentSet)
 
-        Spacer(modifier = Modifier.height(200.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         Text(text = stringResource(R.string.flat))
         Text(text = stringResource(R.string.house))
-
-
-
     }
+    //
+
+    // ...
+
 
     BackHandler(true) {
         Log.w("TAG", "OnBackPressed")
@@ -74,7 +75,7 @@ fun EditScreen(
     }
 }
 
-
+// TODO: To be deleted after screen implementation
 @Composable
 fun AppDropdownMenu(label: String, itemsSet: () -> MutableSet<*>) {
 
@@ -109,7 +110,6 @@ fun AppDropdownMenu(label: String, itemsSet: () -> MutableSet<*>) {
                 itemsSet().elementAt(selectedIndex)?.let {
                     Text(
                         text = if (it is String) it else stringResource(id = it as Int),
-                        // stringResource(id = it as Int),
                         textAlign = TextAlign.Center,
                         fontSize = 14.sp,
                         modifier = Modifier
@@ -147,3 +147,4 @@ fun AppDropdownMenu(label: String, itemsSet: () -> MutableSet<*>) {
         }
     }
 }
+//

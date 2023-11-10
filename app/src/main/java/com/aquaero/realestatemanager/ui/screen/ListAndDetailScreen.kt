@@ -23,7 +23,6 @@ fun ListAndDetailScreen(
     detailViewModel: DetailViewModel,
     contentType: AppContentType,
     onPropertyClick: (Long) -> Unit = {},
-    // propertyId: String,
     property: Property,
     onEditButtonClick: () -> Unit = {},
     onBackPressed: () -> Unit = {}
@@ -35,7 +34,6 @@ fun ListAndDetailScreen(
             ListScreen(
                 listViewModel = listViewModel,
                 contentType = contentType,
-                // propertyId = propertyId,
                 property = property,
                 onPropertyClick = onPropertyClick
             )

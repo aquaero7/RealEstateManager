@@ -111,7 +111,7 @@ fun RealEstateManagerApp(
             bottomBar = {
                 AppTabRow(
                     allScreens = tabRowScreens,
-                    onTabSelected = { newScreen -> navController.navigateSingleTopTo(newScreen) },
+                    onTabSelected = { newScreen -> navController.navigateSingleTopTo(newScreen, appViewModel.fakeProperties[0].pId.toString()) },
                     currentScreen = currentTabScreen,
                     colorAnimLabel = stringResource(id = R.string.lb_tab_color_anim)
                 )

@@ -17,29 +17,33 @@ class AgentRepository() {
         return agentsSet
     }
 
+    // ...
 
 
+
+
+    //
+    /**
+     * FAKE AGENTS
+     */
+
+    val fakeAgents = listOf(
+        Agent(
+            0,
+            "N0000000",
+            "F0000000"
+        ),
+        Agent(
+            1,
+            "N1111111",
+            "F1111111"
+        ),
+        Agent(
+            2,
+            "N2222222",
+            "F2222222"
+        )
+    )
+    //
 }
 
-
-/**
- * FAKE AGENTS
- */
-
-val fakeAgents = listOf(
-    Agent(
-        0,
-        "N0000000",
-        "F0000000"
-    ),
-    Agent(
-        1,
-        "N1111111",
-        "F1111111"
-    ),
-    Agent(
-        2,
-        "N2222222",
-        "F2222222"
-    )
-)

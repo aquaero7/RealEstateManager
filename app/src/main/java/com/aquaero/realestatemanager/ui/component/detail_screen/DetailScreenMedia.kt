@@ -44,7 +44,6 @@ fun DetailScreenMedia(
             .wrapContentHeight()
             .padding(top = 4.dp, start = 4.dp, end = 6.dp)
     ) {
-        // items(items = getPropertyPictures(property.pId)) { photo ->
         items(items = property.photos as List<Photo>) { photo ->
             Box(
                 modifier = Modifier
@@ -59,7 +58,6 @@ fun DetailScreenMedia(
                     contentDescription = null,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
-                        // .size(120.dp)
                         .width(120.dp)
                         .height(120.dp)
                         .padding(0.dp)

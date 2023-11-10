@@ -38,12 +38,10 @@ fun DetailScreen(
         modifier = Modifier.verticalScroll(state = rememberScrollState(), enabled = true),
     ) {
         // Media (photos row)
-        // DetailScreenMedia(propertyId = propertyId)
         DetailScreenMedia(property = property)
 
         // Description
-        // DetailScreenDescription(propertyId = propertyId)
-        DetailScreenDescription(property = property)
+        DetailScreenDescription(description = property.description)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -54,7 +52,6 @@ fun DetailScreen(
                 modifier = Modifier.weight(1F),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // DetailScreenColumn1(propertyId = propertyId)
                 DetailScreenColumn1(property = property)
             }
             // Column 2
@@ -62,7 +59,6 @@ fun DetailScreen(
                 modifier = Modifier.weight(1F),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // DetailScreenColumn2(propertyId = propertyId)
                 DetailScreenColumn2(property = property)
             }
             /*
@@ -71,25 +67,26 @@ fun DetailScreen(
                 modifier = Modifier.weight(1F),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DetailScreenColumn3(propertyId = propertyId)
+                DetailScreenColumn3(property = property)
             }
             */
         }
 
         // POIs
-        // DetailScreenPoi(propertyId)
-        // DetailScreenPoi(property)
         DetailScreenPoi(selectedPoi = property.pPoi)
 
         // Map thumbnail
-        // DetailScreenMapThumbnail(propertyId)
         DetailScreenMapThumbnail(property)
 
+        // To manage back nav
+        BackHandler(true) {
+            Log.w("TAG", "OnBackPressed")
+            run(onBackPressed)
+        }
 
 
 
-
-        //
+        // TODO : To be deleted after TopBar menu action implementation
         Spacer(modifier = Modifier.height(80.dp))
         // Text(text = "DetailScreen  for $propertyId")
         Button(
@@ -98,11 +95,6 @@ fun DetailScreen(
             Text(text = "EditScreen")
         }
         //
-
-        BackHandler(true) {
-            Log.w("TAG", "OnBackPressed")
-            run(onBackPressed)
-        }
     }
 
 }

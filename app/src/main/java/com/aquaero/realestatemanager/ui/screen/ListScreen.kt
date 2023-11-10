@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
-import com.aquaero.realestatemanager.repository.fakeProperties
 import com.aquaero.realestatemanager.ui.component.list_screen.PropertyCard
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.viewmodel.ListViewModel
@@ -27,7 +26,6 @@ import com.aquaero.realestatemanager.viewmodel.ListViewModel
 fun ListScreen(
     listViewModel: ListViewModel,
     contentType: AppContentType,
-    // propertyId: String,
     property: Property,
     onPropertyClick: (Long) -> Unit = {}
 ) {
@@ -40,7 +38,7 @@ fun ListScreen(
                 // .padding(vertical = 20.dp)
                 .fillMaxWidth()
         ) {
-            items(items = fakeProperties) { propertyItem ->
+            items(items = listViewModel.fakeProperties) { propertyItem ->
                 PropertyCard(
                     propertyItem.pId,
                     propertyItem.pType,
@@ -49,9 +47,10 @@ fun ListScreen(
                     // propertyItem.photos?.get(0)?.phId,
                     R.drawable.ic_launcher_background.toLong(),
                     contentType,
-                    selectedId == propertyItem.pId || property.pId.toString() == propertyItem.pId.toString(), // For compatibility with ListAndDetailScreen
-                    property.pId.toString() != propertyItem.pId.toString(),  // For compatibility with ListAndDetailScreen
-                    { selectedId = propertyItem.pId },      // For compatibility with ListAndDetailScreen
+                    selectedId == propertyItem.pId ||
+                            property.pId.toString() == propertyItem.pId.toString(),                 // For compatibility with ListAndDetailScreen
+                    property.pId.toString() != propertyItem.pId.toString(),   // For compatibility with ListAndDetailScreen
+                    { selectedId = propertyItem.pId },                                              // For compatibility with ListAndDetailScreen
                     onPropertyClick,
                 )
             }

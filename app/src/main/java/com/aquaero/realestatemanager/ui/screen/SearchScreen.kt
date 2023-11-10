@@ -12,9 +12,17 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SearchScreen(
-    onButton1Click: () -> Unit = {},
-    onButton2Click: () -> Unit = {}
+    onButton1Click: () -> Unit = {},    // TODO: To be deleted after screen implementation
+    onButton2Click: () -> Unit = {}     // TODO: To be deleted after screen implementation
 ) {
+
+
+
+
+
+
+
+    // TODO: To be deleted after screen implementation
     Column {
         Text(text = "SearchScreen")
         Row {
@@ -27,4 +35,5 @@ fun SearchScreen(
             }
         }
     }
+    //
 }

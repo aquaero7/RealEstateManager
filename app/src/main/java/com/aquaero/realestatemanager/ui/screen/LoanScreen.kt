@@ -5,5 +5,13 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun LoanScreen() {
-    Text(text = "LoanScreen")
+    Text(text = "LoanScreen")   // TODO: To be deleted after screen implementation
+
+
+
+
+
+
+
+
 }

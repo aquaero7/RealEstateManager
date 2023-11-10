@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.ui.screens
+package com.aquaero.realestatemanager.ui.screen
 
 import android.os.Build
 import android.util.Log
@@ -16,17 +16,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.aquaero.realestatemanager.ui.components.detail_screen.DetailScreenColumn1
-import com.aquaero.realestatemanager.ui.components.detail_screen.DetailScreenColumn2
-import com.aquaero.realestatemanager.ui.components.detail_screen.DetailScreenDescription
-import com.aquaero.realestatemanager.ui.components.detail_screen.DetailScreenMapThumbnail
-import com.aquaero.realestatemanager.ui.components.detail_screen.DetailScreenMedia
-import com.aquaero.realestatemanager.ui.components.detail_screen.DetailScreenPoi
+import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenColumn1
+import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenColumn2
+import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenDescription
+import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenMapThumbnail
+import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenMedia
+import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenPoi
+import com.aquaero.realestatemanager.viewmodel.DetailViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreen(
-    propertyId: String,
+    detailViewModel: DetailViewModel,
+    property: Property,
     onEditButtonClick: () -> Unit = {},
     onBackPressed: () -> Unit = {}
 ) {
@@ -35,10 +38,12 @@ fun DetailScreen(
         modifier = Modifier.verticalScroll(state = rememberScrollState(), enabled = true),
     ) {
         // Media (photos row)
-        DetailScreenMedia(propertyId = propertyId)
+        // DetailScreenMedia(propertyId = propertyId)
+        DetailScreenMedia(property = property)
 
         // Description
-        DetailScreenDescription(propertyId = propertyId)
+        // DetailScreenDescription(propertyId = propertyId)
+        DetailScreenDescription(property = property)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -49,14 +54,16 @@ fun DetailScreen(
                 modifier = Modifier.weight(1F),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DetailScreenColumn1(propertyId = propertyId)
+                // DetailScreenColumn1(propertyId = propertyId)
+                DetailScreenColumn1(property = property)
             }
             // Column 2
             Column(
                 modifier = Modifier.weight(1F),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DetailScreenColumn2(propertyId = propertyId)
+                // DetailScreenColumn2(propertyId = propertyId)
+                DetailScreenColumn2(property = property)
             }
             /*
             // Column x
@@ -70,10 +77,13 @@ fun DetailScreen(
         }
 
         // POIs
-        DetailScreenPoi(propertyId)
+        // DetailScreenPoi(propertyId)
+        // DetailScreenPoi(property)
+        DetailScreenPoi(selectedPoi = property.pPoi)
 
         // Map thumbnail
-        DetailScreenMapThumbnail(propertyId)
+        // DetailScreenMapThumbnail(propertyId)
+        DetailScreenMapThumbnail(property)
 
 
 
@@ -81,7 +91,7 @@ fun DetailScreen(
 
         //
         Spacer(modifier = Modifier.height(80.dp))
-        Text(text = "DetailScreen  for $propertyId")
+        // Text(text = "DetailScreen  for $propertyId")
         Button(
             onClick = onEditButtonClick
         ) {

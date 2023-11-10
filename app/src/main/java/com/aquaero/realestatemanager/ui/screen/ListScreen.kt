@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.ui.screens
+package com.aquaero.realestatemanager.ui.screen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -16,15 +16,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.data.fakeProperties
-import com.aquaero.realestatemanager.ui.components.list_screen.PropertyCard
+import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.repository.fakeProperties
+import com.aquaero.realestatemanager.ui.component.list_screen.PropertyCard
 import com.aquaero.realestatemanager.utils.AppContentType
+import com.aquaero.realestatemanager.viewmodel.ListViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ListScreen(
+    listViewModel: ListViewModel,
     contentType: AppContentType,
-    propertyId: String,
+    // propertyId: String,
+    property: Property,
     onPropertyClick: (Long) -> Unit = {}
 ) {
     Column {
@@ -36,18 +40,18 @@ fun ListScreen(
                 // .padding(vertical = 20.dp)
                 .fillMaxWidth()
         ) {
-            items(items = fakeProperties) { property ->
+            items(items = fakeProperties) { propertyItem ->
                 PropertyCard(
-                    property.pId,
-                    property.pType,
-                    property.pAddress.city,
-                    property.pPrice,
-                    // property.photos?.get(0)?.phId,
+                    propertyItem.pId,
+                    propertyItem.pType,
+                    propertyItem.pAddress.city,
+                    propertyItem.pPrice,
+                    // propertyItem.photos?.get(0)?.phId,
                     R.drawable.ic_launcher_background.toLong(),
                     contentType,
-                    selectedId == property.pId || propertyId == property.pId.toString(), // For compatibility with ListAndDetailScreen
-                    propertyId != property.pId.toString(),  // For compatibility with ListAndDetailScreen
-                    { selectedId = property.pId },      // For compatibility with ListAndDetailScreen
+                    selectedId == propertyItem.pId || property.pId.toString() == propertyItem.pId.toString(), // For compatibility with ListAndDetailScreen
+                    property.pId.toString() != propertyItem.pId.toString(),  // For compatibility with ListAndDetailScreen
+                    { selectedId = propertyItem.pId },      // For compatibility with ListAndDetailScreen
                     onPropertyClick,
                 )
             }

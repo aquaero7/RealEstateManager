@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">RealEstateManager</string>
 
-    <!-- LABELS -->
+    <!-- LABEL -->
     <string name="type">Type</string>
     <string name="agent">Agent</string>
     <string name="media">Media</string>
@@ -21,7 +21,7 @@
     <string name="sold">Sold</string>
     <string name="for_sale">For sale</string>
 
-    <!-- TYPES OF PROPERTIES -->
+    <!-- TYPE OF PROPERTIES -->
     <string name="flat">Flat</string>
     <string name="house">House</string>
     <string name="duplex">Duplex</string>
@@ -31,7 +31,7 @@
     <string name="castle">Castle</string>
     <string name="hostel">Hostel</string>
 
-    <!-- POINTS OF INTEREST -->
+    <!-- POINT OF INTEREST -->
     <string name="hospital">Hospital</string>
     <string name="school">School</string>
     <string name="restaurant">Restaurant</string>
@@ -47,7 +47,7 @@
 
     <!-- *** NOT TRANSLATABLE *** -->
 
-    <!-- CONTENT DESCRIPTION -->
+    <!-- CONTENT DESCRIPTION AND LABEL -->
     <string name="cd_more" translatable="false">more</string>
     <string name="cd_export" translatable="false">export</string>
     <string name="cd_surface" translatable="false">surface</string>
@@ -70,12 +70,13 @@
     <string name="cd_railway_station" translatable="false">railway_station</string>
     <string name="cd_car_park" translatable="false">car_park</string>
     <string name="cd_check" translatable="false">check</string>
+    <string name="lb_tab_color_anim" translatable="false">tab_color_anim</string>
 
-    <!-- CURRENCIES -->
+    <!-- CURRENCY -->
     <string name="dollar" translatable="false">$</string>
     <string name="euro" translatable="false">€</string>
 
-    <!-- POINTS OF INTEREST KEYS -->
+    <!-- POINT OF INTEREST KEY -->
     <string name="key_hospital" translatable="false">hospital</string>
     <string name="key_school" translatable="false">school</string>
     <string name="key_restaurant" translatable="false">restaurant</string>

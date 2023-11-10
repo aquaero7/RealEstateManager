@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.ui.components.list_screen
+package com.aquaero.realestatemanager.ui.component.list_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

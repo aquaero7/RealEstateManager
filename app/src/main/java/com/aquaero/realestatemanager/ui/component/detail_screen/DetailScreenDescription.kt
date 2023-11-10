@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.ui.components.detail_screen
+package com.aquaero.realestatemanager.ui.component.detail_screen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -16,15 +16,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.utils.getProperty
+import com.aquaero.realestatemanager.model.Property
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreenDescription(
-    propertyId: String
+    property: Property
 ) {
-    val property = getProperty(propertyId.toLong())
-
     Text(
         text = stringResource(R.string.description),
         modifier = Modifier

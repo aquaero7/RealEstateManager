@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.ui.screens
+package com.aquaero.realestatemanager.ui.screen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -11,14 +11,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.utils.AppContentType
+import com.aquaero.realestatemanager.viewmodel.DetailViewModel
+import com.aquaero.realestatemanager.viewmodel.ListViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ListAndDetailScreen(
+    listViewModel:ListViewModel,
+    detailViewModel: DetailViewModel,
     contentType: AppContentType,
     onPropertyClick: (Long) -> Unit = {},
-    propertyId: String,
+    // propertyId: String,
+    property: Property,
     onEditButtonClick: () -> Unit = {},
     onBackPressed: () -> Unit = {}
 ) {
@@ -27,8 +33,10 @@ fun ListAndDetailScreen(
             modifier = Modifier.weight(1F)
         ) {
             ListScreen(
+                listViewModel = listViewModel,
                 contentType = contentType,
-                propertyId = propertyId,
+                // propertyId = propertyId,
+                property = property,
                 onPropertyClick = onPropertyClick
             )
         }
@@ -45,7 +53,8 @@ fun ListAndDetailScreen(
                 modifier = Modifier.weight(2F)
             ) {
                 DetailScreen(
-                    propertyId = propertyId,
+                    detailViewModel = detailViewModel,
+                    property = property,
                     onEditButtonClick = onEditButtonClick,
                     onBackPressed = onBackPressed
                 )

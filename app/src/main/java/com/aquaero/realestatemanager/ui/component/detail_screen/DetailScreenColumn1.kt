@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.ui.components.detail_screen
+package com.aquaero.realestatemanager.ui.component.detail_screen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -20,15 +20,13 @@ import androidx.compose.ui.graphics.vector.DefaultTintColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.utils.getProperty
+import com.aquaero.realestatemanager.model.Property
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreenColumn1(
-    propertyId: String
+    property: Property
 ) {
-    val property = getProperty(propertyId.toLong())
-
     Column(
         modifier = Modifier.wrapContentSize()
     ) {

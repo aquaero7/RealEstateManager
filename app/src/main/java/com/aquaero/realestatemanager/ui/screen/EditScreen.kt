@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.ui.screens
+package com.aquaero.realestatemanager.ui.screen
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
@@ -36,26 +36,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.data.agentsSet
-import com.aquaero.realestatemanager.data.pTypesSet
+import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.repository.pTypesSet
 import com.aquaero.realestatemanager.ui.theme.BoxBackground
+import com.aquaero.realestatemanager.viewmodel.EditViewModel
 
 @Composable
 fun EditScreen(
-    propertyId: String,
+    editViewModel: EditViewModel,
+    property: Property,
     onBackPressed: () -> Unit = {},
 ) {
     Column {
         Row {
-            Text(text = "EditScreen for $propertyId")
+            Text(text = "EditScreen for ${property.pId}")
             Spacer(modifier = Modifier.width(200.dp))
             Text(text = Locale.current.language)
         }
 
         Spacer(modifier = Modifier.height(40.dp))
-        AppDropdownMenu(stringResource(id = R.string.type), pTypesSet as MutableSet<Any?>)
+        AppDropdownMenu(stringResource(id = R.string.type)) { pTypesSet }
         Spacer(modifier = Modifier.height(200.dp))
-        AppDropdownMenu(stringResource(id = R.string.agent), agentsSet as MutableSet<Any?>)
+        AppDropdownMenu(stringResource(id = R.string.agent), editViewModel.agentSet)
 
         Spacer(modifier = Modifier.height(200.dp))
 
@@ -74,7 +76,7 @@ fun EditScreen(
 
 
 @Composable
-fun AppDropdownMenu(label: String, itemsSet: MutableSet<Any?>) {
+fun AppDropdownMenu(label: String, itemsSet: () -> MutableSet<*>) {
 
     var expanded by remember { mutableStateOf(false)}
     var selectedIndex by remember { mutableIntStateOf(0) }
@@ -103,8 +105,8 @@ fun AppDropdownMenu(label: String, itemsSet: MutableSet<Any?>) {
                     .padding(0.dp)
                     .wrapContentSize(Alignment.Center)
             ) {
-                // itemsList[selectedIndex]?.let {             // In case of a list instead of a set
-                itemsSet.elementAt(selectedIndex)?.let {
+                // itemsList()[selectedIndex]?.let {           // In case of a list instead of a set
+                itemsSet().elementAt(selectedIndex)?.let {
                     Text(
                         text = if (it is String) it else stringResource(id = it as Int),
                         // stringResource(id = it as Int),
@@ -124,7 +126,7 @@ fun AppDropdownMenu(label: String, itemsSet: MutableSet<Any?>) {
                         .background(BoxBackground)
                         .wrapContentSize()
                 ) {
-                    itemsSet.forEachIndexed { index, s ->
+                    itemsSet().forEachIndexed { index, s ->
                         DropdownMenuItem(
                             text = {
                                 if (s != null) {

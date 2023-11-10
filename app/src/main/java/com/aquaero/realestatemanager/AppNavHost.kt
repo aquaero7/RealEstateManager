@@ -8,14 +8,18 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.aquaero.realestatemanager.data.fakeProperties
-import com.aquaero.realestatemanager.ui.screens.DetailScreen
-import com.aquaero.realestatemanager.ui.screens.EditScreen
-import com.aquaero.realestatemanager.ui.screens.ListAndDetailScreen
-import com.aquaero.realestatemanager.ui.screens.LoanScreen
-import com.aquaero.realestatemanager.ui.screens.MapScreen
-import com.aquaero.realestatemanager.ui.screens.SearchScreen
+import com.aquaero.realestatemanager.repository.fakeProperties
+import com.aquaero.realestatemanager.ui.screen.DetailScreen
+import com.aquaero.realestatemanager.ui.screen.EditScreen
+import com.aquaero.realestatemanager.ui.screen.ListAndDetailScreen
+import com.aquaero.realestatemanager.ui.screen.LoanScreen
+import com.aquaero.realestatemanager.ui.screen.MapScreen
+import com.aquaero.realestatemanager.ui.screen.SearchScreen
 import com.aquaero.realestatemanager.utils.AppContentType
+import com.aquaero.realestatemanager.viewmodel.AppViewModel
+import com.aquaero.realestatemanager.viewmodel.DetailViewModel
+import com.aquaero.realestatemanager.viewmodel.EditViewModel
+import com.aquaero.realestatemanager.viewmodel.ListViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -23,6 +27,10 @@ fun AppNavHost(
     modifier: Modifier = Modifier,
     contentType: AppContentType,
     navController: NavHostController,
+    appViewModel: AppViewModel,
+    listViewModel: ListViewModel,
+    detailViewModel: DetailViewModel,
+    editViewModel: EditViewModel,
 ) {
     NavHost(
         modifier = modifier,
@@ -38,6 +46,8 @@ fun AppNavHost(
                 ?: fakeProperties[0].pId.toString()).also {
 
                 ListAndDetailScreen(
+                    listViewModel = listViewModel,
+                    detailViewModel = detailViewModel,
                     contentType = contentType,
                     onPropertyClick =  { propertyId ->
                         if (contentType == AppContentType.SCREEN_ONLY) {
@@ -46,7 +56,8 @@ fun AppNavHost(
                             navController.navigateSingleTopTo(ListAndDetail, propertyId.toString())
                         }
                     },
-                    propertyId = it,
+                    // propertyId = it,
+                    property = appViewModel.propertyFromId(it.toLong()),
                     onEditButtonClick = { navController.navigateToDetailEdit(it) },
                     onBackPressed = { navController.popBackStack() }
                 )
@@ -75,7 +86,8 @@ fun AppNavHost(
             val propertyId = navBackStackEntry.arguments!!.getString(Detail.propertyKey)!!
 
             DetailScreen(
-                propertyId = propertyId,
+                detailViewModel = detailViewModel,
+                property = appViewModel.propertyFromId(propertyId.toLong()),
                 onEditButtonClick = { navController.navigateToDetailEdit(propertyId) },
                 onBackPressed = { navController.popBackStack() }
             )
@@ -88,7 +100,8 @@ fun AppNavHost(
             val propertyId = navBackStackEntry.arguments!!.getString(EditDetail.propertyEditKey)!!
 
             EditScreen(
-                propertyId = propertyId,
+                editViewModel = editViewModel,
+                property = appViewModel.propertyFromId(propertyId.toLong()),
                 onBackPressed = { navController.popBackStack() }
             )
         }

@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.ui.components.app
+package com.aquaero.realestatemanager.ui.component.app
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -26,12 +26,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.AppDestination
+import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.SelectedTabColor
 import java.util.Locale
 
@@ -40,7 +42,8 @@ fun AppTabRow(
     modifier: Modifier = Modifier,
     allScreens: List<AppDestination>,
     onTabSelected: (AppDestination) -> Unit,
-    currentScreen: AppDestination
+    currentScreen: AppDestination,
+    colorAnimLabel: String,
 ) {
     Surface(
         modifier = modifier
@@ -57,7 +60,8 @@ fun AppTabRow(
                     text = screen.route,
                     icon = screen.icon,
                     onSelected = { onTabSelected(screen) },
-                    selected = currentScreen == screen
+                    selected = currentScreen == screen,
+                    colorAnimLabel = colorAnimLabel,
                 )
             }
         }
@@ -70,11 +74,10 @@ private fun AppTab(
     text: String,
     icon: ImageVector,
     onSelected: () -> Unit,
-    selected: Boolean
+    selected: Boolean,
+    colorAnimLabel: String,
 ) {
-    // val color = MaterialTheme.colorScheme.onSurface
     val color = if (selected) SelectedTabColor else MaterialTheme.colorScheme.onSurface
-
     val durationMillis = if (selected) TAB_FADE_IN_ANIMATION_DURATION else TAB_FADE_OUT_ANIMATION_DURATION
     val animSpec = remember {
         tween<Color>(
@@ -85,12 +88,12 @@ private fun AppTab(
     }
     val tabTintColor by animateColorAsState(
         targetValue = if (selected) color else color.copy(alpha = INACTIVE_TAB_OPACITY),
-        animationSpec = animSpec, label = "tab_color_anim"
+        animationSpec = animSpec, label = colorAnimLabel
     )
     Row(
         modifier = modifier
             // .padding(16.dp)
-            .padding(vertical = 16.dp ,horizontal = 20.dp)
+            .padding(vertical = 16.dp, horizontal = 20.dp)
             .animateContentSize()
             .height(tabHeight)
             .selectable(

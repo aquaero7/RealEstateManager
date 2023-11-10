@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.ui.components.detail_screen
+package com.aquaero.realestatemanager.ui.component.detail_screen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -25,11 +25,10 @@ import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.GrayDisabled
 import com.aquaero.realestatemanager.ui.theme.Pink40
-import com.aquaero.realestatemanager.utils.poiSelected
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DetailScreenPoi(propertyId: String) {
+fun DetailScreenPoi(selectedPoi: List<String>    /*property: Property*/) {
     Text(
         text = stringResource(R.string.poi),
         modifier = Modifier
@@ -42,37 +41,37 @@ fun DetailScreenPoi(propertyId: String) {
         DetailScreenIcon(
             imageVector = Icons.Default.LocalHospital,
             contentDesc = stringResource(id = R.string.cd_hospital),
-            selected = poiSelected(propertyId, stringResource(id = R.string.key_hospital))
+            selected = selectedPoi.contains(stringResource(id = R.string.key_hospital))
         )
 
         DetailScreenIcon(
             imageVector = Icons.Default.School,
             contentDesc = stringResource(id = R.string.cd_school),
-            selected = poiSelected(propertyId, stringResource(id = R.string.key_school))
+            selected = selectedPoi.contains(stringResource(id = R.string.key_school))
         )
 
         DetailScreenIcon(
             imageVector = Icons.Default.Restaurant,
             contentDesc = stringResource(id = R.string.cd_restaurant),
-            selected = poiSelected(propertyId, stringResource(id = R.string.key_restaurant))
+            selected = selectedPoi.contains(stringResource(id = R.string.key_restaurant))
         )
 
         DetailScreenIcon(
             imageVector = Icons.Default.ShoppingBag,
             contentDesc = stringResource(id = R.string.cd_shop),
-            selected = poiSelected(propertyId, stringResource(id = R.string.key_shop))
+            selected = selectedPoi.contains(stringResource(id = R.string.key_shop))
         )
 
         DetailScreenIcon(
             imageVector = Icons.Default.Train,
             contentDesc = stringResource(id = R.string.cd_railway_station),
-            selected = poiSelected(propertyId, stringResource(id = R.string.key_railway_station))
+            selected = selectedPoi.contains(stringResource(id = R.string.key_railway_station))
         )
 
         DetailScreenIcon(
             imageVector = Icons.Default.LocalParking,
             contentDesc = stringResource(id = R.string.cd_car_park),
-            selected = poiSelected(propertyId, stringResource(id = R.string.key_car_park))
+            selected = selectedPoi.contains(stringResource(id = R.string.key_car_park))
         )
     }
 }
@@ -99,7 +98,4 @@ fun DetailScreenIcon(
             ),
     )
 }
-
-
-private val ICONS_SPACING = 8.dp
 

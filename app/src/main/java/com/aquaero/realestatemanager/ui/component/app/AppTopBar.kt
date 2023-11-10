@@ -1,15 +1,10 @@
-package com.aquaero.realestatemanager.ui.components.app
+package com.aquaero.realestatemanager.ui.component.app
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,14 +27,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aquaero.realestatemanager.Detail
-import com.aquaero.realestatemanager.EditDetail
-import com.aquaero.realestatemanager.GeolocMap
-import com.aquaero.realestatemanager.ListAndDetail
-import com.aquaero.realestatemanager.Loan
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.SearchCriteria
-import com.aquaero.realestatemanager.utils.AppContentType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

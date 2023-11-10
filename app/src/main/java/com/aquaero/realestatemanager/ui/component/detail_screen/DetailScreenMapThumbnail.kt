@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.ui.components.detail_screen
+package com.aquaero.realestatemanager.ui.component.detail_screen
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -7,9 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.model.Property
 
 @Composable
-fun DetailScreenMapThumbnail(propertyId: String) {
+fun DetailScreenMapThumbnail(property: Property) {
     Text(
         text = stringResource(R.string.map_thumbnail),
         modifier = Modifier

@@ -95,7 +95,7 @@ fun RealEstateManagerApp(
         val navController = rememberNavController()
         // Fetch current destination
         val currentBackStack by navController.currentBackStackEntryAsState()
-        val propertyId = currentBackStack?.arguments?.getString(propertyKey) ?: 0
+        val propertyId = currentBackStack?.arguments?.getString(propertyKey) ?: -1
         val currentDestination = currentBackStack?.destination
         val currentScreen = currentDestination?.route
         // Use 'ListAndDetail' as a backup screen if the returned value is null
@@ -103,14 +103,22 @@ fun RealEstateManagerApp(
 
         val onClickMenu = { when(currentScreen) {
                 ListAndDetail.routeWithArgs, Detail.routeWithArgs -> {
-                    Log.w("Click on edit property", "Property $propertyId")
+                    Log.w("Click on menu edit", "Property $propertyId")
                     navController.navigateToDetailEdit(propertyId.toString())
                 }
-                // TODO: Replace toast with specific action
-                else -> Toast
-                    .makeText(context, "Click on ${context.getString(R.string.valid)}",
-                        Toast.LENGTH_SHORT)
-                    .show()
+                EditDetail.routeWithArgs, SearchCriteria.route, Loan.route -> {
+                    Log.w("Click on menu valid", "Property $propertyId")
+                    // TODO: Replace toast with specific action
+                    Toast
+                        .makeText(context, "Click on ${context.getString(R.string.valid)}",
+                            Toast.LENGTH_SHORT)
+                        .show()
+                }
+            // TODO: To be deleted
+                else -> {
+                    Log.w("Not implemented", "Property $propertyId")
+                    Toast.makeText(context, "Not implemented", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 

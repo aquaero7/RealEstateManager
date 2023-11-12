@@ -43,13 +43,13 @@ import com.aquaero.realestatemanager.viewmodel.EditViewModel
 @Composable
 fun EditScreen(
     editViewModel: EditViewModel,
-    property: Property,
-    onBackPressed: () -> Unit = {},
+    property: Property?,
+    onBackPressed: () -> Unit,
 ) {
     // TODO: To be deleted after screen implementation
     Column {
         Row {
-            Text(text = "EditScreen for ${property.pId}")
+            Text(text = "EditScreen for ${property?.pId}")
             Spacer(modifier = Modifier.width(200.dp))
             Text(text = Locale.current.language)
         }

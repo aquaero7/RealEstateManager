@@ -29,9 +29,16 @@ import com.aquaero.realestatemanager.utils.AppContentType
 
 @Composable
 fun PropertyCard(
-    pId: Long, pType: String, pCity: String, pPrice: Int, phId: Long?, contentType: AppContentType,
-    selected: Boolean = false, unselectedByDefaultDisplay: Boolean = false,
-    onSelection: () -> Unit, onPropertyClick: (Long) -> Unit
+    pId: Long,
+    pType: String,
+    pCity: String,
+    pPrice: Int,
+    phId: Long?,
+    contentType: AppContentType,
+    selected: Boolean = false,
+    unselectedByDefaultDisplay: Boolean = false,
+    onSelection: () -> Unit,
+    onPropertyClick: (Long) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -58,8 +65,10 @@ fun PropertyCard(
                     contentScale = ContentScale.Fit
                 )
                 Surface(
-                    color = if (selected && contentType == AppContentType.SCREEN_WITH_DETAIL && !unselectedByDefaultDisplay)
-                        SelectedItemBackground else ListItemBackground,
+                    color = if (
+                        selected && contentType == AppContentType.SCREEN_WITH_DETAIL &&
+                        !unselectedByDefaultDisplay
+                        ) SelectedItemBackground else ListItemBackground,
                     modifier = Modifier.fillMaxSize()
                     ) {
                     Column(

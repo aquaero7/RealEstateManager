@@ -22,10 +22,11 @@ fun ListAndDetailScreen(
     listViewModel:ListViewModel,
     detailViewModel: DetailViewModel,
     contentType: AppContentType,
-    onPropertyClick: (Long) -> Unit = {},
+    onPropertyClick: (Long) -> Unit,
     property: Property,
-    onEditButtonClick: () -> Unit = {},
-    onBackPressed: () -> Unit = {}
+    // onEditButtonClick: () -> Unit,  // TODO : To be deleted after TopBar menu action implementation
+    onFabClick: () -> Unit,
+    onBackPressed: () -> Unit,
 ) {
     Row {
         Column(
@@ -35,7 +36,8 @@ fun ListAndDetailScreen(
                 listViewModel = listViewModel,
                 contentType = contentType,
                 property = property,
-                onPropertyClick = onPropertyClick
+                onPropertyClick = onPropertyClick,
+                onFabClick = onFabClick,
             )
         }
         if (contentType == AppContentType.SCREEN_WITH_DETAIL) {
@@ -53,7 +55,7 @@ fun ListAndDetailScreen(
                 DetailScreen(
                     detailViewModel = detailViewModel,
                     property = property,
-                    onEditButtonClick = onEditButtonClick,
+                    // onEditButtonClick = onEditButtonClick,  // TODO : To be deleted after TopBar menu action implementation
                     onBackPressed = onBackPressed
                 )
             }

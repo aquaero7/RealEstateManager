@@ -8,6 +8,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.screen.DetailScreen
 import com.aquaero.realestatemanager.ui.screen.EditScreen
 import com.aquaero.realestatemanager.ui.screen.ListAndDetailScreen
@@ -23,7 +24,7 @@ import com.aquaero.realestatemanager.viewmodel.ListViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavHost(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     contentType: AppContentType,
     navController: NavHostController,
     appViewModel: AppViewModel,
@@ -41,7 +42,7 @@ fun AppNavHost(
             route = ListAndDetail.routeWithArgs,
             arguments = ListAndDetail.arguments
         ) { navBackStackEntry ->
-            (navBackStackEntry.arguments!!.getString(Detail.propertyKey)
+            (navBackStackEntry.arguments!!.getString(propertyKey)
                 ?: appViewModel.fakeProperties[0].pId.toString()).also {
 
                 ListAndDetailScreen(
@@ -55,10 +56,10 @@ fun AppNavHost(
                             navController.navigateSingleTopTo(ListAndDetail, propertyId.toString())
                         }
                     },
-                    // propertyId = it,
                     property = appViewModel.propertyFromId(it.toLong()),
-                    onEditButtonClick = { navController.navigateToDetailEdit(it) },
-                    onBackPressed = { navController.popBackStack() }
+                    // onEditButtonClick = { navController.navigateToDetailEdit(it) }, // TODO : To be deleted after TopBar menu action implementation
+                    onFabClick = { navController.navigateToDetailEdit("-1") },
+                    onBackPressed = { navController.popBackStack() },
                 )
             }
         }
@@ -82,12 +83,12 @@ fun AppNavHost(
             route = Detail.routeWithArgs,
             arguments = Detail.arguments
         ) { navBackStackEntry ->
-            val propertyId = navBackStackEntry.arguments!!.getString(Detail.propertyKey)!!
+            val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)!!
 
             DetailScreen(
                 detailViewModel = detailViewModel,
                 property = appViewModel.propertyFromId(propertyId.toLong()),
-                onEditButtonClick = { navController.navigateToDetailEdit(propertyId) },
+                // onEditButtonClick = { navController.navigateToDetailEdit(propertyId) }, // TODO : To be deleted after TopBar menu action implementation
                 onBackPressed = { navController.popBackStack() }
             )
         }
@@ -96,11 +97,18 @@ fun AppNavHost(
             route = EditDetail.routeWithArgs,
             arguments = EditDetail.arguments
         ) { navBackStackEntry ->
-            val propertyId = navBackStackEntry.arguments!!.getString(EditDetail.propertyEditKey)!!
+            val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)
+            val property: Property? = if (propertyId != "-1") {
+                // Edition mode
+                appViewModel.propertyFromId(propertyId!!.toLong())
+            } else {
+                // Creation mode
+                null
+            }
 
             EditScreen(
                 editViewModel = editViewModel,
-                property = appViewModel.propertyFromId(propertyId.toLong()),
+                property = property,
                 onBackPressed = { navController.popBackStack() }
             )
         }
@@ -108,7 +116,7 @@ fun AppNavHost(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String/* = fakeProperties[0].pId.toString()*/) {
+fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String) {
     val route = if (destination == ListAndDetail) "${destination.route}/${propertyId}" else destination.route
     this.navigate(route) {
         popUpTo(this@navigateSingleTopTo.graph.findStartDestination().id) { saveState = false }

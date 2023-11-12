@@ -30,8 +30,8 @@ import com.aquaero.realestatemanager.viewmodel.DetailViewModel
 fun DetailScreen(
     detailViewModel: DetailViewModel,
     property: Property,
-    onEditButtonClick: () -> Unit = {},
-    onBackPressed: () -> Unit = {}
+    // onEditButtonClick: () -> Unit,  //TODO : To be deleted after TopBar menu action implementation
+    onBackPressed: () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -86,7 +86,7 @@ fun DetailScreen(
 
 
 
-        // TODO : To be deleted after TopBar menu action implementation
+        /* TODO : To be deleted after TopBar menu action implementation
         Spacer(modifier = Modifier.height(80.dp))
         // Text(text = "DetailScreen  for $propertyId")
         Button(
@@ -94,7 +94,7 @@ fun DetailScreen(
         ) {
             Text(text = "EditScreen")
         }
-        //
+        */
     }
 
 }

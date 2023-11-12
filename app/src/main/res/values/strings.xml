@@ -70,6 +70,7 @@
     <string name="cd_railway_station" translatable="false">railway_station</string>
     <string name="cd_car_park" translatable="false">car_park</string>
     <string name="cd_check" translatable="false">check</string>
+    <string name="cd_fab" translatable="false">FAB</string>
     <string name="lb_tab_color_anim" translatable="false">tab_color_anim</string>
 
     <!-- CURRENCY -->

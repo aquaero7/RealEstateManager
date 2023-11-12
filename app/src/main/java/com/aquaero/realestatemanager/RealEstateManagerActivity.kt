@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,9 +10,13 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -90,10 +95,25 @@ fun RealEstateManagerApp(
         val navController = rememberNavController()
         // Fetch current destination
         val currentBackStack by navController.currentBackStackEntryAsState()
+        val propertyId = currentBackStack?.arguments?.getString(propertyKey) ?: 0
         val currentDestination = currentBackStack?.destination
         val currentScreen = currentDestination?.route
         // Use 'ListAndDetail' as a backup screen if the returned value is null
         val currentTabScreen = tabRowScreens.find { it.route == currentScreen } ?: ListAndDetail
+
+        val onClickMenu = { when(currentScreen) {
+                ListAndDetail.routeWithArgs, Detail.routeWithArgs -> {
+                    Log.w("Click on edit property", "Property $propertyId")
+                    navController.navigateToDetailEdit(propertyId.toString())
+                }
+                // TODO: Replace toast with specific action
+                else -> Toast
+                    .makeText(context, "Click on ${context.getString(R.string.valid)}",
+                        Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+
 
         /**
          * Composable
@@ -104,7 +124,8 @@ fun RealEstateManagerApp(
                     menuIcon = appViewModel.menuIcon(currentScreen),
                     menuIconContentDesc = stringResource(appViewModel.menuIconContentDesc(currentScreen)),
                     menuEnabled = appViewModel.menuEnabled(currentScreen, windowSize),
-                    onClickMenu = { appViewModel.onClickMenu(currentScreen) },
+                    // onClickMenu = { appViewModel.onClickMenu(currentBackStack, navController) },
+                    onClickMenu = onClickMenu,
                     onClickRadioButton = appViewModel.onClickRadioButton,
                 )
             },
@@ -115,7 +136,7 @@ fun RealEstateManagerApp(
                     currentScreen = currentTabScreen,
                     colorAnimLabel = stringResource(id = R.string.lb_tab_color_anim)
                 )
-            }
+            },
         ) { innerPadding ->
             AppNavHost(
                 modifier = Modifier.padding(innerPadding),

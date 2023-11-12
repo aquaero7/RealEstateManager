@@ -24,10 +24,11 @@ interface AppDestination {
 * App navigation destinations
 */
 
+const val propertyKey = "single_property"
+
 object ListAndDetail: AppDestination {
     override val icon = Icons.Filled.ViewList
     override val route = "list"
-    const val propertyKey = "single_property"
     val routeWithArgs = "$route/{$propertyKey}"
     val arguments = listOf(navArgument(propertyKey) { type = NavType.StringType })
 }
@@ -51,7 +52,6 @@ object Loan: AppDestination {
 object Detail: AppDestination {
     override val icon = Icons.Filled.Details
     override val route = "detail"
-    const val propertyKey = "single_property"
     val routeWithArgs = "$route/{$propertyKey}"
     val arguments = listOf(navArgument(propertyKey) { type = NavType.StringType })
 }
@@ -60,9 +60,8 @@ object Detail: AppDestination {
 object EditDetail: AppDestination {
     override val icon = Icons.Filled.EditNote
     override val route ="edit_detail"
-    const val propertyEditKey = "property_edit"
-    val routeWithArgs = "${route}/{$propertyEditKey}"
-    val arguments = listOf(navArgument(propertyEditKey) { type = NavType.StringType })
+    val routeWithArgs = "${route}/{$propertyKey}"
+    val arguments = listOf(navArgument(propertyKey) { type = NavType.StringType })
 }
 
 /**

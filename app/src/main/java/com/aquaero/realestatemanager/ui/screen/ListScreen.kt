@@ -55,7 +55,7 @@ fun ListScreen(
             SmallFloatingActionButton(
                 onClick = onFabClick,
                 shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.secondary,
                 contentColor = Color.White,
                 elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp),
             ) {

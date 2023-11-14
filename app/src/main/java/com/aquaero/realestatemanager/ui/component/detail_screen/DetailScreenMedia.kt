@@ -26,6 +26,7 @@ import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.theme.Gray66Trans66
+import com.aquaero.realestatemanager.ui.theme.White
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -72,7 +73,7 @@ fun DetailScreenMedia(
                     Text(
                         text = photo.phLabel,
                         textAlign = TextAlign.Center,
-                        color = Color.White,
+                        color = White,
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }

@@ -77,7 +77,7 @@ fun RealEstateManagerApp(
     detailViewModel: DetailViewModel,
     editViewModel: EditViewModel,
 ) {
-    RealEstateManagerTheme {
+    RealEstateManagerTheme(dynamicColor = false) {
 
         val context = LocalContext.current
 

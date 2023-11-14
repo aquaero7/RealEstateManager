@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Bed
 import androidx.compose.material.icons.filled.House
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.OtherHouses
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,6 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.ui.theme.Magenta
+import com.aquaero.realestatemanager.ui.theme.White
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -37,9 +40,8 @@ fun DetailScreenColumn1(
             contentDesc = stringResource(id = R.string.cd_status),
             label = stringResource(id = R.string.status),
             value = if (property.saleDate != null) stringResource(id = R.string.sold) else stringResource(id = R.string.for_sale),
-            // iconColor = if (property.saleDate != null) GrayDisabled else Pink40,
-            valueColor = if (property.saleDate != null) Color.White else Color.Black,
-            valueBackgroundColor = if (property.saleDate != null) Color.Magenta else DefaultTintColor
+            valueColor = if (property.saleDate != null) White else MaterialTheme.colorScheme.onSurface,
+            valueBackgroundColor = if (property.saleDate != null) Magenta else MaterialTheme.colorScheme.surface
         )
 
         Spacer(modifier = Modifier.height(16.dp))

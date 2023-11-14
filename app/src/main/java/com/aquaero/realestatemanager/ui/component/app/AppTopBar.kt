@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.ui.component.app
 
+import android.content.res.Resources.Theme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,6 +31,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.ui.theme.DarkGray
+import com.aquaero.realestatemanager.ui.theme.LightGray
+import com.aquaero.realestatemanager.ui.theme.White
+import com.aquaero.realestatemanager.ui.theme.Yellow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +47,7 @@ fun AppTopBar(
     onClickRadioButton: (String) -> Unit,
     titleText: String = stringResource(id = R.string.app_name),
     colors: TopAppBarColors = TopAppBarDefaults
-        .topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
+        .topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary),
     dollar: String = stringResource(id = R.string.dollar),
     euro: String = stringResource(id = R.string.euro),
 ) {
@@ -52,7 +57,7 @@ fun AppTopBar(
         modifier = modifier.height(48.dp),
         title = { Text(
             text = titleText,
-            color = Color.White,
+            color = White,
             fontSize = 24.sp,
             modifier = Modifier.padding(top = 4.dp)
         ) },
@@ -83,7 +88,7 @@ fun AppTopBar(
                     Icon(
                         imageVector = menuIcon,
                         contentDescription = menuIconContentDesc,
-                        tint = Color.White.copy(alpha = LocalContentColor.current.alpha),
+                        tint = White.copy(alpha = LocalContentColor.current.alpha),
                         // The alpha parameter makes the icon fade to gray when disabled
                     )
                 }
@@ -107,15 +112,15 @@ fun TopBarRadioButton(
             selected = selected,
             onClick = onClick,
             colors = RadioButtonDefaults.colors(
-                selectedColor = Color.Yellow,
-                unselectedColor = Color.Gray,
-                disabledSelectedColor = Color.Gray,
-                disabledUnselectedColor = Color.Gray
+                selectedColor = White,
+                unselectedColor = White,
+                disabledSelectedColor = White.copy(alpha = LocalContentColor.current.alpha),
+                disabledUnselectedColor = White.copy(alpha = LocalContentColor.current.alpha),
             ),
         )
         Text(
             text = text,
-            color = Color.Yellow,
+            color = White,
             fontSize = 24.sp,
             modifier = Modifier.padding(start = 36.dp)
         )

@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -26,15 +27,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.AppDestination
-import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.ui.theme.SelectedTabColor
+import com.aquaero.realestatemanager.ui.theme.White
 import java.util.Locale
 
 @Composable
@@ -51,7 +50,7 @@ fun AppTabRow(
             .fillMaxWidth()
     ) {
         Row(
-            modifier = Modifier.selectableGroup(),
+            modifier = Modifier.selectableGroup().background(MaterialTheme.colorScheme.secondary),
             //horizontalArrangement = Arrangement.Center,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
@@ -77,7 +76,7 @@ private fun AppTab(
     selected: Boolean,
     colorAnimLabel: String,
 ) {
-    val color = if (selected) SelectedTabColor else MaterialTheme.colorScheme.onSurface
+    val color = White   // if (selected) Yellow else White
     val durationMillis = if (selected) TAB_FADE_IN_ANIMATION_DURATION else TAB_FADE_OUT_ANIMATION_DURATION
     val animSpec = remember {
         tween<Color>(

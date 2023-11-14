@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,9 +24,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.DefaultTintColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.ui.theme.Black
 import com.aquaero.realestatemanager.ui.theme.Pink40
+import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
+import com.aquaero.realestatemanager.ui.theme.White
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -33,9 +41,9 @@ fun DetailScreenInformationItem(
     label: String,
     value: String,
     suffix: String? = null,
-    iconColor: Color = Pink40,
-    valueColor: Color = Color.Black,
-    valueBackgroundColor: Color = DefaultTintColor
+    iconColor: Color = MaterialTheme.colorScheme.tertiary, // Pink40,
+    valueColor: Color = MaterialTheme.colorScheme.onSurface,
+    valueBackgroundColor: Color = MaterialTheme.colorScheme.surface
 ) {
     Row(
         modifier = Modifier.wrapContentSize()
@@ -64,7 +72,7 @@ fun DetailScreenInformationItem(
                 Text(
                     text = label,
                     fontSize = 12.sp,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(horizontal = 2.dp)
                 )
             }
@@ -85,11 +93,24 @@ fun DetailScreenInformationItem(
                     Text(
                         text = suffix,
                         fontSize = 12.sp,
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(horizontal = 2.dp)
                     )
                 }
             }
         }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+@Composable
+fun MyPreview() {
+    RealEstateManagerTheme {
+        DetailScreenInformationItem(
+            image = Icons.Default.Person,
+            contentDesc = "contentDescription",
+            label = "label",
+            value = "value")
     }
 }

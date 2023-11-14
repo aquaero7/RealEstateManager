@@ -1,6 +1,8 @@
 package com.aquaero.realestatemanager.ui.component.list_screen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,12 +21,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.aquaero.realestatemanager.ui.theme.ListItemBackground
-import com.aquaero.realestatemanager.ui.theme.SelectedItemBackground
+import com.aquaero.realestatemanager.ui.theme.Red
+import com.aquaero.realestatemanager.ui.theme.Yellow
 import com.aquaero.realestatemanager.utils.AppContentType
 
 @Composable
@@ -45,6 +46,10 @@ fun PropertyCard(
             .padding(horizontal = 10.dp, vertical = 4.dp)
             .fillMaxWidth()
             .wrapContentHeight()
+            .border(
+                if (selected) BorderStroke(width = 2.dp, color = Yellow)
+                else BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSurface)
+            )
             .clickable {
                 onSelection()
                 onPropertyClick(pId) },
@@ -68,8 +73,8 @@ fun PropertyCard(
                     color = if (
                         selected && contentType == AppContentType.SCREEN_WITH_DETAIL &&
                         !unselectedByDefaultDisplay
-                        ) SelectedItemBackground else ListItemBackground,
-                    modifier = Modifier.fillMaxSize()
+                        ) MaterialTheme.colorScheme.outlineVariant else MaterialTheme.colorScheme.surface,
+                    modifier = Modifier.fillMaxSize(),
                     ) {
                     Column(
                         modifier = Modifier
@@ -95,9 +100,13 @@ fun PropertyCard(
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
                                 text = pPrice.toString(),
                                 style = MaterialTheme.typography.titleLarge,
-                                // color = MaterialTheme.colorScheme.error
-                                color = if (selected && contentType == AppContentType.SCREEN_WITH_DETAIL && !unselectedByDefaultDisplay)
-                                    Color.White else Color.Red,
+                                color = Red,
+                                /*
+                                color = if (
+                                    selected && contentType == AppContentType.SCREEN_WITH_DETAIL &&
+                                    !unselectedByDefaultDisplay
+                                    ) White else Red,
+                                */
                             )
                         }
                     }

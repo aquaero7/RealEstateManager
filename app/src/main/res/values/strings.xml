@@ -85,4 +85,7 @@
     <string name="key_railway_station" translatable="false">railway_station</string>
     <string name="key_car_park" translatable="false">car_park</string>
 
+    <!-- GOOGLE MAPS -->
+    <string name="MAPS_API_KEY" translatable="false">@string/maps_api_key</string>
+
 </resources>

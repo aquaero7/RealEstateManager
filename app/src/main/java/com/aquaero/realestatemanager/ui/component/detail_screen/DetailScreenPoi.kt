@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.Train
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.GrayDisabled
-import com.aquaero.realestatemanager.ui.theme.Pink40
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -83,17 +83,20 @@ fun DetailScreenIcon(
     contentDesc: String,
     selected: Boolean,
 ) {
+    val iconColor = MaterialTheme.colorScheme.tertiary
+    val borderColor = MaterialTheme.colorScheme.secondary
+
     Icon(
         imageVector = imageVector,
         contentDescription = contentDesc,
-        tint = if (selected) Pink40 else GrayDisabled,
+        tint = if (selected) iconColor else iconColor.copy(alpha = 0.3F),
         modifier = Modifier
             .size(40.dp)
             .padding(4.dp)
             .border(
                 BorderStroke(
                     width = 1.dp,
-                    color = if (selected) Pink40 else GrayDisabled
+                    color = if (selected) borderColor else borderColor.copy(alpha = 0.3F)
                 )
             ),
     )

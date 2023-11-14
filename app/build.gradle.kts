@@ -1,3 +1,5 @@
+import java.util.logging.Logger.global
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -27,6 +29,25 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            // To keep keys and secrets hidden, using resValue
+            resValue("string", "maps_api_key",
+                "\"${project.findProperty("maps_api_key")}\""
+            )
+            // To keep keys and secrets hidden, using buildConfig
+            buildConfigField("String", "MAPS_API_KEY",
+                "\"${project.findProperty("maps_api_key")}\""
+            )
+        }
+        debug {
+            // To keep keys and secrets hidden, using resValue
+            resValue("string", "maps_api_key",
+                "\"${project.findProperty("maps_api_key")}\""
+            )
+            // To keep keys and secrets hidden, using buildConfig
+            buildConfigField("String", "MAPS_API_KEY",
+                "\"${project.findProperty("maps_api_key")}\""
+            )
         }
     }
     compileOptions {
@@ -39,6 +60,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        buildConfig = true  // Added to allow BuildConfig import in Compose
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -64,7 +86,11 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
-    implementation ("androidx.navigation:navigation-compose:2.7.4")
+    implementation ("androidx.navigation:navigation-compose:2.7.5")
+
+    // GLIDE
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

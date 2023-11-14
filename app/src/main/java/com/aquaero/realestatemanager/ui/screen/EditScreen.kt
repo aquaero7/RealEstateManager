@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
@@ -37,7 +38,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
-import com.aquaero.realestatemanager.ui.theme.BoxBackground
+import com.aquaero.realestatemanager.ui.theme.Black
+import com.aquaero.realestatemanager.ui.theme.BoxBackgroundColor
+import com.aquaero.realestatemanager.ui.theme.BoxTextColor
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
 
 @Composable
@@ -81,66 +84,73 @@ fun AppDropdownMenu(label: String, itemsSet: () -> MutableSet<*>) {
 
     var expanded by remember { mutableStateOf(false)}
     var selectedIndex by remember { mutableIntStateOf(0) }
-
-    Row {
-        Spacer(modifier = Modifier.width(40.dp))
-        Text(
-            text = "$label :",
-            modifier = Modifier
-                .wrapContentWidth()
-                .background(Color.White)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Surface(
-            modifier = Modifier
-                .width(200.dp)
-                .wrapContentHeight(),
-            color = BoxBackground,
-            border = BorderStroke(1.dp, Color.Black)
+    Column(
+        modifier = Modifier.width(240.dp),
+        horizontalAlignment = Alignment.End,
+    ) {
+        Row(
+            modifier = Modifier.wrapContentWidth(),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "$label :",
+                modifier = Modifier.wrapContentWidth(),
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Surface(
                 modifier = Modifier
-                    // .fillMaxSize()
                     .width(200.dp)
-                    .wrapContentHeight()
-                    .padding(0.dp)
-                    .wrapContentSize(Alignment.Center)
+                    .wrapContentHeight(),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
             ) {
-                // itemsList()[selectedIndex]?.let {           // In case of a list instead of a set
-                itemsSet().elementAt(selectedIndex)?.let {
-                    Text(
-                        text = if (it is String) it else stringResource(id = it as Int),
-                        textAlign = TextAlign.Center,
-                        fontSize = 14.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable(onClick = { expanded = true })
-                            .background(Color.White)
-                    )
-                }
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
+                Box(
                     modifier = Modifier
+                        // .fillMaxSize()
                         .width(200.dp)
-                        .background(BoxBackground)
-                        .wrapContentSize()
+                        .wrapContentHeight()
+                        .padding(vertical = 4.dp, horizontal = 2.dp)
+                        .wrapContentSize(Alignment.Center)
                 ) {
-                    itemsSet().forEachIndexed { index, s ->
-                        DropdownMenuItem(
-                            text = {
-                                if (s != null) {
-                                    Text(text = if (s is String) s else stringResource(id = s as Int))
-                                }
-                            },
-                            onClick = {
-                                selectedIndex = index
-                                expanded = false
-                            },
+                    // itemsList()[selectedIndex]?.let {           // In case of a list instead of a set
+                    itemsSet().elementAt(selectedIndex)?.let {
+                        Text(
+                            text = if (it is String) it else stringResource(id = it as Int),
+                            textAlign = TextAlign.Center,
+                            fontSize = 14.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(onClick = { expanded = true })
+                            // .background(Color.White)
                         )
-                        Divider(
-                            thickness = 1.dp
-                        )
+                    }
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier
+                            .width(200.dp)
+                            .background(BoxBackgroundColor)
+                            .wrapContentSize()
+                    ) {
+                        itemsSet().forEachIndexed { index, s ->
+                            DropdownMenuItem(
+                                text = {
+                                    if (s != null) {
+                                        Text(
+                                            text = if (s is String) s else stringResource(id = s as Int),
+                                            color = BoxTextColor,
+                                        )
+                                    }
+                                },
+                                onClick = {
+                                    selectedIndex = index
+                                    expanded = false
+                                },
+                            )
+                            Divider(
+                                thickness = 1.dp
+                            )
+                        }
                     }
                 }
             }

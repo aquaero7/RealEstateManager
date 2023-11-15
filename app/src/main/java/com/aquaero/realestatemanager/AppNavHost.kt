@@ -126,7 +126,7 @@ fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyI
 }
 
 fun NavHostController.navigateToDetail(propertyId: String) {
-    this.navigate("${Detail.route}/$propertyId")
+    this.navigate("${ListAndDetail.route}/$propertyId")
 }
 
 fun NavHostController.navigateToDetailEdit(propertyId: String) {

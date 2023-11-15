@@ -3,6 +3,8 @@ import java.util.logging.Logger.global
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    // secrets-gradle-plugin
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -30,24 +32,28 @@ android {
                 "proguard-rules.pro"
             )
 
-            // To keep keys and secrets hidden, using resValue
-            resValue("string", "maps_api_key",
-                "\"${project.findProperty("maps_api_key")}\""
+            /* To keep keys and secrets hidden, using resValue (without secrets-gradle-plugin)
+            resValue("string", "MAPS_API_KEY",
+                "\"${project.findProperty("MAPS_API_KEY")}\""
             )
-            // To keep keys and secrets hidden, using buildConfig
+            */
+            /* To keep keys and secrets hidden, using buildConfig (without secrets-gradle-plugin)
             buildConfigField("String", "MAPS_API_KEY",
-                "\"${project.findProperty("maps_api_key")}\""
+                "\"${project.findProperty("MAPS_API_KEY")}\""
             )
+            */
         }
         debug {
-            // To keep keys and secrets hidden, using resValue
-            resValue("string", "maps_api_key",
-                "\"${project.findProperty("maps_api_key")}\""
+            /* To keep keys and secrets hidden, using resValue (without secrets-gradle-plugin)
+            resValue("string", "MAPS_API_KEY",
+                "\"${project.findProperty("MAPS_API_KEY")}\""
             )
-            // To keep keys and secrets hidden, using buildConfig
+            */
+            /* To keep keys and secrets hidden, using buildConfig (without secrets-gradle-plugin)
             buildConfigField("String", "MAPS_API_KEY",
-                "\"${project.findProperty("maps_api_key")}\""
+                "\"${project.findProperty("MAPS_API_KEY")}\""
             )
+            */
         }
     }
     compileOptions {

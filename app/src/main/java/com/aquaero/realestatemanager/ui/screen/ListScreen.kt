@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -71,14 +72,16 @@ fun ListScreen(
             modifier = Modifier.padding(innerPadding),
         ) {
             var selectedId by remember { mutableLongStateOf(-1L) }  // For compatibility with ListAndDetailScreen
+            val items = listViewModel.fakeProperties
 
             Spacer(modifier = Modifier.height(4.dp))
             LazyColumn(
                 modifier = Modifier
                     // .padding(vertical = 20.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                state = LazyListState(firstVisibleItemIndex = items.indexOf(property)),
             ) {
-                items(items = listViewModel.fakeProperties) { propertyItem ->
+                items(items = items) { propertyItem ->
                     PropertyCard(
                         pId = propertyItem.pId,
                         pType = propertyItem.pType,

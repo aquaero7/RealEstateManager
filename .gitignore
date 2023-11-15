@@ -12,7 +12,6 @@
 /captures
 .externalNativeBuild
 .cxx
-
 local.properties
-/gradle.properties
+
 /app/google-services.json

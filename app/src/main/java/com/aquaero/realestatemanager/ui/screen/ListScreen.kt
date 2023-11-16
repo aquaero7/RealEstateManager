@@ -44,7 +44,7 @@ import com.aquaero.realestatemanager.viewmodel.ListViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ListScreen(
-    listViewModel: ListViewModel,
+    items: List<Property>,
     contentType: AppContentType,
     property: Property,
     onPropertyClick: (Long) -> Unit,
@@ -72,7 +72,6 @@ fun ListScreen(
             modifier = Modifier.padding(innerPadding),
         ) {
             var selectedId by remember { mutableLongStateOf(-1L) }  // For compatibility with ListAndDetailScreen
-            val items = listViewModel.fakeProperties
 
             Spacer(modifier = Modifier.height(4.dp))
             LazyColumn(

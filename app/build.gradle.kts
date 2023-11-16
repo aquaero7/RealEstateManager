@@ -96,6 +96,8 @@ dependencies {
 
     // GLIDE
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+    // COIL
+    implementation("io.coil-kt:coil-compose:2.5.0")
 
 
     testImplementation("junit:junit:4.13.2")

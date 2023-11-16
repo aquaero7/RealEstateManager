@@ -45,7 +45,8 @@ import com.aquaero.realestatemanager.viewmodel.EditViewModel
 
 @Composable
 fun EditScreen(
-    editViewModel: EditViewModel,
+    pTypeSet: () -> MutableSet<Int?>,
+    agentSet: () -> MutableSet<String?>,
     property: Property?,
     onBackPressed: () -> Unit,
 ) {
@@ -58,9 +59,9 @@ fun EditScreen(
         }
 
         Spacer(modifier = Modifier.height(40.dp))
-        AppDropdownMenu(stringResource(id = R.string.type)) { editViewModel.pTypeSet }
+        AppDropdownMenu(stringResource(id = R.string.type), pTypeSet)
         Spacer(modifier = Modifier.height(40.dp))
-        AppDropdownMenu(stringResource(id = R.string.agent), editViewModel.agentSet)
+        AppDropdownMenu(stringResource(id = R.string.agent), agentSet)
 
         Spacer(modifier = Modifier.height(40.dp))
 
@@ -112,7 +113,7 @@ fun AppDropdownMenu(label: String, itemsSet: () -> MutableSet<*>) {
                         .padding(vertical = 4.dp, horizontal = 2.dp)
                         .wrapContentSize(Alignment.Center)
                 ) {
-                    // itemsList()[selectedIndex]?.let {           // In case of a list instead of a set
+                    // itemsList()[selectedIndex]?.let {    // In case of a list instead of a set
                     itemsSet().elementAt(selectedIndex)?.let {
                         Text(
                             text = if (it is String) it else stringResource(id = it as Int),

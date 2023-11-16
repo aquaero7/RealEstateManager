@@ -1,5 +1,7 @@
 package com.aquaero.realestatemanager.model
 
+import java.text.Normalizer
+
 data class Address(
     val addressId: Long,
     val streetNumber: String,
@@ -13,7 +15,8 @@ data class Address(
     val lng: Double
 ) {
     override fun toString(): String {
-        val line1: String = if (streetNumber.isNotEmpty()) "$streetNumber $streetName" else streetName
+        val line1: String =
+            if (streetNumber.isNotEmpty()) "$streetNumber $streetName" else streetName
         val line2: String = addInfo
         val line3: String = city
         val line4 = if (state.isNotEmpty()) "$state $zipCode" else zipCode
@@ -29,8 +32,18 @@ data class Address(
         val part3: String = city.toU()
         val part4 = if (state.isNotEmpty()) "${state.toU()}+${zipCode.toU()}" else zipCode.toU()
         val part5: String = country.toU()
-        return "$part1,$part2,$part3,$part4,$part5"
+        val staticUrl = "$part1,$part2,$part3,$part4,$part5"
+        // String normalized
+        val normalizedUrl = Normalizer.normalize(staticUrl, Normalizer.Form.NFD)
+        // Returns string without accent (diacriticals marks)
+        return Regex("\\p{InCombiningDiacriticalMarks}+").replace(normalizedUrl, "")
     }
 
+    // Replaces spaces with '+'
     private fun String.toU(): String = replace("\\s".toRegex(), "+")
+
 }
+
+
+
+

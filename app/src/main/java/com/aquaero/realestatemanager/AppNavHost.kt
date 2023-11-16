@@ -45,19 +45,16 @@ fun AppNavHost(
             (navBackStackEntry.arguments!!.getString(propertyKey)
                 ?: appViewModel.fakeProperties[0].pId.toString()).also {
 
+                val property = appViewModel.propertyFromId(it.toLong())
+
                 ListAndDetailScreen(
-                    listViewModel = listViewModel,
-                    detailViewModel = detailViewModel,
+                    items = listViewModel.fakeProperties,
+                    thumbnailUrl = detailViewModel.thumbnailUrl(property),
                     contentType = contentType,
                     onPropertyClick =  { propertyId ->
-                        if (contentType == AppContentType.SCREEN_ONLY) {
-                            navController.navigateToDetail(propertyId.toString())
-                        } else {
-                            navController.navigateSingleTopTo(ListAndDetail, propertyId.toString())
-                        }
+                        navController.navigateToDetail(propertyId.toString(), contentType)
                     },
-                    property = appViewModel.propertyFromId(it.toLong()),
-                    // onEditButtonClick = { navController.navigateToDetailEdit(it) }, // TODO : To be deleted after TopBar menu action implementation
+                    property = property,
                     onFabClick = { navController.navigateToDetailEdit("-1") },
                     onBackPressed = { navController.popBackStack() },
                 )
@@ -70,8 +67,8 @@ fun AppNavHost(
 
         composable(route = SearchCriteria.route) {
             SearchScreen(
-                onButton1Click = { navController.navigateToDetail("1") },
-                onButton2Click = { navController.navigateToDetail("2") }
+                onButton1Click = { navController.navigateToDetail("1", contentType) },
+                onButton2Click = { navController.navigateToDetail("2", contentType) },
             )
         }
 
@@ -84,11 +81,12 @@ fun AppNavHost(
             arguments = Detail.arguments
         ) { navBackStackEntry ->
             val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)!!
+            val property = appViewModel.propertyFromId(propertyId.toLong())
 
             DetailScreen(
-                detailViewModel = detailViewModel,
-                property = appViewModel.propertyFromId(propertyId.toLong()),
-                // onEditButtonClick = { navController.navigateToDetailEdit(propertyId) }, // TODO : To be deleted after TopBar menu action implementation
+                // detailViewModel = detailViewModel,
+                property = property,
+                thumbnailUrl = detailViewModel.thumbnailUrl(property),
                 onBackPressed = { navController.popBackStack() }
             )
         }
@@ -107,7 +105,8 @@ fun AppNavHost(
             }
 
             EditScreen(
-                editViewModel = editViewModel,
+                pTypeSet = { editViewModel.pTypeSet },
+                agentSet = editViewModel.agentSet,
                 property = property,
                 onBackPressed = { navController.popBackStack() }
             )
@@ -125,8 +124,13 @@ fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyI
     }
 }
 
-fun NavHostController.navigateToDetail(propertyId: String) {
-    this.navigate("${ListAndDetail.route}/$propertyId")
+@RequiresApi(Build.VERSION_CODES.O)
+fun NavHostController.navigateToDetail(propertyId: String, contentType: AppContentType) {
+    if (contentType == AppContentType.SCREEN_ONLY) {
+        this.navigate("${Detail.route}/$propertyId")
+    } else {
+        this.navigateSingleTopTo(ListAndDetail, propertyId)
+    }
 }
 
 fun NavHostController.navigateToDetailEdit(propertyId: String) {

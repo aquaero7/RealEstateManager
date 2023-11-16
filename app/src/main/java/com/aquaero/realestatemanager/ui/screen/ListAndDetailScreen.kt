@@ -19,12 +19,11 @@ import com.aquaero.realestatemanager.viewmodel.ListViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ListAndDetailScreen(
-    listViewModel:ListViewModel,
-    detailViewModel: DetailViewModel,
+    items: List<Property>,
+    thumbnailUrl: String,
     contentType: AppContentType,
     onPropertyClick: (Long) -> Unit,
     property: Property,
-    // onEditButtonClick: () -> Unit,  // TODO : To be deleted after TopBar menu action implementation
     onFabClick: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -33,7 +32,7 @@ fun ListAndDetailScreen(
             modifier = Modifier.weight(1F)
         ) {
             ListScreen(
-                listViewModel = listViewModel,
+                items = items,
                 contentType = contentType,
                 property = property,
                 onPropertyClick = onPropertyClick,
@@ -53,9 +52,8 @@ fun ListAndDetailScreen(
                 modifier = Modifier.weight(2F)
             ) {
                 DetailScreen(
-                    detailViewModel = detailViewModel,
                     property = property,
-                    // onEditButtonClick = onEditButtonClick,  // TODO : To be deleted after TopBar menu action implementation
+                    thumbnailUrl = thumbnailUrl,
                     onBackPressed = onBackPressed
                 )
             }

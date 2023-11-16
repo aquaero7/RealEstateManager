@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,14 +21,12 @@ import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenDesc
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenMapThumbnail
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenMedia
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenPoi
-import com.aquaero.realestatemanager.viewmodel.DetailViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreen(
-    detailViewModel: DetailViewModel,
     property: Property,
-    // onEditButtonClick: () -> Unit,  //TODO : To be deleted after TopBar menu action implementation
+    thumbnailUrl: String,
     onBackPressed: () -> Unit,
 ) {
     Column(
@@ -76,25 +72,12 @@ fun DetailScreen(
         DetailScreenPoi(selectedPoi = property.pPoi)
 
         // Map thumbnail
-        DetailScreenMapThumbnail(property)
+        DetailScreenMapThumbnail(thumbnailUrl)
 
         // To manage back nav
         BackHandler(true) {
             Log.w("TAG", "OnBackPressed")
             run(onBackPressed)
         }
-
-
-
-        /* TODO : To be deleted after TopBar menu action implementation
-        Spacer(modifier = Modifier.height(80.dp))
-        // Text(text = "DetailScreen  for $propertyId")
-        Button(
-            onClick = onEditButtonClick
-        ) {
-            Text(text = "EditScreen")
-        }
-        */
     }
-
 }

@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -22,7 +23,10 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -31,6 +35,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.app.AppTabRow
 import com.aquaero.realestatemanager.ui.component.app.AppTopBar
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
@@ -50,18 +55,18 @@ class RealEstateManagerActivity: ComponentActivity() {
 
         // Init ViewModels
         val appViewModel by viewModels<AppViewModel> { ViewModelFactory() }
-        val listViewModel by viewModels<ListViewModel> { ViewModelFactory() }
-        val detailViewModel by viewModels<DetailViewModel> { ViewModelFactory() }
-        val editViewModel by viewModels<EditViewModel> { ViewModelFactory() }
+        // val listViewModel by viewModels<ListViewModel> { ViewModelFactory() }
+        // val detailViewModel by viewModels<DetailViewModel> { ViewModelFactory() }
+        // val editViewModel by viewModels<EditViewModel> { ViewModelFactory() }
 
         setContent {
             val windowSize = calculateWindowSizeClass(activity = this)
             RealEstateManagerApp(
                 windowSize = windowSize.widthSizeClass,
                 appViewModel = appViewModel,
-                listViewModel = listViewModel,
-                detailViewModel = detailViewModel,
-                editViewModel = editViewModel,
+                // listViewModel = listViewModel,
+                // detailViewModel = detailViewModel,
+                // editViewModel = editViewModel,
             )
         }
     }
@@ -73,13 +78,16 @@ class RealEstateManagerActivity: ComponentActivity() {
 fun RealEstateManagerApp(
     windowSize: WindowWidthSizeClass,
     appViewModel: AppViewModel,
-    listViewModel: ListViewModel,
-    detailViewModel: DetailViewModel,
-    editViewModel: EditViewModel,
+    // listViewModel: ListViewModel,
+    // detailViewModel: DetailViewModel,
+    // editViewModel: EditViewModel,
 ) {
     RealEstateManagerTheme(dynamicColor = false) {
 
-        val context = LocalContext.current
+        val context: Context = LocalContext.current
+
+        val properties: List<Property> = appViewModel.fakeProperties
+
 
         /**
          * Init content type, according to window's width,
@@ -151,9 +159,7 @@ fun RealEstateManagerApp(
                 contentType = contentType,
                 navController = navController,
                 appViewModel = appViewModel,
-                listViewModel = listViewModel,
-                detailViewModel = detailViewModel,
-                editViewModel = editViewModel,
+                properties = properties,
             )
         }
     }

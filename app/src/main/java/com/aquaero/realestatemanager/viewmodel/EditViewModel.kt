@@ -13,7 +13,9 @@ class EditViewModel(
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
+    /* TODO: To be deleted
     val agentSet = agentRepository.agentsSet
     val pTypeSet = propertyRepository.pTypesSet
+    */
 
 }

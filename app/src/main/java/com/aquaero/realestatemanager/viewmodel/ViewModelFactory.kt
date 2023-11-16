@@ -9,7 +9,7 @@ import com.aquaero.realestatemanager.repository.PropertyRepository
 class ViewModelFactory:  ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
-            AppViewModel(PropertyRepository()) as T
+            AppViewModel(PropertyRepository(), AgentRepository()) as T
         } else if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
             ListViewModel(PropertyRepository()) as T
         } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {

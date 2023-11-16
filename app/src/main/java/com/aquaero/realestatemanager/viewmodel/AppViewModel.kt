@@ -21,15 +21,23 @@ import com.aquaero.realestatemanager.GeolocMap
 import com.aquaero.realestatemanager.ListAndDetail
 import com.aquaero.realestatemanager.Loan
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.SM_KEY
+import com.aquaero.realestatemanager.SM_MK_COLOR1
+import com.aquaero.realestatemanager.SM_SCALE
+import com.aquaero.realestatemanager.SM_SIZE
+import com.aquaero.realestatemanager.SM_TYPE
+import com.aquaero.realestatemanager.SM_URL
 import com.aquaero.realestatemanager.SearchCriteria
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.navigateToDetailEdit
 import com.aquaero.realestatemanager.propertyKey
+import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.utils.AppContentType
 
 class AppViewModel(
-    private val propertyRepository: PropertyRepository
+    private val propertyRepository: PropertyRepository,
+    private val agentRepository: AgentRepository,
 ): ViewModel() {
     /*
     private val context: Context
@@ -90,15 +98,20 @@ class AppViewModel(
         .makeText(context, "Click on $currency", Toast.LENGTH_SHORT)
         .show()
     }
-    //
-
+    // End TopBar
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun propertyFromId(propertyId: Long): Property {
         return propertyRepository.propertyFromId(propertyId)
     }
 
+    fun thumbnailUrl(property: Property): String {
+        val smMkAddress1 = property.pAddress.toUrl()
+        return SM_URL + SM_SIZE + SM_SCALE + SM_TYPE + SM_MK_COLOR1 + smMkAddress1 + SM_KEY
+    }
 
+    val agentSet = agentRepository.agentsSet
+    val pTypeSet = propertyRepository.pTypesSet
 
 }
 

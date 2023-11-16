@@ -28,9 +28,7 @@ fun AppNavHost(
     contentType: AppContentType,
     navController: NavHostController,
     appViewModel: AppViewModel,
-    listViewModel: ListViewModel,
-    detailViewModel: DetailViewModel,
-    editViewModel: EditViewModel,
+    properties: List<Property>,
 ) {
     NavHost(
         modifier = modifier,
@@ -43,13 +41,13 @@ fun AppNavHost(
             arguments = ListAndDetail.arguments
         ) { navBackStackEntry ->
             (navBackStackEntry.arguments!!.getString(propertyKey)
-                ?: appViewModel.fakeProperties[0].pId.toString()).also {
+                ?: properties[0].pId.toString()).also {
 
                 val property = appViewModel.propertyFromId(it.toLong())
 
                 ListAndDetailScreen(
-                    items = listViewModel.fakeProperties,
-                    thumbnailUrl = detailViewModel.thumbnailUrl(property),
+                    items = properties,
+                    thumbnailUrl = appViewModel.thumbnailUrl(property),
                     contentType = contentType,
                     onPropertyClick =  { propertyId ->
                         navController.navigateToDetail(propertyId.toString(), contentType)
@@ -84,9 +82,8 @@ fun AppNavHost(
             val property = appViewModel.propertyFromId(propertyId.toLong())
 
             DetailScreen(
-                // detailViewModel = detailViewModel,
                 property = property,
-                thumbnailUrl = detailViewModel.thumbnailUrl(property),
+                thumbnailUrl = appViewModel.thumbnailUrl(property),
                 onBackPressed = { navController.popBackStack() }
             )
         }
@@ -105,8 +102,8 @@ fun AppNavHost(
             }
 
             EditScreen(
-                pTypeSet = { editViewModel.pTypeSet },
-                agentSet = editViewModel.agentSet,
+                pTypeSet = { appViewModel.pTypeSet },
+                agentSet = appViewModel.agentSet,
                 property = property,
                 onBackPressed = { navController.popBackStack() }
             )

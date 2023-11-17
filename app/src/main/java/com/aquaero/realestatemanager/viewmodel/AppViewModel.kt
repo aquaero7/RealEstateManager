@@ -1,6 +1,12 @@
 package com.aquaero.realestatemanager.viewmodel
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
@@ -9,13 +15,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.aquaero.realestatemanager.ApplicationRoot
-import com.aquaero.realestatemanager.Detail
 import com.aquaero.realestatemanager.EditDetail
 import com.aquaero.realestatemanager.GeolocMap
 import com.aquaero.realestatemanager.ListAndDetail
@@ -29,11 +31,13 @@ import com.aquaero.realestatemanager.SM_TYPE
 import com.aquaero.realestatemanager.SM_URL
 import com.aquaero.realestatemanager.SearchCriteria
 import com.aquaero.realestatemanager.model.Property
-import com.aquaero.realestatemanager.navigateToDetailEdit
-import com.aquaero.realestatemanager.propertyKey
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.utils.AppContentType
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
+import java.io.IOException
+
 
 class AppViewModel(
     private val propertyRepository: PropertyRepository,
@@ -113,5 +117,73 @@ class AppViewModel(
     val agentSet = agentRepository.agentsSet
     val pTypeSet = propertyRepository.pTypesSet
 
+    /**
+     * Google Maps  TODO: Move to Utils ?
+     */
+    fun checkForPermissions(context: Context): Boolean {
+        return !(ActivityCompat.checkSelfPermission(context,
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context,
+                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+    }
+    //
+
+
+
+
 }
 
+/**
+ * Google Maps  TODO: Move to Utils ?
+ */
+@SuppressLint("MissingPermission")
+fun getCurrentLocation(context: Context, onLocationFetched: (location: LatLng) -> Unit) {
+    var latLng: LatLng
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+    fusedLocationClient.lastLocation
+        .addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                val latitude = location.latitude
+                val longitude = location.longitude
+                latLng = LatLng(latitude, longitude)
+                onLocationFetched(latLng)
+            }
+        }
+        .addOnFailureListener { exception: Exception ->
+            Log.w("Location exception", exception.message.toString())
+        }
+}
+//
+//
+@SuppressLint("NewApi")
+fun getLocationFromAddress(context: Context?, strAddress: String?): LatLng? {
+    val coder = Geocoder(context!!)
+    val address: List<Address>?
+    var p1: LatLng? = null
+    try {
+        // May throw an IOException
+        address = coder.getFromLocationName(strAddress!!, 5, Geocoder.GeocodeListener {
+            override fun onGeocode(address: MutableList<Address>) {
+                val location: Address = it[0]
+                onAddressResult(location, null)
+            }
+            override fun onError(errorMessage: String?) {
+                super.onError(errorMessage)
+                onAddressResult(null, errorMessage)
+            }
+        })
+
+
+
+        if (address == null) {
+            return null
+        }
+        val location: Address = address[0]
+        p1 = LatLng(location.latitude, location.longitude)
+    } catch (ex: IOException) {
+        ex.printStackTrace()
+    }
+    return p1
+}
+//

@@ -83,7 +83,7 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.activity:activity-compose:1.8.1")
     implementation(platform("androidx.compose:compose-bom:2023.10.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -93,6 +93,14 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
     implementation ("androidx.navigation:navigation-compose:2.7.5")
+
+    // Google Maps Compose
+    implementation("com.google.maps.android:maps-compose:2.11.5")
+    // Google Maps Service
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    // Google Maps Utils
+    implementation("com.google.maps.android:android-maps-utils:3.8.0")
 
     // GLIDE
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")

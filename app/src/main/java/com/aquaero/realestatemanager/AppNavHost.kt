@@ -1,8 +1,13 @@
 package com.aquaero.realestatemanager
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -13,13 +18,11 @@ import com.aquaero.realestatemanager.ui.screen.DetailScreen
 import com.aquaero.realestatemanager.ui.screen.EditScreen
 import com.aquaero.realestatemanager.ui.screen.ListAndDetailScreen
 import com.aquaero.realestatemanager.ui.screen.LoanScreen
+import com.aquaero.realestatemanager.ui.screen.LocationPermissionsScreen
 import com.aquaero.realestatemanager.ui.screen.MapScreen
 import com.aquaero.realestatemanager.ui.screen.SearchScreen
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
-import com.aquaero.realestatemanager.viewmodel.DetailViewModel
-import com.aquaero.realestatemanager.viewmodel.EditViewModel
-import com.aquaero.realestatemanager.viewmodel.ListViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -29,6 +32,7 @@ fun AppNavHost(
     navController: NavHostController,
     appViewModel: AppViewModel,
     properties: List<Property>,
+    context: Context,
 ) {
     NavHost(
         modifier = modifier,
@@ -60,7 +64,22 @@ fun AppNavHost(
         }
 
         composable(route = GeolocMap.route) {
-            MapScreen()
+            var locationPermissionsGranted by remember { mutableStateOf(appViewModel.checkForPermissions(context = context)) }
+            if (locationPermissionsGranted) {
+                MapScreen(context, properties)
+            } else {
+                /*
+                LocationPermissionsScreen {
+                    locationPermissionsGranted = true
+                }
+                */
+                // //TODO: onPermissionDenied added for test
+                LocationPermissionsScreen(
+                    { locationPermissionsGranted = true },
+                    { locationPermissionsGranted = false }
+                )
+                //
+            }
         }
 
         composable(route = SearchCriteria.route) {

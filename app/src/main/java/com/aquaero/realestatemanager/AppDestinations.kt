@@ -64,15 +64,6 @@ object EditDetail: AppDestination {
     val arguments = listOf(navArgument(propertyKey) { type = NavType.StringType })
 }
 
-/**
- * Destination not displayed in the bottom TabRow.
- * Created to be used as the default one in BottomTabRow
- * when screens Detail or Edit are selected
- */
-object Other: AppDestination {
-    override val icon = Icons.Filled.Info
-    override val route = "other"
-}
 
 // Screens displayed in the bottom TabRow
 val tabRowScreens = listOf(ListAndDetail, GeolocMap, SearchCriteria, Loan)

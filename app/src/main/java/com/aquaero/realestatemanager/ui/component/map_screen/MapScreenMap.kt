@@ -3,8 +3,6 @@ package com.aquaero.realestatemanager.ui.component.map_screen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.aquaero.realestatemanager.R
@@ -33,13 +31,14 @@ fun MapScreenMap(
             modifier = Modifier.matchParentSize(),
             cameraPositionState = cameraPositionState,
             properties = mapProperties,
-
         ) {
+            /* // TODO : Marker for current location to remove because not updated without navigation
             Marker(
                 state = MarkerState(position = currentLocation),
                 title = stringResource(id = R.string.location),
                 snippet = stringResource(id = R.string.current_location),
             )
+            */
 
             properties.forEach { it ->
                 Marker(

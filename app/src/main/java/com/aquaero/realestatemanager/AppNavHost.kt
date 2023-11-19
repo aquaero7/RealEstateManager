@@ -23,6 +23,7 @@ import com.aquaero.realestatemanager.ui.screen.MapScreen
 import com.aquaero.realestatemanager.ui.screen.SearchScreen
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
+import com.google.android.gms.maps.model.LatLng
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -67,7 +68,18 @@ fun AppNavHost(
                 mutableStateOf(appViewModel.checkForPermissions(context = context))
             }
             if (locationPermissionsGranted) {
-                MapScreen(context, properties)
+
+                // MapScreen(appViewModel, context, properties)
+                //
+                var showMap by remember { mutableStateOf(false) }
+                var currentLocation by remember { mutableStateOf(LatLng(0.0, 0.0)) }
+                appViewModel.getCurrentLocation(context) {
+                    currentLocation = it
+                    showMap = true
+                }
+                MapScreen(currentLocation, showMap, properties)
+                //
+
             } else {
                 /* //TODO: remove comment if not using onPermissionDenied added for test
                 LocationPermissionsScreen {

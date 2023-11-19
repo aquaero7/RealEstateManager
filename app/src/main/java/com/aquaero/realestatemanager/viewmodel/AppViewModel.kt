@@ -124,6 +124,25 @@ class AppViewModel(
                 ActivityCompat.checkSelfPermission(context,
                     Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
     }
+
+    @SuppressLint("MissingPermission")
+    fun getCurrentLocation(context: Context, onLocationFetched: (location: LatLng) -> Unit) {
+        var latLng: LatLng
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+                    latLng = LatLng(latitude, longitude)
+                    onLocationFetched(latLng)
+                }
+            }
+            .addOnFailureListener { exception: Exception ->
+                Log.w("Location exception", exception.message.toString())
+            }
+    }
     /** End Google Maps */
 
 
@@ -134,6 +153,7 @@ class AppViewModel(
 /**
  * Google Maps  TODO: Move to Utils ?
  */
+/*
 @SuppressLint("MissingPermission")
 fun getCurrentLocation(context: Context, onLocationFetched: (location: LatLng) -> Unit) {
     var latLng: LatLng
@@ -152,7 +172,7 @@ fun getCurrentLocation(context: Context, onLocationFetched: (location: LatLng) -
             Log.w("Location exception", exception.message.toString())
         }
 }
-
+*/
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 fun getLocationFromAddress(context: Context?, strAddress: String?): LatLng? {
     val coder = Geocoder(context!!)

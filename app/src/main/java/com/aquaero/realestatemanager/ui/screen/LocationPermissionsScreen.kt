@@ -14,14 +14,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aquaero.realestatemanager.R
 
 @Composable
-fun LocationPermissionsScreen(onPermissionsGranted: () -> Unit, onPermissionsDenied: () -> Unit) {  //TODO: onPermissionDenied added for test
-
-    Text(text = "LocationPermissionsScreen")    // TODO: To be deleted after screen implementation
+fun LocationPermissionsScreen(onPermissionsGranted: () -> Unit, onPermissionsDenied: () -> Unit) {  // TODO: onPermissionDenied added for test
 
     val locationPermissionsLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
@@ -37,7 +37,7 @@ fun LocationPermissionsScreen(onPermissionsGranted: () -> Unit, onPermissionsDen
         if (areGranted) {
             onPermissionsGranted()
         }
-        else { onPermissionsDenied() }  //TODO: onPermissionDenied added for test
+        else { onPermissionsDenied() }  // TODO: onPermissionDenied added for test
     }
 
     Column(
@@ -48,7 +48,7 @@ fun LocationPermissionsScreen(onPermissionsGranted: () -> Unit, onPermissionsDen
         verticalArrangement = Arrangement.Center,
     ) {
         Text(
-            text = "Location permissions required",
+            text = stringResource(id = R.string.rq_loc_perms),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
         )
@@ -63,9 +63,8 @@ fun LocationPermissionsScreen(onPermissionsGranted: () -> Unit, onPermissionsDen
                 )
             }
         ) {
-            Text(text = "Grant locations permissions")
+            Text(text = stringResource(id = R.string.grant_loc_perms))
         }
-
     }
 
 }

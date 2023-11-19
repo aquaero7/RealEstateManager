@@ -20,6 +20,11 @@
     <string name="status">Statut</string>
     <string name="sold">Vendu</string>
     <string name="for_sale">En vente</string>
+    <string name="grant_loc_perms">Accorder les permissions de localisation</string>
+    <string name="rq_loc_perms">Permissions de localisation nécessaires</string>
+    <string name="loading_map">Carte en cours de chargement…</string>
+    <string name="location">Position</string>
+    <string name="current_location">Position actuelle</string>
 
     <!-- TYPES OF PROPERTIES -->
     <string name="flat">Appartement</string>

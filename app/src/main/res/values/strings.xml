@@ -20,6 +20,11 @@
     <string name="status">Status</string>
     <string name="sold">Sold</string>
     <string name="for_sale">For sale</string>
+    <string name="grant_loc_perms">Grant location permissions</string>
+    <string name="rq_loc_perms">Location permissions required</string>
+    <string name="loading_map">Loading map…</string>
+    <string name="location">Location</string>
+    <string name="current_location">Current location</string>
 
     <!-- TYPE OF PROPERTIES -->
     <string name="flat">Flat</string>

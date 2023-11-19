@@ -48,11 +48,13 @@ import com.aquaero.realestatemanager.viewmodel.DetailViewModel
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
 import com.aquaero.realestatemanager.viewmodel.ListViewModel
 import com.aquaero.realestatemanager.viewmodel.ViewModelFactory
+import com.aquaero.realestatemanager.viewmodel.getLocationFromAddress
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 
-class RealEstateManagerActivity: ComponentActivity() {
+class RealEstateManagerActivity : ComponentActivity() {
 
+    @SuppressLint("NewApi")
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -114,20 +116,24 @@ fun RealEstateManagerApp(
         // Use 'ListAndDetail' as a backup screen if the returned value is null
         val currentTabScreen = tabRowScreens.find { it.route == currentScreen } ?: ListAndDetail
 
-        val onClickMenu = { when(currentScreen) {
+        val onClickMenu = {
+            when (currentScreen) {
                 ListAndDetail.routeWithArgs, Detail.routeWithArgs -> {
                     Log.w("Click on menu edit", "Property $propertyId")
                     navController.navigateToDetailEdit(propertyId.toString())
                 }
+
                 EditDetail.routeWithArgs, SearchCriteria.route, Loan.route -> {
                     Log.w("Click on menu valid", "Property $propertyId")
                     // TODO: Replace toast with specific action
                     Toast
-                        .makeText(context, "Click on ${context.getString(R.string.valid)}",
-                            Toast.LENGTH_SHORT)
+                        .makeText(
+                            context, "Click on ${context.getString(R.string.valid)}",
+                            Toast.LENGTH_SHORT
+                        )
                         .show()
                 }
-            // TODO: To be deleted
+                // TODO: To be deleted
                 else -> {
                     Log.w("Not implemented", "Property $propertyId")
                     Toast.makeText(context, "Not implemented", Toast.LENGTH_SHORT).show()
@@ -139,11 +145,15 @@ fun RealEstateManagerApp(
         /**
          * Composable
          */
-        Scaffold (
+        Scaffold(
             topBar = {
                 AppTopBar(
                     menuIcon = appViewModel.menuIcon(currentScreen),
-                    menuIconContentDesc = stringResource(appViewModel.menuIconContentDesc(currentScreen)),
+                    menuIconContentDesc = stringResource(
+                        appViewModel.menuIconContentDesc(
+                            currentScreen
+                        )
+                    ),
                     menuEnabled = appViewModel.menuEnabled(currentScreen, windowSize),
                     // onClickMenu = { appViewModel.onClickMenu(currentBackStack, navController) },
                     onClickMenu = onClickMenu,
@@ -153,7 +163,12 @@ fun RealEstateManagerApp(
             bottomBar = {
                 AppTabRow(
                     allScreens = tabRowScreens,
-                    onTabSelected = { newScreen -> navController.navigateSingleTopTo(newScreen, appViewModel.fakeProperties[0].pId.toString()) },
+                    onTabSelected = { newScreen ->
+                        navController.navigateSingleTopTo(
+                            newScreen,
+                            appViewModel.fakeProperties[0].pId.toString()
+                        )
+                    },
                     currentScreen = currentTabScreen,
                     colorAnimLabel = stringResource(id = R.string.lb_tab_color_anim)
                 )

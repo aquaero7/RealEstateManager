@@ -8,6 +8,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
+import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.map_screen.MapScreenMap
 import com.aquaero.realestatemanager.viewmodel.getCurrentLocation
@@ -19,10 +21,8 @@ import com.google.maps.android.compose.MapType
 @Composable
 fun MapScreen(context: Context, properties: List<Property>) {
 
-    // Text(text = "MapScreen")    // TODO: To be deleted after screen implementation
-
     var showMap by remember { mutableStateOf(false) }
-    var location by remember { mutableStateOf(LatLng(0.0, 0.0)) }
+    var currentLocation by remember { mutableStateOf(LatLng(0.0, 0.0)) }
     val mapProperties by remember {
         mutableStateOf(
             MapProperties(
@@ -33,25 +33,18 @@ fun MapScreen(context: Context, properties: List<Property>) {
     }
 
         getCurrentLocation(context) {
-        location = it
+        currentLocation = it
         showMap = true
     }
 
     if (showMap) {
         MapScreenMap(
             properties = properties,
-            latLng = location,
+            currentLocation = currentLocation,
             mapProperties = mapProperties,
         )
     } else {
-        Text(text = "Loading map...")
+        Text(text = stringResource(R.string.loading_map))
     }
-
-
-
-
-
-
-
 
 }

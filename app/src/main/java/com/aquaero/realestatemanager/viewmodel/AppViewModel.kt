@@ -36,7 +36,6 @@ import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
-import java.io.IOException
 
 
 class AppViewModel(
@@ -65,7 +64,7 @@ class AppViewModel(
     /**
      * TopBar
      */
-    /*
+    /* // TODO : To be deleted if moved to activity
     fun onClickMenu(currentBackStack: NavBackStackEntry?, navController: NavController) = run {
         val currentScreen = currentBackStack?.destination?.route
         val propertyId = currentBackStack?.arguments?.getString(propertyKey) ?: 0
@@ -81,7 +80,6 @@ class AppViewModel(
         }
     }
     */
-
     fun menuIcon(currentScreen: String?) = if (
         currentScreen == EditDetail.routeWithArgs ||
         currentScreen == SearchCriteria.route ||
@@ -102,7 +100,7 @@ class AppViewModel(
         .makeText(context, "Click on $currency", Toast.LENGTH_SHORT)
         .show()
     }
-    // End TopBar
+    /** End TopBar */
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun propertyFromId(propertyId: Long): Property {
@@ -126,7 +124,7 @@ class AppViewModel(
                 ActivityCompat.checkSelfPermission(context,
                     Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
     }
-    //
+    /** End Google Maps */
 
 
 
@@ -154,36 +152,27 @@ fun getCurrentLocation(context: Context, onLocationFetched: (location: LatLng) -
             Log.w("Location exception", exception.message.toString())
         }
 }
-//
-//
-@SuppressLint("NewApi")
+
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 fun getLocationFromAddress(context: Context?, strAddress: String?): LatLng? {
     val coder = Geocoder(context!!)
-    val address: List<Address>?
-    var p1: LatLng? = null
-    try {
-        // May throw an IOException
-        address = coder.getFromLocationName(strAddress!!, 5, Geocoder.GeocodeListener {
-            override fun onGeocode(address: MutableList<Address>) {
-                val location: Address = it[0]
-                onAddressResult(location, null)
-            }
-            override fun onError(errorMessage: String?) {
-                super.onError(errorMessage)
-                onAddressResult(null, errorMessage)
-            }
-        })
-
-
-
-        if (address == null) {
-            return null
+    var latLng: LatLng? = null
+    coder.getFromLocationName(strAddress!!, 5, @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    object: Geocoder.GeocodeListener {
+        override fun onGeocode(address: MutableList<Address>) {
+            val location: Address = address[0]
+            latLng = LatLng(location.latitude, location.longitude)
+            Log.w("Geocoder.getFromLocName", latLng.toString())
+            Log.w("Geocoder.getFromLocName", location.locality)
+            Log.w("Geocoder.getFromLocName", location.latitude.toString())
+            Log.w("Geocoder.getFromLocName", location.longitude.toString())
         }
-        val location: Address = address[0]
-        p1 = LatLng(location.latitude, location.longitude)
-    } catch (ex: IOException) {
-        ex.printStackTrace()
-    }
-    return p1
+        override fun onError(errorMessage: String?) {
+            super.onError(errorMessage)
+            Log.w("Geocoder.getFromLocName", errorMessage.toString())
+        }
+    })
+    return latLng
 }
-//
+/** End Google Maps */
+

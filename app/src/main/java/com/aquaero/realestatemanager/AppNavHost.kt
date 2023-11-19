@@ -41,8 +41,7 @@ fun AppNavHost(
     ) {
 
         composable(
-            route = ListAndDetail.routeWithArgs,
-            arguments = ListAndDetail.arguments
+            route = ListAndDetail.routeWithArgs, arguments = ListAndDetail.arguments
         ) { navBackStackEntry ->
             (navBackStackEntry.arguments!!.getString(propertyKey)
                 ?: properties[0].pId.toString()).also {
@@ -53,7 +52,7 @@ fun AppNavHost(
                     items = properties,
                     thumbnailUrl = appViewModel.thumbnailUrl(property),
                     contentType = contentType,
-                    onPropertyClick =  { propertyId ->
+                    onPropertyClick = { propertyId ->
                         navController.navigateToDetail(propertyId.toString(), contentType)
                     },
                     property = property,
@@ -64,20 +63,20 @@ fun AppNavHost(
         }
 
         composable(route = GeolocMap.route) {
-            var locationPermissionsGranted by remember { mutableStateOf(appViewModel.checkForPermissions(context = context)) }
+            var locationPermissionsGranted by remember {
+                mutableStateOf(appViewModel.checkForPermissions(context = context))
+            }
             if (locationPermissionsGranted) {
                 MapScreen(context, properties)
             } else {
-                /*
+                /* //TODO: remove comment if not using onPermissionDenied added for test
                 LocationPermissionsScreen {
                     locationPermissionsGranted = true
                 }
                 */
                 // //TODO: onPermissionDenied added for test
-                LocationPermissionsScreen(
-                    { locationPermissionsGranted = true },
-                    { locationPermissionsGranted = false }
-                )
+                LocationPermissionsScreen({ locationPermissionsGranted = true },
+                    { locationPermissionsGranted = false })
                 //
             }
         }
@@ -94,22 +93,18 @@ fun AppNavHost(
         }
 
         composable(
-            route = Detail.routeWithArgs,
-            arguments = Detail.arguments
+            route = Detail.routeWithArgs, arguments = Detail.arguments
         ) { navBackStackEntry ->
             val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)!!
             val property = appViewModel.propertyFromId(propertyId.toLong())
 
-            DetailScreen(
-                property = property,
+            DetailScreen(property = property,
                 thumbnailUrl = appViewModel.thumbnailUrl(property),
-                onBackPressed = { navController.popBackStack() }
-            )
+                onBackPressed = { navController.popBackStack() })
         }
 
         composable(
-            route = EditDetail.routeWithArgs,
-            arguments = EditDetail.arguments
+            route = EditDetail.routeWithArgs, arguments = EditDetail.arguments
         ) { navBackStackEntry ->
             val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)
             val property: Property? = if (propertyId != "-1") {
@@ -120,19 +115,18 @@ fun AppNavHost(
                 null
             }
 
-            EditScreen(
-                pTypeSet = { appViewModel.pTypeSet },
+            EditScreen(pTypeSet = { appViewModel.pTypeSet },
                 agentSet = appViewModel.agentSet,
                 property = property,
-                onBackPressed = { navController.popBackStack() }
-            )
+                onBackPressed = { navController.popBackStack() })
         }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String) {
-    val route = if (destination == ListAndDetail) "${destination.route}/${propertyId}" else destination.route
+    val route =
+        if (destination == ListAndDetail) "${destination.route}/${propertyId}" else destination.route
     this.navigate(route) {
         popUpTo(this@navigateSingleTopTo.graph.findStartDestination().id) { saveState = false }
         launchSingleTop = true

@@ -1,5 +1,7 @@
 package com.aquaero.realestatemanager.model
 
+import android.location.Location
+import com.google.android.gms.maps.model.LatLng
 import java.text.Normalizer
 
 data class Address(
@@ -11,8 +13,7 @@ data class Address(
     val state: String,
     val zipCode: String,
     val country: String,
-    val lat: Double,
-    val lng: Double
+    val location: LatLng,
 ) {
     override fun toString(): String {
         val line1: String =

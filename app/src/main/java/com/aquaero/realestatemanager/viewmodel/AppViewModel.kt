@@ -115,9 +115,11 @@ class AppViewModel(
     val agentSet = agentRepository.agentsSet
     val pTypeSet = propertyRepository.pTypesSet
 
+
     /**
      * Google Maps  TODO: Move to Utils ?
      */
+
     fun checkForPermissions(context: Context): Boolean {
         return !(ActivityCompat.checkSelfPermission(context,
                     Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -143,17 +145,18 @@ class AppViewModel(
                 Log.w("Location exception", exception.message.toString())
             }
     }
+
     /** End Google Maps */
-
-
 
 
 }
 
 /**
- * Google Maps  TODO: Move to Utils ?
+ * Google Maps TOP LEVEL
  */
 /*
+
+// TODO : To be deleted cause moved inside VM
 @SuppressLint("MissingPermission")
 fun getCurrentLocation(context: Context, onLocationFetched: (location: LatLng) -> Unit) {
     var latLng: LatLng
@@ -173,6 +176,8 @@ fun getCurrentLocation(context: Context, onLocationFetched: (location: LatLng) -
         }
 }
 */
+
+// TODO: Move to Utils ?
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 fun getLocationFromAddress(context: Context?, strAddress: String?): LatLng? {
     val coder = Geocoder(context!!)
@@ -194,5 +199,6 @@ fun getLocationFromAddress(context: Context?, strAddress: String?): LatLng? {
     })
     return latLng
 }
+
 /** End Google Maps */
 

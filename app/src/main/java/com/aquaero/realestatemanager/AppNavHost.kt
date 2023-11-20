@@ -2,10 +2,11 @@ package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.location.Location
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,11 +26,13 @@ import com.aquaero.realestatemanager.ui.screen.MapScreen
 import com.aquaero.realestatemanager.ui.screen.SearchScreen
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
-import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.LocationSource
+import com.google.android.gms.maps.LocationSource.OnLocationChangedListener
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.callbackFlow
 
-@SuppressLint("NewApi")
+@SuppressLint("NewApi", "FlowOperatorInvokedInComposition")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavHost(
@@ -73,17 +76,22 @@ fun AppNavHost(
                 mutableStateOf(appViewModel.checkForPermissions(context = context))
             }
             if (locationPermissionsGranted) {
-
-                // MapScreen(appViewModel, properties)
-                //
                 var showMap by remember { mutableStateOf(false) }
                 var currentLocation by remember { mutableStateOf(LatLng(0.0, 0.0)) }
-                appViewModel.getCurrentLocation(context) {
-                    currentLocation = it
-                    showMap = true
+                val locationFlow = callbackFlow {
+                    while (true) {
+                        appViewModel.getCurrentLocation(context = context) {
+                            currentLocation = it
+                            showMap = true
+                            trySend(it)
+                        }
+                        delay(1)
+                    }
                 }
-                MapScreen(currentLocation, showMap, properties)
-                //
+                val locationState = locationFlow.collectAsState(initial = currentLocation)
+                val locationSource = MyLocationSource()
+
+                MapScreen(showMap, properties, locationState, locationSource)
 
             } else {
                 /* //TODO: remove comment if not using onPermissionDenied added for test
@@ -165,5 +173,21 @@ fun NavHostController.navigateToDetailEdit(propertyId: String) {
 }
 
 
+// TODO : To move to another place
+class MyLocationSource: LocationSource {
 
+    private var listener: OnLocationChangedListener? = null
+    override fun activate(p0: OnLocationChangedListener) {
+        this.listener = p0
+    }
+
+    override fun deactivate() {
+        listener = null
+    }
+
+    fun onLocationChanged(location: Location) {
+        listener?.onLocationChanged(location)
+    }
+
+}
 

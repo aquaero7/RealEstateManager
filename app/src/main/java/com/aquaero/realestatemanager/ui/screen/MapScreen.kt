@@ -2,6 +2,8 @@ package com.aquaero.realestatemanager.ui.screen
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
@@ -26,11 +29,20 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @SuppressLint("MissingPermission")
 @Composable
-// fun MapScreen(appViewModel: AppViewModel, context: Context, properties: List<Property>) {
-fun MapScreen(currentLocation: LatLng, showMap: Boolean, properties: List<Property>) {
-
+/*
+fun MapScreen(
+    appViewModel: AppViewModel,
+    properties: List<Property>
+) {
+*/
+fun MapScreen(
+    currentLocation: LatLng,
+    showMap: Boolean,
+    properties: List<Property>
+) {
     // var showMap by remember { mutableStateOf(false) }
     // var currentLocation by remember { mutableStateOf(LatLng(0.0, 0.0)) }
 
@@ -44,7 +56,7 @@ fun MapScreen(currentLocation: LatLng, showMap: Boolean, properties: List<Proper
     }
 
     /*
-    appViewModel.getCurrentLocation(context) {
+    appViewModel.getCurrentLocation(LocalContext.current) {
         currentLocation = it
         showMap = true
     }

@@ -1,9 +1,11 @@
 package com.aquaero.realestatemanager
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,8 +25,11 @@ import com.aquaero.realestatemanager.ui.screen.MapScreen
 import com.aquaero.realestatemanager.ui.screen.SearchScreen
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.rememberCameraPositionState
 
+@SuppressLint("NewApi")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavHost(
@@ -69,7 +74,7 @@ fun AppNavHost(
             }
             if (locationPermissionsGranted) {
 
-                // MapScreen(appViewModel, context, properties)
+                // MapScreen(appViewModel, properties)
                 //
                 var showMap by remember { mutableStateOf(false) }
                 var currentLocation by remember { mutableStateOf(LatLng(0.0, 0.0)) }

@@ -22,8 +22,10 @@ import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.R
 
 @Composable
-fun LocationPermissionsScreen(onPermissionsGranted: () -> Unit, onPermissionsDenied: () -> Unit) {  // TODO: onPermissionDenied added for test
-
+fun LocationPermissionsScreen(
+    onPermissionsGranted: () -> Unit,
+    onPermissionsDenied: () -> Unit     // TODO: onPermissionDenied added for test
+) {
     val locationPermissionsLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->

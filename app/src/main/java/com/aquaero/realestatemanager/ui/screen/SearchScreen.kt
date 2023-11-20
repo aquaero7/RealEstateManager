@@ -24,7 +24,7 @@ fun SearchScreen(
     onButton1Click: () -> Unit,    // TODO: To be deleted after screen implementation
     onButton2Click: () -> Unit,     // TODO: To be deleted after screen implementation
 ) {
-
+    // ...
 
 
 

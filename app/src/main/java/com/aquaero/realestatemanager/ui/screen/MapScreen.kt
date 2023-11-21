@@ -9,10 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.aquaero.realestatemanager.MyLocationSource
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.map_screen.MapScreenMap
+import com.aquaero.realestatemanager.utils.MyLocationSource
 import com.google.android.gms.maps.model.LatLng
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)

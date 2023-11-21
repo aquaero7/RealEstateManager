@@ -25,6 +25,7 @@ import com.aquaero.realestatemanager.ui.screen.LocationPermissionsScreen
 import com.aquaero.realestatemanager.ui.screen.MapScreen
 import com.aquaero.realestatemanager.ui.screen.SearchScreen
 import com.aquaero.realestatemanager.utils.AppContentType
+import com.aquaero.realestatemanager.utils.MyLocationSource
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
 import com.google.android.gms.maps.LocationSource
 import com.google.android.gms.maps.LocationSource.OnLocationChangedListener
@@ -90,7 +91,6 @@ fun AppNavHost(
                 }
                 val locationState = locationFlow.collectAsState(initial = currentLocation)
                 val locationSource = MyLocationSource()
-
                 MapScreen(showMap, properties, locationState, locationSource)
 
             } else {
@@ -172,22 +172,4 @@ fun NavHostController.navigateToDetailEdit(propertyId: String) {
     this.navigate("${EditDetail.route}/$propertyId")
 }
 
-
-// TODO : To move to another place
-class MyLocationSource: LocationSource {
-
-    private var listener: OnLocationChangedListener? = null
-    override fun activate(p0: OnLocationChangedListener) {
-        this.listener = p0
-    }
-
-    override fun deactivate() {
-        listener = null
-    }
-
-    fun onLocationChanged(location: Location) {
-        listener?.onLocationChanged(location)
-    }
-
-}
 

@@ -20,9 +20,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.aquaero.realestatemanager.DEFAULT_ZOOM
-import com.aquaero.realestatemanager.MyLocationSource
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.utils.MyLocationSource
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition

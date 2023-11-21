@@ -26,6 +26,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +42,7 @@ import androidx.navigation.compose.rememberNavController
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.app.AppTabRow
 import com.aquaero.realestatemanager.ui.component.app.AppTopBar
+import com.aquaero.realestatemanager.ui.screen.MapScreen
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
@@ -51,6 +53,8 @@ import com.aquaero.realestatemanager.viewmodel.ViewModelFactory
 import com.aquaero.realestatemanager.viewmodel.getLocationFromAddress
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.callbackFlow
 
 class RealEstateManagerActivity : ComponentActivity() {
 
@@ -92,9 +96,7 @@ fun RealEstateManagerApp(
     RealEstateManagerTheme(dynamicColor = false) {
 
         val context: Context = LocalContext.current
-
         val properties: List<Property> = appViewModel.fakeProperties
-
 
         /**
          * Init content type, according to window's width,
@@ -116,6 +118,9 @@ fun RealEstateManagerApp(
         // Use 'ListAndDetail' as a backup screen if the returned value is null
         val currentTabScreen = tabRowScreens.find { it.route == currentScreen } ?: ListAndDetail
 
+        /**
+         * TopBar menu
+         */
         val onClickMenu = {
             when (currentScreen) {
                 ListAndDetail.routeWithArgs, Detail.routeWithArgs -> {

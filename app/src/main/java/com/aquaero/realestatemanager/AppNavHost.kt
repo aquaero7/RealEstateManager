@@ -1,6 +1,8 @@
 package com.aquaero.realestatemanager
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.location.Location
 import android.os.Build
@@ -12,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -19,6 +22,7 @@ import androidx.navigation.compose.composable
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.screen.DetailScreen
 import com.aquaero.realestatemanager.ui.screen.EditScreen
+import com.aquaero.realestatemanager.ui.screen.EmptyMapScreen
 import com.aquaero.realestatemanager.ui.screen.ListAndDetailScreen
 import com.aquaero.realestatemanager.ui.screen.LoanScreen
 import com.aquaero.realestatemanager.ui.screen.LocationPermissionsScreen
@@ -27,8 +31,6 @@ import com.aquaero.realestatemanager.ui.screen.SearchScreen
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.utils.MyLocationSource
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
-import com.google.android.gms.maps.LocationSource
-import com.google.android.gms.maps.LocationSource.OnLocationChangedListener
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.callbackFlow
@@ -43,6 +45,9 @@ fun AppNavHost(
     appViewModel: AppViewModel,
     properties: List<Property>,
     context: Context,
+    activity: Activity,
+    locPermsGranted: Boolean,
+    onOpenAppSettings: () -> Unit,
 ) {
     NavHost(
         modifier = modifier,
@@ -74,11 +79,12 @@ fun AppNavHost(
 
         composable(route = GeolocMap.route) {
             var locationPermissionsGranted by remember {
-                mutableStateOf(appViewModel.checkForPermissions(context = context))
+                mutableStateOf(locPermsGranted)
             }
+
             if (locationPermissionsGranted) {
                 var showMap by remember { mutableStateOf(false) }
-                var currentLocation by remember { mutableStateOf(LatLng(0.0, 0.0)) }
+                var currentLocation by remember { mutableStateOf(DEFAULT_LOCATION) }
                 val locationFlow = callbackFlow {
                     while (true) {
                         appViewModel.getCurrentLocation(context = context) {
@@ -91,18 +97,18 @@ fun AppNavHost(
                 }
                 val locationState = locationFlow.collectAsState(initial = currentLocation)
                 val locationSource = MyLocationSource()
-                MapScreen(showMap, properties, locationState, locationSource)
+                MapScreen(
+                    showMap = showMap,
+                    properties = properties,
+                    locationState = locationState,
+                    locationSource = locationSource,
+                )
 
             } else {
-                /* //TODO: remove comment if not using onPermissionDenied added for test
-                LocationPermissionsScreen {
-                    locationPermissionsGranted = true
-                }
-                */
-                // //TODO: onPermissionDenied added for test
-                LocationPermissionsScreen({ locationPermissionsGranted = true },
-                    { locationPermissionsGranted = false })
-                //
+                LocationPermissionsScreen(
+                    onOpenAppSettings = onOpenAppSettings,
+                    onPermissionsGranted = { locationPermissionsGranted = true },
+                )
             }
         }
 

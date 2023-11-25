@@ -1,10 +1,13 @@
 package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
-import android.location.Location
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -12,21 +15,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,35 +28,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.app.AppTabRow
 import com.aquaero.realestatemanager.ui.component.app.AppTopBar
-import com.aquaero.realestatemanager.ui.screen.MapScreen
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
-import com.aquaero.realestatemanager.viewmodel.DetailViewModel
-import com.aquaero.realestatemanager.viewmodel.EditViewModel
-import com.aquaero.realestatemanager.viewmodel.ListViewModel
 import com.aquaero.realestatemanager.viewmodel.ViewModelFactory
-import com.aquaero.realestatemanager.viewmodel.getLocationFromAddress
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.callbackFlow
 
 class RealEstateManagerActivity : ComponentActivity() {
+
+    private var locPermsGranted: Boolean = false
 
     @SuppressLint("NewApi")
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val activity: Activity = this
 
         // Init ViewModels
         val appViewModel by viewModels<AppViewModel> { ViewModelFactory() }
@@ -71,16 +57,25 @@ class RealEstateManagerActivity : ComponentActivity() {
         // val editViewModel by viewModels<EditViewModel> { ViewModelFactory() }
 
         setContent {
-            val windowSize = calculateWindowSizeClass(activity = this)
+            val windowSize = calculateWindowSizeClass(activity = activity)
             RealEstateManagerApp(
                 windowSize = windowSize.widthSizeClass,
                 appViewModel = appViewModel,
+                activity = activity,
+                locPermsGranted = locPermsGranted
                 // listViewModel = listViewModel,
                 // detailViewModel = detailViewModel,
                 // editViewModel = editViewModel,
             )
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        val appViewModel by viewModels<AppViewModel> { ViewModelFactory() }
+        locPermsGranted = appViewModel.checkForPermissions(context = ApplicationRoot.getContext())
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,6 +84,8 @@ class RealEstateManagerActivity : ComponentActivity() {
 fun RealEstateManagerApp(
     windowSize: WindowWidthSizeClass,
     appViewModel: AppViewModel,
+    activity: Activity,
+    locPermsGranted: Boolean
     // listViewModel: ListViewModel,
     // detailViewModel: DetailViewModel,
     // editViewModel: EditViewModel,
@@ -186,9 +183,22 @@ fun RealEstateManagerApp(
                 appViewModel = appViewModel,
                 properties = properties,
                 context = context,
+                activity = activity,
+                locPermsGranted = locPermsGranted,
+                onOpenAppSettings = activity::openAppSettings,
             )
         }
     }
 }
+
+fun Activity.openAppSettings() {
+    Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Uri.fromParts("package", packageName, null)
+    ).also(::startActivity)
+
+}
+
+
 
 

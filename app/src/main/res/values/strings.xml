@@ -20,8 +20,13 @@
     <string name="status">Status</string>
     <string name="sold">Sold</string>
     <string name="for_sale">For sale</string>
-    <string name="grant_loc_perms">Grant location permissions</string>
-    <string name="rq_loc_perms">Location permissions required</string>
+    <string name="loc_perms_dialog_title">Location permissions required</string>
+    <string name="loc_perms_granted">Location permissions are granted!</string>
+    <string name="loc_perms_rq">This application requires location permissions.</string>
+    <string name="loc_perms_denied">This application requires location permissions!
+        \n\nPlease go to your device parameters to grant these permissions manually.</string>
+    <string name="loc_perm_fine_rq">For better experience, please allow this application
+        to access to your precise location!</string>
     <string name="loading_map">Loading map…</string>
     <string name="location">Location</string>
     <string name="current_location">Current location</string>
@@ -48,6 +53,13 @@
     <string name="create">Create property</string>
     <string name="edit">Edit property</string>
     <string name="valid">Valid input</string>
+    <string name="rq_loc_perms">Grant location permissions</string>
+    <string name="rq_fine_loc">Grant precise location</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="grant">Grant</string>
+    <string name="allow">Allow</string>
+    <string name="dismiss">Dismiss</string>
 
 
     <!-- *** NOT TRANSLATABLE *** -->

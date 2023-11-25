@@ -6,7 +6,9 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.DEFAULT_ZOOM
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
@@ -27,9 +30,11 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
+import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -37,15 +42,14 @@ import com.google.maps.android.compose.rememberCameraPositionState
 @Composable
 fun MapScreenMap(
     properties: List<Property>,
-    locationState: State<LatLng>,
+    locationState: State<Location>,
     locationSource: MyLocationSource,
 ) {
     var isMapLoaded by remember { mutableStateOf(false) }
-
+    val latLngState = LatLng(locationState.value.latitude, locationState.value.longitude)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(locationState.value, 15F)
+        position = CameraPosition.fromLatLngZoom(latLngState, DEFAULT_ZOOM)
     }
-
     val mapProperties by remember {
         mutableStateOf(
             MapProperties(
@@ -55,22 +59,17 @@ fun MapScreenMap(
         )
     }
 
-    LaunchedEffect(key1 = locationState.value) {
-        locationSource.onLocationChanged(Location("").apply {
-            latitude = locationState.value.latitude
-            longitude = locationState.value.longitude
-        })
-
-        val cameraPosition = CameraPosition.fromLatLngZoom(
-            LatLng(
-                locationState.value.latitude,
-                locationState.value.longitude,
-            ), DEFAULT_ZOOM
+    LaunchedEffect(key1 = latLngState) {
+        locationSource.onLocationChanged(location = locationState.value)
+        val cameraPosition = CameraPosition.fromLatLngZoom(latLngState, DEFAULT_ZOOM)
+        cameraPositionState.animate(
+            update = CameraUpdateFactory.newCameraPosition(cameraPosition),
+            durationMs = 1_000
         )
-        cameraPositionState.animate(CameraUpdateFactory.newCameraPosition(cameraPosition), 1_000)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
+
         if (!isMapLoaded) {
             AnimatedVisibility(
                 modifier = Modifier.matchParentSize(),
@@ -94,7 +93,7 @@ fun MapScreenMap(
         ) {
             // Marker for current location
             Marker(
-                state = MarkerState(position = locationState.value),
+                state = MarkerState(position = latLngState),
                 title = stringResource(id = R.string.location),
                 snippet = stringResource(id = R.string.current_location),
             )
@@ -114,5 +113,4 @@ fun MapScreenMap(
             }
         }
     }
-
 }

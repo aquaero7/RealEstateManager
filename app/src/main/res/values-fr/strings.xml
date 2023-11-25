@@ -20,8 +20,13 @@
     <string name="status">Statut</string>
     <string name="sold">Vendu</string>
     <string name="for_sale">En vente</string>
-    <string name="grant_loc_perms">Accorder les permissions de localisation</string>
-    <string name="rq_loc_perms">Permissions de localisation nécessaires</string>
+    <string name="loc_perms_dialog_title">Permissions de localisation nécessaires</string>
+    <string name="loc_perms_granted">Les permissions de localisation sont accordées !</string>
+    <string name="loc_perms_rq">Cette application nécessite les permissions de localisation.</string>
+    <string name="loc_perms_denied">Cette application nécessite les permissions de localisation !
+        \n\nMerci d\'attribuer manuellement ces permissions dans les paramètres de votre périphérique</string>
+    <string name="loc_perm_fine_rq">Pour une meilleure expérience, merci de permettre à cette application
+        d\'accéder à votre position précide!</string>
     <string name="loading_map">Carte en cours de chargement…</string>
     <string name="location">Position</string>
     <string name="current_location">Position actuelle</string>
@@ -48,5 +53,12 @@
     <string name="create">Créer une propriété</string>
     <string name="edit">Editer la propriété</string>
     <string name="valid">Valider la saisie</string>
+    <string name="rq_loc_perms">Autoriser la localisation</string>
+    <string name="rq_fine_loc">Autoriser la localisation précise</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Annuler</string>
+    <string name="grant">Accorder</string>
+    <string name="allow">Autoriser</string>
+    <string name="dismiss">Rejeter</string>
 
 </resources>

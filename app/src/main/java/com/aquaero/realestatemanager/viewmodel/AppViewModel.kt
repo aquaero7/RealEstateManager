@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.runtime.mutableStateListOf
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import com.aquaero.realestatemanager.ApplicationRoot
@@ -128,7 +129,22 @@ class AppViewModel(
     }
 
     @SuppressLint("MissingPermission")
-    fun getCurrentLocation(context: Context, onLocationFetched: (location: LatLng) -> Unit) {
+    fun getCurrentLocation(context: Context, onLocationFetched: (location: Location) -> Unit) {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    onLocationFetched(location)
+                }
+            }
+            .addOnFailureListener { exception: Exception ->
+                Log.w("Location exception", exception.message.toString())
+            }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun getCurrentLatLng(context: Context, onLocationFetched: (location: LatLng) -> Unit) {
         var latLng: LatLng
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
@@ -145,6 +161,27 @@ class AppViewModel(
                 Log.w("Location exception", exception.message.toString())
             }
     }
+
+
+
+
+    //
+    val visiblePermissionDialogQueue = mutableStateListOf<String>()
+    fun dismissdialog() {
+        visiblePermissionDialogQueue.removeLast()
+    }
+    fun onPermissionResult(
+        permission: String,
+        isGranted: Boolean,
+    ) {
+        if (!isGranted) {
+            visiblePermissionDialogQueue.add(0, permission)
+        }
+    }
+    //
+
+
+
 
     /** End Google Maps */
 

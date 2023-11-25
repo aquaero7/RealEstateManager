@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.ui.screen
 
+import android.location.Location
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
@@ -20,7 +21,7 @@ import com.google.android.gms.maps.model.LatLng
 fun MapScreen(
     showMap: Boolean,
     properties: List<Property>,
-    locationState: State<LatLng>,
+    locationState: State<Location>,
     locationSource: MyLocationSource,
 ) {
     if (showMap) {

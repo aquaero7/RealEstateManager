@@ -94,6 +94,9 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
     implementation ("androidx.navigation:navigation-compose:2.7.5")
 
+    // Accompanist-Permissions
+    implementation("com.google.accompanist:accompanist-permissions:0.33.2-alpha")
+
     // Google Maps Compose
     implementation("com.google.maps.android:maps-compose:2.11.5")
     // Google Maps Service

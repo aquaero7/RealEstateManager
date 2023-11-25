@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager.utils
 
 import android.location.Location
 import com.google.android.gms.maps.LocationSource
+import com.google.android.gms.maps.model.LatLng
 
 class MyLocationSource: LocationSource {
     private var listener: LocationSource.OnLocationChangedListener? = null

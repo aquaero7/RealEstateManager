@@ -3,13 +3,14 @@ package com.aquaero.realestatemanager.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.aquaero.realestatemanager.repository.AgentRepository
+import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 
 @Suppress("UNCHECKED_CAST")
 class ViewModelFactory:  ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
-            AppViewModel(PropertyRepository(), AgentRepository()) as T
+            AppViewModel(PropertyRepository(), AgentRepository(), LocationRepository()) as T
         } else if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
             ListViewModel(PropertyRepository()) as T
         } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {

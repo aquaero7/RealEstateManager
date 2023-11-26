@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager
 
+import android.Manifest
 import android.location.Location
 
 const val MAPS_API_KEY = BuildConfig.MAPS_API_KEY
@@ -11,4 +12,9 @@ const val SM_MK_COLOR1 = "&markers=color:red%7C"
 const val SM_KEY = "&key=$MAPS_API_KEY"
 const val DEFAULT_ZOOM = 15F
 // const val SM_KEY = "&key=${BuildConfig.MAPS_API_KEY}"
+
 val DEFAULT_LOCATION = Location("").apply { latitude = 0.0 ; longitude = 0.0 }
+val LOCATION_PERMISSIONS = listOf(
+    Manifest.permission.ACCESS_FINE_LOCATION,
+    Manifest.permission.ACCESS_COARSE_LOCATION,
+)

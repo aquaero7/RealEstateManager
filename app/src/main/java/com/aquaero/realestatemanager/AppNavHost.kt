@@ -1,10 +1,8 @@
 package com.aquaero.realestatemanager
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.location.Location
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -14,7 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.core.app.ActivityCompat
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -22,7 +20,6 @@ import androidx.navigation.compose.composable
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.screen.DetailScreen
 import com.aquaero.realestatemanager.ui.screen.EditScreen
-import com.aquaero.realestatemanager.ui.screen.EmptyMapScreen
 import com.aquaero.realestatemanager.ui.screen.ListAndDetailScreen
 import com.aquaero.realestatemanager.ui.screen.LoanScreen
 import com.aquaero.realestatemanager.ui.screen.LocationPermissionsScreen
@@ -31,11 +28,10 @@ import com.aquaero.realestatemanager.ui.screen.SearchScreen
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.utils.MyLocationSource
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.callbackFlow
 
-@SuppressLint("NewApi", "FlowOperatorInvokedInComposition")
+@SuppressLint("NewApi")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavHost(
@@ -44,9 +40,6 @@ fun AppNavHost(
     navController: NavHostController,
     appViewModel: AppViewModel,
     properties: List<Property>,
-    context: Context,
-    activity: Activity,
-    locPermsGranted: Boolean,
     onOpenAppSettings: () -> Unit,
 ) {
     NavHost(
@@ -78,8 +71,9 @@ fun AppNavHost(
         }
 
         composable(route = GeolocMap.route) {
+            val context = LocalContext.current
             var locationPermissionsGranted by remember {
-                mutableStateOf(locPermsGranted)
+                mutableStateOf(appViewModel.areLocPermsGranted())
             }
 
             if (locationPermissionsGranted) {
@@ -87,7 +81,7 @@ fun AppNavHost(
                 var currentLocation by remember { mutableStateOf(DEFAULT_LOCATION) }
                 val locationFlow = callbackFlow {
                     while (true) {
-                        appViewModel.getCurrentLocation(context = context) {
+                        appViewModel.getCurrentLocation() {
                             currentLocation = it
                             showMap = true
                             trySend(it)

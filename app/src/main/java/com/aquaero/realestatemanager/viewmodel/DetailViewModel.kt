@@ -18,12 +18,7 @@ class DetailViewModel(
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
-    /* TODO: To be deleted
-    fun thumbnailUrl(property: Property): String {
-        val smMkAddress1 = property.pAddress.toUrl()
-        return SM_URL + SM_SIZE + SM_SCALE + SM_TYPE + SM_MK_COLOR1 + smMkAddress1 + SM_KEY
-    }
-    */
+
 
 }
 

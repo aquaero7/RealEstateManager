@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.ui.screen
+package com.aquaero.realestatemanager.ui.component.map_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -22,7 +22,7 @@ import com.aquaero.realestatemanager.ui.theme.Gray
 import com.aquaero.realestatemanager.ui.theme.Red
 
 @Composable
-fun EmptyMapScreen() {
+fun MapScreenNoMap() {
 
     Column(
         modifier = Modifier

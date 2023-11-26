@@ -13,10 +13,7 @@ class ListViewModel(
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
-    /* TODO: To be deleted
-    @RequiresApi(Build.VERSION_CODES.O)
-    val fakeProperties = propertyRepository.fakeProperties
-    */
+
 
 
 }

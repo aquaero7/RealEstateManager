@@ -33,6 +33,7 @@ import com.aquaero.realestatemanager.SM_URL
 import com.aquaero.realestatemanager.SearchCriteria
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.repository.AgentRepository
+import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.google.android.gms.location.LocationServices
@@ -42,6 +43,7 @@ import com.google.android.gms.maps.model.LatLng
 class AppViewModel(
     private val propertyRepository: PropertyRepository,
     private val agentRepository: AgentRepository,
+    private val locationRepository: LocationRepository,
 ): ViewModel() {
     /*
     private val context: Context
@@ -49,7 +51,7 @@ class AppViewModel(
     */
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("NewApi")
     val fakeProperties = propertyRepository.fakeProperties
 
     /**
@@ -103,14 +105,13 @@ class AppViewModel(
     }
     /** End TopBar */
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("NewApi")
     fun propertyFromId(propertyId: Long): Property {
         return propertyRepository.propertyFromId(propertyId)
     }
 
     fun thumbnailUrl(property: Property): String {
-        val smMkAddress1 = property.pAddress.toUrl()
-        return SM_URL + SM_SIZE + SM_SCALE + SM_TYPE + SM_MK_COLOR1 + smMkAddress1 + SM_KEY
+        return propertyRepository.thumbnailUrl(property)
     }
 
     val agentSet = agentRepository.agentsSet
@@ -121,65 +122,22 @@ class AppViewModel(
      * Google Maps  TODO: Move to Utils ?
      */
 
-    fun checkForPermissions(context: Context): Boolean {
-        return !(ActivityCompat.checkSelfPermission(context,
-                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(context,
-                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+    fun checkForPermissions(): Boolean {
+        return locationRepository.checkForPermissions(context)
+    }
+    fun areLocPermsGranted(): Boolean {
+        return locationRepository.areLocPermsGranted()
     }
 
-    @SuppressLint("MissingPermission")
-    fun getCurrentLocation(context: Context, onLocationFetched: (location: Location) -> Unit) {
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    onLocationFetched(location)
-                }
-            }
-            .addOnFailureListener { exception: Exception ->
-                Log.w("Location exception", exception.message.toString())
-            }
+    fun getCurrentLocation(onLocationFetched: (location: Location) -> Unit) {
+        locationRepository.getCurrentLocation(context, onLocationFetched)
     }
 
-    @SuppressLint("MissingPermission")
-    fun getCurrentLatLng(context: Context, onLocationFetched: (location: LatLng) -> Unit) {
-        var latLng: LatLng
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    val latitude = location.latitude
-                    val longitude = location.longitude
-                    latLng = LatLng(latitude, longitude)
-                    onLocationFetched(latLng)
-                }
-            }
-            .addOnFailureListener { exception: Exception ->
-                Log.w("Location exception", exception.message.toString())
-            }
+    /*  // TODO : Should it be deleted because replaced with getCurrentLocation() ?
+    fun getCurrentLatLng(onLocationFetched: (location: LatLng) -> Unit) {
+        locationRepository.getCurrentLatLng(context, onLocationFetched)
     }
-
-
-
-
-    //
-    val visiblePermissionDialogQueue = mutableStateListOf<String>()
-    fun dismissdialog() {
-        visiblePermissionDialogQueue.removeLast()
-    }
-    fun onPermissionResult(
-        permission: String,
-        isGranted: Boolean,
-    ) {
-        if (!isGranted) {
-            visiblePermissionDialogQueue.add(0, permission)
-        }
-    }
-    //
-
+    */
 
 
 
@@ -191,35 +149,13 @@ class AppViewModel(
 /**
  * Google Maps TOP LEVEL
  */
-/*
-
-// TODO : To be deleted cause moved inside VM
-@SuppressLint("MissingPermission")
-fun getCurrentLocation(context: Context, onLocationFetched: (location: LatLng) -> Unit) {
-    var latLng: LatLng
-    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-
-    fusedLocationClient.lastLocation
-        .addOnSuccessListener { location: Location? ->
-            if (location != null) {
-                val latitude = location.latitude
-                val longitude = location.longitude
-                latLng = LatLng(latitude, longitude)
-                onLocationFetched(latLng)
-            }
-        }
-        .addOnFailureListener { exception: Exception ->
-            Log.w("Location exception", exception.message.toString())
-        }
-}
-*/
 
 // TODO: Move to Utils ?
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-fun getLocationFromAddress(context: Context?, strAddress: String?): LatLng? {
-    val coder = Geocoder(context!!)
+@SuppressLint("NewApi")
+fun getLocationFromAddress(strAddress: String?): LatLng? {
+    val coder = Geocoder(ApplicationRoot.getContext())
     var latLng: LatLng? = null
-    coder.getFromLocationName(strAddress!!, 5, @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    coder.getFromLocationName(strAddress!!, 5, // @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     object: Geocoder.GeocodeListener {
         override fun onGeocode(address: MutableList<Address>) {
             val location: Address = address[0]

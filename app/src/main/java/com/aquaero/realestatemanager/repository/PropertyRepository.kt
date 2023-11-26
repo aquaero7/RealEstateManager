@@ -1,9 +1,16 @@
 package com.aquaero.realestatemanager.repository
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.SM_KEY
+import com.aquaero.realestatemanager.SM_MK_COLOR1
+import com.aquaero.realestatemanager.SM_SCALE
+import com.aquaero.realestatemanager.SM_SIZE
+import com.aquaero.realestatemanager.SM_TYPE
+import com.aquaero.realestatemanager.SM_URL
 import com.aquaero.realestatemanager.model.Property
 import java.time.LocalDate
 
@@ -15,10 +22,18 @@ class PropertyRepository() {
     private val fakePhotos = photoRepository.fakePhotos
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("NewApi")
     fun propertyFromId(propertyId: Long): Property {
         return fakeProperties.find { it.pId == propertyId }!!
     }
+
+    fun thumbnailUrl(property: Property): String {
+        val smMkAddress1 = property.pAddress.toUrl()
+        return SM_URL + SM_SIZE + SM_SCALE + SM_TYPE + SM_MK_COLOR1 + smMkAddress1 + SM_KEY
+    }
+
+
+
 
     // ...
 
@@ -47,7 +62,7 @@ class PropertyRepository() {
 
     private val loremIpsum: String = LoremIpsum(300).values.first()
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("NewApi")
     val fakeProperties = listOf(
         Property(
             0,

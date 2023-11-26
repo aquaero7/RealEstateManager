@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.utils
+package com.aquaero.realestatemanager.ui.component.location_permissions_screen
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button

@@ -40,29 +40,24 @@ import com.aquaero.realestatemanager.viewmodel.ViewModelFactory
 
 class RealEstateManagerActivity : ComponentActivity() {
 
-    private var locPermsGranted: Boolean = false
+    // Init ViewModels
+    private val appViewModel by viewModels<AppViewModel> { ViewModelFactory() }
+    // val appViewModel by viewModels<AppViewModel> { ViewModelFactory() }
+    // val listViewModel by viewModels<ListViewModel> { ViewModelFactory() }
+    // val detailViewModel by viewModels<DetailViewModel> { ViewModelFactory() }
+    // val editViewModel by viewModels<EditViewModel> { ViewModelFactory() }
 
     @SuppressLint("NewApi")
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val activity: Activity = this
-
-        // Init ViewModels
-        val appViewModel by viewModels<AppViewModel> { ViewModelFactory() }
-        // val listViewModel by viewModels<ListViewModel> { ViewModelFactory() }
-        // val detailViewModel by viewModels<DetailViewModel> { ViewModelFactory() }
-        // val editViewModel by viewModels<EditViewModel> { ViewModelFactory() }
-
         setContent {
-            val windowSize = calculateWindowSizeClass(activity = activity)
+            val windowSize = calculateWindowSizeClass(activity = this)
             RealEstateManagerApp(
                 windowSize = windowSize.widthSizeClass,
                 appViewModel = appViewModel,
-                activity = activity,
-                locPermsGranted = locPermsGranted
+                activity = this,
                 // listViewModel = listViewModel,
                 // detailViewModel = detailViewModel,
                 // editViewModel = editViewModel,
@@ -72,29 +67,24 @@ class RealEstateManagerActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        val appViewModel by viewModels<AppViewModel> { ViewModelFactory() }
-        locPermsGranted = appViewModel.checkForPermissions(context = ApplicationRoot.getContext())
+        appViewModel.checkForPermissions()
     }
 
 }
 
+@SuppressLint("NewApi")
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RealEstateManagerApp(
     windowSize: WindowWidthSizeClass,
     appViewModel: AppViewModel,
     activity: Activity,
-    locPermsGranted: Boolean
     // listViewModel: ListViewModel,
     // detailViewModel: DetailViewModel,
     // editViewModel: EditViewModel,
 ) {
     RealEstateManagerTheme(dynamicColor = false) {
-
-        val context: Context = LocalContext.current
         val properties: List<Property> = appViewModel.fakeProperties
-
         /**
          * Init content type, according to window's width,
          * to choose dynamically, on screen state changes, whether to show
@@ -118,8 +108,10 @@ fun RealEstateManagerApp(
         /**
          * TopBar menu
          */
+        val context = LocalContext.current
         val onClickMenu = {
             when (currentScreen) {
+
                 ListAndDetail.routeWithArgs, Detail.routeWithArgs -> {
                     Log.w("Click on menu edit", "Property $propertyId")
                     navController.navigateToDetailEdit(propertyId.toString())
@@ -134,11 +126,6 @@ fun RealEstateManagerApp(
                             Toast.LENGTH_SHORT
                         )
                         .show()
-                }
-                // TODO: To be deleted
-                else -> {
-                    Log.w("Not implemented", "Property $propertyId")
-                    Toast.makeText(context, "Not implemented", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -182,9 +169,6 @@ fun RealEstateManagerApp(
                 navController = navController,
                 appViewModel = appViewModel,
                 properties = properties,
-                context = context,
-                activity = activity,
-                locPermsGranted = locPermsGranted,
                 onOpenAppSettings = activity::openAppSettings,
             )
         }

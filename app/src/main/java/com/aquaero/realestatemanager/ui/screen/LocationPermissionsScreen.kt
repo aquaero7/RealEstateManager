@@ -1,40 +1,26 @@
 package com.aquaero.realestatemanager.ui.screen
 
 import android.Manifest
-import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import com.aquaero.realestatemanager.LOCATION_PERMISSIONS
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.utils.PermissionDialog
+import com.aquaero.realestatemanager.ui.component.location_permissions_screen.PermissionDialog
+import com.aquaero.realestatemanager.ui.component.map_screen.MapScreenNoMap
+import com.aquaero.realestatemanager.viewmodel.AppViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LocationPermissionsScreen(
     onOpenAppSettings: () -> Unit,
@@ -43,14 +29,9 @@ fun LocationPermissionsScreen(
     /**
      * Method 1 using Google accompanist-permissions experimental API
      */
-    //
-    // Set permissions to be requested
-    val locationPermissionsState = rememberMultiplePermissionsState(
-        listOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-        )
-    )
+    /*
+    // Set the list of requested permissions
+    val locationPermissionsState = rememberMultiplePermissionsState(LOCATION_PERMISSIONS)
     // Request permissions inside lifecycle scope
     val lifeCycleOwner = LocalLifecycleOwner.current
     DisposableEffect(key1 = lifeCycleOwner, effect = {
@@ -59,6 +40,7 @@ fun LocationPermissionsScreen(
                 Lifecycle.Event.ON_START -> {
                     locationPermissionsState.launchMultiplePermissionRequest()
                 }
+
                 else -> {}
             }
         }
@@ -66,8 +48,10 @@ fun LocationPermissionsScreen(
         onDispose { lifeCycleOwner.lifecycle.removeObserver(observer) }
     })
 
-    // Do actions according to permissions state
+    /** Do actions according to permissions state */
+
     if (locationPermissionsState.allPermissionsGranted) {
+        // All permissions are accepted
         Text(stringResource(id = R.string.loc_perms_granted))
         onPermissionsGranted()
 
@@ -84,7 +68,8 @@ fun LocationPermissionsScreen(
                 onDismiss = { onPermissionsGranted() }
             )
         } else if (locationPermissionsState.shouldShowRationale) {
-            // Both location permissions have been denied
+            // Both location permissions have been revoked and
+            // the user is requested to proceed to the app settings
             PermissionDialog(
                 text = stringResource(id = R.string.loc_perms_denied),
                 onOkClick = { onOpenAppSettings() },
@@ -92,27 +77,19 @@ fun LocationPermissionsScreen(
                 onDismiss = { onOpenAppSettings() }
             )
         } else {
-            EmptyMapScreen()
-
-            /* TODO : To be removed cause handled in DisposableEffect
-            // First time the user sees this feature or the user doesn't want to be asked again
-            PermissionDialog(
-                text = stringResource(id = R.string.loc_perms_rq),
-                onOkClick = { locationPermissionsState.launchMultiplePermissionRequest() },
-                onCnlClick = null,
-                onDismiss = { locationPermissionsState.launchMultiplePermissionRequest() }
-            )
-            */
+            // Both location permissions have been revoked and
+            // the user denied to grant permissions. So the map isn't available.
+            MapScreenNoMap()
         }
     }
-    //
+    */
 
     /**
      * Method 2 using Android API
      */
-    /*
-    var coarsePerm by remember { mutableStateOf(false) }
-    var areDenied by remember { mutableStateOf(false) }
+    //
+    var coarseOnly by remember { mutableStateOf(false) }
+    var areRevoked by remember { mutableStateOf(false) }
     var areGranted by remember { mutableStateOf(false) }
 
     // Set permissions status according to their state
@@ -122,28 +99,23 @@ fun LocationPermissionsScreen(
             areGranted = permissions.values.reduce { accumulate, isPermissionGranted ->
                 accumulate && isPermissionGranted
             }
-            areDenied = permissions.values.reduce { accumulate, isPermissionGranted ->
+            areRevoked = permissions.values.reduce { accumulate, isPermissionGranted ->
                 !accumulate && !isPermissionGranted
             }
-            coarsePerm = !areGranted && !areDenied
+            coarseOnly = !areGranted && !areRevoked
         }
     )
 
     // Set permissions to be requested
     fun requestLocationPermissions() {
-        locationPermissionsLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-            )
-        )
+        locationPermissionsLauncher.launch(LOCATION_PERMISSIONS.toTypedArray())
     }
 
     // Request permissions inside lifecycle scope
     val lifeCycleOwner = LocalLifecycleOwner.current
     DisposableEffect(key1 = lifeCycleOwner, effect = {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_START && !areGranted && !areDenied && !coarsePerm) {
+            if (event == Lifecycle.Event.ON_START && !areGranted && !areRevoked && !coarseOnly) {
                 requestLocationPermissions()
             }
         }
@@ -154,7 +126,7 @@ fun LocationPermissionsScreen(
     // Do actions according to permissions state
     if (areGranted) {
         onPermissionsGranted()
-    } else if (coarsePerm) {
+    } else if (coarseOnly) {
         // The user accepted the COARSE location permission, but not the FINE one.
         PermissionDialog(
             text = stringResource(id = R.string.loc_perm_fine_rq),
@@ -162,7 +134,7 @@ fun LocationPermissionsScreen(
             onCnlClick = { onPermissionsGranted() },
             onDismiss = { onPermissionsGranted() }
         )
-    } else if (areDenied) {
+    } else if (areRevoked) {
         // Both location permissions have been denied
         PermissionDialog(
             text = stringResource(id = R.string.loc_perms_denied),
@@ -177,7 +149,7 @@ fun LocationPermissionsScreen(
             }
         )
     } else {
-        EmptyMapScreen()
+        MapScreenNoMap()
 
         /* TODO : To be removed cause handled in DisposableEffect
         // First time the user sees this feature or the user doesn't want to be asked again
@@ -189,7 +161,7 @@ fun LocationPermissionsScreen(
         )
         */
     }
-    */
+    //
 
 }
 

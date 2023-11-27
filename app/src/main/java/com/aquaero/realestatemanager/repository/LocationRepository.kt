@@ -8,18 +8,16 @@ import android.location.Location
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.aquaero.realestatemanager.ApplicationRoot
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import kotlin.properties.Delegates
 
 class LocationRepository {
 
-    private var context = ApplicationRoot.getContext()
+    private val context: Context by lazy { ApplicationRoot.getContext() }
     private var locPermsGranted by Delegates.notNull<Boolean>()
 
-    fun checkForPermissions(context: Context): Boolean {
+    fun checkForPermissions(): Boolean {
         locPermsGranted = !(ActivityCompat.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -37,7 +35,7 @@ class LocationRepository {
     }
 
     @SuppressLint("MissingPermission")
-    fun getCurrentLocation(context: Context, onLocationFetched: (location: Location) -> Unit) {
+    fun getCurrentLocation(onLocationFetched: (location: Location) -> Unit) {
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
         fusedLocationClient.lastLocation
@@ -53,7 +51,7 @@ class LocationRepository {
 
     /*  // TODO : Should it be deleted because replaced with getCurrentLocation() ?
     @SuppressLint("MissingPermission")
-    fun getCurrentLatLng(context: Context, onLocationFetched: (location: LatLng) -> Unit) {
+    fun getCurrentLatLng(onLocationFetched: (location: LatLng) -> Unit) {
         var latLng: LatLng
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 

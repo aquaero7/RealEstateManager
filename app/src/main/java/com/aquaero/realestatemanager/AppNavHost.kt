@@ -1,8 +1,6 @@
 package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -12,7 +10,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -40,7 +37,6 @@ fun AppNavHost(
     navController: NavHostController,
     appViewModel: AppViewModel,
     properties: List<Property>,
-    onOpenAppSettings: () -> Unit,
 ) {
     NavHost(
         modifier = modifier,
@@ -71,7 +67,6 @@ fun AppNavHost(
         }
 
         composable(route = GeolocMap.route) {
-            val context = LocalContext.current
             var locationPermissionsGranted by remember {
                 mutableStateOf(appViewModel.areLocPermsGranted())
             }
@@ -100,7 +95,7 @@ fun AppNavHost(
 
             } else {
                 LocationPermissionsScreen(
-                    onOpenAppSettings = onOpenAppSettings,
+                    onOpenAppSettings = { appViewModel.openAppSettings() },
                     onPermissionsGranted = { locationPermissionsGranted = true },
                 )
             }

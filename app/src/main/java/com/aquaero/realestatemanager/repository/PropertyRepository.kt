@@ -1,8 +1,6 @@
 package com.aquaero.realestatemanager.repository
 
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.SM_KEY
@@ -22,7 +20,6 @@ class PropertyRepository() {
     private val fakePhotos = photoRepository.fakePhotos
 
 
-    @SuppressLint("NewApi")
     fun propertyFromId(propertyId: Long): Property {
         return fakeProperties.find { it.pId == propertyId }!!
     }

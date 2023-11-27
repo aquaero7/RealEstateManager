@@ -1,19 +1,12 @@
 package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -22,9 +15,6 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -41,11 +31,11 @@ import com.aquaero.realestatemanager.viewmodel.ViewModelFactory
 class RealEstateManagerActivity : ComponentActivity() {
 
     // Init ViewModels
-    private val appViewModel by viewModels<AppViewModel> { ViewModelFactory() }
-    // val appViewModel by viewModels<AppViewModel> { ViewModelFactory() }
-    // val listViewModel by viewModels<ListViewModel> { ViewModelFactory() }
-    // val detailViewModel by viewModels<DetailViewModel> { ViewModelFactory() }
-    // val editViewModel by viewModels<EditViewModel> { ViewModelFactory() }
+    private val appViewModel by viewModels<AppViewModel> { ViewModelFactory }
+    // val appViewModel by viewModels<AppViewModel> { ViewModelFactory }
+    // val listViewModel by viewModels<ListViewModel> { ViewModelFactory }
+    // val detailViewModel by viewModels<DetailViewModel> { ViewModelFactory }
+    // val editViewModel by viewModels<EditViewModel> { ViewModelFactory }
 
     @SuppressLint("NewApi")
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -57,7 +47,6 @@ class RealEstateManagerActivity : ComponentActivity() {
             RealEstateManagerApp(
                 windowSize = windowSize.widthSizeClass,
                 appViewModel = appViewModel,
-                activity = this,
                 // listViewModel = listViewModel,
                 // detailViewModel = detailViewModel,
                 // editViewModel = editViewModel,
@@ -65,6 +54,7 @@ class RealEstateManagerActivity : ComponentActivity() {
         }
     }
 
+    @SuppressLint("NewApi")
     override fun onResume() {
         super.onResume()
         appViewModel.checkForPermissions()
@@ -78,7 +68,6 @@ class RealEstateManagerActivity : ComponentActivity() {
 fun RealEstateManagerApp(
     windowSize: WindowWidthSizeClass,
     appViewModel: AppViewModel,
-    activity: Activity,
     // listViewModel: ListViewModel,
     // detailViewModel: DetailViewModel,
     // editViewModel: EditViewModel,
@@ -169,20 +158,8 @@ fun RealEstateManagerApp(
                 navController = navController,
                 appViewModel = appViewModel,
                 properties = properties,
-                onOpenAppSettings = activity::openAppSettings,
             )
         }
     }
 }
-
-fun Activity.openAppSettings() {
-    Intent(
-        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-        Uri.fromParts("package", packageName, null)
-    ).also(::startActivity)
-
-}
-
-
-
 

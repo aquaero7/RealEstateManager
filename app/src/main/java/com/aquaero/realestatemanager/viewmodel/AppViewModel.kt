@@ -1,22 +1,19 @@
 package com.aquaero.realestatemanager.viewmodel
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import android.os.Build
+import android.net.Uri
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.runtime.mutableStateListOf
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.EditDetail
@@ -24,19 +21,12 @@ import com.aquaero.realestatemanager.GeolocMap
 import com.aquaero.realestatemanager.ListAndDetail
 import com.aquaero.realestatemanager.Loan
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.SM_KEY
-import com.aquaero.realestatemanager.SM_MK_COLOR1
-import com.aquaero.realestatemanager.SM_SCALE
-import com.aquaero.realestatemanager.SM_SIZE
-import com.aquaero.realestatemanager.SM_TYPE
-import com.aquaero.realestatemanager.SM_URL
 import com.aquaero.realestatemanager.SearchCriteria
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.utils.AppContentType
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 
 
@@ -45,10 +35,7 @@ class AppViewModel(
     private val agentRepository: AgentRepository,
     private val locationRepository: LocationRepository,
 ): ViewModel() {
-    /*
-    private val context: Context
-        get() = ApplicationRoot.getContext()
-    */
+
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
     @SuppressLint("NewApi")
@@ -123,23 +110,30 @@ class AppViewModel(
      */
 
     fun checkForPermissions(): Boolean {
-        return locationRepository.checkForPermissions(context)
+        return locationRepository.checkForPermissions()
     }
     fun areLocPermsGranted(): Boolean {
         return locationRepository.areLocPermsGranted()
     }
 
     fun getCurrentLocation(onLocationFetched: (location: Location) -> Unit) {
-        locationRepository.getCurrentLocation(context, onLocationFetched)
+        locationRepository.getCurrentLocation(onLocationFetched)
     }
 
     /*  // TODO : Should it be deleted because replaced with getCurrentLocation() ?
     fun getCurrentLatLng(onLocationFetched: (location: LatLng) -> Unit) {
-        locationRepository.getCurrentLatLng(context, onLocationFetched)
+        locationRepository.getCurrentLatLng(onLocationFetched)
     }
     */
 
-
+    fun openAppSettings() {
+        Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", context.packageName, null)
+        )
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            .also { context.startActivity(it) }
+    }
 
     /** End Google Maps */
 
@@ -173,5 +167,5 @@ fun getLocationFromAddress(strAddress: String?): LatLng? {
     return latLng
 }
 
-/** End Google Maps */
+/** End Google Maps TOP LEVEL */
 

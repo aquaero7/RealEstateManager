@@ -7,16 +7,21 @@ import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 
 @Suppress("UNCHECKED_CAST")
-class ViewModelFactory:  ViewModelProvider.Factory {
+object ViewModelFactory:  ViewModelProvider.Factory {
+
+    private val propertyRepository: PropertyRepository = PropertyRepository()
+    private val agentRepository: AgentRepository = AgentRepository()
+    private val locationRepository: LocationRepository = LocationRepository()
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
-            AppViewModel(PropertyRepository(), AgentRepository(), LocationRepository()) as T
+            AppViewModel(propertyRepository, agentRepository, locationRepository) as T
         } else if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
-            ListViewModel(PropertyRepository()) as T
+            ListViewModel(propertyRepository) as T
         } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
             DetailViewModel() as T
         } else if (modelClass.isAssignableFrom(EditViewModel::class.java)) {
-            EditViewModel(AgentRepository(), PropertyRepository()) as T
+            EditViewModel(agentRepository, propertyRepository) as T
         } else {
             throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

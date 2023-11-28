@@ -2,8 +2,6 @@ package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -16,7 +14,6 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -26,16 +23,20 @@ import com.aquaero.realestatemanager.ui.component.app.AppTopBar
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
+import com.aquaero.realestatemanager.viewmodel.DetailViewModel
+import com.aquaero.realestatemanager.viewmodel.EditViewModel
+import com.aquaero.realestatemanager.viewmodel.ListViewModel
+import com.aquaero.realestatemanager.viewmodel.MapViewModel
 import com.aquaero.realestatemanager.viewmodel.ViewModelFactory
 
 class RealEstateManagerActivity : ComponentActivity() {
 
     // Init ViewModels
     private val appViewModel by viewModels<AppViewModel> { ViewModelFactory }
-    // val appViewModel by viewModels<AppViewModel> { ViewModelFactory }
-    // val listViewModel by viewModels<ListViewModel> { ViewModelFactory }
-    // val detailViewModel by viewModels<DetailViewModel> { ViewModelFactory }
-    // val editViewModel by viewModels<EditViewModel> { ViewModelFactory }
+    private val listViewModel by viewModels<ListViewModel> { ViewModelFactory }
+    private val detailViewModel by viewModels<DetailViewModel> { ViewModelFactory }
+    private val editViewModel by viewModels<EditViewModel> { ViewModelFactory }
+    private val mapViewModel by viewModels<MapViewModel> { ViewModelFactory }
 
     @SuppressLint("NewApi")
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -47,9 +48,10 @@ class RealEstateManagerActivity : ComponentActivity() {
             RealEstateManagerApp(
                 windowSize = windowSize.widthSizeClass,
                 appViewModel = appViewModel,
-                // listViewModel = listViewModel,
-                // detailViewModel = detailViewModel,
-                // editViewModel = editViewModel,
+                listViewModel = listViewModel,
+                detailViewModel = detailViewModel,
+                editViewModel = editViewModel,
+                mapViewModel = mapViewModel,
             )
         }
     }
@@ -57,7 +59,7 @@ class RealEstateManagerActivity : ComponentActivity() {
     @SuppressLint("NewApi")
     override fun onResume() {
         super.onResume()
-        appViewModel.checkForPermissions()
+        mapViewModel.checkForPermissions()
     }
 
 }
@@ -68,9 +70,10 @@ class RealEstateManagerActivity : ComponentActivity() {
 fun RealEstateManagerApp(
     windowSize: WindowWidthSizeClass,
     appViewModel: AppViewModel,
-    // listViewModel: ListViewModel,
-    // detailViewModel: DetailViewModel,
-    // editViewModel: EditViewModel,
+    listViewModel: ListViewModel,
+    detailViewModel: DetailViewModel,
+    editViewModel: EditViewModel,
+    mapViewModel: MapViewModel,
 ) {
     RealEstateManagerTheme(dynamicColor = false) {
         val properties: List<Property> = appViewModel.fakeProperties
@@ -97,27 +100,16 @@ fun RealEstateManagerApp(
         /**
          * TopBar menu
          */
-        val context = LocalContext.current
-        val onClickMenu = {
-            when (currentScreen) {
+        val menuIcon = appViewModel.menuIcon(currentScreen)
+        val menuIconContentDesc = stringResource(appViewModel.menuIconContentDesc(currentScreen))
+        val menuEnabled = appViewModel.menuEnabled(currentScreen, windowSize)
+        val onClickMenu = { appViewModel.onClickMenu(currentScreen, navController, propertyId) }
+        val onClickRadioButton = appViewModel.onClickRadioButton
 
-                ListAndDetail.routeWithArgs, Detail.routeWithArgs -> {
-                    Log.w("Click on menu edit", "Property $propertyId")
-                    navController.navigateToDetailEdit(propertyId.toString())
-                }
-
-                EditDetail.routeWithArgs, SearchCriteria.route, Loan.route -> {
-                    Log.w("Click on menu valid", "Property $propertyId")
-                    // TODO: Replace toast with specific action
-                    Toast
-                        .makeText(
-                            context, "Click on ${context.getString(R.string.valid)}",
-                            Toast.LENGTH_SHORT
-                        )
-                        .show()
-                }
-            }
-        }
+        /**
+         * Bottom bar
+         */
+        val defaultPropertyId = appViewModel.fakeProperties[0].pId.toString()
 
 
         /**
@@ -126,16 +118,11 @@ fun RealEstateManagerApp(
         Scaffold(
             topBar = {
                 AppTopBar(
-                    menuIcon = appViewModel.menuIcon(currentScreen),
-                    menuIconContentDesc = stringResource(
-                        appViewModel.menuIconContentDesc(
-                            currentScreen
-                        )
-                    ),
-                    menuEnabled = appViewModel.menuEnabled(currentScreen, windowSize),
-                    // onClickMenu = { appViewModel.onClickMenu(currentBackStack, navController) },
+                    menuIcon = menuIcon,
+                    menuIconContentDesc = menuIconContentDesc,
+                    menuEnabled = menuEnabled,
                     onClickMenu = onClickMenu,
-                    onClickRadioButton = appViewModel.onClickRadioButton,
+                    onClickRadioButton = onClickRadioButton,
                 )
             },
             bottomBar = {
@@ -144,7 +131,7 @@ fun RealEstateManagerApp(
                     onTabSelected = { newScreen ->
                         navController.navigateSingleTopTo(
                             newScreen,
-                            appViewModel.fakeProperties[0].pId.toString()
+                            defaultPropertyId
                         )
                     },
                     currentScreen = currentTabScreen,
@@ -156,8 +143,12 @@ fun RealEstateManagerApp(
                 modifier = Modifier.padding(innerPadding),
                 contentType = contentType,
                 navController = navController,
-                appViewModel = appViewModel,
                 properties = properties,
+                appViewModel = appViewModel,
+                listViewModel = listViewModel,
+                detailViewModel = detailViewModel,
+                editViewModel = editViewModel,
+                mapViewModel = mapViewModel,
             )
         }
     }

@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
 import android.os.Build
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,6 +26,11 @@ import com.aquaero.realestatemanager.ui.screen.SearchScreen
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.utils.MyLocationSource
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
+import com.aquaero.realestatemanager.viewmodel.DetailViewModel
+import com.aquaero.realestatemanager.viewmodel.EditViewModel
+import com.aquaero.realestatemanager.viewmodel.ListViewModel
+import com.aquaero.realestatemanager.viewmodel.MapViewModel
+import com.aquaero.realestatemanager.viewmodel.ViewModelFactory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.callbackFlow
 
@@ -35,40 +41,47 @@ fun AppNavHost(
     modifier: Modifier,
     contentType: AppContentType,
     navController: NavHostController,
-    appViewModel: AppViewModel,
     properties: List<Property>,
+    appViewModel: AppViewModel,
+    listViewModel: ListViewModel,
+    detailViewModel: DetailViewModel,
+    editViewModel: EditViewModel,
+    mapViewModel: MapViewModel,
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = ListAndDetail.routeWithArgs,
     ) {
-
         composable(
             route = ListAndDetail.routeWithArgs, arguments = ListAndDetail.arguments
         ) { navBackStackEntry ->
             (navBackStackEntry.arguments!!.getString(propertyKey)
                 ?: properties[0].pId.toString()).also {
 
-                val property = appViewModel.propertyFromId(it.toLong())
+                val property = listViewModel.propertyFromId(it.toLong())
+                val thumbnailUrl = listViewModel.thumbnailUrl(property)
+                val onPropertyClick: (Long) -> Unit = { propertyId ->
+                    navController.navigateToDetail(propertyId.toString(), contentType)
+                }
+                val onFabClick = { navController.navigateToDetailEdit("-1") }
+                val onBackPressed: () -> Unit = { navController.popBackStack() }
 
                 ListAndDetailScreen(
                     items = properties,
-                    thumbnailUrl = appViewModel.thumbnailUrl(property),
+                    thumbnailUrl = thumbnailUrl,
                     contentType = contentType,
-                    onPropertyClick = { propertyId ->
-                        navController.navigateToDetail(propertyId.toString(), contentType)
-                    },
+                    onPropertyClick = onPropertyClick,
                     property = property,
-                    onFabClick = { navController.navigateToDetailEdit("-1") },
-                    onBackPressed = { navController.popBackStack() },
+                    onFabClick = onFabClick,
+                    onBackPressed = onBackPressed,
                 )
             }
         }
 
         composable(route = GeolocMap.route) {
             var locationPermissionsGranted by remember {
-                mutableStateOf(appViewModel.areLocPermsGranted())
+                mutableStateOf(mapViewModel.areLocPermsGranted())
             }
 
             if (locationPermissionsGranted) {
@@ -76,7 +89,7 @@ fun AppNavHost(
                 var currentLocation by remember { mutableStateOf(DEFAULT_LOCATION) }
                 val locationFlow = callbackFlow {
                     while (true) {
-                        appViewModel.getCurrentLocation() {
+                        mapViewModel.getCurrentLocation() {
                             currentLocation = it
                             showMap = true
                             trySend(it)
@@ -94,17 +107,24 @@ fun AppNavHost(
                 )
 
             } else {
+                val onOpenAppSettings = { mapViewModel.openAppSettings() }
+                val onPermissionsGranted = { locationPermissionsGranted = true }
+
                 LocationPermissionsScreen(
-                    onOpenAppSettings = { appViewModel.openAppSettings() },
-                    onPermissionsGranted = { locationPermissionsGranted = true },
+                    onOpenAppSettings = onOpenAppSettings,
+                    onPermissionsGranted = onPermissionsGranted,
                 )
             }
         }
 
         composable(route = SearchCriteria.route) {
+            val onButton1Click = { navController.navigateToDetail("1", contentType) }
+            val onButton2Click = { navController.navigateToDetail("2", contentType) }
+
             SearchScreen(
-                onButton1Click = { navController.navigateToDetail("1", contentType) },
-                onButton2Click = { navController.navigateToDetail("2", contentType) },
+                onButton1Click = onButton1Click,
+                onButton2Click = onButton2Click,
+
             )
         }
 
@@ -113,32 +133,43 @@ fun AppNavHost(
         }
 
         composable(
-            route = Detail.routeWithArgs, arguments = Detail.arguments
+            route = Detail.routeWithArgs,
+            arguments = Detail.arguments
         ) { navBackStackEntry ->
             val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)!!
-            val property = appViewModel.propertyFromId(propertyId.toLong())
+            val property = detailViewModel.propertyFromId(propertyId.toLong())
+            val thumbnailUrl = detailViewModel.thumbnailUrl(property)
+            val onBackPressed: () -> Unit = { navController.popBackStack() }
 
-            DetailScreen(property = property,
-                thumbnailUrl = appViewModel.thumbnailUrl(property),
-                onBackPressed = { navController.popBackStack() })
+            DetailScreen(
+                property = property,
+                thumbnailUrl = thumbnailUrl,
+                onBackPressed = onBackPressed
+            )
         }
 
         composable(
-            route = EditDetail.routeWithArgs, arguments = EditDetail.arguments
+            route = EditDetail.routeWithArgs,
+            arguments = EditDetail.arguments
         ) { navBackStackEntry ->
             val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)
             val property: Property? = if (propertyId != "-1") {
                 // Edition mode
-                appViewModel.propertyFromId(propertyId!!.toLong())
+                editViewModel.propertyFromId(propertyId!!.toLong())
             } else {
                 // Creation mode
                 null
             }
+            val pTypeSet = { editViewModel.pTypeSet }
+            val agentSet = editViewModel.agentSet
+            val onBackPressed: () -> Unit = { navController.popBackStack() }
 
-            EditScreen(pTypeSet = { appViewModel.pTypeSet },
-                agentSet = appViewModel.agentSet,
+            EditScreen(
+                pTypeSet = pTypeSet,
+                agentSet = agentSet,
                 property = property,
-                onBackPressed = { navController.popBackStack() })
+                onBackPressed = onBackPressed,
+            )
         }
     }
 }

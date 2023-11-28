@@ -4,6 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.util.Log
 import androidx.core.app.ActivityCompat
@@ -70,5 +72,28 @@ class LocationRepository {
     }
     */
 
+}
 
+// TODO: Move from TOP LEVEL to class ?
+@SuppressLint("NewApi")
+fun getLocationFromAddress(strAddress: String?): LatLng? {
+    val coder = Geocoder(ApplicationRoot.getContext())
+    var latLng: LatLng? = null
+    coder.getFromLocationName(strAddress!!, 5, // @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+        object : Geocoder.GeocodeListener {
+            override fun onGeocode(address: MutableList<Address>) {
+                val location: Address = address[0]
+                latLng = LatLng(location.latitude, location.longitude)
+                Log.w("Geocoder.getFromLocName", latLng.toString())
+                Log.w("Geocoder.getFromLocName", location.locality)
+                Log.w("Geocoder.getFromLocName", location.latitude.toString())
+                Log.w("Geocoder.getFromLocName", location.longitude.toString())
+            }
+
+            override fun onError(errorMessage: String?) {
+                super.onError(errorMessage)
+                Log.w("Geocoder.getFromLocName", errorMessage.toString())
+            }
+        })
+    return latLng
 }

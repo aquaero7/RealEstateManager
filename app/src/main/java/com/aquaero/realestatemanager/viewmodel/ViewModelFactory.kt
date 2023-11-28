@@ -15,13 +15,15 @@ object ViewModelFactory:  ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
-            AppViewModel(propertyRepository, agentRepository, locationRepository) as T
+            AppViewModel(propertyRepository) as T
         } else if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
             ListViewModel(propertyRepository) as T
         } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
-            DetailViewModel() as T
+            DetailViewModel(propertyRepository) as T
         } else if (modelClass.isAssignableFrom(EditViewModel::class.java)) {
             EditViewModel(agentRepository, propertyRepository) as T
+        } else if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
+            MapViewModel(locationRepository) as T
         } else {
             throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

@@ -72,7 +72,10 @@ fun DetailScreen(
         DetailScreenPoi(selectedPoi = property.pPoi)
 
         // Map thumbnail
-        DetailScreenMapThumbnail(thumbnailUrl)
+        DetailScreenMapThumbnail(
+            thumbnailUrl,
+            property.pAddress.latLng,
+        )
 
         // To manage back nav
         BackHandler(true) {

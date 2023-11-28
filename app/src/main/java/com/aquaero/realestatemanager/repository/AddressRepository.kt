@@ -26,7 +26,7 @@ class AddressRepository() {
             "",                         //"d0000000",
             "91140",                  //"z0000000",
             "FR",                   //"c0000000",
-            location = LatLng(48.6860854, 2.2201107)
+            latLng = LatLng(48.6860854, 2.2201107)
         ),
         Address(
             1,
@@ -37,7 +37,7 @@ class AddressRepository() {
             "",  //"d1111111",
             "77340",    //"z1111111",
             "FR",   //"c1111111",
-            location = LatLng(48.7765790,2.5906768)
+            latLng = LatLng(48.7765790,2.5906768)
         ),
         Address(
             2,
@@ -48,7 +48,7 @@ class AddressRepository() {
             "GA",  //"d2222222",
             "30319",    //"z2222222",
             "US",   //"c2222222",
-            location = LatLng(33.8725435,-84.3370041)
+            latLng = LatLng(33.8725435,-84.3370041)
         )
     )
     //

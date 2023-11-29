@@ -42,7 +42,7 @@ fun DetailScreenMapThumbnail(
             .padding(horizontal = 8.dp)
     )
 
-    // GlideImage to use Glide or AsyncImage to use Coil
+    // GlideImage if using Glide or AsyncImage if using Coil
     GlideImage(
         model = thumbnailUrl,
         contentDescription = "static-map",

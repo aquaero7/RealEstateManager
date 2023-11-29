@@ -16,12 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
@@ -45,7 +45,11 @@ fun DetailScreenMedia(
             .wrapContentHeight()
             .padding(top = 4.dp, start = 4.dp, end = 6.dp)
     ) {
-        items(items = property.photos as List<Photo>) { photo ->
+        val items: List<Photo> = property.photos ?: listOf(NO_PHOTO)
+
+        items(items = items) { photo ->
+            val resourceId =
+                if (photo.phId.toInt() > 0) photo.phId.toInt() else R.drawable.outline_camera_alt_gray_24
             Box(
                 modifier = Modifier
                     .width(120.dp)
@@ -54,8 +58,7 @@ fun DetailScreenMedia(
                 contentAlignment = Alignment.BottomCenter,
             ) {
                 Image(
-                    // painter = painterResource(id = photo.phId.toInt()),
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                    painter = painterResource(id = resourceId),
                     contentDescription = null,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier

@@ -103,7 +103,7 @@ fun RealEstateManagerApp(
         val menuIcon = appViewModel.menuIcon(currentScreen)
         val menuIconContentDesc = stringResource(appViewModel.menuIconContentDesc(currentScreen))
         val menuEnabled = appViewModel.menuEnabled(currentScreen, windowSize)
-        val onClickMenu = { appViewModel.onClickMenu(currentScreen, navController, propertyId) }
+        val onClickMenu: () -> Unit = { appViewModel.onClickMenu(currentScreen, navController, propertyId) }
         val onClickRadioButton = appViewModel.onClickRadioButton
 
         /**
@@ -149,6 +149,7 @@ fun RealEstateManagerApp(
                 detailViewModel = detailViewModel,
                 editViewModel = editViewModel,
                 mapViewModel = mapViewModel,
+                // onClickMenu = onClickMenu,
             )
         }
     }

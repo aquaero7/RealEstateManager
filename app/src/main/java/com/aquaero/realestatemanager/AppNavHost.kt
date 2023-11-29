@@ -47,6 +47,7 @@ fun AppNavHost(
     detailViewModel: DetailViewModel,
     editViewModel: EditViewModel,
     mapViewModel: MapViewModel,
+    // onClickMenu: () -> Unit
 ) {
     NavHost(
         modifier = modifier,
@@ -162,12 +163,15 @@ fun AppNavHost(
             }
             val pTypeSet = { editViewModel.pTypeSet }
             val agentSet = editViewModel.agentSet
+            val onDescriptionValueChanged: (String) -> Unit = {}                        //TODO
+
             val onBackPressed: () -> Unit = { navController.popBackStack() }
 
             EditScreen(
                 pTypeSet = pTypeSet,
                 agentSet = agentSet,
                 property = property,
+                // onClickMenu = onClickMenu,
                 onBackPressed = onBackPressed,
             )
         }

@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.list_screen.PropertyCard
@@ -81,13 +82,14 @@ fun ListScreen(
                 state = LazyListState(firstVisibleItemIndex = items.indexOf(property)),
             ) {
                 items(items = items) { propertyItem ->
+                    val phId = if (propertyItem.photos != null && property.photos!![0].phId > 0L)
+                        propertyItem.photos[0].phId else NO_PHOTO.phId
                     PropertyCard(
                         pId = propertyItem.pId,
                         pType = propertyItem.pType,
                         pCity = propertyItem.pAddress.city,
                         pPrice = propertyItem.pPrice,
-                        // phId = propertyItem.photos?.get(0)?.phId,        // TODO : When implemented
-                        phId = R.drawable.ic_launcher_background.toLong(),  // TODO: Provisional
+                        phId = phId,
                         contentType = contentType,
                         selected = selectedId == propertyItem.pId ||
                                 property.pId.toString() == propertyItem.pId.toString(), // For compatibility with ListAndDetailScreen

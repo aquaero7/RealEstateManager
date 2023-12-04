@@ -37,8 +37,8 @@ fun PropertyCard(
     pId: Long,
     pType: String,
     pCity: String,
-    pPrice: Int,
     phId: Long,
+    pPriceFormatted: String,
     contentType: AppContentType,
     selected: Boolean = false,
     unselectedByDefaultDisplay: Boolean = false,
@@ -56,7 +56,8 @@ fun PropertyCard(
             )
             .clickable {
                 onSelection()
-                onPropertyClick(pId) },
+                onPropertyClick(pId)
+            },
         shape = RoundedCornerShape(0.dp),   // = MaterialTheme.shapes.medium // = CutCornerShape(topEnd = 10.dp)
         elevation = CardDefaults.cardElevation(),
         colors = CardDefaults.cardColors()
@@ -105,7 +106,7 @@ fun PropertyCard(
                         )
                         Text(
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
-                            text = pPrice.toString(),
+                            text = pPriceFormatted, // TODO: Convert value according to currency in DataStore
                             style = MaterialTheme.typography.titleLarge,
                             color = Red,
                             /*

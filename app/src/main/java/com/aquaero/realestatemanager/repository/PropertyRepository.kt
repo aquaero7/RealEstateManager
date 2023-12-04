@@ -1,7 +1,16 @@
 package com.aquaero.realestatemanager.repository
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.SM_KEY
 import com.aquaero.realestatemanager.SM_MK_COLOR1
@@ -10,14 +19,27 @@ import com.aquaero.realestatemanager.SM_SIZE
 import com.aquaero.realestatemanager.SM_TYPE
 import com.aquaero.realestatemanager.SM_URL
 import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.utils.convertEuroToDollar
 import java.time.LocalDate
 
 class PropertyRepository() {
 
+    private val context: Context by lazy { ApplicationRoot.getContext() }
+
+    // For fake data only
     private val agentRepository = AgentRepository()
     private val addressRepository = AddressRepository()
     private val photoRepository = PhotoRepository()
     private val fakePhotos = photoRepository.fakePhotos
+
+    /**
+     * Temp data used as a cache for property creation ou update
+     */
+
+    private var descriptionValue by mutableStateOf("")
+    private var priceValue by mutableIntStateOf(0)
+    private var surfaceValue by mutableIntStateOf(0)
+    private var typeValue by mutableStateOf("")
 
 
     fun propertyFromId(propertyId: Long): Property {
@@ -30,13 +52,78 @@ class PropertyRepository() {
     }
 
 
-
-
     // ...
 
+    fun updateProperty(propertyId: Comparable<*>) {
+        // TODO: To be deleted when specific action is implemented
+        Toast
+            .makeText(
+                context,
+                "Click on ${context.getString(R.string.valid)}, for id $propertyId, from EditScreen",
+                Toast.LENGTH_SHORT
+            )
+            .show()
+
+        // TODO: Update database
+
+        // After update
+        Toast
+            .makeText(
+                context,
+                context.getString(
+                    R.string.recorded
+                ),
+                Toast.LENGTH_SHORT
+            )
+            .show()
+    }
 
 
+    /**
+     * Temp data used as a cache for property creation ou update
+     */
 
+    fun onDescriptionValueChanged(value: String) {
+        descriptionValue = value
+
+        Log.w("PropertyRepository", "New value is: $value")
+        Toast.makeText(context, "New value is: $value", Toast.LENGTH_SHORT).show()
+    }
+
+    fun onPriceValueChanged(value: String, currency: String) {
+        priceValue = if (value.isNotEmpty()) {
+            when (currency) {
+                "€" -> convertEuroToDollar(value.toInt())
+                else -> value.toInt()
+            }
+        } else 0
+
+        Log.w(
+            "PropertyRepository",
+            "New value is: $priceValue dollars and input is $value $currency"
+        )
+        Toast.makeText(
+            context,
+            "New value is: $priceValue dollars and input is $value $currency",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    fun onSurfaceValueChanged(value: String) {
+        surfaceValue = if (value.isNotEmpty()) value.toInt() else 0
+
+        Log.w("PropertyRepository", "New value is: $value")
+        Toast.makeText(context, "New value is: $value", Toast.LENGTH_SHORT).show()
+    }
+
+    fun onTypeValueChanged(value: String) {
+        typeValue = value
+        Log.w("PropertyRepository", "New value is: $value")
+        Toast.makeText(context, "New value is: $value", Toast.LENGTH_SHORT).show()
+    }
+
+
+    //
 
     /**
      * Hardcoded data
@@ -63,7 +150,7 @@ class PropertyRepository() {
     val fakeProperties = listOf(
         Property(
             0,
-            "t0000000",
+            "Flat",
             addressRepository.fakeAddresses[0],
             10000000,
             "d0000000\n$loremIpsum",
@@ -73,15 +160,16 @@ class PropertyRepository() {
             10,
             listOf(
                 fakePhotos[0], fakePhotos[1], fakePhotos[2], fakePhotos[3], fakePhotos[4],
-                fakePhotos[5], fakePhotos[6], fakePhotos[7]),
+                fakePhotos[5], fakePhotos[6], fakePhotos[7]
+            ),
             LocalDate.of(2023, 9, 10),  // LocalDate.parse("2023-09-10"),
             null,
             listOf("hospital", "restaurant", "shop", "car_park"),
-            agentRepository.fakeAgents[0]
+            agentRepository.fakeAgents[0].agentId
         ),
         Property(
             1,
-            "t1111111",
+            "House",
             addressRepository.fakeAddresses[1],
             11111111,
             "d1111111\n$loremIpsum",
@@ -91,15 +179,16 @@ class PropertyRepository() {
             11,
             listOf(
                 fakePhotos[0], fakePhotos[1], fakePhotos[2], fakePhotos[3], fakePhotos[4],
-                fakePhotos[5], fakePhotos[6], fakePhotos[7]),
+                fakePhotos[5], fakePhotos[6], fakePhotos[7]
+            ),
             LocalDate.of(2023, 9, 11),  // LocalDate.parse("2023-09-11"),
             null,
             listOf("hospital", "restaurant", "shop", "car_park"),
-            agentRepository.fakeAgents[1]
+            agentRepository.fakeAgents[1].agentId
         ),
         Property(
             2,
-            "t2222222",
+            "Duplex",
             addressRepository.fakeAddresses[2],
             12222222,
             "d2222222\n$loremIpsum",
@@ -109,15 +198,16 @@ class PropertyRepository() {
             12,
             listOf(
                 fakePhotos[0], fakePhotos[1], fakePhotos[2], fakePhotos[3], fakePhotos[4],
-                fakePhotos[5], fakePhotos[6], fakePhotos[7]),
+                fakePhotos[5], fakePhotos[6], fakePhotos[7]
+            ),
             LocalDate.of(2023, 9, 12),  // LocalDate.parse("2023-09-12"),
             null,
             listOf("hospital", "restaurant", "shop", "car_park"),
-            agentRepository.fakeAgents[2]
+            agentRepository.fakeAgents[2].agentId
         ),
         Property(
             3,
-            "t3333333",
+            "Penthouse",
             addressRepository.fakeAddresses[0],
             13333333,
             "d3333333\n$loremIpsum",
@@ -127,15 +217,16 @@ class PropertyRepository() {
             13,
             listOf(
                 fakePhotos[0], fakePhotos[1], fakePhotos[2], fakePhotos[3], fakePhotos[4],
-                fakePhotos[5], fakePhotos[6], fakePhotos[7]),
+                fakePhotos[5], fakePhotos[6], fakePhotos[7]
+            ),
             LocalDate.of(2023, 9, 13),  // LocalDate.parse("2023-09-13"),
             null,
             listOf("hospital", "restaurant", "shop", "car_park"),
-            agentRepository.fakeAgents[0]
+            agentRepository.fakeAgents[0].agentId
         ),
         Property(
             4,
-            "t4444444",
+            "Loft",
             addressRepository.fakeAddresses[1],
             14444444,
             "d4444444\n$loremIpsum",
@@ -145,15 +236,16 @@ class PropertyRepository() {
             14,
             listOf(
                 fakePhotos[0], fakePhotos[1], fakePhotos[2], fakePhotos[3], fakePhotos[4],
-                fakePhotos[5], fakePhotos[6], fakePhotos[7]),
+                fakePhotos[5], fakePhotos[6], fakePhotos[7]
+            ),
             LocalDate.of(2023, 9, 14),  // LocalDate.parse("2023-09-14"),
             null,
             listOf("hospital", "restaurant", "shop", "car_park"),
-            agentRepository.fakeAgents[1]
+            agentRepository.fakeAgents[1].agentId
         ),
         Property(
             5,
-            "t5555555",
+            "Manor",
             addressRepository.fakeAddresses[2],
             15555555,
             "d5555555\n$loremIpsum",
@@ -163,15 +255,16 @@ class PropertyRepository() {
             15,
             listOf(
                 fakePhotos[0], fakePhotos[1], fakePhotos[2], fakePhotos[3], fakePhotos[4],
-                fakePhotos[5], fakePhotos[6], fakePhotos[7]),
+                fakePhotos[5], fakePhotos[6], fakePhotos[7]
+            ),
             LocalDate.of(2023, 9, 15),  // LocalDate.parse("2023-09-15"),
             null,
             listOf("hospital", "restaurant", "shop", "car_park"),
-            agentRepository.fakeAgents[2]
+            agentRepository.fakeAgents[2].agentId
         ),
         Property(
             6,
-            "t6666666",
+            "Castle",
             addressRepository.fakeAddresses[0],
             16666666,
             "d6666666\n$loremIpsum",
@@ -181,15 +274,16 @@ class PropertyRepository() {
             16,
             listOf(
                 fakePhotos[0], fakePhotos[1], fakePhotos[2], fakePhotos[3], fakePhotos[4],
-                fakePhotos[5], fakePhotos[6], fakePhotos[7]),
+                fakePhotos[5], fakePhotos[6], fakePhotos[7]
+            ),
             LocalDate.of(2023, 9, 16),  // LocalDate.parse("2023-09-16"),
             null,
             listOf("hospital", "shop", "car_park"),
-            agentRepository.fakeAgents[0]
+            agentRepository.fakeAgents[0].agentId
         ),
         Property(
             7,
-            "t7777777",
+            "Hostel",
             addressRepository.fakeAddresses[1],
             17777777,
             "d7777777\n$loremIpsum",
@@ -199,11 +293,12 @@ class PropertyRepository() {
             17,
             listOf(
                 fakePhotos[0], fakePhotos[1], fakePhotos[2], fakePhotos[3], fakePhotos[4],
-                fakePhotos[5], fakePhotos[6], fakePhotos[7]),
+                fakePhotos[5], fakePhotos[6], fakePhotos[7]
+            ),
             LocalDate.of(2023, 9, 17),  // LocalDate.parse("2023-09-17"),
             LocalDate.of(2023, 9, 30),  // LocalDate.parse("2023-09-17"),
             listOf("restaurant", "shop", "car_park"),
-            agentRepository.fakeAgents[1]
+            agentRepository.fakeAgents[1].agentId
         ),
         Property(
             8,
@@ -217,11 +312,12 @@ class PropertyRepository() {
             18,
             listOf(
                 fakePhotos[0], fakePhotos[1], fakePhotos[2], fakePhotos[3], fakePhotos[4],
-                fakePhotos[5], fakePhotos[6], fakePhotos[7]),
+                fakePhotos[5], fakePhotos[6], fakePhotos[7]
+            ),
             LocalDate.of(2023, 9, 18),  // LocalDate.parse("2023-09-18"),
             null,
             listOf("hospital", "restaurant", "shop", "car_park"),
-            agentRepository.fakeAgents[2]
+            agentRepository.fakeAgents[2].agentId
         ),
         Property(
             9,
@@ -242,7 +338,7 @@ class PropertyRepository() {
             LocalDate.of(2023, 9, 19),  // LocalDate.parse("2023-09-19"),
             null,
             listOf("hospital", "restaurant", "shop", "car_park"),
-            agentRepository.fakeAgents[0]
+            agentRepository.fakeAgents[0].agentId
         )
     )
     //

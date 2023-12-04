@@ -1,8 +1,39 @@
 package com.aquaero.realestatemanager.repository
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.model.Agent
 
 class AgentRepository() {
+
+    private val context: Context by lazy { ApplicationRoot.getContext() }
+
+    /**
+     * Temp data used as a cache for property creation ou update
+     */
+
+    private var agentValue by mutableStateOf("")
+
+
+    fun agentFromId(agentId: Long): Agent? {
+        fakeAgents.forEach {
+            if (it.agentId == agentId) return it
+        }
+        return null
+    }
+
+    fun onAgentValueChanged(value: String) {
+        agentValue = value
+
+        Log.w("AgentRepository", "New value is: $value")
+        Toast.makeText(context, "New value is: $value", Toast.LENGTH_SHORT).show()
+    }
+
 
     /**
      * 'agentsSet' is nor a variable but a lambda.

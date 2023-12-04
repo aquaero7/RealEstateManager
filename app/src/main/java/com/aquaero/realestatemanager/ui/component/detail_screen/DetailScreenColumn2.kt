@@ -22,7 +22,9 @@ import com.aquaero.realestatemanager.model.Property
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreenColumn2(
-    property: Property
+    property: Property,
+    stringAgent: String,
+    currency: String,
 ) {
     Column(
         modifier = Modifier.wrapContentSize()
@@ -32,8 +34,8 @@ fun DetailScreenColumn2(
         DetailScreenInformationItem(
             image = Icons.Default.Money,
             contentDesc = stringResource(id = R.string.cd_price),
-            label = stringResource(id = R.string.price),
-            value = property.pPrice.toString(),
+            label = stringResource(R.string.price),
+            value = property.priceStringInCurrency(currency), // TODO: Convert value according to currency in DataStore
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -53,7 +55,7 @@ fun DetailScreenColumn2(
             image = Icons.Default.Person,
             contentDesc = stringResource(id = R.string.cd_agent),
             label = stringResource(id = R.string.agent),
-            value = property.agent.toString(),
+            value = stringAgent,
         )
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -12,6 +12,7 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,6 +23,11 @@ import com.aquaero.realestatemanager.ui.component.app.AppTabRow
 import com.aquaero.realestatemanager.ui.component.app.AppTopBar
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
 import com.aquaero.realestatemanager.utils.AppContentType
+import com.aquaero.realestatemanager.utils.CurrencyStore
+import com.aquaero.realestatemanager.utils.convertDollarToEuro
+import com.aquaero.realestatemanager.utils.convertEuroToDollar
+import com.aquaero.realestatemanager.utils.getTodayDate
+import com.aquaero.realestatemanager.utils.isInternetAvailable
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
 import com.aquaero.realestatemanager.viewmodel.DetailViewModel
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
@@ -38,6 +44,7 @@ class RealEstateManagerActivity : ComponentActivity() {
     private val editViewModel by viewModels<EditViewModel> { ViewModelFactory }
     private val mapViewModel by viewModels<MapViewModel> { ViewModelFactory }
 
+
     @SuppressLint("NewApi")
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,8 +52,11 @@ class RealEstateManagerActivity : ComponentActivity() {
 
         setContent {
             val windowSize = calculateWindowSizeClass(activity = this)
+            val currencyStore = appViewModel.currencyStore
+
             RealEstateManagerApp(
                 windowSize = windowSize.widthSizeClass,
+                currencyStore = currencyStore,
                 appViewModel = appViewModel,
                 listViewModel = listViewModel,
                 detailViewModel = detailViewModel,
@@ -69,6 +79,7 @@ class RealEstateManagerActivity : ComponentActivity() {
 @Composable
 fun RealEstateManagerApp(
     windowSize: WindowWidthSizeClass,
+    currencyStore: CurrencyStore,
     appViewModel: AppViewModel,
     listViewModel: ListViewModel,
     detailViewModel: DetailViewModel,
@@ -77,6 +88,7 @@ fun RealEstateManagerApp(
 ) {
     RealEstateManagerTheme(dynamicColor = false) {
         val properties: List<Property> = appViewModel.fakeProperties
+
         /**
          * Init content type, according to window's width,
          * to choose dynamically, on screen state changes, whether to show
@@ -98,13 +110,18 @@ fun RealEstateManagerApp(
         val currentTabScreen = tabRowScreens.find { it.route == currentScreen } ?: ListAndDetail
 
         /**
-         * TopBar menu
+         * TopBar
          */
+        // TopBar Menu
         val menuIcon = appViewModel.menuIcon(currentScreen)
         val menuIconContentDesc = stringResource(appViewModel.menuIconContentDesc(currentScreen))
         val menuEnabled = appViewModel.menuEnabled(currentScreen, windowSize)
-        val onClickMenu: () -> Unit = { appViewModel.onClickMenu(currentScreen, navController, propertyId) }
-        val onClickRadioButton = appViewModel.onClickRadioButton
+        val onClickMenu: () -> Unit =
+            { appViewModel.onClickMenu(currentScreen, navController, propertyId) }
+        val onClickRadioButton: (String) -> Unit = appViewModel.onClickRadioButton
+        // TopBar RadioButtons
+        val currency =
+            currencyStore.getCurrency.collectAsState(initial = stringResource(id = R.string.dollar)).value
 
         /**
          * Bottom bar
@@ -123,6 +140,7 @@ fun RealEstateManagerApp(
                     menuEnabled = menuEnabled,
                     onClickMenu = onClickMenu,
                     onClickRadioButton = onClickRadioButton,
+                    currency = currency,
                 )
             },
             bottomBar = {
@@ -149,7 +167,7 @@ fun RealEstateManagerApp(
                 detailViewModel = detailViewModel,
                 editViewModel = editViewModel,
                 mapViewModel = mapViewModel,
-                // onClickMenu = onClickMenu,
+                currency = currency,
             )
         }
     }

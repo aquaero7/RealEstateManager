@@ -10,10 +10,12 @@
     <string name="map_thumbnail">Location</string>
     <string name="surface_unit">sq.m</string>
     <string name="surface">Surface</string>
+    <string name="surface_in">Surface in</string>
     <string name="rooms">Nb. of rooms</string>
     <string name="bathrooms">Nb. of bathrooms</string>
     <string name="bedrooms">Nb. of bedrooms</string>
     <string name="price">Price</string>
+    <string name="price_in">Price in</string>
     <string name="address">Location</string>
     <string name="registration_date">Registration date</string>
     <string name="sale_date">Sale date</string>
@@ -32,6 +34,7 @@
     <string name="current_location">Current location</string>
     <string name="latitude">Latitude:</string>
     <string name="longitude">Longitude:</string>
+    <string name="recorded">Data recorded!</string>
 
     <!-- TYPE OF PROPERTIES -->
     <string name="flat">Flat</string>
@@ -69,6 +72,8 @@
     <!-- CONTENT DESCRIPTION AND LABEL -->
     <string name="cd_more" translatable="false">more</string>
     <string name="cd_export" translatable="false">export</string>
+    <string name="cd_media" translatable="false">media</string>
+    <string name="cd_description" translatable="false">description</string>
     <string name="cd_surface" translatable="false">surface</string>
     <string name="cd_rooms" translatable="false">rooms</string>
     <string name="cd_bathrooms" translatable="false">bathrooms</string>

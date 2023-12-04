@@ -2,7 +2,6 @@ package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
 import android.os.Build
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -11,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -24,13 +24,13 @@ import com.aquaero.realestatemanager.ui.screen.LocationPermissionsScreen
 import com.aquaero.realestatemanager.ui.screen.MapScreen
 import com.aquaero.realestatemanager.ui.screen.SearchScreen
 import com.aquaero.realestatemanager.utils.AppContentType
+import com.aquaero.realestatemanager.utils.CurrencyStore
 import com.aquaero.realestatemanager.utils.MyLocationSource
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
 import com.aquaero.realestatemanager.viewmodel.DetailViewModel
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
 import com.aquaero.realestatemanager.viewmodel.ListViewModel
 import com.aquaero.realestatemanager.viewmodel.MapViewModel
-import com.aquaero.realestatemanager.viewmodel.ViewModelFactory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.callbackFlow
 
@@ -47,13 +47,14 @@ fun AppNavHost(
     detailViewModel: DetailViewModel,
     editViewModel: EditViewModel,
     mapViewModel: MapViewModel,
-    // onClickMenu: () -> Unit
+    currency: String,
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = ListAndDetail.routeWithArgs,
     ) {
+
         composable(
             route = ListAndDetail.routeWithArgs, arguments = ListAndDetail.arguments
         ) { navBackStackEntry ->
@@ -66,14 +67,18 @@ fun AppNavHost(
                     navController.navigateToDetail(propertyId.toString(), contentType)
                 }
                 val onFabClick = { navController.navigateToDetailEdit("-1") }
+
                 val onBackPressed: () -> Unit = { navController.popBackStack() }
 
                 ListAndDetailScreen(
+                    // listViewModel = listViewModel,   // Todo : To be removed
                     items = properties,
                     thumbnailUrl = thumbnailUrl,
                     contentType = contentType,
                     onPropertyClick = onPropertyClick,
                     property = property,
+                    currency = currency,
+                    stringAgent = appViewModel.agentFromId(property.agentId).toString(),
                     onFabClick = onFabClick,
                     onBackPressed = onBackPressed,
                 )
@@ -126,7 +131,7 @@ fun AppNavHost(
                 onButton1Click = onButton1Click,
                 onButton2Click = onButton2Click,
 
-            )
+                )
         }
 
         composable(route = Loan.route) {
@@ -145,7 +150,9 @@ fun AppNavHost(
             DetailScreen(
                 property = property,
                 thumbnailUrl = thumbnailUrl,
-                onBackPressed = onBackPressed
+                stringAgent = appViewModel.agentFromId(property.agentId).toString(),
+                currency = currency,
+                onBackPressed = onBackPressed,
             )
         }
 
@@ -163,15 +170,43 @@ fun AppNavHost(
             }
             val pTypeSet = { editViewModel.pTypeSet }
             val agentSet = editViewModel.agentSet
-            val onDescriptionValueChanged: (String) -> Unit = {}                        //TODO
-
+            val pTypeIndex = property?.let {
+                editViewModel.mutableSetIndex(
+                    run(pTypeSet) as MutableSet<Any?>,
+                    it.pType
+                )
+            }
+            val agentIndex = property?.let {
+                editViewModel.mutableSetIndex(
+                    run(agentSet) as MutableSet<Any?>,
+                    editViewModel.agentFromId(it.agentId).toString()
+                )
+            }
+            val onDescriptionValueChanged: (String) -> Unit = {
+                editViewModel.onDescriptionValueChanged(it)
+            }
+            val onPriceValueChanged: (String) -> Unit = {
+                editViewModel.onPriceValueChanged(it, currency)
+            }
+            val onSurfaceValueChanged: (String) -> Unit = {
+                editViewModel.onSurfaceValueChanged(it)
+            }
+            val onDropdownMenuValueChanged: (String) -> Unit = {
+                editViewModel.onDropdownMenuValueChanged(it)
+            }
             val onBackPressed: () -> Unit = { navController.popBackStack() }
 
             EditScreen(
                 pTypeSet = pTypeSet,
                 agentSet = agentSet,
                 property = property,
-                // onClickMenu = onClickMenu,
+                pTypeIndex = pTypeIndex,
+                agentIndex = agentIndex,
+                currency = currency,
+                onDescriptionValueChanged = onDescriptionValueChanged,
+                onPriceValueChanged = onPriceValueChanged,
+                onSurfaceValueChanged = onSurfaceValueChanged,
+                onDropdownMenuValueChanged = onDropdownMenuValueChanged,
                 onBackPressed = onBackPressed,
             )
         }

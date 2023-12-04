@@ -27,6 +27,8 @@ import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenPoi
 fun DetailScreen(
     property: Property,
     thumbnailUrl: String,
+    stringAgent: String,
+    currency: String,
     onBackPressed: () -> Unit,
 ) {
     Column(
@@ -55,7 +57,11 @@ fun DetailScreen(
                 modifier = Modifier.weight(1F),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DetailScreenColumn2(property = property)
+                DetailScreenColumn2(
+                    property = property,
+                    stringAgent = stringAgent,
+                    currency = currency,
+                )
             }
             /*
             // Column x

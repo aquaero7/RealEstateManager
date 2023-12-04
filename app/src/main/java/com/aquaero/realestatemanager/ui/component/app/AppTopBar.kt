@@ -18,6 +18,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,11 +31,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.DarkGray
 import com.aquaero.realestatemanager.ui.theme.LightGray
 import com.aquaero.realestatemanager.ui.theme.White
 import com.aquaero.realestatemanager.ui.theme.Yellow
+import com.aquaero.realestatemanager.utils.CurrencyStore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,13 +48,15 @@ fun AppTopBar(
     menuEnabled: Boolean,
     onClickMenu: () -> Unit,
     onClickRadioButton: (String) -> Unit,
+    currency: String,
     titleText: String = stringResource(id = R.string.app_name),
     colors: TopAppBarColors = TopAppBarDefaults
         .topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary),
     dollar: String = stringResource(id = R.string.dollar),
     euro: String = stringResource(id = R.string.euro),
 ) {
-    var selectedOption by remember { mutableStateOf(dollar) }
+    // var selectedOption by remember { mutableStateOf(dollar) }    // TODO : To remove
+    var selectedOption = currency
 
     TopAppBar(
         modifier = modifier.height(48.dp),
@@ -106,7 +111,7 @@ fun TopBarRadioButton(
 ) {
     Box(
         modifier = modifier,
-        // contentAlignment = Alignment.Center
+        // contentAlignment = Alignment.Center  // TODO : To be deleted
     ) {
         RadioButton(
             selected = selected,

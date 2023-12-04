@@ -10,10 +10,12 @@
     <string name="map_thumbnail">Localisation</string>
     <string name="surface_unit">m²</string>
     <string name="surface">Surface</string>
+    <string name="surface_in">Surface en</string>
     <string name="rooms">Nb. de pièces</string>
     <string name="bathrooms">Nb. de salles de bain</string>
     <string name="bedrooms">Nb. de chambres</string>
     <string name="price">Prix</string>
+    <string name="price_in">Prix en</string>
     <string name="address">Adresse</string>
     <string name="registration_date">Date d\'enregistrement</string>
     <string name="sale_date">Date de vente</string>
@@ -32,6 +34,7 @@
     <string name="current_location">Position actuelle</string>
     <string name="latitude">Latitude:</string>
     <string name="longitude">Longitude:</string>
+    <string name="recorded">Données enregistrées!</string>
 
     <!-- TYPES OF PROPERTIES -->
     <string name="flat">Appartement</string>

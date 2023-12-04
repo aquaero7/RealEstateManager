@@ -1,8 +1,12 @@
 package com.aquaero.realestatemanager.repository
 
+import android.content.Context
+import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.model.Photo
 
 class PhotoRepository() {
+
+    private val context: Context by lazy { ApplicationRoot.getContext() }
 
     // ...
 

@@ -77,9 +77,12 @@ class LocationRepository {
 // TODO: Move from TOP LEVEL to class ?
 @SuppressLint("NewApi")
 fun getLocationFromAddress(strAddress: String?): LatLng? {
+
+    // TODO: Check internet access
+
     val coder = Geocoder(ApplicationRoot.getContext())
     var latLng: LatLng? = null
-    coder.getFromLocationName(strAddress!!, 5, // @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    coder.getFromLocationName(strAddress!!, 5,
         object : Geocoder.GeocodeListener {
             override fun onGeocode(address: MutableList<Address>) {
                 val location: Address = address[0]

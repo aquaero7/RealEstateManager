@@ -1,6 +1,5 @@
 package com.aquaero.realestatemanager.ui.screen
 
-import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
@@ -12,15 +11,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalAbsoluteTonalElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
@@ -38,15 +32,14 @@ import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.list_screen.PropertyCard
-import com.aquaero.realestatemanager.ui.theme.Pink40
 import com.aquaero.realestatemanager.utils.AppContentType
-import com.aquaero.realestatemanager.viewmodel.ListViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ListScreen(
     items: List<Property>,
     contentType: AppContentType,
+    currency: String,
     property: Property,
     onPropertyClick: (Long) -> Unit,
     onFabClick: () -> Unit,
@@ -88,8 +81,8 @@ fun ListScreen(
                         pId = propertyItem.pId,
                         pType = propertyItem.pType,
                         pCity = propertyItem.pAddress.city,
-                        pPrice = propertyItem.pPrice,
                         phId = phId,
+                        pPriceFormatted = propertyItem.priceStringInCurrency(currency),
                         contentType = contentType,
                         selected = selectedId == propertyItem.pId ||
                                 property.pId.toString() == propertyItem.pId.toString(), // For compatibility with ListAndDetailScreen

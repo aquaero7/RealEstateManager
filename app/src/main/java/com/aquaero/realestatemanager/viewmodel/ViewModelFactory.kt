@@ -15,9 +15,9 @@ object ViewModelFactory:  ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
-            AppViewModel(propertyRepository) as T
+            AppViewModel(agentRepository, propertyRepository) as T
         } else if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
-            ListViewModel(propertyRepository) as T
+            ListViewModel(agentRepository, propertyRepository) as T
         } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
             DetailViewModel(propertyRepository) as T
         } else if (modelClass.isAssignableFrom(EditViewModel::class.java)) {

@@ -2,12 +2,6 @@ package com.aquaero.realestatemanager.viewmodel
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import android.location.Address
-import android.location.Geocoder
-import android.location.Location
-import android.net.Uri
-import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
@@ -24,15 +18,18 @@ import com.aquaero.realestatemanager.ListAndDetail
 import com.aquaero.realestatemanager.Loan
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.SearchCriteria
-import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.navigateToDetailEdit
 import com.aquaero.realestatemanager.repository.AgentRepository
-import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.utils.AppContentType
-import com.google.android.gms.maps.model.LatLng
+import com.aquaero.realestatemanager.utils.CurrencyStore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class AppViewModel(
+    private val agentRepository : AgentRepository,
     private val propertyRepository: PropertyRepository,
 ) : ViewModel() {
 
@@ -55,6 +52,9 @@ class AppViewModel(
             AppContentType.SCREEN_ONLY
         }
     }
+
+    // Init CurrencyStore
+    val currencyStore = CurrencyStore(context)
 
     /**
      * TopBar
@@ -88,7 +88,12 @@ class AppViewModel(
                 navController.navigateToDetailEdit(propertyId.toString())
             }
 
-            EditDetail.routeWithArgs, SearchCriteria.route, Loan.route -> {
+            EditDetail.routeWithArgs -> {
+                propertyRepository.updateProperty(propertyId)
+                navController.popBackStack()
+            }
+
+            SearchCriteria.route -> {
                 Log.w("Click on menu valid", "Property $propertyId")
                 // TODO: Replace toast with specific action
                 Toast
@@ -98,16 +103,34 @@ class AppViewModel(
                     )
                     .show()
             }
+
+            Loan.route -> {
+                Log.w("Click on menu valid", "Property $propertyId")
+                // TODO: Replace toast with specific action before deleting
+                Toast
+                    .makeText(
+                        context, "Click on ${context.getString(R.string.valid)}",
+                        Toast.LENGTH_SHORT
+                    )
+                    .show()
+            }
+
         }
     }
 
-    val onClickRadioButton = { currency: String ->
-        Toast
-            .makeText(context, "Click on $currency", Toast.LENGTH_SHORT)
-            .show()
+    val onClickRadioButton: (String) -> Unit = { currency: String ->
+        // Store selected currency with DataStore
+        CoroutineScope(Dispatchers.IO).launch {
+            currencyStore.saveCurrency(currency)
+        }
     }
 
     /** End TopBar */
+
+
+    fun agentFromId(agentId: Long): Agent? {
+        return agentRepository.agentFromId(agentId)
+    }
 
 
 

@@ -61,7 +61,7 @@ fun DetailScreenColumn1(
             image = Icons.Default.AspectRatio,
             contentDesc = stringResource(id = R.string.cd_surface),
             label = stringResource(id = R.string.surface),
-            value = property.surface.toString(),
+            value = property.surface.toString(),    // TODO: Convert value to local unit
             suffix = stringResource(id = R.string.surface_unit)
         )
 

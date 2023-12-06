@@ -24,10 +24,6 @@ import com.aquaero.realestatemanager.ui.component.app.AppTopBar
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.utils.CurrencyStore
-import com.aquaero.realestatemanager.utils.convertDollarToEuro
-import com.aquaero.realestatemanager.utils.convertEuroToDollar
-import com.aquaero.realestatemanager.utils.getTodayDate
-import com.aquaero.realestatemanager.utils.isInternetAvailable
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
 import com.aquaero.realestatemanager.viewmodel.DetailViewModel
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
@@ -43,7 +39,6 @@ class RealEstateManagerActivity : ComponentActivity() {
     private val detailViewModel by viewModels<DetailViewModel> { ViewModelFactory }
     private val editViewModel by viewModels<EditViewModel> { ViewModelFactory }
     private val mapViewModel by viewModels<MapViewModel> { ViewModelFactory }
-
 
     @SuppressLint("NewApi")
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -69,6 +64,7 @@ class RealEstateManagerActivity : ComponentActivity() {
     @SuppressLint("NewApi")
     override fun onResume() {
         super.onResume()
+        // appViewModel.checkForInternet() // TODO: To be deleted
         mapViewModel.checkForPermissions()
     }
 

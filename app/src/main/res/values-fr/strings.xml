@@ -2,6 +2,12 @@
     <string name="app_name">RealEstateManager</string>
 
     <!-- LABELS -->
+    <string name="list">LISTE</string>
+    <string name="map">CARTE</string>
+    <string name="search_criteria">RECHERCHE</string>
+    <string name="loan">EMPRUNT</string>
+    <string name="detail">DETAIL</string>
+    <string name="edit_detail">EDITION</string>
     <string name="type">Type</string>
     <string name="agent">Agent</string>
     <string name="media">Media</string>
@@ -35,6 +41,8 @@
     <string name="latitude">Latitude:</string>
     <string name="longitude">Longitude:</string>
     <string name="recorded">Données enregistrées!</string>
+    <string name="perms_revoked">Carte indisponible car\nles permissions de localisation\nont été refusées !</string>
+    <string name="network_unavailable">Réseau indisponible !</string>
 
     <!-- TYPES OF PROPERTIES -->
     <string name="flat">Appartement</string>

@@ -7,7 +7,7 @@ import java.util.Locale
 
 data class Property(
     val pId: Long,
-    val pType: String,
+    val pType: Int,
     val pAddress: Address,
     val pPrice: Int,
     val description: String?,
@@ -29,18 +29,7 @@ data class Property(
         }
     }
 
-
     fun priceStringInCurrency(currency: String): String {
-        /*
-        val numberFormat: NumberFormat = when (currency) {
-            "€" -> NumberFormat.getCurrencyInstance(Locale("fr", "FR"))
-            else -> NumberFormat.getCurrencyInstance(Locale("en", "US"))
-        }
-        numberFormat.maximumFractionDigits = 0
-        return numberFormat.format(pPrice)
-        */
-
-        //
         return when (currency) {
             "€" -> {
                 val numberFormat = NumberFormat.getCurrencyInstance(Locale("fr", "FR"))
@@ -53,8 +42,6 @@ data class Property(
                 numberFormat.format(pPrice)
             }
         }
-        //
-
     }
     
 }

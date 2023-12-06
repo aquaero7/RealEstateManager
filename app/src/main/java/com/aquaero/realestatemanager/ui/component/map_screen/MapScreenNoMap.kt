@@ -24,7 +24,9 @@ import com.aquaero.realestatemanager.ui.theme.Gray
 import com.aquaero.realestatemanager.ui.theme.Red
 
 @Composable
-fun MapScreenNoMap() {
+fun MapScreenNoMap(
+    infoText: String
+) {
 
     Column(
         modifier = Modifier
@@ -43,7 +45,7 @@ fun MapScreenNoMap() {
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "The map is unavailable because\nlocation permissions\nhave been revoked !",
+            text = infoText,
             textAlign = TextAlign.Center,
             lineHeight = 32.sp,
             fontSize = 20.sp,

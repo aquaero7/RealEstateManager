@@ -150,7 +150,7 @@ class PropertyRepository() {
     val fakeProperties = listOf(
         Property(
             0,
-            "Flat",
+            R.string.flat,   // "Flat",
             addressRepository.fakeAddresses[0],
             10000000,
             "d0000000\n$loremIpsum",
@@ -169,7 +169,7 @@ class PropertyRepository() {
         ),
         Property(
             1,
-            "House",
+             R.string.house,   // "House",
             addressRepository.fakeAddresses[1],
             11111111,
             "d1111111\n$loremIpsum",
@@ -188,7 +188,7 @@ class PropertyRepository() {
         ),
         Property(
             2,
-            "Duplex",
+            R.string.duplex,    // "Duplex",
             addressRepository.fakeAddresses[2],
             12222222,
             "d2222222\n$loremIpsum",
@@ -207,7 +207,7 @@ class PropertyRepository() {
         ),
         Property(
             3,
-            "Penthouse",
+            R.string.penthouse,    // "Penthouse",
             addressRepository.fakeAddresses[0],
             13333333,
             "d3333333\n$loremIpsum",
@@ -226,7 +226,7 @@ class PropertyRepository() {
         ),
         Property(
             4,
-            "Loft",
+            R.string.loft,    // "Loft",
             addressRepository.fakeAddresses[1],
             14444444,
             "d4444444\n$loremIpsum",
@@ -245,7 +245,7 @@ class PropertyRepository() {
         ),
         Property(
             5,
-            "Manor",
+            R.string.manor,    // "Manor",
             addressRepository.fakeAddresses[2],
             15555555,
             "d5555555\n$loremIpsum",
@@ -264,7 +264,7 @@ class PropertyRepository() {
         ),
         Property(
             6,
-            "Castle",
+            R.string.castle,    // "Castle",
             addressRepository.fakeAddresses[0],
             16666666,
             "d6666666\n$loremIpsum",
@@ -283,7 +283,7 @@ class PropertyRepository() {
         ),
         Property(
             7,
-            "Hostel",
+            R.string.hostel,    // "Hostel",
             addressRepository.fakeAddresses[1],
             17777777,
             "d7777777\n$loremIpsum",
@@ -302,7 +302,7 @@ class PropertyRepository() {
         ),
         Property(
             8,
-            "t8888888",
+            R.string.flat,    // "t8888888",
             addressRepository.fakeAddresses[2],
             18888888,
             "d8888888\n$loremIpsum",
@@ -321,7 +321,7 @@ class PropertyRepository() {
         ),
         Property(
             9,
-            "t9999999",
+             R.string.house,   // "t9999999",
             addressRepository.fakeAddresses[0],
             19999999,
             "d9999999\n$loremIpsum",

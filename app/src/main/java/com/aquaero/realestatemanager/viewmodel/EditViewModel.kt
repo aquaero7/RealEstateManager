@@ -3,6 +3,7 @@ package com.aquaero.realestatemanager.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.aquaero.realestatemanager.ApplicationRoot
+import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.repository.AgentRepository
@@ -56,10 +57,7 @@ class EditViewModel(
         }
     }
 
-
     fun mutableSetIndex(set: MutableSet<Any?>, item: String): Int {
-        // return propertyRepository.mutableSetIndex(set, item)
-
         var index: Int = 0
         for (setItem in set) {
             if (setItem is Int?) {

@@ -76,27 +76,27 @@ class LocationRepository {
 
 // TODO: Move from TOP LEVEL to class ?
 @SuppressLint("NewApi")
-fun getLocationFromAddress(strAddress: String?): LatLng? {
-
-    // TODO: Check internet access
-
+fun getLocationFromAddress(strAddress: String?, internetAvailable: Boolean): LatLng? {
     val coder = Geocoder(ApplicationRoot.getContext())
     var latLng: LatLng? = null
-    coder.getFromLocationName(strAddress!!, 5,
-        object : Geocoder.GeocodeListener {
-            override fun onGeocode(address: MutableList<Address>) {
-                val location: Address = address[0]
-                latLng = LatLng(location.latitude, location.longitude)
-                Log.w("Geocoder.getFromLocName", latLng.toString())
-                Log.w("Geocoder.getFromLocName", location.locality)
-                Log.w("Geocoder.getFromLocName", location.latitude.toString())
-                Log.w("Geocoder.getFromLocName", location.longitude.toString())
-            }
 
-            override fun onError(errorMessage: String?) {
-                super.onError(errorMessage)
-                Log.w("Geocoder.getFromLocName", errorMessage.toString())
-            }
-        })
+    if (internetAvailable) {
+        coder.getFromLocationName(strAddress!!, 5,
+            object : Geocoder.GeocodeListener {
+                override fun onGeocode(address: MutableList<Address>) {
+                    val location: Address = address[0]
+                    latLng = LatLng(location.latitude, location.longitude)
+                    Log.w("Geocoder.getFromLocName", latLng.toString())
+                    Log.w("Geocoder.getFromLocName", location.locality)
+                    Log.w("Geocoder.getFromLocName", location.latitude.toString())
+                    Log.w("Geocoder.getFromLocName", location.longitude.toString())
+                }
+
+                override fun onError(errorMessage: String?) {
+                    super.onError(errorMessage)
+                    Log.w("Geocoder.getFromLocName", errorMessage.toString())
+                }
+            })
+    }
     return latLng
 }

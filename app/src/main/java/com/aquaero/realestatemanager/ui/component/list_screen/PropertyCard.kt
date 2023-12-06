@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.Red
@@ -35,7 +36,7 @@ import com.aquaero.realestatemanager.utils.AppContentType
 @Composable
 fun PropertyCard(
     pId: Long,
-    pType: String,
+    pType: Int,
     pCity: String,
     phId: Long,
     pPriceFormatted: String,
@@ -94,7 +95,7 @@ fun PropertyCard(
                     Column {
                         Text(
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                            text = pType,
+                            text = stringResource(pType),
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -109,12 +110,6 @@ fun PropertyCard(
                             text = pPriceFormatted, // TODO: Convert value according to currency in DataStore
                             style = MaterialTheme.typography.titleLarge,
                             color = Red,
-                            /*
-                            color = if (
-                                selected && contentType == AppContentType.SCREEN_WITH_DETAIL &&
-                                !unselectedByDefaultDisplay
-                                ) White else Red,
-                            */
                         )
                     }
                 }

@@ -2,6 +2,12 @@
     <string name="app_name">RealEstateManager</string>
 
     <!-- LABEL -->
+    <string name="list">LIST</string>
+    <string name="map">MAP</string>
+    <string name="search_criteria">SEARCH</string>
+    <string name="loan">LOAN</string>
+    <string name="detail">DETAIL</string>
+    <string name="edit_detail">EDIT_DETAIL</string>
     <string name="type">Type</string>
     <string name="agent">Agent</string>
     <string name="media">Media</string>
@@ -35,6 +41,8 @@
     <string name="latitude">Latitude:</string>
     <string name="longitude">Longitude:</string>
     <string name="recorded">Data recorded!</string>
+    <string name="perms_revoked">The map is unavailable because\nlocation permissions\nhave been revoked!</string>
+    <string name="network_unavailable">Network unavailable!</string>
 
     <!-- TYPE OF PROPERTIES -->
     <string name="flat">Flat</string>
@@ -95,6 +103,8 @@
     <string name="cd_car_park" translatable="false">car_park</string>
     <string name="cd_check" translatable="false">check</string>
     <string name="cd_fab" translatable="false">FAB</string>
+    <string name="cd_static_map" translatable="false">static_map</string>
+    <string name="cd_no_static_map" translatable="false">no_static_map</string>
     <string name="lb_tab_color_anim" translatable="false">tab_color_anim</string>
 
     <!-- CURRENCY -->

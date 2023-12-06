@@ -27,6 +27,7 @@ import com.aquaero.realestatemanager.utils.CurrencyStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.properties.Delegates
 
 class AppViewModel(
     private val agentRepository : AgentRepository,
@@ -34,6 +35,8 @@ class AppViewModel(
 ) : ViewModel() {
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
+
+    private var internetAvailable by Delegates.notNull<Boolean>()
 
     @SuppressLint("NewApi")
     val fakeProperties = propertyRepository.fakeProperties
@@ -51,6 +54,17 @@ class AppViewModel(
         else -> {
             AppContentType.SCREEN_ONLY
         }
+    }
+
+    /* TODO: Function to be deleted
+    fun checkForInternet(): Boolean {
+        internetAvailable = isInternetAvailable(context)
+        return internetAvailable
+    }
+    */
+
+    fun isInternetAvailable(): Boolean {
+        return internetAvailable
     }
 
     // Init CurrencyStore

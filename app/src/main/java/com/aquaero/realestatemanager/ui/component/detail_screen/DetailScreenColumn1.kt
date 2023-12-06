@@ -51,7 +51,7 @@ fun DetailScreenColumn1(
             image = Icons.Default.House,
             contentDesc = stringResource(id = R.string.cd_type),
             label = stringResource(id = R.string.type),
-            value = property.pType,
+            value = stringResource(property.pType),
         )
 
         Spacer(modifier = Modifier.height(16.dp))

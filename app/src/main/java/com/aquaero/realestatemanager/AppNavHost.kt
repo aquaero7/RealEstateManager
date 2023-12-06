@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.ui.component.map_screen.MapScreenNoMap
 import com.aquaero.realestatemanager.ui.screen.DetailScreen
 import com.aquaero.realestatemanager.ui.screen.EditScreen
 import com.aquaero.realestatemanager.ui.screen.ListAndDetailScreen
@@ -24,8 +25,9 @@ import com.aquaero.realestatemanager.ui.screen.LocationPermissionsScreen
 import com.aquaero.realestatemanager.ui.screen.MapScreen
 import com.aquaero.realestatemanager.ui.screen.SearchScreen
 import com.aquaero.realestatemanager.utils.AppContentType
-import com.aquaero.realestatemanager.utils.CurrencyStore
+import com.aquaero.realestatemanager.utils.ConnectionState
 import com.aquaero.realestatemanager.utils.MyLocationSource
+import com.aquaero.realestatemanager.utils.connectivityState
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
 import com.aquaero.realestatemanager.viewmodel.DetailViewModel
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
@@ -71,7 +73,6 @@ fun AppNavHost(
                 val onBackPressed: () -> Unit = { navController.popBackStack() }
 
                 ListAndDetailScreen(
-                    // listViewModel = listViewModel,   // Todo : To be removed
                     items = properties,
                     thumbnailUrl = thumbnailUrl,
                     contentType = contentType,
@@ -86,40 +87,49 @@ fun AppNavHost(
         }
 
         composable(route = GeolocMap.route) {
+            // Get network connection availability
+            val connection by connectivityState()
+            val internetAvailable = connection === ConnectionState.Available
+            // Get permission grants
             var locationPermissionsGranted by remember {
                 mutableStateOf(mapViewModel.areLocPermsGranted())
             }
 
-            if (locationPermissionsGranted) {
-                var showMap by remember { mutableStateOf(false) }
-                var currentLocation by remember { mutableStateOf(DEFAULT_LOCATION) }
-                val locationFlow = callbackFlow {
-                    while (true) {
-                        mapViewModel.getCurrentLocation() {
-                            currentLocation = it
-                            showMap = true
-                            trySend(it)
+            if (internetAvailable) {
+                if (locationPermissionsGranted) {
+                    var showMap by remember { mutableStateOf(false) }
+                    var currentLocation by remember { mutableStateOf(DEFAULT_LOCATION) }
+                    val locationFlow = callbackFlow {
+                        while (true) {
+                            mapViewModel.getCurrentLocation() {
+                                currentLocation = it
+                                showMap = true
+                                trySend(it)
+                            }
+                            delay(1)
                         }
-                        delay(1)
                     }
+                    val locationState = locationFlow.collectAsState(initial = currentLocation)
+                    val locationSource = MyLocationSource()
+                    MapScreen(
+                        showMap = showMap,
+                        properties = properties,
+                        locationState = locationState,
+                        locationSource = locationSource,
+                    )
+                } else {
+                    val onOpenAppSettings = { mapViewModel.openAppSettings() }
+                    val onPermissionsGranted = { locationPermissionsGranted = true }
+
+                    LocationPermissionsScreen(
+                        onOpenAppSettings = onOpenAppSettings,
+                        onPermissionsGranted = onPermissionsGranted,
+                    )
                 }
-                val locationState = locationFlow.collectAsState(initial = currentLocation)
-                val locationSource = MyLocationSource()
-                MapScreen(
-                    showMap = showMap,
-                    properties = properties,
-                    locationState = locationState,
-                    locationSource = locationSource,
-                )
 
             } else {
-                val onOpenAppSettings = { mapViewModel.openAppSettings() }
-                val onPermissionsGranted = { locationPermissionsGranted = true }
-
-                LocationPermissionsScreen(
-                    onOpenAppSettings = onOpenAppSettings,
-                    onPermissionsGranted = onPermissionsGranted,
-                )
+                // No network
+                MapScreenNoMap(stringResource(id = R.string.network_unavailable))
             }
         }
 
@@ -173,7 +183,7 @@ fun AppNavHost(
             val pTypeIndex = property?.let {
                 editViewModel.mutableSetIndex(
                     run(pTypeSet) as MutableSet<Any?>,
-                    it.pType
+                    stringResource(it.pType)
                 )
             }
             val agentIndex = property?.let {

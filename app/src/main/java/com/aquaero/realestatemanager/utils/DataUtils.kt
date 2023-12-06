@@ -25,6 +25,7 @@ fun getTodayDate(): String? {
     return dateFormat.format(Date())
 }
 
+/* TODO: Function to be deleted
 @SuppressLint("NewApi")
 fun isInternetAvailable(context: Context?): Boolean {
     var isInternetAvailable = false
@@ -44,6 +45,7 @@ fun isInternetAvailable(context: Context?): Boolean {
     Log.w("DataUtils", "Wifi: $wifiInfo / Cellular: $mobileInfo / Internet: $isInternetAvailable")
     return isInternetAvailable
 }
+*/
 
 
 

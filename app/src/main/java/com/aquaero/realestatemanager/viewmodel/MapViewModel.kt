@@ -8,13 +8,17 @@ import android.provider.Settings
 import androidx.lifecycle.ViewModel
 import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.repository.LocationRepository
-import com.google.android.gms.maps.model.LatLng
+import com.aquaero.realestatemanager.utils.ConnectionState
 
 class MapViewModel(
     private val locationRepository: LocationRepository
 ): ViewModel() {
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
+
+    fun checkForConnection(connection: ConnectionState): Boolean {
+        return connection === ConnectionState.Available
+    }
 
     fun checkForPermissions(): Boolean {
         return locationRepository.checkForPermissions()

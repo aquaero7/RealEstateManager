@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager.ui.screen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -72,6 +73,7 @@ fun ListScreen(
                 modifier = Modifier
                     // .padding(vertical = 20.dp)
                     .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 state = LazyListState(firstVisibleItemIndex = items.indexOf(property)),
             ) {
                 items(items = items) { propertyItem ->

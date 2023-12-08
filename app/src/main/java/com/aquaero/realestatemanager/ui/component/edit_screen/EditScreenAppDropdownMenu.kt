@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager.ui.component.edit_screen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -132,13 +133,11 @@ fun EditScreenAppDropdownMenu(
                             val textDisplayed = if (s is String) s else stringResource(id = s as Int)
                             DropdownMenuItem(
                                 text = {
-                                    if (s != null) {
-                                        Text(
-                                            text = textDisplayed,
-                                            // color = BoxTextColor,
-                                            fontSize = 16.sp,
-                                        )
-                                    }
+                                    Text(
+                                        text = textDisplayed,
+                                        // color = BoxTextColor,
+                                        fontSize = 16.sp,
+                                    )
                                 },
                                 onClick = {
                                     selectedIndex = index
@@ -181,8 +180,9 @@ fun EditScreenAppDropdownMenuExample(label: String, itemsSet: () -> MutableSet<*
             Surface(
                 modifier = Modifier
                     .width(200.dp)
-                    .wrapContentHeight(),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
+                    .wrapContentHeight()
+                    .border(1.dp, MaterialTheme.colorScheme.onSurface),             // ?
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)    // ?
             ) {
                 Box(
                     modifier = Modifier

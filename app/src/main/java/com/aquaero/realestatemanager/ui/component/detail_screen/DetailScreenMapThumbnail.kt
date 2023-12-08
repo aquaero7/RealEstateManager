@@ -43,12 +43,10 @@ import com.google.android.gms.maps.model.LatLng
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun DetailScreenMapThumbnail(
+    internetAvailable: Boolean,
     thumbnailUrl: String,
     latLng: LatLng,
 ) {
-    val connection by connectivityState()
-    val isConnected = connection === ConnectionState.Available
-
     Text(
         text = stringResource(R.string.map_thumbnail),
         modifier = Modifier
@@ -56,7 +54,7 @@ fun DetailScreenMapThumbnail(
             .padding(horizontal = 8.dp)
     )
 
-    if (isConnected) {
+    if (internetAvailable) {
         // Network is available, so display static map
         // GlideImage if using Glide or AsyncImage if using Coil
         GlideImage(
@@ -65,7 +63,7 @@ fun DetailScreenMapThumbnail(
             modifier = Modifier
                 //.size(400.dp)
                 .wrapContentSize()
-                .border(BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.tertiary))
+                .border(width = 2.dp, color = MaterialTheme.colorScheme.tertiary)
                 .padding(4.dp),
             contentScale = ContentScale.Inside,
         )

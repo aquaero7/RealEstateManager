@@ -25,27 +25,6 @@ fun getTodayDate(): String? {
     return dateFormat.format(Date())
 }
 
-/* TODO: Function to be deleted
-@SuppressLint("NewApi")
-fun isInternetAvailable(context: Context?): Boolean {
-    var isInternetAvailable = false
-    var wifiInfo = false
-    var mobileInfo = false
-    if (context != null) {
-        val connectivity =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        connectivity.getNetworkCapabilities(connectivity.activeNetwork).also {
-            if (it != null) {
-                wifiInfo = it.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                mobileInfo = it.hasTransport((NetworkCapabilities.TRANSPORT_CELLULAR))
-            }
-        }
-        if (wifiInfo || mobileInfo) isInternetAvailable = true
-    }
-    Log.w("DataUtils", "Wifi: $wifiInfo / Cellular: $mobileInfo / Internet: $isInternetAvailable")
-    return isInternetAvailable
-}
-*/
 
 
 

@@ -73,6 +73,10 @@
     <string name="grant">Grant</string>
     <string name="allow">Allow</string>
     <string name="dismiss">Dismiss</string>
+    <string name="add_photo">Add to photos</string>
+    <string name="delete_photo">Delete photo</string>
+    <string name="shoot_photo">Shoot a photo</string>
+    <string name="select_photo">Select a photo</string>
 
 
     <!-- *** NOT TRANSLATABLE *** -->
@@ -105,6 +109,10 @@
     <string name="cd_fab" translatable="false">FAB</string>
     <string name="cd_static_map" translatable="false">static_map</string>
     <string name="cd_no_static_map" translatable="false">no_static_map</string>
+    <string name="cd_add_photo" translatable="false">add_photo</string>
+    <string name="cd_menu_item_delete_photo" translatable="false">delete_photo</string>
+    <string name="cd_menu_item_shoot_photo" translatable="false">shoot_photo</string>
+    <string name="cd_menu_item_select_photo" translatable="false">select_photo</string>
     <string name="lb_tab_color_anim" translatable="false">tab_color_anim</string>
 
     <!-- CURRENCY -->

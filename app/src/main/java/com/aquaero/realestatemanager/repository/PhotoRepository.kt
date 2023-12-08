@@ -8,7 +8,15 @@ class PhotoRepository() {
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
-    // ...
+    private var photoReady: Boolean = false
+
+    fun isPhotoReady(): Boolean {
+        return photoReady
+    }
+
+    fun photoIsReady() {
+        photoReady = true
+    }
 
 
 

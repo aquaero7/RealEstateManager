@@ -19,7 +19,6 @@ import com.aquaero.realestatemanager.viewmodel.ListViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ListAndDetailScreen(
-    // listViewModel: ListViewModel,    // TODO : To be removed
     items: List<Property>,
     thumbnailUrl: String,
     contentType: AppContentType,
@@ -27,6 +26,7 @@ fun ListAndDetailScreen(
     property: Property,
     currency: String,
     stringAgent: String,
+    internetAvailable: Boolean,
     onFabClick: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -61,6 +61,7 @@ fun ListAndDetailScreen(
                     thumbnailUrl = thumbnailUrl,
                     stringAgent = stringAgent,
                     currency = currency,
+                    internetAvailable = internetAvailable,
                     onBackPressed = onBackPressed,
                 )
             }

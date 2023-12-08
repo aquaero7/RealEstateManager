@@ -18,9 +18,6 @@ import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,8 +27,8 @@ import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenAppDropdownMenu
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenAppDropdownMenuExample
+import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenMedia
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenTextFieldItem
-import com.aquaero.realestatemanager.utils.convertDollarToEuro
 
 @Composable
 fun EditScreen(
@@ -45,6 +42,11 @@ fun EditScreen(
     onPriceValueChanged: (String) -> Unit,
     onSurfaceValueChanged: (String) -> Unit,
     onDropdownMenuValueChanged: (String) -> Unit,
+    onShootPhotoMenuItemClick: () -> Unit,
+    onSelectPhotoMenuItemClick: () -> Unit,
+    isPhotoReady: Boolean,
+    onAddPhotoButtonClick: () -> Unit,
+    onDeletePhotoMenuItemClick: (Long) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     Column(
@@ -69,6 +71,7 @@ fun EditScreen(
             onValueChanged = onDescriptionValueChanged,
         )
 
+        // Columns
         Row {
 
             // Column 1
@@ -124,6 +127,17 @@ fun EditScreen(
 
             }
         }
+
+        // Media
+        EditScreenMedia(
+            property = property,
+            onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
+            onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,
+            isPhotoReady = isPhotoReady,
+            onAddPhotoButtonClick = onAddPhotoButtonClick,
+            onDeletePhotoMenuItemClick = onDeletePhotoMenuItemClick,
+        )
+
 
 
         // TODO: To be deleted after screen implementation ---------------------------------------------

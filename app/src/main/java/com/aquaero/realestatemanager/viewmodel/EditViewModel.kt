@@ -1,17 +1,19 @@
 package com.aquaero.realestatemanager.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.aquaero.realestatemanager.ApplicationRoot
-import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.repository.AgentRepository
+import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 
 class EditViewModel(
     private val agentRepository: AgentRepository,
-    private val propertyRepository: PropertyRepository
+    private val propertyRepository: PropertyRepository,
+    private val photoRepository: PhotoRepository,
 ) : ViewModel() {
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
@@ -69,5 +71,33 @@ class EditViewModel(
         }
         return index
     }
+
+    fun onShootPhotoMenuItemClick() {
+        // TODO: To implement
+        photoRepository.photoIsReady()
+        Log.w("EditViewModel", "Click on shoot photo menu item")
+    }
+
+    fun onSelectPhotoMenuItemClick() {
+        // TODO: To implement
+        photoRepository.photoIsReady()
+        Log.w("EditViewModel", "Click on select photo menu item")
+    }
+
+    fun onAddPhotoButtonClick() {
+        // TODO: To implement
+        Log.w("EditViewModel", "Click on add photo button")
+    }
+
+    fun onDeletePhotoMenuItemClick(value: Long) {
+        // TODO: To implement
+        Log.w("EditViewModel", "Click on delete photo $value button")
+    }
+
+    fun isPhotoReady(): Boolean {
+        return photoRepository.isPhotoReady()
+    }
+
+
 
 }

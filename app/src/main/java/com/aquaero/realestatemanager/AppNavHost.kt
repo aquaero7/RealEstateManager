@@ -25,7 +25,6 @@ import com.aquaero.realestatemanager.ui.screen.LocationPermissionsScreen
 import com.aquaero.realestatemanager.ui.screen.MapScreen
 import com.aquaero.realestatemanager.ui.screen.SearchScreen
 import com.aquaero.realestatemanager.utils.AppContentType
-import com.aquaero.realestatemanager.utils.ConnectionState
 import com.aquaero.realestatemanager.utils.MyLocationSource
 import com.aquaero.realestatemanager.utils.connectivityState
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
@@ -68,8 +67,9 @@ fun AppNavHost(
                 val onPropertyClick: (Long) -> Unit = { propertyId ->
                     navController.navigateToDetail(propertyId.toString(), contentType)
                 }
+                val connection by connectivityState()
+                val internetAvailable = listViewModel.checkForConnection(connection = connection)
                 val onFabClick = { navController.navigateToDetailEdit("-1") }
-
                 val onBackPressed: () -> Unit = { navController.popBackStack() }
 
                 ListAndDetailScreen(
@@ -80,6 +80,7 @@ fun AppNavHost(
                     property = property,
                     currency = currency,
                     stringAgent = appViewModel.agentFromId(property.agentId).toString(),
+                    internetAvailable = internetAvailable,
                     onFabClick = onFabClick,
                     onBackPressed = onBackPressed,
                 )
@@ -89,7 +90,7 @@ fun AppNavHost(
         composable(route = GeolocMap.route) {
             // Get network connection availability
             val connection by connectivityState()
-            val internetAvailable = connection === ConnectionState.Available
+            val internetAvailable = mapViewModel.checkForConnection(connection = connection)
             // Get permission grants
             var locationPermissionsGranted by remember {
                 mutableStateOf(mapViewModel.areLocPermsGranted())
@@ -155,6 +156,8 @@ fun AppNavHost(
             val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)!!
             val property = detailViewModel.propertyFromId(propertyId.toLong())
             val thumbnailUrl = detailViewModel.thumbnailUrl(property)
+            val connection by connectivityState()
+            val internetAvailable = detailViewModel.checkForConnection(connection = connection)
             val onBackPressed: () -> Unit = { navController.popBackStack() }
 
             DetailScreen(
@@ -162,6 +165,7 @@ fun AppNavHost(
                 thumbnailUrl = thumbnailUrl,
                 stringAgent = appViewModel.agentFromId(property.agentId).toString(),
                 currency = currency,
+                internetAvailable = internetAvailable,
                 onBackPressed = onBackPressed,
             )
         }
@@ -204,6 +208,11 @@ fun AppNavHost(
             val onDropdownMenuValueChanged: (String) -> Unit = {
                 editViewModel.onDropdownMenuValueChanged(it)
             }
+            val onShootPhotoMenuItemClick: () -> Unit = { editViewModel.onShootPhotoMenuItemClick() }
+            val onSelectPhotoMenuItemClick: () -> Unit = { editViewModel.onSelectPhotoMenuItemClick() }
+            var isPhotoReady by remember { mutableStateOf(editViewModel.isPhotoReady())}
+            val onAddPhotoButtonClick: () -> Unit = { editViewModel.onAddPhotoButtonClick() }
+            val onDeletePhotoMenuItemClick: (Long) -> Unit = { editViewModel.onDeletePhotoMenuItemClick(it) }
             val onBackPressed: () -> Unit = { navController.popBackStack() }
 
             EditScreen(
@@ -217,6 +226,11 @@ fun AppNavHost(
                 onPriceValueChanged = onPriceValueChanged,
                 onSurfaceValueChanged = onSurfaceValueChanged,
                 onDropdownMenuValueChanged = onDropdownMenuValueChanged,
+                onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
+                onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,
+                isPhotoReady = isPhotoReady,
+                onAddPhotoButtonClick = onAddPhotoButtonClick,
+                onDeletePhotoMenuItemClick = onDeletePhotoMenuItemClick,
                 onBackPressed = onBackPressed,
             )
         }

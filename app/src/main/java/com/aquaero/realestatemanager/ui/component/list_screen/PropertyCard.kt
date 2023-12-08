@@ -24,6 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -48,7 +50,7 @@ fun PropertyCard(
 ) {
     Card(
         modifier = Modifier
-            .padding(horizontal = 10.dp, vertical = 4.dp)
+            .padding(horizontal = 8.dp, vertical = 0.dp) // Vertical padding handled by LazyRow verticalArrangement
             .fillMaxWidth()
             .wrapContentHeight()
             .border(
@@ -66,17 +68,22 @@ fun PropertyCard(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val resourceId: Int =
-                if (phId.toInt() > 0) phId.toInt() else R.drawable.outline_camera_alt_gray_24
+            val resourceId =
+                if (phId.toInt() > 0) phId.toInt() else R.drawable.baseline_photo_camera_black_24
+            val colorFilter =
+                if (phId.toInt() > 0) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
+            val alpha = if (phId.toInt() > 0) 1F else 0.2F
 
             Image(
                 painter = painterResource(id = resourceId),
                 contentDescription = null,
+                contentScale = ContentScale.Fit,
+                colorFilter = colorFilter,
                 modifier = Modifier
                     .size(120.dp)
                     .padding(0.dp)
-                    .background(MaterialTheme.colorScheme.surface),
-                contentScale = ContentScale.Fit,
+                    .background(MaterialTheme.colorScheme.surface)
+                    .alpha(alpha),
             )
             Surface(
                 color = if (

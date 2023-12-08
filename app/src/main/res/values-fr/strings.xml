@@ -73,5 +73,9 @@
     <string name="grant">Accorder</string>
     <string name="allow">Autoriser</string>
     <string name="dismiss">Rejeter</string>
+    <string name="add_photo">Ajouter aux photos</string>
+    <string name="delete_photo">Supprimer la photo</string>
+    <string name="shoot_photo">Prendre une photo</string>
+    <string name="select_photo">Sélectionner une photo</string>
 
 </resources>

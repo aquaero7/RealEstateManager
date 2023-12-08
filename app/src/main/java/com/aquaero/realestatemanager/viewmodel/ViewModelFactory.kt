@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.LocationRepository
+import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 
 @Suppress("UNCHECKED_CAST")
@@ -12,6 +13,7 @@ object ViewModelFactory:  ViewModelProvider.Factory {
     private val propertyRepository: PropertyRepository = PropertyRepository()
     private val agentRepository: AgentRepository = AgentRepository()
     private val locationRepository: LocationRepository = LocationRepository()
+    private val photoRepository: PhotoRepository = PhotoRepository()
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
@@ -21,7 +23,7 @@ object ViewModelFactory:  ViewModelProvider.Factory {
         } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
             DetailViewModel(propertyRepository) as T
         } else if (modelClass.isAssignableFrom(EditViewModel::class.java)) {
-            EditViewModel(agentRepository, propertyRepository) as T
+            EditViewModel(agentRepository, propertyRepository, photoRepository) as T
         } else if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
             MapViewModel(locationRepository) as T
         } else {

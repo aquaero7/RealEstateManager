@@ -19,7 +19,7 @@ import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenColu
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenColumn2
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenDescription
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenMapThumbnail
-import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenMedia
+import com.aquaero.realestatemanager.ui.component.app.PhotosLazyRowScreen
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenPoi
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -29,6 +29,7 @@ fun DetailScreen(
     thumbnailUrl: String,
     stringAgent: String,
     currency: String,
+    internetAvailable: Boolean,
     onBackPressed: () -> Unit,
 ) {
     Column(
@@ -36,7 +37,11 @@ fun DetailScreen(
         modifier = Modifier.verticalScroll(state = rememberScrollState(), enabled = true),
     ) {
         // Media (photos row)
-        DetailScreenMedia(property = property)
+        PhotosLazyRowScreen(
+            property = property,
+            longClickPhotoEnabled = false,
+            onDeletePhotoMenuItemClick = {},
+        )
 
         // Description
         DetailScreenDescription(description = property.description)
@@ -79,8 +84,9 @@ fun DetailScreen(
 
         // Map thumbnail
         DetailScreenMapThumbnail(
-            thumbnailUrl,
-            property.pAddress.latLng,
+            internetAvailable = internetAvailable,
+            thumbnailUrl = thumbnailUrl,
+            latLng =  property.pAddress.latLng,
         )
 
         // To manage back nav

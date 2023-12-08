@@ -94,10 +94,8 @@ fun DetailScreenIcon(
             .size(40.dp)
             .padding(4.dp)
             .border(
-                BorderStroke(
-                    width = 1.dp,
-                    color = if (selected) borderColor else borderColor.copy(alpha = 0.3F)
-                )
+                width = 1.dp,
+                color = if (selected) borderColor else borderColor.copy(alpha = 0.3F)
             ),
     )
 }

@@ -8,6 +8,7 @@ import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
+import com.aquaero.realestatemanager.utils.ConnectionState
 import com.aquaero.realestatemanager.utils.CurrencyStore
 import java.text.NumberFormat
 import java.util.Locale
@@ -25,6 +26,10 @@ class ListViewModel(
 
     fun agentFromId(agentId: Long): Agent? {
         return agentRepository.agentFromId(agentId)
+    }
+
+    fun checkForConnection(connection: ConnectionState): Boolean {
+        return connection === ConnectionState.Available
     }
 
     fun thumbnailUrl(property: Property): String {

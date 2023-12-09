@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.ui.screen
 
+import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
@@ -42,9 +44,10 @@ fun EditScreen(
     onPriceValueChanged: (String) -> Unit,
     onSurfaceValueChanged: (String) -> Unit,
     onDropdownMenuValueChanged: (String) -> Unit,
-    onShootPhotoMenuItemClick: () -> Unit,
-    onSelectPhotoMenuItemClick: () -> Unit,
-    isPhotoReady: Boolean,
+    onShootPhotoMenuItemClickTest: () -> Unit,
+    onSelectPhotoMenuItemClickTest: () -> Unit,
+    buttonAddPhotoEnabled: Boolean,
+    painter: Painter,
     onAddPhotoButtonClick: () -> Unit,
     onDeletePhotoMenuItemClick: (Long) -> Unit,
     onBackPressed: () -> Unit,
@@ -131,9 +134,10 @@ fun EditScreen(
         // Media
         EditScreenMedia(
             property = property,
-            onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
-            onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,
-            isPhotoReady = isPhotoReady,
+            onShootPhotoMenuItemClickTest = onShootPhotoMenuItemClickTest,
+            onSelectPhotoMenuItemClickTest = onSelectPhotoMenuItemClickTest,
+            buttonAddPhotoEnabled = buttonAddPhotoEnabled,
+            painter = painter,
             onAddPhotoButtonClick = onAddPhotoButtonClick,
             onDeletePhotoMenuItemClick = onDeletePhotoMenuItemClick,
         )

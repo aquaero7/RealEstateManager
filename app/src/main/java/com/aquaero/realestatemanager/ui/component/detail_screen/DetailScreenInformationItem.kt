@@ -72,7 +72,7 @@ fun DetailScreenInformationItem(
                 Text(
                     text = label,
                     fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = MaterialTheme.colorScheme.tertiary, // .onSurface,
                     modifier = Modifier.padding(horizontal = 2.dp)
                 )
             }

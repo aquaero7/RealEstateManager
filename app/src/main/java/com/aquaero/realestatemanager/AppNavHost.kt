@@ -1,7 +1,11 @@
 package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -10,11 +14,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.map_screen.MapScreenNoMap
 import com.aquaero.realestatemanager.ui.screen.DetailScreen
@@ -208,11 +215,78 @@ fun AppNavHost(
             val onDropdownMenuValueChanged: (String) -> Unit = {
                 editViewModel.onDropdownMenuValueChanged(it)
             }
-            val onShootPhotoMenuItemClick: () -> Unit = { editViewModel.onShootPhotoMenuItemClick() }
-            val onSelectPhotoMenuItemClick: () -> Unit = { editViewModel.onSelectPhotoMenuItemClick() }
-            var isPhotoReady by remember { mutableStateOf(editViewModel.isPhotoReady())}
+
+            // Photo shooting and picking
+            // var painter = painterResource(id = R.drawable.baseline_add_a_photo_black_24)
+            val painterResource = painterResource(id = R.drawable.baseline_add_a_photo_black_24)
+            var painter by remember { mutableStateOf(painterResource) }
+            // var buttonAddPhotoEnabled = false
+            var buttonAddPhotoEnabled by remember { mutableStateOf(false) }
+
+            // Photo shooting
+            val cameraUri: Uri = editViewModel.getPhotoUri()
+            var capturedImageUri by remember { mutableStateOf<Uri>(Uri.EMPTY) }
+            val cameraLauncher =
+                rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
+                    capturedImageUri = cameraUri
+                }
+            val permissionLauncher = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) {
+                if (it) {
+                    // Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show()
+                    cameraLauncher.launch(cameraUri)
+                } else {
+                    Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+                }
+            }
+            val onShootPhotoMenuItemClickTest: () -> Unit = {
+                editViewModel.onShootPhotoMenuItemClickTest(
+                    uri = cameraUri,
+                    cameraLauncher = cameraLauncher,
+                    permissionLauncher = permissionLauncher,
+                )
+            }
+            if (capturedImageUri.path?.isNotEmpty() == true) {
+                painter = rememberAsyncImagePainter(capturedImageUri)
+                /*  // or...
+                painter = rememberAsyncImagePainter(
+                    ImageRequest
+                        .Builder(context)
+                        .data(data = capturedImageUri)
+                        .build()
+                )
+                */
+                buttonAddPhotoEnabled = true
+            }
+
+            // Photo picking
+            var pickerUri: Uri? by remember { mutableStateOf(null) }
+            val pickerLauncher =
+                rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+                    //When the user has selected a photo, its URI is returned here
+                    pickerUri = uri
+                }
+            val onSelectPhotoMenuItemClickTest: () -> Unit = {
+                editViewModel.onSelectPhotoMenuItemClickTest(pickerLauncher = pickerLauncher)
+            }
+            if (pickerUri != null) {
+                painter = rememberAsyncImagePainter(model = pickerUri)
+                /*  // or...
+                painter = rememberAsyncImagePainter(
+                    ImageRequest
+                        .Builder(context)
+                        .data(data = pickerUri)
+                        .build()
+                )
+                */
+                buttonAddPhotoEnabled = true
+            }
+
+
             val onAddPhotoButtonClick: () -> Unit = { editViewModel.onAddPhotoButtonClick() }
-            val onDeletePhotoMenuItemClick: (Long) -> Unit = { editViewModel.onDeletePhotoMenuItemClick(it) }
+            val onDeletePhotoMenuItemClick: (Long) -> Unit =
+                { editViewModel.onDeletePhotoMenuItemClick(it) }
             val onBackPressed: () -> Unit = { navController.popBackStack() }
 
             EditScreen(
@@ -226,9 +300,10 @@ fun AppNavHost(
                 onPriceValueChanged = onPriceValueChanged,
                 onSurfaceValueChanged = onSurfaceValueChanged,
                 onDropdownMenuValueChanged = onDropdownMenuValueChanged,
-                onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
-                onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,
-                isPhotoReady = isPhotoReady,
+                onShootPhotoMenuItemClickTest = onShootPhotoMenuItemClickTest,
+                onSelectPhotoMenuItemClickTest = onSelectPhotoMenuItemClickTest,
+                buttonAddPhotoEnabled = buttonAddPhotoEnabled,
+                painter = painter,
                 onAddPhotoButtonClick = onAddPhotoButtonClick,
                 onDeletePhotoMenuItemClick = onDeletePhotoMenuItemClick,
                 onBackPressed = onBackPressed,

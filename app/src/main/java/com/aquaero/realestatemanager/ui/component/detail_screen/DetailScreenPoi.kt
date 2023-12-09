@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.GrayDisabled
@@ -31,6 +32,8 @@ import com.aquaero.realestatemanager.ui.theme.GrayDisabled
 fun DetailScreenPoi(selectedPoi: List<String>) {
     Text(
         text = stringResource(R.string.poi),
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.tertiary,
         modifier = Modifier
             .padding(top = 16.dp, bottom = 8.dp)
             .padding(horizontal = 8.dp)

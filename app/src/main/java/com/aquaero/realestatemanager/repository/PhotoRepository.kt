@@ -1,22 +1,74 @@
 package com.aquaero.realestatemanager.repository
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.aquaero.realestatemanager.ApplicationRoot
+import com.aquaero.realestatemanager.BuildConfig
 import com.aquaero.realestatemanager.model.Photo
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.Objects
 
 class PhotoRepository() {
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
-    private var photoReady: Boolean = false
-
-    fun isPhotoReady(): Boolean {
-        return photoReady
+    private fun Context.createImageFile(): File {
+        // Create an image file name
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.FRANCE).format(Date())
+        val imageFileName = "IMG_" + timeStamp + "_"
+        return File.createTempFile(
+            imageFileName,      // Prefix
+            ".jpg",       // Suffix
+            externalCacheDir    // Directory
+        )
     }
 
-    fun photoIsReady() {
-        photoReady = true
+    private val file = context.createImageFile()
+
+    fun getPhotoUri(): Uri {
+        // val uri = FileProvider.getUriForFile(
+        return FileProvider.getUriForFile(
+            Objects.requireNonNull(context),
+            BuildConfig.APPLICATION_ID + ".provider", file
+        )
     }
+
+    fun onShootPhotoMenuItemClickTest(
+        uri: Uri,
+        cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
+        permissionLauncher: ManagedActivityResultLauncher<String, Boolean>
+    ) {
+        val permissionCheckResult =
+            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+        if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+            cameraLauncher.launch(uri)
+        } else {
+            // Request a permission
+            permissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    fun onSelectPhotoMenuItemClickTest(
+        pickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>
+    ) {
+        pickerLauncher.launch(
+            PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
+        )
+    }
+
+
+
+
 
 
 

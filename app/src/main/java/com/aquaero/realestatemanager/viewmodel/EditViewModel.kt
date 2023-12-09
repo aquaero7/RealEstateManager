@@ -1,7 +1,10 @@
 package com.aquaero.realestatemanager.viewmodel
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.lifecycle.ViewModel
 import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.model.Agent
@@ -72,16 +75,18 @@ class EditViewModel(
         return index
     }
 
-    fun onShootPhotoMenuItemClick() {
-        // TODO: To implement
-        photoRepository.photoIsReady()
-        Log.w("EditViewModel", "Click on shoot photo menu item")
+    fun onShootPhotoMenuItemClickTest(
+        uri: Uri,
+        cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
+        permissionLauncher: ManagedActivityResultLauncher<String, Boolean>
+    ) {
+        photoRepository.onShootPhotoMenuItemClickTest(uri, cameraLauncher, permissionLauncher)
     }
 
-    fun onSelectPhotoMenuItemClick() {
-        // TODO: To implement
-        photoRepository.photoIsReady()
-        Log.w("EditViewModel", "Click on select photo menu item")
+    fun onSelectPhotoMenuItemClickTest(
+        pickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>
+    ) {
+        photoRepository.onSelectPhotoMenuItemClickTest(pickerLauncher)
     }
 
     fun onAddPhotoButtonClick() {
@@ -94,9 +99,10 @@ class EditViewModel(
         Log.w("EditViewModel", "Click on delete photo $value button")
     }
 
-    fun isPhotoReady(): Boolean {
-        return photoRepository.isPhotoReady()
+    fun getPhotoUri(): Uri {
+        return photoRepository.getPhotoUri()
     }
+
 
 
 

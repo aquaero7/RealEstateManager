@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -51,18 +52,25 @@ import com.aquaero.realestatemanager.ui.component.app.PhotosLazyRowScreen
 @Composable
 fun EditScreenMedia(
     property: Property?,
-    onShootPhotoMenuItemClick: () -> Unit,
-    onSelectPhotoMenuItemClick: () -> Unit,
-    isPhotoReady: Boolean,
+    onShootPhotoMenuItemClickTest: () -> Unit,
+    onSelectPhotoMenuItemClickTest: () -> Unit,
+    buttonAddPhotoEnabled: Boolean,
+    painter: Painter,
     onAddPhotoButtonClick: () -> Unit,
     onDeletePhotoMenuItemClick: (Long) -> Unit,
 ) {
     var addPhoto by rememberSaveable { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
-
-
-
     val lineColor = MaterialTheme.colorScheme.onBackground
+
+    var photoIsReady by remember(buttonAddPhotoEnabled) {
+        mutableStateOf(
+            buttonAddPhotoEnabled
+        )
+    }
+    var photoToAdd by remember(painter) { mutableStateOf(painter) }
+    val emptyPhoto = painterResource(id = R.drawable.baseline_add_a_photo_black_24)
+
     Column(
         modifier = Modifier
             .padding(horizontal = 8.dp)
@@ -78,7 +86,7 @@ fun EditScreenMedia(
             .background(color = MaterialTheme.colorScheme.surfaceVariant),
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+        ) {
         // Photos list
         PhotosLazyRowScreen(
             property = property,
@@ -92,6 +100,7 @@ fun EditScreenMedia(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             // Image
             Image(
                 modifier = Modifier
@@ -106,18 +115,17 @@ fun EditScreenMedia(
                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                             addPhoto = true
                         }),
-                painter = painterResource(id = R.drawable.baseline_add_a_photo_black_24),
+                painter = photoToAdd,
                 contentDescription = null,
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
+                contentScale = ContentScale.FillBounds, // or ContentScale.Crop
+                colorFilter = if (!photoIsReady) ColorFilter.tint(MaterialTheme.colorScheme.tertiary) else null
             )
 
             Spacer(modifier = Modifier.width(20.dp))
 
             // Button to add the photo to property list
-            val buttonAddPhotoEnabled by remember { mutableStateOf(isPhotoReady) }
             Button(
-                modifier = Modifier.alpha(if (buttonAddPhotoEnabled) 1F else 0.5F),
+                modifier = Modifier.alpha(if (photoIsReady) 1F else 0.5F),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                     contentColor = MaterialTheme.colorScheme.onSurface,
@@ -126,8 +134,12 @@ fun EditScreenMedia(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.onSurface
                 ),
-                enabled = buttonAddPhotoEnabled,
-                onClick = onAddPhotoButtonClick,
+                enabled = photoIsReady,
+                onClick = {
+                    onAddPhotoButtonClick()
+                    photoIsReady = false
+                    photoToAdd = emptyPhoto
+                },
             ) {
                 Icon(
                     modifier = Modifier.size(28.dp),
@@ -147,14 +159,14 @@ fun EditScreenMedia(
         Spacer(modifier = Modifier.height(16.dp))
     }
 
-
     if (addPhoto) {
         BottomActionsSheet(
             onDismissSheet = { addPhoto = false },
-            onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
-            onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,
+            onShootPhotoMenuItemClick = { onShootPhotoMenuItemClickTest() },
+            onSelectPhotoMenuItemClick = { onSelectPhotoMenuItemClickTest() },
         )
     }
+
 
 }
 

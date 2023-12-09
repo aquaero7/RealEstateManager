@@ -49,6 +49,8 @@ fun DetailScreenMapThumbnail(
 ) {
     Text(
         text = stringResource(R.string.map_thumbnail),
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.tertiary,
         modifier = Modifier
             .padding(top = 16.dp, bottom = 8.dp)
             .padding(horizontal = 8.dp)
@@ -71,14 +73,20 @@ fun DetailScreenMapThumbnail(
         Spacer(modifier = Modifier.height(8.dp))
 
         Row {
-            Text(text = stringResource(id = R.string.latitude))
+            Text(
+                text = stringResource(id = R.string.latitude),
+                color = MaterialTheme.colorScheme.tertiary,
+            )
             Text(
                 modifier = Modifier.padding(horizontal = 4.dp),
                 text = latLng.latitude.toString(),
                 fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = stringResource(id = R.string.longitude))
+            Text(
+                text = stringResource(id = R.string.longitude),
+                color = MaterialTheme.colorScheme.tertiary,
+            )
             Text(
                 modifier = Modifier.padding(horizontal = 4.dp),
                 text = latLng.longitude.toString(),

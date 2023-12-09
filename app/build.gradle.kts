@@ -84,6 +84,8 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.8.1")
+    //For PickVisualMedia contract
+    implementation("androidx.activity:activity-ktx:1.8.1")
     implementation(platform("androidx.compose:compose-bom:2023.10.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -92,7 +94,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
-    implementation ("androidx.navigation:navigation-compose:2.7.5")
+    implementation("androidx.navigation:navigation-compose:2.7.5")
 
     // Accompanist-Permissions
     implementation("com.google.accompanist:accompanist-permissions:0.33.2-alpha")

@@ -68,9 +68,11 @@ fun PhotosLazyRowScreen(
 
     Text(
         text = stringResource(R.string.media),
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.tertiary,
         modifier = Modifier
             .padding(top = 8.dp)
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = 8.dp),
     )
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,

@@ -21,7 +21,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
+import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.map_screen.MapScreenNoMap
 import com.aquaero.realestatemanager.ui.screen.DetailScreen
@@ -189,8 +189,8 @@ fun AppNavHost(
                 // Creation mode
                 null
             }
-            val pTypeSet = { editViewModel.pTypeSet }
-            val agentSet = editViewModel.agentSet
+            val pTypeSet = { editViewModel.pTypesSet }
+            val agentSet = editViewModel.agentsSet
             val pTypeIndex = property?.let {
                 editViewModel.mutableSetIndex(
                     run(pTypeSet) as MutableSet<Any?>,
@@ -216,16 +216,19 @@ fun AppNavHost(
                 editViewModel.onDropdownMenuValueChanged(it)
             }
 
-            // Photo shooting and picking
-            // var painter = painterResource(id = R.drawable.baseline_add_a_photo_black_24)
+            /**
+             * Photo shooting and picking
+             */
+            var buttonSavePhotoEnabled by remember { mutableStateOf(false) }
+            var photoToAddUri by remember { mutableStateOf(Uri.EMPTY) }
             val painterResource = painterResource(id = R.drawable.baseline_add_a_photo_black_24)
-            var painter by remember { mutableStateOf(painterResource) }
-            // var buttonAddPhotoEnabled = false
-            var buttonAddPhotoEnabled by remember { mutableStateOf(false) }
+            var painter by remember(photoToAddUri) { mutableStateOf(painterResource) }
 
-            // Photo shooting
+            /**
+             * Photo shooting
+             */
             val cameraUri: Uri = editViewModel.getPhotoUri()
-            var capturedImageUri by remember { mutableStateOf<Uri>(Uri.EMPTY) }
+            var capturedImageUri by remember { mutableStateOf(Uri.EMPTY) }
             val cameraLauncher =
                 rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
                     capturedImageUri = cameraUri
@@ -240,53 +243,77 @@ fun AppNavHost(
                     Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
                 }
             }
-            val onShootPhotoMenuItemClickTest: () -> Unit = {
-                editViewModel.onShootPhotoMenuItemClickTest(
+            val onShootPhotoMenuItemClick: () -> Unit = {
+                editViewModel.onShootPhotoMenuItemClick(
                     uri = cameraUri,
                     cameraLauncher = cameraLauncher,
                     permissionLauncher = permissionLauncher,
                 )
             }
-            if (capturedImageUri.path?.isNotEmpty() == true) {
-                painter = rememberAsyncImagePainter(capturedImageUri)
-                /*  // or...
-                painter = rememberAsyncImagePainter(
-                    ImageRequest
-                        .Builder(context)
-                        .data(data = capturedImageUri)
-                        .build()
-                )
-                */
-                buttonAddPhotoEnabled = true
-            }
 
-            // Photo picking
-            var pickerUri: Uri? by remember { mutableStateOf(null) }
+            /**
+             * Photo picking
+             */
+            var pickerUri by remember { mutableStateOf(Uri.EMPTY) }
             val pickerLauncher =
                 rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                     //When the user has selected a photo, its URI is returned here
-                    pickerUri = uri
+                    if (uri != null) {
+                        pickerUri = uri
+                    }
                 }
-            val onSelectPhotoMenuItemClickTest: () -> Unit = {
-                editViewModel.onSelectPhotoMenuItemClickTest(pickerLauncher = pickerLauncher)
+            val onSelectPhotoMenuItemClick: () -> Unit = {
+                editViewModel.onSelectPhotoMenuItemClick(pickerLauncher = pickerLauncher)
             }
-            if (pickerUri != null) {
-                painter = rememberAsyncImagePainter(model = pickerUri)
+
+            /**
+             * Photo shooting and picking
+             */
+            // if (capturedImageUri.path?.isNotEmpty() == true) {
+            if (capturedImageUri != Uri.EMPTY) {
+                photoToAddUri = capturedImageUri
+                capturedImageUri = Uri.EMPTY
+            }
+            // if (pickerUri.path?.isNotEmpty() == true) {
+            if (pickerUri != Uri.EMPTY) {
+                photoToAddUri = pickerUri
+                pickerUri = Uri.EMPTY
+            }
+            //
+            if (photoToAddUri != Uri.EMPTY) {
+                painter = rememberAsyncImagePainter(model = photoToAddUri)
                 /*  // or...
                 painter = rememberAsyncImagePainter(
                     ImageRequest
                         .Builder(context)
-                        .data(data = pickerUri)
+                        .data(data = photoToAddUri)
                         .build()
                 )
                 */
-                buttonAddPhotoEnabled = true
+                buttonSavePhotoEnabled = true
+            } else {
+                painter = painterResource
+                buttonSavePhotoEnabled = false
+            }
+            val onSavePhotoButtonClick: (String) -> Unit = {
+                editViewModel.onSavePhotoButtonClick(propertyId.toLong(), photoToAddUri, it)
+                photoToAddUri = Uri.EMPTY
+            }
+            val onEditPhotoMenuItemClick: (Photo) -> Unit = { photo ->
+                photoToAddUri = photo.phUri
+                buttonSavePhotoEnabled = true
+            }
+            val onDeletePhotoMenuItemClick: (Long) -> Unit = { photoId ->
+                editViewModel.onDeletePhotoMenuItemClick(photoId, propertyId.toLong())
             }
 
 
-            val onAddPhotoButtonClick: () -> Unit = { editViewModel.onAddPhotoButtonClick() }
-            val onDeletePhotoMenuItemClick: (Long) -> Unit =
-                { editViewModel.onDeletePhotoMenuItemClick(it) }
+
+
+
+
+
+
             val onBackPressed: () -> Unit = { navController.popBackStack() }
 
             EditScreen(
@@ -300,11 +327,12 @@ fun AppNavHost(
                 onPriceValueChanged = onPriceValueChanged,
                 onSurfaceValueChanged = onSurfaceValueChanged,
                 onDropdownMenuValueChanged = onDropdownMenuValueChanged,
-                onShootPhotoMenuItemClickTest = onShootPhotoMenuItemClickTest,
-                onSelectPhotoMenuItemClickTest = onSelectPhotoMenuItemClickTest,
-                buttonAddPhotoEnabled = buttonAddPhotoEnabled,
+                onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
+                onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,
+                buttonAddPhotoEnabled = buttonSavePhotoEnabled,
                 painter = painter,
-                onAddPhotoButtonClick = onAddPhotoButtonClick,
+                onSavePhotoButtonClick = onSavePhotoButtonClick,
+                onEditPhotoMenuItemClick = onEditPhotoMenuItemClick,
                 onDeletePhotoMenuItemClick = onDeletePhotoMenuItemClick,
                 onBackPressed = onBackPressed,
             )
@@ -312,7 +340,7 @@ fun AppNavHost(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+// @RequiresApi(Build.VERSION_CODES.O)
 fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String) {
     val route =
         if (destination == ListAndDetail) "${destination.route}/${propertyId}" else destination.route
@@ -323,7 +351,7 @@ fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyI
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+// @RequiresApi(Build.VERSION_CODES.O)
 fun NavHostController.navigateToDetail(propertyId: String, contentType: AppContentType) {
     if (contentType == AppContentType.SCREEN_ONLY) {
         this.navigate("${Detail.route}/$propertyId")

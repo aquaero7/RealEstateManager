@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Label
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,13 +25,37 @@ import com.aquaero.realestatemanager.model.Photo
 fun BottomActionsSheet(
     onDismissSheet: () -> Unit,
     photo: Photo? = null,
+    onEditPhotoMenuItemClickGetPhoto: ((Photo) -> Unit)? = null,
     onDeletePhotoMenuItemClick: ((Long) -> Unit)? = null,
     onShootPhotoMenuItemClick: (() -> Unit)? = null,
     onSelectPhotoMenuItemClick: (() -> Unit)? = null,
 ) {
     ModalBottomSheet(onDismissRequest = onDismissSheet) {
-        // Action = Delete photo
-        if (photo != null && onDeletePhotoMenuItemClick != null) {
+        // Action = Edit or delete photo
+        if (photo != null && onEditPhotoMenuItemClickGetPhoto != null && onDeletePhotoMenuItemClick != null) {
+            // Action = Edit a photo
+            ListItem(
+                modifier = Modifier
+                    .clickable(
+                        enabled = true,
+                        onClick = {
+                            onEditPhotoMenuItemClickGetPhoto(photo)
+                            onDismissSheet()
+                        }
+                    ),
+                headlineContent = {
+                    Text(
+                        text = "${stringResource(id = R.string.edit_photo)} ${photo.phLabel}"
+                    )
+                },
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.Default.Label,
+                        contentDescription = stringResource(id = R.string.cd_menu_item_edit_photo),
+                    )
+                }
+            )
+            // Action = Delete a photo
             ListItem(
                 modifier = Modifier
                     .clickable(
@@ -55,6 +80,7 @@ fun BottomActionsSheet(
         }
         // Action = Add photo
         if (onShootPhotoMenuItemClick != null && onSelectPhotoMenuItemClick != null) {
+            // Action = Shoot a photo
             ListItem(
                 modifier = Modifier
                     .clickable(
@@ -76,6 +102,7 @@ fun BottomActionsSheet(
                     )
                 }
             )
+            // Action = Pick a photo
             ListItem(
                 modifier = Modifier
                     .clickable(

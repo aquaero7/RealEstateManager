@@ -13,25 +13,12 @@ class AgentRepository() {
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
-    /**
-     * Temp data used as a cache for property creation ou update
-     */
-
-    private var agentValue by mutableStateOf("")
-
 
     fun agentFromId(agentId: Long): Agent? {
         fakeAgents.forEach {
             if (it.agentId == agentId) return it
         }
         return null
-    }
-
-    fun onAgentValueChanged(value: String) {
-        agentValue = value
-
-        Log.w("AgentRepository", "New value is: $value")
-        Toast.makeText(context, "New value is: $value", Toast.LENGTH_SHORT).show()
     }
 
 
@@ -60,19 +47,19 @@ class AgentRepository() {
 
     val fakeAgents = listOf(
         Agent(
-            0,
-            "N0000000",
-            "F0000000"
+            agentId = 0,
+            agentName = "N0000000",
+            agentFirstName = "F0000000"
         ),
         Agent(
-            1,
-            "N1111111",
-            "F1111111"
+            agentId = 1,
+            agentName = "N1111111",
+            agentFirstName = "F1111111"
         ),
         Agent(
-            2,
-            "N2222222",
-            "F2222222"
+            agentId = 2,
+            agentName = "N2222222",
+            agentFirstName = "F2222222"
         )
     )
     //

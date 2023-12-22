@@ -28,6 +28,7 @@
     <string name="status">Statut</string>
     <string name="sold">Vendu</string>
     <string name="for_sale">En vente</string>
+    <string name="photo_label">Etiquette de la photo</string>
     <string name="loc_perms_dialog_title">Permissions de localisation nécessaires</string>
     <string name="loc_perms_granted">Les permissions de localisation sont accordées !</string>
     <string name="loc_perms_rq">Cette application nécessite les permissions de localisation.</string>
@@ -73,7 +74,8 @@
     <string name="grant">Accorder</string>
     <string name="allow">Autoriser</string>
     <string name="dismiss">Rejeter</string>
-    <string name="add_photo">Ajouter aux photos</string>
+    <string name="save_photo">Sauvegarder la photo</string>
+    <string name="edit_photo">Editer la photo</string>
     <string name="delete_photo">Supprimer la photo</string>
     <string name="shoot_photo">Prendre une photo</string>
     <string name="select_photo">Sélectionner une photo</string>

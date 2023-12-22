@@ -3,15 +3,23 @@ package com.aquaero.realestatemanager.viewmodel
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.aquaero.realestatemanager.ApplicationRoot
+import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.model.Agent
+import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
+import com.aquaero.realestatemanager.utils.convertEuroToDollar
 
 class EditViewModel(
     private val agentRepository: AgentRepository,
@@ -21,9 +29,21 @@ class EditViewModel(
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
-    val pTypeSet = propertyRepository.pTypesSet
+    val pTypesSet = propertyRepository.pTypesSet
     val poiSet = propertyRepository.poiSet
-    val agentSet = agentRepository.agentsSet
+    val agentsSet = agentRepository.agentsSet
+
+    /**
+     * Temp data used as a cache for property creation ou update
+     */
+    private var descriptionValue by mutableStateOf("")
+    private var priceValue by mutableIntStateOf(0)
+    private var surfaceValue by mutableIntStateOf(0)
+    private var typeValue by mutableStateOf("")
+    private var agentValue by mutableStateOf("")
+    private lateinit var photos: MutableList<Photo>
+    /***/
+
 
     fun propertyFromId(propertyId: Long): Property {
         return propertyRepository.propertyFromId(propertyId)
@@ -31,35 +51,6 @@ class EditViewModel(
 
     fun agentFromId(agentId: Long): Agent? {
         return agentRepository.agentFromId(agentId)
-    }
-
-    fun onDescriptionValueChanged(value: String) {
-        propertyRepository.onDescriptionValueChanged(value)
-    }
-
-    fun onPriceValueChanged(value: String, currency: String) {
-        propertyRepository.onPriceValueChanged(value, currency)
-    }
-
-    fun onSurfaceValueChanged(value: String) {
-        propertyRepository.onSurfaceValueChanged(value)
-    }
-
-    fun onDropdownMenuValueChanged(value: String) {
-        val index = value.substringBefore(
-            delimiter = "#",
-            missingDelimiterValue = "-1"
-        ).toInt()
-        val field = value.substringAfter(
-            delimiter = "#",
-            missingDelimiterValue = value
-        )
-        when (field) {
-            pTypeSet.elementAt(index)
-                ?.let { context.getString(it) } -> propertyRepository.onTypeValueChanged(value)
-
-            agentSet().elementAt(index) -> agentRepository.onAgentValueChanged(value)
-        }
     }
 
     fun mutableSetIndex(set: MutableSet<Any?>, item: String): Int {
@@ -75,35 +66,156 @@ class EditViewModel(
         return index
     }
 
-    fun onShootPhotoMenuItemClickTest(
-        uri: Uri,
-        cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
-        permissionLauncher: ManagedActivityResultLauncher<String, Boolean>
-    ) {
-        photoRepository.onShootPhotoMenuItemClickTest(uri, cameraLauncher, permissionLauncher)
-    }
-
-    fun onSelectPhotoMenuItemClickTest(
-        pickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>
-    ) {
-        photoRepository.onSelectPhotoMenuItemClickTest(pickerLauncher)
-    }
-
-    fun onAddPhotoButtonClick() {
-        // TODO: To implement
-        Log.w("EditViewModel", "Click on add photo button")
-    }
-
-    fun onDeletePhotoMenuItemClick(value: Long) {
-        // TODO: To implement
-        Log.w("EditViewModel", "Click on delete photo $value button")
-    }
-
     fun getPhotoUri(): Uri {
         return photoRepository.getPhotoUri()
     }
 
+    fun onShootPhotoMenuItemClick(
+        uri: Uri,
+        cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
+        permissionLauncher: ManagedActivityResultLauncher<String, Boolean>
+    ) {
+        photoRepository.onShootPhotoMenuItemClick(uri, cameraLauncher, permissionLauncher)
+    }
 
+    fun onSelectPhotoMenuItemClick(
+        pickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>
+    ) {
+        photoRepository.onSelectPhotoMenuItemClick(pickerLauncher)
+    }
+
+
+    /**
+     * Temp data used as a cache for property creation or update
+     */
+
+    fun onDescriptionValueChanged(value: String) {
+        // propertyRepository.onDescriptionValueChanged(value)
+
+        descriptionValue = value
+
+        Log.w("EditViewModel", "New value for description is: $value")
+        Toast.makeText(context, "New value for description is: $value", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+
+    fun onPriceValueChanged(value: String, currency: String) {
+        // propertyRepository.onPriceValueChanged(value, currency)
+
+        priceValue = if (value.isNotEmpty()) {
+            when (currency) {
+                "€" -> convertEuroToDollar(value.toInt())
+                else -> value.toInt()
+            }
+        } else 0
+
+        Log.w(
+            "EditViewModel",
+            "New value for price is: $priceValue dollars and input is $value $currency"
+        )
+        // TODO: To be deleted
+        Toast.makeText(
+            context,
+            "New value for price is: $priceValue dollars and input is $value $currency",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    fun onSurfaceValueChanged(value: String) {
+        // propertyRepository.onSurfaceValueChanged(value)
+
+        surfaceValue = if (value.isNotEmpty()) value.toInt() else 0
+
+        Log.w("EditViewModel", "New value for surface is: $value")
+        Toast.makeText(context, "New value for surface is: $value", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+
+    fun onDropdownMenuValueChanged(value: String) {
+        // propertyRepository.onDropdownMenuValueChanged(value, agentsSet)
+
+        val index = value.substringBefore(
+            delimiter = "#",
+            missingDelimiterValue = "-1"
+        ).toInt()
+        val field = value.substringAfter(
+            delimiter = "#",
+            missingDelimiterValue = value
+        )
+        when (field) {
+            pTypesSet.elementAt(index)
+                ?.let { context.getString(it) } -> onTypeValueChanged(
+                index = index,
+                field = field
+            )
+
+            agentsSet().elementAt(index) -> onAgentValueChanged(
+                index = index,
+                field = field
+            )
+        }
+    }
+
+    private fun onTypeValueChanged(index: Int, field: String) {
+        typeValue = field
+
+        Log.w("EditViewModel", "New index for type is: $index / New value for type is: $field")
+        Toast.makeText(context, "New index for type is: $index / New value for type is: $field", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+
+    private fun onAgentValueChanged(index: Int, field: String) {
+        agentValue = field
+
+        Log.w("EditViewModel", "New index for agent is: $index / New value for agent is: $field")
+        Toast.makeText(context, "New index for agent is: $index / New value for agent is: $field", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+
+    fun onSavePhotoButtonClick(propertyId: Long, uri: Uri, label: String) {
+        Log.w("EditViewModel", "Click on save photo button")
+        Log.w("EditViewModel", "Saving photo: Label = $label, Uri = $uri")
+
+        photos = propertyFromId(propertyId).photos
+
+        // Check if the photo already exists
+        var photoId: Long? = null
+        photos.forEach {
+            if (it.phUri == uri) {
+                // The photo already exists
+                photoId = it.phId
+            }
+        }
+
+        if (photoId != null) {
+            // Save the label modification of an existing photo
+            photoRepository.photoFromId(photos, photoId!!).phLabel = label
+
+            Toast.makeText(context, "Updating photo: Label = $label, Uri = $uri", Toast.LENGTH_SHORT)
+                .show()  // TODO: To be deleted
+        } else {
+            // Save a new photo
+            if (photos.size == 1 && photos.elementAt(0).phId == 0L) photos.removeAt(0)
+            photos.add(Photo((Math.random()*9999).toLong(), uri, label))
+
+            Toast.makeText(context, "Saving photo: Label = $label, Uri = $uri", Toast.LENGTH_SHORT)
+                .show()  // TODO: To be deleted
+        }
+    }
+
+    fun onDeletePhotoMenuItemClick(photoId: Long, propertyId: Long) {
+        Log.w("EditViewModel", "Click on delete photo (id: $photoId) button")
+
+        photos = propertyFromId(propertyId).photos
+        Log.w("EditViewModel", "Before action, photos list size is: ${photos.size}")
+
+        photos.remove(photoRepository.photoFromId(photos = photos, photoId = photoId))
+        if (photos.size == 0) photos.add(NO_PHOTO)
+        Log.w("EditViewModel", "After action. photos list size is: ${photos?.size}")
+    }
+
+
+    /***/
 
 
 }

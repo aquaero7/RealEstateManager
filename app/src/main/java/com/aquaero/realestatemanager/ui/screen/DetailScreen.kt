@@ -19,7 +19,7 @@ import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenColu
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenColumn2
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenDescription
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenMapThumbnail
-import com.aquaero.realestatemanager.ui.component.app.PhotosLazyRowScreen
+import com.aquaero.realestatemanager.ui.component.app.PhotosLazyRow
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenPoi
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -37,9 +37,11 @@ fun DetailScreen(
         modifier = Modifier.verticalScroll(state = rememberScrollState(), enabled = true),
     ) {
         // Media (photos row)
-        PhotosLazyRowScreen(
-            property = property,
+        PhotosLazyRow(
+            // property = property, // TODO: To be deleted
+            photos = property.photos,
             longClickPhotoEnabled = false,
+            onEditPhotoMenuItemClickGetPhoto = {},
             onDeletePhotoMenuItemClick = {},
         )
 

@@ -1,10 +1,12 @@
 package com.aquaero.realestatemanager.model
 
+import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.utils.convertDollarToEuro
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.util.Locale
 
+// @Serializable
 data class Property(
     val pId: Long,
     val pType: Int,
@@ -15,11 +17,11 @@ data class Property(
     val nbOfRooms: Int,
     val nbOfBathrooms: Int,
     val nbOfBedrooms: Int,
-    val photos: List<Photo>?,
+    val photos: MutableList<Photo> = mutableListOf(NO_PHOTO),
     val registrationDate: LocalDate,
     val saleDate: LocalDate?,
     // val statusSold: Boolean,
-    val pPoi: List<String>,
+    val pPoi: MutableList<String>,
     val agentId: Long
 ) {
     fun priceInCurrency(currency: String): Int {

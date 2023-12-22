@@ -22,6 +22,10 @@ class PhotoRepository() {
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
+    fun photoFromId(photos: MutableList<Photo>, photoId: Long): Photo {
+        return photos.find { it.phId == photoId }!!
+    }
+
     private fun Context.createImageFile(): File {
         // Create an image file name
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.FRANCE).format(Date())
@@ -33,9 +37,9 @@ class PhotoRepository() {
         )
     }
 
-    private val file = context.createImageFile()
-
     fun getPhotoUri(): Uri {
+        val file = context.createImageFile()
+
         // val uri = FileProvider.getUriForFile(
         return FileProvider.getUriForFile(
             Objects.requireNonNull(context),
@@ -43,7 +47,7 @@ class PhotoRepository() {
         )
     }
 
-    fun onShootPhotoMenuItemClickTest(
+    fun onShootPhotoMenuItemClick(
         uri: Uri,
         cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
         permissionLauncher: ManagedActivityResultLauncher<String, Boolean>
@@ -58,7 +62,7 @@ class PhotoRepository() {
         }
     }
 
-    fun onSelectPhotoMenuItemClickTest(
+    fun onSelectPhotoMenuItemClick(
         pickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>
     ) {
         pickerLauncher.launch(
@@ -80,44 +84,44 @@ class PhotoRepository() {
 
     val fakePhotos = listOf(
         Photo(
-            0,
-            "U0000000",
-            "L0000000"
+            phId = 0,
+            phUri = Uri.EMPTY,  //"U0000000"
+            phLabel = "L0000000"
         ),
         Photo(
-            -1,
-            "U1111111",
-            "L1111111"
+            phId = -1,
+            phUri = Uri.EMPTY,  // "U1111111"
+            phLabel = "L1111111"
         ),
         Photo(
-            -2,
-            "U2222222",
-            "L2222222"
+            phId = -2,
+            phUri = Uri.EMPTY,  // "U2222222"
+            phLabel = "L2222222"
         ),
         Photo(
-            -3,
-            "U3333333",
-            "L3333333"
+            phId = -3,
+            phUri = Uri.EMPTY,  // "U3333333"
+            phLabel = "L3333333"
         ),
         Photo(
-            -4,
-            "U4444444",
-            "L4444444"
+            phId = -4,
+            phUri = Uri.EMPTY,  // "U4444444"
+            phLabel = "L4444444"
         ),
         Photo(
-            -5,
-            "U5555555",
-            "L5555555"
+            phId = -5,
+            phUri = Uri.EMPTY,  // "U5555555"
+            phLabel = "L5555555"
         ),
         Photo(
-            -6,
-            "U6666666",
-            "L6666666"
+            phId = -6,
+            phUri = Uri.EMPTY,  // "U6666666"
+            phLabel = "L6666666"
         ),
         Photo(
-            -7,
-            "U7777777",
-            "L7777777"
+            phId = -7,
+            phUri = Uri.EMPTY,  // "U7777777"
+            phLabel = "L7777777"
         )
     )
     //

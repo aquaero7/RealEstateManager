@@ -114,7 +114,7 @@ fun PropertyCard(
                         )
                         Text(
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
-                            text = pPriceFormatted, // TODO: Convert value according to currency in DataStore
+                            text = pPriceFormatted,
                             style = MaterialTheme.typography.titleLarge,
                             color = Red,
                         )

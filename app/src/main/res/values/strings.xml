@@ -28,6 +28,7 @@
     <string name="status">Status</string>
     <string name="sold">Sold</string>
     <string name="for_sale">For sale</string>
+    <string name="photo_label">Photo label</string>
     <string name="loc_perms_dialog_title">Location permissions required</string>
     <string name="loc_perms_granted">Location permissions are granted!</string>
     <string name="loc_perms_rq">This application requires location permissions.</string>
@@ -73,7 +74,8 @@
     <string name="grant">Grant</string>
     <string name="allow">Allow</string>
     <string name="dismiss">Dismiss</string>
-    <string name="add_photo">Add to photos</string>
+    <string name="save_photo">Save photo</string>
+    <string name="edit_photo">Edit photo</string>
     <string name="delete_photo">Delete photo</string>
     <string name="shoot_photo">Shoot a photo</string>
     <string name="select_photo">Select a photo</string>
@@ -110,9 +112,11 @@
     <string name="cd_static_map" translatable="false">static_map</string>
     <string name="cd_no_static_map" translatable="false">no_static_map</string>
     <string name="cd_add_photo" translatable="false">add_photo</string>
+    <string name="cd_menu_item_edit_photo" translatable="false">edit_photo</string>
     <string name="cd_menu_item_delete_photo" translatable="false">delete_photo</string>
     <string name="cd_menu_item_shoot_photo" translatable="false">shoot_photo</string>
     <string name="cd_menu_item_select_photo" translatable="false">select_photo</string>
+    <string name="cd_photo_label" translatable="false">photo_label</string>
     <string name="lb_tab_color_anim" translatable="false">tab_color_anim</string>
 
     <!-- CURRENCY -->

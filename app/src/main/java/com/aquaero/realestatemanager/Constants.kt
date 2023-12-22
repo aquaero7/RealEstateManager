@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager
 
 import android.Manifest
 import android.location.Location
+import android.net.Uri
 import com.aquaero.realestatemanager.model.Photo
 
 const val MAPS_API_KEY = BuildConfig.MAPS_API_KEY
@@ -15,7 +16,7 @@ const val DEFAULT_ZOOM = 13F
 // const val SM_KEY = "&key=${BuildConfig.MAPS_API_KEY}"
 
 // Item for lazyList if the property has no photo
-val NO_PHOTO = Photo(0, "", "")
+val NO_PHOTO = Photo(0, Uri.EMPTY, "")
 
 val DEFAULT_LOCATION = Location("").apply { latitude = 0.0 ; longitude = 0.0 }
 val LOCATION_PERMISSIONS = listOf(

@@ -1,7 +1,9 @@
 package com.aquaero.realestatemanager.model
 
+import android.net.Uri
+
 data class Photo(
     val phId: Long,
-    val phUrl: String,
-    val phLabel: String
+    val phUri: Uri,
+    var phLabel: String
 )

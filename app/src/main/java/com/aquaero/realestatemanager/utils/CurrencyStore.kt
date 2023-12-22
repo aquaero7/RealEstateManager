@@ -16,7 +16,7 @@ class CurrencyStore(private val context: Context) {
         private val CURRENCY_KEY = stringPreferencesKey("currency_key")
     }
 
-    val getCurrency: Flow<String> = context.dataStore.data.map {value ->
+    val getCurrency: Flow<String> = context.dataStore.data.map { value ->
         value[CURRENCY_KEY] ?: ""
     }
 

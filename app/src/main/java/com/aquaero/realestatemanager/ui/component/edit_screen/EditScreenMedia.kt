@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddToPhotos
+import androidx.compose.material.icons.filled.Label
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -37,39 +38,37 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.ui.component.app.BottomActionsSheet
-import com.aquaero.realestatemanager.ui.component.app.PhotosLazyRowScreen
+import com.aquaero.realestatemanager.ui.component.app.PhotosLazyRow
 
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("NewApi")
 @Composable
 fun EditScreenMedia(
-    property: Property?,
-    onShootPhotoMenuItemClickTest: () -> Unit,
-    onSelectPhotoMenuItemClickTest: () -> Unit,
+    photos: MutableList<Photo>,
+    onShootPhotoMenuItemClick: () -> Unit,
+    onSelectPhotoMenuItemClick: () -> Unit,
     buttonAddPhotoEnabled: Boolean,
     painter: Painter,
-    onAddPhotoButtonClick: () -> Unit,
+    onSavePhotoButtonClick: (String) -> Unit,
+    onEditPhotoMenuItemClick: (Photo) -> Unit,
     onDeletePhotoMenuItemClick: (Long) -> Unit,
 ) {
     var addPhoto by rememberSaveable { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
     val lineColor = MaterialTheme.colorScheme.onBackground
+    var photoLabel by remember { mutableStateOf("") }
 
-    var photoIsReady by remember(buttonAddPhotoEnabled) {
-        mutableStateOf(
-            buttonAddPhotoEnabled
-        )
+    val onEditPhotoMenuItemClickGetPhoto: (Photo) -> Unit = { photo ->
+        photoLabel = photo.phLabel
+        onEditPhotoMenuItemClick(photo)
     }
-    var photoToAdd by remember(painter) { mutableStateOf(painter) }
-    val emptyPhoto = painterResource(id = R.drawable.baseline_add_a_photo_black_24)
 
     Column(
         modifier = Modifier
@@ -88,9 +87,10 @@ fun EditScreenMedia(
 
         ) {
         // Photos list
-        PhotosLazyRowScreen(
-            property = property,
+        PhotosLazyRow(
+            photos = photos,
             longClickPhotoEnabled = true,
+            onEditPhotoMenuItemClickGetPhoto = onEditPhotoMenuItemClickGetPhoto,
             onDeletePhotoMenuItemClick = onDeletePhotoMenuItemClick,
         )
 
@@ -115,46 +115,60 @@ fun EditScreenMedia(
                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                             addPhoto = true
                         }),
-                painter = photoToAdd,
+                painter = painter,
                 contentDescription = null,
-                contentScale = ContentScale.FillBounds, // or ContentScale.Crop
-                colorFilter = if (!photoIsReady) ColorFilter.tint(MaterialTheme.colorScheme.tertiary) else null
+                contentScale = ContentScale.FillBounds,
+                colorFilter = if (!buttonAddPhotoEnabled) ColorFilter.tint(MaterialTheme.colorScheme.tertiary) else null
             )
 
             Spacer(modifier = Modifier.width(20.dp))
 
-            // Button to add the photo to property list
-            Button(
-                modifier = Modifier.alpha(if (photoIsReady) 1F else 0.5F),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                ),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.onSurface
-                ),
-                enabled = photoIsReady,
-                onClick = {
-                    onAddPhotoButtonClick()
-                    photoIsReady = false
-                    photoToAdd = emptyPhoto
-                },
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    modifier = Modifier.size(28.dp),
-                    imageVector = Icons.Default.AddToPhotos,
-                    contentDescription = stringResource(id = R.string.cd_add_photo),
-                    tint = MaterialTheme.colorScheme.tertiary,
+                // Description field
+                EditScreenTextFieldItem(
+                    itemText = photoLabel,
+                    labelText = stringResource(id = R.string.photo_label),
+                    placeHolderText = stringResource(id = R.string.photo_label),
+                    icon = Icons.Default.Label,
+                    iconCD = stringResource(id = R.string.cd_photo_label),
+                    onValueChanged = { photoLabel = it },
                 )
-                Text(
-                    modifier = Modifier.padding(horizontal = 4.dp),
-                    text = stringResource(id = R.string.add_photo),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.tertiary,
-                )
+
+                // Button to add the photo to property list
+                Button(
+                    modifier = Modifier.alpha(if (buttonAddPhotoEnabled) 1F else 0.5F),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    ),
+                    enabled = buttonAddPhotoEnabled,
+                    onClick = {
+                        onSavePhotoButtonClick(photoLabel)
+                        photoLabel = ""
+                    },
+                ) {
+                    Icon(
+                        modifier = Modifier.size(28.dp),
+                        imageVector = Icons.Default.AddToPhotos,
+                        contentDescription = stringResource(id = R.string.cd_add_photo),
+                        tint = MaterialTheme.colorScheme.tertiary,
+                    )
+                    Text(
+                        modifier = Modifier.padding(horizontal = 4.dp),
+                        text = stringResource(id = R.string.save_photo),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.tertiary,
+                    )
+                }
             }
+
         }
         Spacer(modifier = Modifier.height(16.dp))
     }
@@ -162,8 +176,12 @@ fun EditScreenMedia(
     if (addPhoto) {
         BottomActionsSheet(
             onDismissSheet = { addPhoto = false },
-            onShootPhotoMenuItemClick = { onShootPhotoMenuItemClickTest() },
-            onSelectPhotoMenuItemClick = { onSelectPhotoMenuItemClickTest() },
+            onShootPhotoMenuItemClick = {
+                onShootPhotoMenuItemClick()
+            },
+            onSelectPhotoMenuItemClick = {
+                onSelectPhotoMenuItemClick()
+            },
         )
     }
 

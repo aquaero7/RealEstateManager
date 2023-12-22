@@ -1,6 +1,5 @@
 package com.aquaero.realestatemanager.ui.screen
 
-import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
@@ -25,7 +24,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
+import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenAppDropdownMenu
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenAppDropdownMenuExample
@@ -44,11 +45,12 @@ fun EditScreen(
     onPriceValueChanged: (String) -> Unit,
     onSurfaceValueChanged: (String) -> Unit,
     onDropdownMenuValueChanged: (String) -> Unit,
-    onShootPhotoMenuItemClickTest: () -> Unit,
-    onSelectPhotoMenuItemClickTest: () -> Unit,
+    onShootPhotoMenuItemClick: () -> Unit,
+    onSelectPhotoMenuItemClick: () -> Unit,
     buttonAddPhotoEnabled: Boolean,
     painter: Painter,
-    onAddPhotoButtonClick: () -> Unit,
+    onSavePhotoButtonClick: (String) -> Unit,
+    onEditPhotoMenuItemClick: (Photo) -> Unit,
     onDeletePhotoMenuItemClick: (Long) -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -133,14 +135,17 @@ fun EditScreen(
 
         // Media
         EditScreenMedia(
-            property = property,
-            onShootPhotoMenuItemClickTest = onShootPhotoMenuItemClickTest,
-            onSelectPhotoMenuItemClickTest = onSelectPhotoMenuItemClickTest,
+            photos = property?.photos ?: mutableListOf(NO_PHOTO),
+            onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
+            onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,
             buttonAddPhotoEnabled = buttonAddPhotoEnabled,
             painter = painter,
-            onAddPhotoButtonClick = onAddPhotoButtonClick,
+            onSavePhotoButtonClick = onSavePhotoButtonClick,
+            onEditPhotoMenuItemClick = onEditPhotoMenuItemClick,
             onDeletePhotoMenuItemClick = onDeletePhotoMenuItemClick,
         )
+
+
 
 
 

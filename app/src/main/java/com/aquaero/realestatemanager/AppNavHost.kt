@@ -303,9 +303,10 @@ fun AppNavHost(
                 photoToAddUri = photo.phUri
                 buttonSavePhotoEnabled = true
             }
-            val onDeletePhotoMenuItemClick: (Long) -> Unit = { photoId ->
-                editViewModel.onDeletePhotoMenuItemClick(photoId, propertyId.toLong())
+            val onPhotoDeletionConfirmation: (Long) -> Unit = { photoId ->
+                editViewModel.onPhotoDeletionConfirmation(photoId, propertyId.toLong())
             }
+
 
 
 
@@ -333,7 +334,7 @@ fun AppNavHost(
                 painter = painter,
                 onSavePhotoButtonClick = onSavePhotoButtonClick,
                 onEditPhotoMenuItemClick = onEditPhotoMenuItemClick,
-                onDeletePhotoMenuItemClick = onDeletePhotoMenuItemClick,
+                onPhotoDeletionConfirmation = onPhotoDeletionConfirmation,
                 onBackPressed = onBackPressed,
             )
         }

@@ -41,7 +41,7 @@ fun PhotosLazyRow(
     photos: MutableList<Photo>,
     longClickPhotoEnabled: Boolean,
     onEditPhotoMenuItemClickGetPhoto: (Photo) -> Unit,
-    onDeletePhotoMenuItemClick: (Long) -> Unit,
+    onDeletePhotoMenuItemClick: (Photo) -> Unit,
 ) {
     var contextMenuPhotoId by rememberSaveable { mutableStateOf<Long?>(null) }
     val haptics = LocalHapticFeedback.current

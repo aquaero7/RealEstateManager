@@ -51,7 +51,7 @@ fun EditScreen(
     painter: Painter,
     onSavePhotoButtonClick: (String) -> Unit,
     onEditPhotoMenuItemClick: (Photo) -> Unit,
-    onDeletePhotoMenuItemClick: (Long) -> Unit,
+    onPhotoDeletionConfirmation: (Long) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     Column(
@@ -142,7 +142,7 @@ fun EditScreen(
             painter = painter,
             onSavePhotoButtonClick = onSavePhotoButtonClick,
             onEditPhotoMenuItemClick = onEditPhotoMenuItemClick,
-            onDeletePhotoMenuItemClick = onDeletePhotoMenuItemClick,
+            onPhotoDeletionConfirmation = onPhotoDeletionConfirmation,
         )
 
 

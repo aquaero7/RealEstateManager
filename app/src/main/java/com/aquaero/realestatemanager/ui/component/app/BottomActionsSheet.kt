@@ -26,7 +26,7 @@ fun BottomActionsSheet(
     onDismissSheet: () -> Unit,
     photo: Photo? = null,
     onEditPhotoMenuItemClickGetPhoto: ((Photo) -> Unit)? = null,
-    onDeletePhotoMenuItemClick: ((Long) -> Unit)? = null,
+    onDeletePhotoMenuItemClick: ((Photo) -> Unit)? = null,
     onShootPhotoMenuItemClick: (() -> Unit)? = null,
     onSelectPhotoMenuItemClick: (() -> Unit)? = null,
 ) {
@@ -61,7 +61,7 @@ fun BottomActionsSheet(
                     .clickable(
                         enabled = true,
                         onClick = {
-                            onDeletePhotoMenuItemClick(photo.phId)
+                            onDeletePhotoMenuItemClick(photo)
                             onDismissSheet()
                         }
                     ),

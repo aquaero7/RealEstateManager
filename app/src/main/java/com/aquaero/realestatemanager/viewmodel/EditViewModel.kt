@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.NO_PHOTO
+import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
@@ -42,6 +43,7 @@ class EditViewModel(
     private var typeValue by mutableStateOf("")
     private var agentValue by mutableStateOf("")
     private lateinit var photos: MutableList<Photo>
+
     /***/
 
 
@@ -160,7 +162,11 @@ class EditViewModel(
         typeValue = field
 
         Log.w("EditViewModel", "New index for type is: $index / New value for type is: $field")
-        Toast.makeText(context, "New index for type is: $index / New value for type is: $field", Toast.LENGTH_SHORT)
+        Toast.makeText(
+            context,
+            "New index for type is: $index / New value for type is: $field",
+            Toast.LENGTH_SHORT
+        )
             .show()  // TODO: To be deleted
     }
 
@@ -168,7 +174,11 @@ class EditViewModel(
         agentValue = field
 
         Log.w("EditViewModel", "New index for agent is: $index / New value for agent is: $field")
-        Toast.makeText(context, "New index for agent is: $index / New value for agent is: $field", Toast.LENGTH_SHORT)
+        Toast.makeText(
+            context,
+            "New index for agent is: $index / New value for agent is: $field",
+            Toast.LENGTH_SHORT
+        )
             .show()  // TODO: To be deleted
     }
 
@@ -191,26 +201,37 @@ class EditViewModel(
             // Save the label modification of an existing photo
             photoRepository.photoFromId(photos, photoId!!).phLabel = label
 
-            Toast.makeText(context, "Updating photo: Label = $label, Uri = $uri", Toast.LENGTH_SHORT)
+            Toast.makeText(
+                context,
+                "Updating photo: Label = $label, Uri = $uri",
+                Toast.LENGTH_SHORT
+            )
                 .show()  // TODO: To be deleted
         } else {
             // Save a new photo
             if (photos.size == 1 && photos.elementAt(0).phId == 0L) photos.removeAt(0)
-            photos.add(Photo((Math.random()*9999).toLong(), uri, label))
+            photos.add(Photo((Math.random() * 9999).toLong(), uri, label))
 
             Toast.makeText(context, "Saving photo: Label = $label, Uri = $uri", Toast.LENGTH_SHORT)
                 .show()  // TODO: To be deleted
         }
     }
 
-    fun onDeletePhotoMenuItemClick(photoId: Long, propertyId: Long) {
+    fun onPhotoDeletionConfirmation(photoId: Long, propertyId: Long) {
         Log.w("EditViewModel", "Click on delete photo (id: $photoId) button")
 
         photos = propertyFromId(propertyId).photos
+        val photoToRemove = photoRepository.photoFromId(photos = photos, photoId = photoId)
+
         Log.w("EditViewModel", "Before action, photos list size is: ${photos.size}")
 
-        photos.remove(photoRepository.photoFromId(photos = photos, photoId = photoId))
+        photos.remove(photoToRemove)
         if (photos.size == 0) photos.add(NO_PHOTO)
+        Toast
+            .makeText(context, context.getString(R.string.photo_deleted, photoToRemove.phLabel),
+                Toast.LENGTH_SHORT)
+            .show()
+
         Log.w("EditViewModel", "After action. photos list size is: ${photos?.size}")
     }
 

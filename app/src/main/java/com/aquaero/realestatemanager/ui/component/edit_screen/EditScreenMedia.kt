@@ -42,8 +42,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aquaero.realestatemanager.PHOTO_DELETION
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Photo
+import com.aquaero.realestatemanager.ui.component.app.AppDialog
 import com.aquaero.realestatemanager.ui.component.app.BottomActionsSheet
 import com.aquaero.realestatemanager.ui.component.app.PhotosLazyRow
 
@@ -58,7 +60,7 @@ fun EditScreenMedia(
     painter: Painter,
     onSavePhotoButtonClick: (String) -> Unit,
     onEditPhotoMenuItemClick: (Photo) -> Unit,
-    onDeletePhotoMenuItemClick: (Long) -> Unit,
+    onPhotoDeletionConfirmation: (Long) -> Unit,
 ) {
     var addPhoto by rememberSaveable { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
@@ -68,6 +70,30 @@ fun EditScreenMedia(
     val onEditPhotoMenuItemClickGetPhoto: (Photo) -> Unit = { photo ->
         photoLabel = photo.phLabel
         onEditPhotoMenuItemClick(photo)
+    }
+
+    var displayPhotoDeletionDialog by remember { mutableStateOf(false) }
+    var photoToDelete by remember { mutableStateOf<Photo?>(null) }
+    val onDismiss: () -> Unit = { displayPhotoDeletionDialog = false }
+    val onOkClick: () -> Unit = {
+        onPhotoDeletionConfirmation(photoToDelete!!.phId)
+        onDismiss()
+    }
+    fun showDeletionConfirmationDialog(photo: Photo) {
+        photoToDelete = photo
+        displayPhotoDeletionDialog = true
+    }
+    if (displayPhotoDeletionDialog) {
+        AppDialog(
+            subject = PHOTO_DELETION,
+            title = stringResource(id = R.string.photo_deletion_dialog_title),
+            text = (stringResource(id = R.string.photo_deletion_dialog_text, photoToDelete!!.phLabel)),
+            okLabel = stringResource(id = R.string.confirm),
+            onOkClick = onOkClick,
+            cnlLabel = stringResource(id = R.string.abort),
+            onCnlClick = onDismiss,
+            onDismiss = onDismiss,
+        )
     }
 
     Column(
@@ -86,12 +112,13 @@ fun EditScreenMedia(
         horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
+
         // Photos list
         PhotosLazyRow(
             photos = photos,
             longClickPhotoEnabled = true,
             onEditPhotoMenuItemClickGetPhoto = onEditPhotoMenuItemClickGetPhoto,
-            onDeletePhotoMenuItemClick = onDeletePhotoMenuItemClick,
+            onDeletePhotoMenuItemClick = { photo -> showDeletionConfirmationDialog(photo) },
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -184,7 +211,6 @@ fun EditScreenMedia(
             },
         )
     }
-
 
 }
 

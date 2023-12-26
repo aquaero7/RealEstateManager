@@ -44,6 +44,9 @@
     <string name="recorded">Data recorded!</string>
     <string name="perms_revoked">The map is unavailable because\nlocation permissions\nhave been revoked!</string>
     <string name="network_unavailable">Network unavailable!</string>
+    <string name="photo_deletion_dialog_title">Photo deletion confirmation</string>
+    <string name="photo_deletion_dialog_text">Delete photo \"%s\"?</string>
+    <string name="photo_deleted">Photo \"%s\" deleted!</string>
 
     <!-- TYPE OF PROPERTIES -->
     <string name="flat">Flat</string>
@@ -79,6 +82,8 @@
     <string name="delete_photo">Delete photo</string>
     <string name="shoot_photo">Shoot a photo</string>
     <string name="select_photo">Select a photo</string>
+    <string name="confirm">Confirm</string>
+    <string name="abort">Abort</string>
 
 
     <!-- *** NOT TRANSLATABLE *** -->

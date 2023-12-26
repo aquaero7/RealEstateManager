@@ -44,6 +44,9 @@
     <string name="recorded">Données enregistrées!</string>
     <string name="perms_revoked">Carte indisponible car\nles permissions de localisation\nont été refusées !</string>
     <string name="network_unavailable">Réseau indisponible !</string>
+    <string name="photo_deletion_dialog_title">Confirmation de suppression de photo</string>
+    <string name="photo_deletion_dialog_text">Supprimer la photo \"%s\" ?</string>
+    <string name="photo_deleted">Photo \"%s\" supprimée !</string>
 
     <!-- TYPES OF PROPERTIES -->
     <string name="flat">Appartement</string>
@@ -79,5 +82,7 @@
     <string name="delete_photo">Supprimer la photo</string>
     <string name="shoot_photo">Prendre une photo</string>
     <string name="select_photo">Sélectionner une photo</string>
+    <string name="confirm">Confirmer</string>
+    <string name="abort">Abandonner</string>
 
 </resources>

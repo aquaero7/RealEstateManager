@@ -13,6 +13,9 @@ const val SM_TYPE = "&maptype=hybrid"
 const val SM_MK_COLOR1 = "&markers=color:red%7C"
 const val SM_KEY = "&key=$MAPS_API_KEY"
 const val DEFAULT_ZOOM = 13F
+const val LOC_PERMS_SETTINGS = "locPermsSettings"
+const val FINE_LOC_PERMS = "fineLocPerms"
+const val PHOTO_DELETION = "photoDeletion"
 // const val SM_KEY = "&key=${BuildConfig.MAPS_API_KEY}"
 
 // Item for lazyList if the property has no photo

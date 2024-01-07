@@ -38,7 +38,9 @@ import com.aquaero.realestatemanager.viewmodel.AppViewModel
 import com.aquaero.realestatemanager.viewmodel.DetailViewModel
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
 import com.aquaero.realestatemanager.viewmodel.ListViewModel
+import com.aquaero.realestatemanager.viewmodel.LoanViewModel
 import com.aquaero.realestatemanager.viewmodel.MapViewModel
+import com.aquaero.realestatemanager.viewmodel.SearchViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.callbackFlow
 
@@ -55,6 +57,8 @@ fun AppNavHost(
     detailViewModel: DetailViewModel,
     editViewModel: EditViewModel,
     mapViewModel: MapViewModel,
+    searchViewModel: SearchViewModel,
+    loanViewModel: LoanViewModel,
     currency: String,
 ) {
     NavHost(

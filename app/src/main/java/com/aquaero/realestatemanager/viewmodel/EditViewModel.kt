@@ -11,7 +11,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.ApplicationRoot
+import com.aquaero.realestatemanager.EditDetail
 import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Agent
@@ -46,6 +48,17 @@ class EditViewModel(
 
     /***/
 
+
+    fun onClickMenu(
+        navController: NavHostController,
+        propertyId: Comparable<*>
+    ) {
+        Log.w("Click on menu valid", "Screen ${EditDetail.label} / Property $propertyId")
+        Log.w("Click on menu valid", "New values: ${tempPropertyModificationsValidated()}")
+
+        propertyRepository.updateProperty(propertyId)   // Add new property values to arguments
+        navController.popBackStack()
+    }
 
     fun propertyFromId(propertyId: Long): Property {
         return propertyRepository.propertyFromId(propertyId)
@@ -235,6 +248,22 @@ class EditViewModel(
         Log.w("EditViewModel", "After action. photos list size is: ${photos?.size}")
     }
 
+    fun tempPropertyModificationsValidated(): String {
+        var newValues = ""
+        if (descriptionValue != "") newValues += "/$descriptionValue"
+        if (priceValue != 0) newValues += "/$priceValue"
+        if (surfaceValue != 0) newValues += "/$surfaceValue"
+        if (typeValue != "") newValues += "/$typeValue"
+        if (agentValue != "") newValues += "/$agentValue"
+        if (photos.isNotEmpty()) {
+            var photoLabels = ""
+            photos.forEach {
+                photoLabels += "/${it.phLabel}"
+            }
+            newValues += "/$photoLabels"
+        }
+        return newValues
+    }
 
     /***/
 

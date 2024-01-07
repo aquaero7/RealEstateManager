@@ -90,48 +90,6 @@ class AppViewModel(
             (currentScreen != ListAndDetail.routeWithArgs ||
                     contentType(windowSize) == AppContentType.SCREEN_WITH_DETAIL)
 
-    fun onClickMenu(
-        currentScreen: String?,
-        navController: NavHostController,
-        propertyId: Comparable<*>
-    ) {
-        when (currentScreen) {
-
-            ListAndDetail.routeWithArgs, Detail.routeWithArgs -> {
-                Log.w("Click on menu edit", "Property $propertyId")
-                navController.navigateToDetailEdit(propertyId.toString())
-            }
-
-            EditDetail.routeWithArgs -> {
-                propertyRepository.updateProperty(propertyId)
-                navController.popBackStack()
-            }
-
-            SearchCriteria.route -> {
-                Log.w("Click on menu valid", "Property $propertyId")
-                // TODO: Replace toast with specific action
-                Toast
-                    .makeText(
-                        context, "Click on ${context.getString(R.string.valid)}",
-                        Toast.LENGTH_SHORT
-                    )
-                    .show()
-            }
-
-            Loan.route -> {
-                Log.w("Click on menu valid", "Property $propertyId")
-                // TODO: Replace toast with specific action before deleting
-                Toast
-                    .makeText(
-                        context, "Click on ${context.getString(R.string.valid)}",
-                        Toast.LENGTH_SHORT
-                    )
-                    .show()
-            }
-
-        }
-    }
-
     val onClickRadioButton: (String) -> Unit = { currency: String ->
         // Store selected currency with DataStore
         CoroutineScope(Dispatchers.IO).launch {

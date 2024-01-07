@@ -28,7 +28,9 @@ import com.aquaero.realestatemanager.viewmodel.AppViewModel
 import com.aquaero.realestatemanager.viewmodel.DetailViewModel
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
 import com.aquaero.realestatemanager.viewmodel.ListViewModel
+import com.aquaero.realestatemanager.viewmodel.LoanViewModel
 import com.aquaero.realestatemanager.viewmodel.MapViewModel
+import com.aquaero.realestatemanager.viewmodel.SearchViewModel
 import com.aquaero.realestatemanager.viewmodel.ViewModelFactory
 
 class RealEstateManagerActivity : ComponentActivity() {
@@ -39,6 +41,8 @@ class RealEstateManagerActivity : ComponentActivity() {
     private val detailViewModel by viewModels<DetailViewModel> { ViewModelFactory }
     private val editViewModel by viewModels<EditViewModel> { ViewModelFactory }
     private val mapViewModel by viewModels<MapViewModel> { ViewModelFactory }
+    private val searchViewModel by viewModels<SearchViewModel> { ViewModelFactory }
+    private val loanViewModel by viewModels<LoanViewModel> { ViewModelFactory }
 
     @SuppressLint("NewApi")
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -57,6 +61,8 @@ class RealEstateManagerActivity : ComponentActivity() {
                 detailViewModel = detailViewModel,
                 editViewModel = editViewModel,
                 mapViewModel = mapViewModel,
+                searchViewModel = searchViewModel,
+                loanViewModel = loanViewModel,
             )
         }
     }
@@ -81,6 +87,8 @@ fun RealEstateManagerApp(
     detailViewModel: DetailViewModel,
     editViewModel: EditViewModel,
     mapViewModel: MapViewModel,
+    searchViewModel: SearchViewModel,
+    loanViewModel: LoanViewModel,
 ) {
     RealEstateManagerTheme(dynamicColor = false) {
         val properties: List<Property> = appViewModel.fakeProperties
@@ -112,8 +120,21 @@ fun RealEstateManagerApp(
         val menuIcon = appViewModel.menuIcon(currentScreen)
         val menuIconContentDesc = stringResource(appViewModel.menuIconContentDesc(currentScreen))
         val menuEnabled = appViewModel.menuEnabled(currentScreen, windowSize)
-        val onClickMenu: () -> Unit =
-            { appViewModel.onClickMenu(currentScreen, navController, propertyId) }
+        val onClickMenu: () -> Unit = when (currentScreen) {
+            ListAndDetail.routeWithArgs, Detail.routeWithArgs -> {
+                { detailViewModel.onClickMenu(navController, propertyId) }
+            }
+            EditDetail.routeWithArgs -> {
+                { editViewModel.onClickMenu(navController, propertyId) }
+            }
+            SearchCriteria.route -> {
+                { searchViewModel.onClickMenu() }
+            }
+            Loan.route -> {
+                { loanViewModel.onClickMenu() }
+            }
+            else -> { {} }
+        }
         val onClickRadioButton: (String) -> Unit = appViewModel.onClickRadioButton
         // TopBar RadioButtons
         val currency =
@@ -163,9 +184,13 @@ fun RealEstateManagerApp(
                 detailViewModel = detailViewModel,
                 editViewModel = editViewModel,
                 mapViewModel = mapViewModel,
+                searchViewModel = searchViewModel,
+                loanViewModel = loanViewModel,
                 currency = currency,
             )
         }
+
     }
+
 }
 

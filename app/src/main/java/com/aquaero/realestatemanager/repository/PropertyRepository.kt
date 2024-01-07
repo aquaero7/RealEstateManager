@@ -49,6 +49,7 @@ class PropertyRepository() {
 
 
     /** Database update */
+    // Add new property values to arguments
     fun updateProperty(propertyId: Comparable<*>) {
         // TODO: To be deleted
         Toast

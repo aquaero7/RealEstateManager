@@ -26,6 +26,10 @@ object ViewModelFactory:  ViewModelProvider.Factory {
             EditViewModel(agentRepository, propertyRepository, photoRepository) as T
         } else if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
             MapViewModel(locationRepository) as T
+        } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
+            SearchViewModel() as T
+        } else if (modelClass.isAssignableFrom(LoanViewModel::class.java)) {
+            LoanViewModel() as T
         } else {
             throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

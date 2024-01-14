@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.ui.component.detail_screen
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
@@ -27,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.GrayDisabled
 
-@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("NewApi")
 @Composable
 fun DetailScreenPoi(selectedPoi: List<String>) {
     Text(
@@ -79,7 +80,6 @@ fun DetailScreenPoi(selectedPoi: List<String>) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreenIcon(
     imageVector: ImageVector,

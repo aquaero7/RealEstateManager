@@ -33,9 +33,9 @@ import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.list_screen.PropertyCard
+import com.aquaero.realestatemanager.ui.theme.White
 import com.aquaero.realestatemanager.utils.AppContentType
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ListScreen(
     items: List<Property>,
@@ -52,7 +52,7 @@ fun ListScreen(
                 onClick = onFabClick,
                 shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.secondary,
-                contentColor = Color.White,
+                contentColor = White,
                 elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp),
             ) {
                 Icon(

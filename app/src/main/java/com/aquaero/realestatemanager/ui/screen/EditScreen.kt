@@ -1,6 +1,5 @@
 package com.aquaero.realestatemanager.ui.screen
 
-import android.app.Activity
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
@@ -13,9 +12,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.ArrowCircleDown
+import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.AspectRatio
+import androidx.compose.material.icons.filled.Bathtub
+import androidx.compose.material.icons.filled.Bed
 import androidx.compose.material.icons.filled.House
 import androidx.compose.material.icons.filled.Money
+import androidx.compose.material.icons.filled.OtherHouses
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,14 +29,14 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
-import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.RealEstateManagerActivity
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenAppDropdownMenu
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenAppDropdownMenuExample
+import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenColumn1
+import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenColumn2
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenMedia
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenTextFieldItem
 
@@ -48,6 +52,13 @@ fun EditScreen(
     onPriceValueChanged: (String) -> Unit,
     onSurfaceValueChanged: (String) -> Unit,
     onDropdownMenuValueChanged: (String) -> Unit,
+    onNbOfRoomsValueChanged: (String) -> Unit,
+    onNbOfBathroomsValueChanged: (String) -> Unit,
+    onNbOfBedroomsValueChanged: (String) -> Unit,
+    onRegistrationDateValueChanged: (String) -> Unit,
+    onSaleDateValueChanged: (String) -> Unit,
+    // isDateChar: (String) -> Boolean,                                                         ///
+
     onShootPhotoMenuItemClick: () -> Unit,
     onSelectPhotoMenuItemClick: () -> Unit,
     buttonAddPhotoEnabled: Boolean,
@@ -66,6 +77,7 @@ fun EditScreen(
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         // Description
         EditScreenTextFieldItem(
             fieldHeight = 150,
@@ -87,52 +99,34 @@ fun EditScreen(
                 modifier = Modifier.weight(1F),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Type
-                EditScreenAppDropdownMenu(
-                    icon = Icons.Default.House,
-                    contentDescription = stringResource(id = R.string.cd_type),
-                    label = stringResource(R.string.type),
-                    itemsSet = pTypeSet,
-                    index = pTypeIndex,
-                    onValueChanged = onDropdownMenuValueChanged,
+                EditScreenColumn1(
+                    property = property,
+                    pTypeSet = pTypeSet,
+                    pTypeIndex = pTypeIndex,
+                    onSurfaceValueChanged = onSurfaceValueChanged,
+                    onDropdownMenuValueChanged = onDropdownMenuValueChanged,
+                    onNbOfRoomsValueChanged = onNbOfRoomsValueChanged,
+                    onNbOfBathroomsValueChanged = onNbOfBathroomsValueChanged,
+                    onNbOfBedroomsValueChanged = onNbOfBedroomsValueChanged,
                 )
-                // Surface
-                EditScreenTextFieldItem(
-                    itemText = property?.surface.toString(),
-                    labelText = "${stringResource(R.string.surface_in)} ${stringResource(R.string.surface_unit)}",
-                    placeHolderText = "${stringResource(R.string.surface_in)} ${stringResource(R.string.surface_unit)}",
-                    icon = Icons.Default.AspectRatio,
-                    iconCD = stringResource(id = R.string.cd_surface),
-                    onValueChanged = onSurfaceValueChanged,
-                )
-
-
             }
+
             // Column 2
             Column(
                 modifier = Modifier.weight(1F),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Price
-                EditScreenTextFieldItem(
-                    itemText = property?.priceInCurrency(currency).toString(),
-                    labelText = "${stringResource(R.string.price_in)} $currency",
-                    placeHolderText = "${stringResource(R.string.price_in)} $currency",
-                    icon = Icons.Default.Money,
-                    iconCD = stringResource(id = R.string.cd_price),
-                    onValueChanged = onPriceValueChanged,
+                EditScreenColumn2(
+                    property = property,
+                    currency = currency,
+                    agentSet = agentSet,
+                    agentIndex = agentIndex,
+                    onPriceValueChanged = onPriceValueChanged,
+                    onDropdownMenuValueChanged = onDropdownMenuValueChanged,
+                    onRegistrationDateValueChanged = onRegistrationDateValueChanged,
+                    onSaleDateValueChanged = onSaleDateValueChanged,
+                    // isDateChar = isDateChar,                                                 ///
                 )
-                // Agent
-                EditScreenAppDropdownMenu(
-                    icon = Icons.Default.Person,
-                    contentDescription = stringResource(id = R.string.cd_agent),
-                    label = stringResource(R.string.agent),
-                    itemsSet = agentSet,
-                    index = agentIndex,
-                    onValueChanged = onDropdownMenuValueChanged,
-                )
-
-
             }
         }
 
@@ -149,29 +143,6 @@ fun EditScreen(
         )
 
 
-
-
-
-        // TODO: To be deleted after screen implementation ---------------------------------------------
-        Spacer(modifier = Modifier.height(200.dp))
-        Column {
-            Row {
-                Text(text = "EditScreen for ${property?.pId}")
-                Spacer(modifier = Modifier.width(200.dp))
-                Text(text = Locale.current.language)
-            }
-
-            Spacer(modifier = Modifier.height(40.dp))
-            EditScreenAppDropdownMenuExample(stringResource(id = R.string.type), pTypeSet)
-            Spacer(modifier = Modifier.height(40.dp))
-            EditScreenAppDropdownMenuExample(stringResource(id = R.string.agent), agentSet)
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            Text(text = stringResource(R.string.flat))
-            Text(text = stringResource(R.string.house))
-        }
-        // End TODO ------------------------------------------------------------------------------------
 
     }
 

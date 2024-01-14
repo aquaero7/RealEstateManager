@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.ui.component.detail_screen
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
@@ -19,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 
-@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("NewApi")
 @Composable
 fun DetailScreenColumn2(
     property: Property,

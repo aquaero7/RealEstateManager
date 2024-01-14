@@ -22,7 +22,6 @@ import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenMapT
 import com.aquaero.realestatemanager.ui.component.app.PhotosLazyRow
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenPoi
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreen(
     property: Property,

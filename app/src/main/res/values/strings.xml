@@ -23,8 +23,9 @@
     <string name="price">Price</string>
     <string name="price_in">Price in</string>
     <string name="address">Location</string>
-    <string name="registration_date">Registration date</string>
+    <string name="registration_date">Registr. date</string>
     <string name="sale_date">Sale date</string>
+    <string name="date_template">yyyy-mm-dd</string>
     <string name="status">Status</string>
     <string name="sold">Sold</string>
     <string name="for_sale">For sale</string>
@@ -47,6 +48,7 @@
     <string name="photo_deletion_dialog_title">Photo deletion confirmation</string>
     <string name="photo_deletion_dialog_text">Delete photo \"%s\"?</string>
     <string name="photo_deleted">Photo \"%s\" deleted!</string>
+    <string name="invalid_input">Error! Only digits are allowed!</string>
 
     <!-- TYPE OF PROPERTIES -->
     <string name="flat">Flat</string>
@@ -122,6 +124,7 @@
     <string name="cd_menu_item_shoot_photo" translatable="false">shoot_photo</string>
     <string name="cd_menu_item_select_photo" translatable="false">select_photo</string>
     <string name="cd_photo_label" translatable="false">photo_label</string>
+    <string name="cd_button_cancel" translatable="false">button_cancel</string>
     <string name="lb_tab_color_anim" translatable="false">tab_color_anim</string>
 
     <!-- CURRENCY -->

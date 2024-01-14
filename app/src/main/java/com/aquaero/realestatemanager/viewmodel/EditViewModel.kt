@@ -10,9 +10,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.ApplicationRoot
+import com.aquaero.realestatemanager.DATE_LENGTH
 import com.aquaero.realestatemanager.EditDetail
 import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.R
@@ -39,12 +41,18 @@ class EditViewModel(
     /**
      * Temp data used as a cache for property creation ou update
      */
-    private var descriptionValue by mutableStateOf("")
-    private var priceValue by mutableIntStateOf(0)
-    private var surfaceValue by mutableIntStateOf(0)
-    private var typeValue by mutableStateOf("")
-    private var agentValue by mutableStateOf("")
-    private lateinit var photos: MutableList<Photo>
+    private var descriptionValue = "-1"
+    private var priceValue = -1
+    private var surfaceValue = -1
+    private var nbOfRoomsValue = -1
+    private var nbOfBathroomsValue = -1
+    private var nbOfBedroomsValue = -1
+    private var typeValue = "-1"
+    private var agentValue = "-1"
+    private var registrationDateValue = "-1"
+    private var saleDateValue: String? = "-1"
+    private var photos = mutableListOf<Photo>()
+
 
     /***/
 
@@ -56,7 +64,8 @@ class EditViewModel(
         Log.w("Click on menu valid", "Screen ${EditDetail.label} / Property $propertyId")
         Log.w("Click on menu valid", "New values: ${tempPropertyModificationsValidated()}")
 
-        propertyRepository.updateProperty(propertyId)   // Add new property values to arguments
+        propertyRepository.updateProperty(propertyId)   // TODO: Add temp property values to arguments
+        clearTempData()
         navController.popBackStack()
     }
 
@@ -117,7 +126,7 @@ class EditViewModel(
     fun onPriceValueChanged(value: String, currency: String) {
         // propertyRepository.onPriceValueChanged(value, currency)
 
-        priceValue = if (value.isNotEmpty()) {
+        priceValue = if (value.isNotEmpty() && value.isDigitsOnly()) {
             when (currency) {
                 "€" -> convertEuroToDollar(value.toInt())
                 else -> value.toInt()
@@ -143,6 +152,30 @@ class EditViewModel(
 
         Log.w("EditViewModel", "New value for surface is: $value")
         Toast.makeText(context, "New value for surface is: $value", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+
+    fun onNbOfRoomsValueChanged(value: String) {
+        nbOfRoomsValue = if (value.isNotEmpty()) value.toInt() else 0
+
+        Log.w("EditViewModel", "New value for nb of rooms is: $value")
+        Toast.makeText(context, "New value for nb of rooms is: $value", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+
+    fun onNbOfBathroomsValueChanged(value: String) {
+        nbOfBathroomsValue = if (value.isNotEmpty()) value.toInt() else 0
+
+        Log.w("EditViewModel", "New value for nb of bathrooms is: $value")
+        Toast.makeText(context, "New value for nb of bathrooms is: $value", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+
+    fun onNbOfBedroomsValueChanged(value: String) {
+        nbOfBedroomsValue = if (value.isNotEmpty()) value.toInt() else 0
+
+        Log.w("EditViewModel", "New value for nb of bedrooms is: $value")
+        Toast.makeText(context, "New value for nb of bedrooms is: $value", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
 
@@ -191,9 +224,55 @@ class EditViewModel(
             context,
             "New index for agent is: $index / New value for agent is: $field",
             Toast.LENGTH_SHORT
-        )
+        ).show()  // TODO: To be deleted
+    }
+
+    fun onRegistrationDateValueChanged(value: String) {
+        registrationDateValue = value
+
+        Log.w("EditViewModel", "New value for registration date is: $value")
+        Toast.makeText(context, "New value for registration date is: $value", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
+
+    fun onSaleDateValueChanged(value: String) {
+        saleDateValue = value.ifEmpty { null }
+
+        Log.w("EditViewModel", "New value for sale date is: $saleDateValue")
+        Toast.makeText(context, "New value for sale date is: $saleDateValue", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+
+    /*                                                                                          ///
+    fun isDateChar(input: String): Boolean {
+        val target = input.length - 1
+        return input.matches(Regex("[0-9-]+")) && input.length <= DATE_LENGTH
+                && when (target) {
+            0, 1, 2, 3 -> input.substring(0, target + 1).isDigitsOnly()
+            4 -> input.substring(target, target + 1) == "-"
+            5 -> input.substring(target, target + 1).isDigitsOnly()
+            6 -> input.substring(target, target + 1).isDigitsOnly()
+                    && input.substring(target-1, target + 1).toInt() <= 12
+            7 -> input.substring(target, target + 1) == "-"
+            8 -> input.substring(target, target + 1).isDigitsOnly()
+            9 -> input.substring(target, target + 1).isDigitsOnly() &&
+                    when (input.substring(5, 7).toInt()) {
+                        1, 3, 5, 7, 8, 10, 12 -> input.substring(target-1, target + 1).toInt() <= 31
+                        4, 6, 9, 11 -> input.substring(target-1, target + 1).toInt() <= 30
+                        2 -> if (input.substring(0, 4).toInt() % 4 == 0) {
+                            input.substring(target-1, target + 1).toInt() <= 29
+                        } else  {
+                            input.substring(target-1, target + 1).toInt() <= 28
+                        }
+                        else -> false
+                    }
+            else -> false
+        }
+    }
+    */                                                                                          ///
+
+
+
 
     fun onSavePhotoButtonClick(propertyId: Long, uri: Uri, label: String) {
         Log.w("EditViewModel", "Click on save photo button")
@@ -248,13 +327,18 @@ class EditViewModel(
         Log.w("EditViewModel", "After action. photos list size is: ${photos?.size}")
     }
 
-    fun tempPropertyModificationsValidated(): String {
+    private fun tempPropertyModificationsValidated(): String {
         var newValues = ""
-        if (descriptionValue != "") newValues += "/$descriptionValue"
-        if (priceValue != 0) newValues += "/$priceValue"
-        if (surfaceValue != 0) newValues += "/$surfaceValue"
-        if (typeValue != "") newValues += "/$typeValue"
-        if (agentValue != "") newValues += "/$agentValue"
+        if (descriptionValue != "-1") newValues += "/$descriptionValue"
+        if (priceValue != -1) newValues += "/$priceValue"
+        if (surfaceValue != -1) newValues += "/$surfaceValue"
+        if (nbOfRoomsValue != -1) newValues += "/$nbOfRoomsValue"
+        if (nbOfBathroomsValue != -1) newValues += "/$nbOfBathroomsValue"
+        if (nbOfBedroomsValue != -1) newValues += "/$nbOfBedroomsValue"
+        if (typeValue != "-1") newValues += "/$typeValue"
+        if (agentValue != "-1") newValues += "/$agentValue"
+        if (registrationDateValue != "-1") newValues += "/$registrationDateValue"
+        if (saleDateValue != "-1") newValues += "/$saleDateValue"
         if (photos.isNotEmpty()) {
             var photoLabels = ""
             photos.forEach {
@@ -263,6 +347,20 @@ class EditViewModel(
             newValues += "/$photoLabels"
         }
         return newValues
+    }
+
+    private fun clearTempData() {
+        descriptionValue ="-1"
+        priceValue = -1
+        surfaceValue = -1
+        nbOfRoomsValue = -1
+        nbOfBathroomsValue = -1
+        nbOfBedroomsValue = -1
+        typeValue = "-1"
+        agentValue = "-1"
+        registrationDateValue = "-1"
+        saleDateValue = "-1"
+        photos= mutableListOf()
     }
 
     /***/

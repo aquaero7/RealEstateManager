@@ -33,7 +33,6 @@ import com.aquaero.realestatemanager.ui.theme.Pink40
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
 import com.aquaero.realestatemanager.ui.theme.White
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreenInformationItem(
     image: ImageVector,
@@ -102,7 +101,6 @@ fun DetailScreenInformationItem(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun MyPreview() {

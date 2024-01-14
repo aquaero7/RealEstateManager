@@ -45,7 +45,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.callbackFlow
 
 @SuppressLint("NewApi")
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavHost(
     modifier: Modifier,
@@ -219,6 +218,26 @@ fun AppNavHost(
             val onDropdownMenuValueChanged: (String) -> Unit = {
                 editViewModel.onDropdownMenuValueChanged(it)
             }
+            val onNbOfRoomsValueChanged: (String) -> Unit = {
+                editViewModel.onNbOfRoomsValueChanged(it)
+            }
+            val onNbOfBathroomsValueChanged: (String) -> Unit = {
+                editViewModel.onNbOfBathroomsValueChanged(it)
+            }
+            val onNbOfBedroomsValueChanged: (String) -> Unit = {
+                editViewModel.onNbOfBedroomsValueChanged(it)
+            }
+            val onRegistrationDateValueChanged: (String) -> Unit = {
+                editViewModel.onRegistrationDateValueChanged(it)
+            }
+            val onSaleDateValueChanged: (String) -> Unit = {
+                editViewModel.onSaleDateValueChanged(it)
+            }
+            /*                                                                                  ///
+            val isDateChar: (String) -> Boolean = {
+                editViewModel.isDateChar(it)
+            }
+            */                                                                                  ///
 
             /**
              * Photo shooting and picking
@@ -332,6 +351,13 @@ fun AppNavHost(
                 onPriceValueChanged = onPriceValueChanged,
                 onSurfaceValueChanged = onSurfaceValueChanged,
                 onDropdownMenuValueChanged = onDropdownMenuValueChanged,
+                onNbOfRoomsValueChanged = onNbOfRoomsValueChanged,
+                onNbOfBathroomsValueChanged = onNbOfBathroomsValueChanged,
+                onNbOfBedroomsValueChanged = onNbOfBedroomsValueChanged,
+                onRegistrationDateValueChanged = onRegistrationDateValueChanged,
+                onSaleDateValueChanged = onSaleDateValueChanged,
+                // isDateChar = isDateChar,                                                     ///
+
                 onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
                 onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,
                 buttonAddPhotoEnabled = buttonSavePhotoEnabled,
@@ -345,7 +371,6 @@ fun AppNavHost(
     }
 }
 
-// @RequiresApi(Build.VERSION_CODES.O)
 fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String) {
     val route =
         if (destination == ListAndDetail) "${destination.route}/${propertyId}" else destination.route
@@ -356,7 +381,6 @@ fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyI
     }
 }
 
-// @RequiresApi(Build.VERSION_CODES.O)
 fun NavHostController.navigateToDetail(propertyId: String, contentType: AppContentType) {
     if (contentType == AppContentType.SCREEN_ONLY) {
         this.navigate("${Detail.route}/$propertyId")

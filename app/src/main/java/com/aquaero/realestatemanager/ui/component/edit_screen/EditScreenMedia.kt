@@ -115,6 +115,7 @@ fun EditScreenMedia(
 
         // Photos list
         PhotosLazyRow(
+            titleFontSize = 14.sp,
             photos = photos,
             longClickPhotoEnabled = true,
             onEditPhotoMenuItemClickGetPhoto = onEditPhotoMenuItemClickGetPhoto,

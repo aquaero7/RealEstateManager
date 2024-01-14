@@ -16,7 +16,6 @@ import com.aquaero.realestatemanager.ui.component.map_screen.MapScreenMap
 import com.aquaero.realestatemanager.utils.MyLocationSource
 import com.google.android.gms.maps.model.LatLng
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun MapScreen(
     showMap: Boolean,

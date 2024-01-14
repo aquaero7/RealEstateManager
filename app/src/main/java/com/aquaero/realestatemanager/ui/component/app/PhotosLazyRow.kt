@@ -27,10 +27,13 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Photo
@@ -38,6 +41,7 @@ import com.aquaero.realestatemanager.model.Photo
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PhotosLazyRow(
+    titleFontSize: TextUnit = 16.sp,
     photos: MutableList<Photo>,
     longClickPhotoEnabled: Boolean,
     onEditPhotoMenuItemClickGetPhoto: (Photo) -> Unit,
@@ -48,6 +52,7 @@ fun PhotosLazyRow(
 
     Text(
         text = stringResource(R.string.media),
+        fontSize = titleFontSize,
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.tertiary,
         modifier = Modifier

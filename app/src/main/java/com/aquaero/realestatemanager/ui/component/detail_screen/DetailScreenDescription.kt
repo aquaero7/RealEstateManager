@@ -22,7 +22,6 @@ import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.theme.Black
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreenDescription(
     description: String?

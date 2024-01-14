@@ -243,33 +243,7 @@ class EditViewModel(
             .show()  // TODO: To be deleted
     }
 
-    /*                                                                                          ///
-    fun isDateChar(input: String): Boolean {
-        val target = input.length - 1
-        return input.matches(Regex("[0-9-]+")) && input.length <= DATE_LENGTH
-                && when (target) {
-            0, 1, 2, 3 -> input.substring(0, target + 1).isDigitsOnly()
-            4 -> input.substring(target, target + 1) == "-"
-            5 -> input.substring(target, target + 1).isDigitsOnly()
-            6 -> input.substring(target, target + 1).isDigitsOnly()
-                    && input.substring(target-1, target + 1).toInt() <= 12
-            7 -> input.substring(target, target + 1) == "-"
-            8 -> input.substring(target, target + 1).isDigitsOnly()
-            9 -> input.substring(target, target + 1).isDigitsOnly() &&
-                    when (input.substring(5, 7).toInt()) {
-                        1, 3, 5, 7, 8, 10, 12 -> input.substring(target-1, target + 1).toInt() <= 31
-                        4, 6, 9, 11 -> input.substring(target-1, target + 1).toInt() <= 30
-                        2 -> if (input.substring(0, 4).toInt() % 4 == 0) {
-                            input.substring(target-1, target + 1).toInt() <= 29
-                        } else  {
-                            input.substring(target-1, target + 1).toInt() <= 28
-                        }
-                        else -> false
-                    }
-            else -> false
-        }
-    }
-    */                                                                                          ///
+
 
 
 

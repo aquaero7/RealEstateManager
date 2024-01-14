@@ -233,11 +233,7 @@ fun AppNavHost(
             val onSaleDateValueChanged: (String) -> Unit = {
                 editViewModel.onSaleDateValueChanged(it)
             }
-            /*                                                                                  ///
-            val isDateChar: (String) -> Boolean = {
-                editViewModel.isDateChar(it)
-            }
-            */                                                                                  ///
+
 
             /**
              * Photo shooting and picking
@@ -356,7 +352,6 @@ fun AppNavHost(
                 onNbOfBedroomsValueChanged = onNbOfBedroomsValueChanged,
                 onRegistrationDateValueChanged = onRegistrationDateValueChanged,
                 onSaleDateValueChanged = onSaleDateValueChanged,
-                // isDateChar = isDateChar,                                                     ///
 
                 onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
                 onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,

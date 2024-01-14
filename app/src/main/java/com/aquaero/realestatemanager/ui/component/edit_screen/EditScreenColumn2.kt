@@ -11,7 +11,6 @@ import androidx.compose.ui.res.stringResource
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditScreenColumn2(
     property: Property?,
@@ -22,7 +21,6 @@ fun EditScreenColumn2(
     onDropdownMenuValueChanged: (String) -> Unit,
     onRegistrationDateValueChanged: (String) -> Unit,
     onSaleDateValueChanged: (String) -> Unit,
-    // isDateChar: (String) -> Boolean,                                                         ///
 ) {
     // Price
     EditScreenTextFieldItem(
@@ -43,33 +41,6 @@ fun EditScreenColumn2(
         index = agentIndex,
         onValueChanged = onDropdownMenuValueChanged,
     )
-    /*
-    // Registration date
-    EditScreenTextFieldItem(
-        itemText = property?.registrationDate.toString(),
-        labelText = stringResource(R.string.registration_date),
-        placeHolderText = stringResource(R.string.date_template),
-        icon = Icons.Default.ArrowCircleDown,
-        iconCD = stringResource(id = R.string.cd_registration_date),
-        onValueChanged = onRegistrationDateValueChanged,
-        isDateChar = isDateChar,
-        shouldBeDigitsOnly = true,
-        isDate = true,
-    )
-    // Sale date
-    EditScreenTextFieldItem(
-        itemText = if (property?.saleDate != null) property.saleDate.toString() else "",
-        labelText = stringResource(R.string.sale_date),
-        placeHolderText = stringResource(R.string.date_template),
-        icon = Icons.Default.ArrowCircleUp,
-        iconCD = stringResource(id = R.string.cd_sale_date),
-        onValueChanged = onSaleDateValueChanged,
-        isDateChar = isDateChar,
-        shouldBeDigitsOnly = true,
-        isDate = true,
-    )
-    */
-
     // Registration date
     EditScreenDatePicker(
         storedDate = if (property?.registrationDate != null) property.registrationDate.toString() else "",

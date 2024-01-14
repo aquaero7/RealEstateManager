@@ -36,9 +36,7 @@ fun EditScreenTextFieldItem(
     icon: ImageVector,
     iconCD: String,
     onValueChanged: (String) -> Unit,
-    // isDateChar: (String) -> Boolean = { false },                                             ///
     shouldBeDigitsOnly: Boolean = false,
-    // isDate: Boolean = false,                                                                 ///
 ) {
     var fieldText by remember(itemText) { mutableStateOf(itemText) }
     var isValid by remember { mutableStateOf(true) }
@@ -52,16 +50,10 @@ fun EditScreenTextFieldItem(
             maxLines = maxLines,
             value = it,
             onValueChange = {
-                // isValid = !shouldBeDigitsOnly || (!isDate && it.isNotEmpty() && it.isDigitsOnly()) || (isDate && it.isNotEmpty() && isDateChar(it))  ///
                 isValid = !shouldBeDigitsOnly || (it.isNotEmpty() && it.isDigitsOnly())
                 if (isValid) {
                     fieldText = it
                     onValueChanged(it)
-                    /*                                                                          ///
-                    if (!isDate || (it.length <= DATE_LENGTH)) {
-                        onValueChanged(it)
-                    }
-                    */                                                                          ///
                 }
             },
             textStyle = TextStyle(

@@ -4,37 +4,20 @@ import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.filled.ArrowCircleDown
-import androidx.compose.material.icons.filled.ArrowCircleUp
-import androidx.compose.material.icons.filled.AspectRatio
-import androidx.compose.material.icons.filled.Bathtub
-import androidx.compose.material.icons.filled.Bed
-import androidx.compose.material.icons.filled.House
-import androidx.compose.material.icons.filled.Money
-import androidx.compose.material.icons.filled.OtherHouses
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
-import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenAppDropdownMenu
-import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenAppDropdownMenuExample
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenColumn1
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenColumn2
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenMedia
@@ -57,7 +40,6 @@ fun EditScreen(
     onNbOfBedroomsValueChanged: (String) -> Unit,
     onRegistrationDateValueChanged: (String) -> Unit,
     onSaleDateValueChanged: (String) -> Unit,
-    // isDateChar: (String) -> Boolean,                                                         ///
 
     onShootPhotoMenuItemClick: () -> Unit,
     onSelectPhotoMenuItemClick: () -> Unit,
@@ -125,7 +107,6 @@ fun EditScreen(
                     onDropdownMenuValueChanged = onDropdownMenuValueChanged,
                     onRegistrationDateValueChanged = onRegistrationDateValueChanged,
                     onSaleDateValueChanged = onSaleDateValueChanged,
-                    // isDateChar = isDateChar,                                                 ///
                 )
             }
         }

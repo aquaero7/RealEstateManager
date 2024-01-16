@@ -4,10 +4,16 @@ import android.os.Build
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -32,9 +38,15 @@ fun DetailScreen(
     onBackPressed: () -> Unit,
 ) {
     Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(
+                state = rememberScrollState(),
+                enabled = true
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.verticalScroll(state = rememberScrollState(), enabled = true),
     ) {
+
         // Media (photos row)
         PhotosLazyRow(
             // property = property, // TODO: To be deleted
@@ -53,41 +65,54 @@ fun DetailScreen(
         Row {
             // Column 1
             Column(
-                modifier = Modifier.weight(1F),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier
+                    .weight(1F)
+                    .height(320.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                DetailScreenColumn1(property = property)
+                Column(
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    DetailScreenColumn1(property = property)
+                }
             }
             // Column 2
             Column(
-                modifier = Modifier.weight(1F),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier
+                    .weight(1F)
+                    .height(320.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                DetailScreenColumn2(
-                    property = property,
-                    stringAgent = stringAgent,
-                    currency = currency,
-                )
+                Column(
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    DetailScreenColumn2(
+                        property = property,
+                        stringAgent = stringAgent,
+                        currency = currency,
+                    )
+                }
             }
-            /*
-            // Column x
-            Column(
-                modifier = Modifier.weight(1F),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                DetailScreenColumn3(property = property)
-            }
-            */
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         // POIs
         DetailScreenPoi(selectedPoi = property.pPoi)
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Map thumbnail
         DetailScreenMapThumbnail(
             internetAvailable = internetAvailable,
             thumbnailUrl = thumbnailUrl,
-            latLng =  property.pAddress.latLng,
+            latLng = property.pAddress.latLng,
         )
 
         // To manage back nav

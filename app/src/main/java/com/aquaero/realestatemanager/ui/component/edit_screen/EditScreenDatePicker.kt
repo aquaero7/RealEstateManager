@@ -40,6 +40,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.R
@@ -53,6 +55,11 @@ import com.aquaero.realestatemanager.utils.convertDateStringToMillis
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditScreenDatePicker(
+    buttonHeight: Dp = 76.dp,
+    buttonWidth: Dp = 296.dp,
+    fieldFontSize: TextUnit = 16.sp,
+    labelFontSize: TextUnit = 14.sp,
+    iconSize: Dp = 40.dp,
     storedDate: String,
     labelText: String,
     icon: ImageVector,
@@ -153,8 +160,8 @@ fun EditScreenDatePicker(
                     strokeWidth = 2F
                 )
             }
-            .height(76.dp)
-            .width(296.dp)
+            .height(buttonHeight)
+            .width(buttonWidth)
             .padding(horizontal = 8.dp, vertical = 4.dp),
         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RectangleShape,
@@ -170,7 +177,7 @@ fun EditScreenDatePicker(
             // Icon
             Icon(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(iconSize)
                     .weight(if (clearableDate) 1.3F else 1F),
                 imageVector = icon,
                 contentDescription = iconCD,
@@ -184,7 +191,7 @@ fun EditScreenDatePicker(
                 // Label
                 Text(
                     text = labelText,
-                    fontSize = 14.sp,
+                    fontSize = labelFontSize,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.tertiary,
                 )
@@ -193,7 +200,7 @@ fun EditScreenDatePicker(
                 Text(
                     text = dateValue,
                     textAlign = TextAlign.Start,
-                    fontSize = 16.sp,
+                    fontSize = fieldFontSize,
                     fontWeight = FontWeight.Normal,
                     color = MaterialTheme.colorScheme.onSurface,
                     // modifier = Modifier.fillMaxWidth(),

@@ -15,7 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Label
 import androidx.compose.material.icons.filled.AddToPhotos
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Label
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -159,7 +162,7 @@ fun EditScreenMedia(
                     itemText = photoLabel,
                     labelText = stringResource(id = R.string.photo_label),
                     placeHolderText = stringResource(id = R.string.photo_label),
-                    icon = Icons.Default.Label,
+                    icon = Icons.Default.Description,
                     iconCD = stringResource(id = R.string.cd_photo_label),
                     onValueChanged = { photoLabel = it },
                 )

@@ -5,7 +5,6 @@ import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.aquaero.realestatemanager.R
@@ -32,10 +31,15 @@ fun EditScreenColumn2(
         onValueChanged = onPriceValueChanged,
         shouldBeDigitsOnly = true,
     )
+    // Location
+    EditScreenAddressItem(
+        itemText = property?.pAddress,
+        onValueChanged = { /* TODO */ }
+    )
     // Agent
     EditScreenAppDropdownMenu(
         icon = Icons.Default.Person,
-        contentDescription = stringResource(id = R.string.cd_agent),
+        iconCD = stringResource(id = R.string.cd_agent),
         label = stringResource(R.string.agent),
         itemsSet = agentSet,
         index = agentIndex,
@@ -58,9 +62,5 @@ fun EditScreenColumn2(
         onValueChanged = onSaleDateValueChanged,
         clearableDate = true,
     )
-
-
-
-
 }
 

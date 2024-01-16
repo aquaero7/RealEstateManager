@@ -27,56 +27,39 @@ fun DetailScreenColumn2(
     stringAgent: String,
     currency: String,
 ) {
-    Column(
-        modifier = Modifier.wrapContentSize()
-    ) {
-
-        // Info price
-        DetailScreenInformationItem(
-            image = Icons.Default.Money,
-            contentDesc = stringResource(id = R.string.cd_price),
-            label = stringResource(R.string.price),
-            value = property.priceStringInCurrency(currency), // TODO: Convert value according to currency in DataStore
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Info location
-        DetailScreenInformationItem(
-            image = Icons.Default.LocationOn,
-            contentDesc = stringResource(id = R.string.cd_address),
-            label = stringResource(id = R.string.address),
-            value = property.pAddress.toString(),
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Info agent
-        DetailScreenInformationItem(
-            image = Icons.Default.Person,
-            contentDesc = stringResource(id = R.string.cd_agent),
-            label = stringResource(id = R.string.agent),
-            value = stringAgent,
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Info registration date
-        DetailScreenInformationItem(
-            image = Icons.Default.ArrowCircleDown,
-            contentDesc = stringResource(id = R.string.cd_registration_date),
-            label = stringResource(id = R.string.registration_date),
-            value = property.registrationDate.toString(),
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Info sale date
-        DetailScreenInformationItem(
-            image = Icons.Default.ArrowCircleUp,
-            contentDesc = stringResource(id = R.string.cd_sale_date),
-            label = stringResource(id = R.string.sale_date),
-            value = if (property.saleDate != null) property.saleDate.toString() else "-",
-        )
-    }
+    // Info price
+    DetailScreenInformationItem(
+        image = Icons.Default.Money,
+        contentDesc = stringResource(id = R.string.cd_price),
+        label = stringResource(R.string.price),
+        value = property.priceStringInCurrency(currency), // TODO: Convert value according to currency in DataStore
+    )
+    // Info location
+    DetailScreenInformationItem(
+        image = Icons.Default.LocationOn,
+        contentDesc = stringResource(id = R.string.cd_address),
+        label = stringResource(id = R.string.address),
+        value = property.pAddress.toString(),
+    )
+    // Info agent
+    DetailScreenInformationItem(
+        image = Icons.Default.Person,
+        contentDesc = stringResource(id = R.string.cd_agent),
+        label = stringResource(id = R.string.agent),
+        value = stringAgent,
+    )
+    // Info registration date
+    DetailScreenInformationItem(
+        image = Icons.Default.ArrowCircleDown,
+        contentDesc = stringResource(id = R.string.cd_registration_date),
+        label = stringResource(id = R.string.registration_date),
+        value = property.registrationDate.toString(),
+    )
+    // Info sale date
+    DetailScreenInformationItem(
+        image = Icons.Default.ArrowCircleUp,
+        contentDesc = stringResource(id = R.string.cd_sale_date),
+        label = stringResource(id = R.string.sale_date),
+        value = if (property.saleDate != null) property.saleDate.toString() else "-",
+    )
 }

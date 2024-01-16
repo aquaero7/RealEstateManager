@@ -8,10 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
@@ -50,7 +53,7 @@ fun DetailScreenInformationItem(
         // Icon
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxHeight()
+            modifier = Modifier.wrapContentHeight()
         ) {
             Icon(
                 imageVector = image,
@@ -62,7 +65,7 @@ fun DetailScreenInformationItem(
         Spacer(modifier = Modifier.width(8.dp))
         Column(
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxHeight()
+            modifier = Modifier.wrapContentHeight()
         ) {
             // Label
             Row(

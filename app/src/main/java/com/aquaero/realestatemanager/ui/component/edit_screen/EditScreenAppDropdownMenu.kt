@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,7 +33,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -40,6 +40,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.ui.theme.BoxBackgroundColor
@@ -47,13 +49,15 @@ import com.aquaero.realestatemanager.ui.theme.BoxTextColor
 
 @Composable
 fun EditScreenAppDropdownMenu(
-    fieldHeight: Int = 76,
-    fieldMinWidth: Int = 0,
-    fieldMaxWidth: Int = 296,
-    fieldFontSize: Int = 16,
+    fieldHeight: Dp = 76.dp,
+    fieldMinWidth: Dp = 0.dp,
+    fieldMaxWidth: Dp = 296.dp,
+    fieldFontSize: TextUnit = 16.sp,
     maxLines: Int = 1,
+    labelFontSize: TextUnit = 14.sp,
+    iconSize: Dp = 40.dp,
     icon: ImageVector,
-    contentDescription: String,
+    iconCD: String,
     label: String,
     itemsSet: () -> MutableSet<*>,
     index: Int?,
@@ -75,8 +79,8 @@ fun EditScreenAppDropdownMenu(
                     strokeWidth = 2F
                 )
             }
-            .height(fieldHeight.dp)
-            .widthIn(min = fieldMinWidth.dp, max = fieldMaxWidth.dp)
+            .height(fieldHeight)
+            .widthIn(min = fieldMinWidth, max = fieldMaxWidth)
             .padding(horizontal = 8.dp, vertical = 4.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
     ) {
@@ -86,9 +90,9 @@ fun EditScreenAppDropdownMenu(
         ) {
             // Icon
             Icon(
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(iconSize),
                 imageVector = icon,
-                contentDescription = contentDescription,
+                contentDescription = iconCD,
                 tint = MaterialTheme.colorScheme.tertiary,
             )
 
@@ -98,7 +102,7 @@ fun EditScreenAppDropdownMenu(
                 // Label
                 Text(
                     text = label,
-                    fontSize = 14.sp,
+                    fontSize = labelFontSize,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.tertiary,
                 )
@@ -111,7 +115,7 @@ fun EditScreenAppDropdownMenu(
                         Text(
                             text = if (it is String) it else stringResource(id = it as Int),
                             textAlign = TextAlign.Start,
-                            fontSize = fieldFontSize.sp,
+                            fontSize = fieldFontSize,
                             maxLines = maxLines,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
@@ -136,7 +140,7 @@ fun EditScreenAppDropdownMenu(
                                     Text(
                                         text = textDisplayed,
                                         // color = BoxTextColor,
-                                        fontSize = 16.sp,
+                                        fontSize = fieldFontSize,
                                     )
                                 },
                                 onClick = {
@@ -145,7 +149,7 @@ fun EditScreenAppDropdownMenu(
                                     expanded = false
                                 },
                             )
-                            Divider(
+                            HorizontalDivider(
                                 thickness = 1.dp
                             )
                         }

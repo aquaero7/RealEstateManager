@@ -25,7 +25,7 @@ fun EditScreenColumn1(
     // Type
     EditScreenAppDropdownMenu(
         icon = Icons.Default.House,
-        contentDescription = stringResource(id = R.string.cd_type),
+        iconCD = stringResource(id = R.string.cd_type),
         label = stringResource(R.string.type),
         itemsSet = pTypeSet,
         index = pTypeIndex,

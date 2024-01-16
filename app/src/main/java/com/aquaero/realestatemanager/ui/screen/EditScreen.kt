@@ -2,9 +2,12 @@ package com.aquaero.realestatemanager.ui.screen
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -14,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Photo
@@ -62,8 +66,8 @@ fun EditScreen(
 
         // Description
         EditScreenTextFieldItem(
-            fieldHeight = 150,
-            fieldMinWidth = 400,
+            fieldHeight = 150.dp,
+            fieldMinWidth = 400.dp,
             maxLines = 5,
             itemText = property?.description,
             labelText = stringResource(R.string.description),
@@ -78,8 +82,11 @@ fun EditScreen(
 
             // Column 1
             Column(
-                modifier = Modifier.weight(1F),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier
+                    .weight(1F)
+                    .height(380.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 EditScreenColumn1(
                     property = property,
@@ -95,8 +102,11 @@ fun EditScreen(
 
             // Column 2
             Column(
-                modifier = Modifier.weight(1F),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier
+                    .weight(1F)
+                    .height(380.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 EditScreenColumn2(
                     property = property,
@@ -110,6 +120,8 @@ fun EditScreen(
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Media
         EditScreenMedia(

@@ -2,11 +2,9 @@ package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -112,7 +110,7 @@ fun AppNavHost(
                     var currentLocation by remember { mutableStateOf(DEFAULT_LOCATION) }
                     val locationFlow = callbackFlow {
                         while (true) {
-                            mapViewModel.getCurrentLocation() {
+                            mapViewModel.getCurrentLocation {
                                 currentLocation = it
                                 showMap = true
                                 trySend(it)

@@ -36,6 +36,7 @@ fun DetailScreenColumn2(
     )
     // Info location
     DetailScreenInformationItem(
+        maxLines = 9,
         image = Icons.Default.LocationOn,
         contentDesc = stringResource(id = R.string.cd_address),
         label = stringResource(id = R.string.address),
@@ -43,6 +44,7 @@ fun DetailScreenColumn2(
     )
     // Info agent
     DetailScreenInformationItem(
+        maxLines = 2,
         image = Icons.Default.Person,
         contentDesc = stringResource(id = R.string.cd_agent),
         label = stringResource(id = R.string.agent),

@@ -107,6 +107,7 @@ fun PhotosLazyRow(
                 ) {
                     Text(
                         text = photo.phLabel,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                         // color = MaterialTheme.colorScheme.tertiary,

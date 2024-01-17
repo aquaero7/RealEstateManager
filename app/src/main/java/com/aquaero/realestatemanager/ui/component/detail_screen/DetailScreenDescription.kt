@@ -2,8 +2,10 @@ package com.aquaero.realestatemanager.ui.component.detail_screen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -37,7 +39,9 @@ fun DetailScreenDescription(
     Column(
         modifier = Modifier
             .height(120.dp)
-            .padding(top = 8.dp, start = 8.dp, end = 12.dp)
+            .fillMaxWidth()
+            .padding(top = 8.dp, start = 8.dp, end = 8.dp)
+            .border(width = 1.dp, color = MaterialTheme.colorScheme.tertiary)
             .verticalScroll(
                 state = rememberScrollState(),
                 enabled = true
@@ -48,12 +52,12 @@ fun DetailScreenDescription(
                 text = it,
                 // color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Justify,
-                fontSize = 12.sp,
-                lineHeight = 14.sp,
+                fontSize = 14.sp,
+                lineHeight = 16.sp,
                 modifier = Modifier
                     .fillMaxHeight()
-                // .padding(top = 8.dp)
-                // .padding(horizontal = 8.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 8.dp)
             )
         }
     }

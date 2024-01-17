@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -62,42 +63,46 @@ fun DetailScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         // Information
-        Row {
+        Row(
+            modifier = Modifier.height(IntrinsicSize.Max)
+        ) {
             // Column 1
             Column(
                 modifier = Modifier
                     .weight(1F)
-                    .height(320.dp),
+                    .fillMaxHeight(),    // .height(320.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                Column(
+                /*Column(
                     modifier = Modifier
                         .wrapContentWidth()
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.SpaceBetween,
-                ) {
+                ) {*/
                     DetailScreenColumn1(property = property)
-                }
+                //}
             }
             // Column 2
             Column(
                 modifier = Modifier
                     .weight(1F)
-                    .height(320.dp),
+                    .fillMaxHeight(),    // .height(320.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                Column(
+                /*Column(
                     modifier = Modifier
                         .wrapContentWidth()
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.SpaceBetween,
-                ) {
+                ) {*/
                     DetailScreenColumn2(
                         property = property,
                         stringAgent = stringAgent,
                         currency = currency,
                     )
-                }
+                //}
             }
         }
 

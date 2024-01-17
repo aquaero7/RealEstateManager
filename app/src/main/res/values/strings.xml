@@ -17,9 +17,9 @@
     <string name="surface_unit">sq.m</string>
     <string name="surface">Surface</string>
     <string name="surface_in">Surface in</string>
-    <string name="rooms">Nb. of rooms</string>
-    <string name="bathrooms">Nb. of bathrooms</string>
-    <string name="bedrooms">Nb. of bedrooms</string>
+    <string name="rooms">Nb. rooms</string>
+    <string name="bathrooms">Nb. bathrooms</string>
+    <string name="bedrooms">Nb. bedrooms</string>
     <string name="price">Price</string>
     <string name="price_in">Price in</string>
     <string name="address">Location</string>

@@ -38,4 +38,8 @@ val LOCATION_PERMISSIONS = listOf(
     Manifest.permission.ACCESS_COARSE_LOCATION,
 )
 
-
+// DatePicker colors
+val DP_TEXT_COLOR = White
+val DP_HEADERS_COLOR = White
+val DP_CONTENT_COLOR = PurpleGrey80
+val DP_CONTAINER_COLOR = PurpleGrey40

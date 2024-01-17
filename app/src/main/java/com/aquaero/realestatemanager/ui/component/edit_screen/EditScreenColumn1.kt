@@ -23,10 +23,11 @@ fun EditScreenColumn1(
     onNbOfBedroomsValueChanged: (String) -> Unit,
 ) {
     // Type
-    EditScreenAppDropdownMenu(
+    EditScreenTextFieldItem(
+        labelText = stringResource(R.string.type),
+        placeHolderText = stringResource(R.string.type),
         icon = Icons.Default.House,
         iconCD = stringResource(id = R.string.cd_type),
-        label = stringResource(R.string.type),
         itemsSet = pTypeSet,
         index = pTypeIndex,
         onValueChanged = onDropdownMenuValueChanged,

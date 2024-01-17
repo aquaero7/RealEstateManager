@@ -3,6 +3,7 @@ package com.aquaero.realestatemanager.ui.component.edit_screen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.ArrowCircleUp
+import androidx.compose.material.icons.filled.House
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
@@ -37,30 +38,35 @@ fun EditScreenColumn2(
         onValueChanged = { /* TODO */ }
     )
     // Agent
-    EditScreenAppDropdownMenu(
+    EditScreenTextFieldItem(
+        maxLines = 2,
+        labelText = stringResource(R.string.agent),
+        placeHolderText = stringResource(R.string.agent),
         icon = Icons.Default.Person,
         iconCD = stringResource(id = R.string.cd_agent),
-        label = stringResource(R.string.agent),
         itemsSet = agentSet,
         index = agentIndex,
         onValueChanged = onDropdownMenuValueChanged,
     )
     // Registration date
-    EditScreenDatePicker(
+    EditScreenTextFieldItem(
         storedDate = if (property?.registrationDate != null) property.registrationDate.toString() else "",
         labelText = stringResource(R.string.registration_date),
+        placeHolderText = stringResource(R.string.registration_date),
         icon = Icons.Default.ArrowCircleDown,
         iconCD = stringResource(id = R.string.cd_registration_date),
         onValueChanged = onRegistrationDateValueChanged,
     )
     // Sale date
-    EditScreenDatePicker(
+    EditScreenTextFieldItem(
         storedDate = if (property?.saleDate != null) property.saleDate.toString() else "",
         labelText = stringResource(R.string.sale_date),
+        placeHolderText = stringResource(R.string.sale_date),
         icon = Icons.Default.ArrowCircleUp,
         iconCD = stringResource(id = R.string.cd_sale_date),
         onValueChanged = onSaleDateValueChanged,
         clearableDate = true,
     )
+
 }
 

@@ -2,133 +2,279 @@ package com.aquaero.realestatemanager.ui.component.edit_screen
 
 import android.util.Log
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
-import com.aquaero.realestatemanager.DATE_LENGTH
+import com.aquaero.realestatemanager.DP_CONTAINER_COLOR
+import com.aquaero.realestatemanager.DP_TEXT_COLOR
+import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.ui.theme.Red
+import com.aquaero.realestatemanager.utils.convertDateMillisToString
+import com.aquaero.realestatemanager.utils.convertDateStringToMillis
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditScreenTextFieldItem(
-    fieldHeight: Dp = 76.dp,
-    fieldMinWidth: Dp = 0.dp,
-    fieldFontSize: TextUnit = 16.sp,
     maxLines: Int = 1,
+    fieldFontSize: TextUnit = 16.sp,
     labelFontSize: TextUnit = 14.sp,
     iconSize: Dp = 40.dp,
-    itemText: String?,
     labelText: String,
     placeHolderText: String,
     icon: ImageVector,
     iconCD: String,
-
-    ///
-    // enabled: Boolean = false,
-    // onClick: () -> Unit = { Log.w("EditScreen", "Click in field") },
-    itemsSet: (() -> MutableSet<*>)? = null,
-    index: Int? = null,
-    ///
-
     onValueChanged: (String) -> Unit,
+    // For keyboard input
+    itemText: String? = null,
     shouldBeDigitsOnly: Boolean = false,
+    // For DropDownMenu
+    itemsSet: (() -> MutableSet<*>)? = null,    // Not null when the item is a DropDownMenu
+    index: Int? = null,
+    // For DatePicker
+    storedDate: String? = null,                 // Not null when the item is a DatePicker
+    clearableDate: Boolean = false,
 ) {
-    var fieldText by remember(itemText) { mutableStateOf(itemText) }
+    // For keyboard input
     var isValid by remember { mutableStateOf(true) }
 
-    ///
-    val enabled by remember { mutableStateOf(itemsSet == null) }
+    // For DropDownMenu
+    val isDropDownMenu by remember { mutableStateOf(itemsSet != null) }
+    var expanded by remember { mutableStateOf(false) }
+    var selectedIndex by remember { mutableIntStateOf(index ?: 0) }
+    val selectedItem = itemsSet?.let { it() }?.elementAt(selectedIndex).let {
+        if (it is String) it else if (it is Int) stringResource(id = it as Int) else ""
+    }
+
+    // For DatePicker
+    val isDatePicker by remember { mutableStateOf(storedDate != null) }
+    var openDpDialog by remember { mutableStateOf(false) }
+
+    // For DropDownMenu and DatePicker
     val onClick: () -> Unit = {
-        // Triggered if !enabled only
-        Log.w("EditScreen", "Click in list field")
+        // Triggered if !enabled only (i.e., if itemSet or storedDate is not null)
+        if (isDropDownMenu) {
+            expanded = true
+            Log.w("EditScreen", "Click in list field")
+        }
+        if (isDatePicker) {
+            openDpDialog = true
+            Log.w("EditScreen", "Click in date field")
+        }
     }
-    ///
 
-    fieldText?.let { it ->
-        TextField(
-            modifier = Modifier
-                .height(fieldHeight)
-                .widthIn(min = fieldMinWidth)
-                .padding(horizontal = 8.dp, vertical = 4.dp)
-
-                ///
-                .clickable(onClick = onClick),
-            enabled = enabled,
-            // Enabled must be false to make click launching a specific action.
-            // So, text color must be restored from disabled to normal when !enabled.
-            colors = TextFieldDefaults.colors(disabledTextColor = MaterialTheme.colorScheme.onSurface),
-            ///
-
-            maxLines = maxLines,
-            value = it,
-            onValueChange = {
-                isValid = !shouldBeDigitsOnly || (it.isNotEmpty() && it.isDigitsOnly())
-                if (isValid) {
-                    fieldText = it
-                    onValueChanged(it)
-                }
-            },
-            textStyle = TextStyle(
-                fontSize = fieldFontSize,
-                // color = if (!isValid) Red else MaterialTheme.colorScheme.onSurface,
-                // textAlign = TextAlign.Justify,
-            ),
-            label = {
-                Text(
-                    modifier = Modifier.padding(bottom = 8.dp),
-                    text = labelText,
-                    fontSize = labelFontSize,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.tertiary,
-                )
-            },
-            placeholder = {
-                Text(
-                    modifier = Modifier.alpha(0.5F),
-                    text = placeHolderText,
-                    fontSize = fieldFontSize,
-                )
-            },
-            leadingIcon = {
+    // For all
+    var fieldText: String? by remember(itemText, selectedIndex, storedDate) {
+        if (isDropDownMenu) {
+            mutableStateOf(selectedItem)
+        } else if (isDatePicker) {
+            mutableStateOf(storedDate)
+        } else {
+            mutableStateOf(itemText)
+        }
+    }
+    val trailingIcon: @Composable (() -> Unit)? = if (clearableDate && !fieldText.isNullOrBlank()) {
+        {
+            IconButton(
+                modifier = Modifier
+                    .size(24.dp)
+                    .offset(y = 10.dp),
+                onClick = {
+                    fieldText = ""
+                    onValueChanged(fieldText!!)
+                },
+            ) {
                 Icon(
-                    modifier = Modifier.size(iconSize),
-                    imageVector = icon,
-                    contentDescription = iconCD,
-                    tint = MaterialTheme.colorScheme.tertiary,
+                    imageVector = Icons.Default.Cancel,
+                    contentDescription = stringResource(id = R.string.cd_button_cancel),
+                    tint = Red,
                 )
-            },
-            keyboardOptions = if (shouldBeDigitsOnly) {
-                KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-            } else {
-                KeyboardOptions.Default
-            },
-            isError = !isValid,
-        )
-        // if (!isValid) Text(text = stringResource(id = R.string.invalid_input), color = Red, fontSize = 12.sp)
+            }
+        }
+    } else null
+
+    Box {
+        fieldText?.let { it ->
+            TextField(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                    .clickable(onClick = onClick),
+                enabled = (itemsSet == null && storedDate == null),
+                // Enabled must be false to make click launching a specific action.
+                // So, text color must be restored from disabled to normal when !enabled.
+                colors = TextFieldDefaults.colors(disabledTextColor = MaterialTheme.colorScheme.onSurface),
+                singleLine = (maxLines == 1),
+                maxLines = maxLines,
+                value = it,
+                onValueChange = {
+                    isValid = !shouldBeDigitsOnly || (it.isNotEmpty() && it.isDigitsOnly())
+                    if (isValid) {
+                        fieldText = it
+                        onValueChanged(it)
+                    }
+                },
+                textStyle = TextStyle(
+                    fontSize = fieldFontSize,
+                ),
+                label = {
+                    Text(
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        text = labelText,
+                        fontSize = labelFontSize,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.tertiary,
+                    )
+                },
+                placeholder = {
+                    Text(
+                        modifier = Modifier.alpha(0.5F),
+                        text = placeHolderText,
+                        fontSize = fieldFontSize,
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        modifier = Modifier.size(iconSize),
+                        imageVector = icon,
+                        contentDescription = iconCD,
+                        tint = MaterialTheme.colorScheme.tertiary,
+                    )
+                },
+                trailingIcon = trailingIcon,
+                keyboardOptions = if (shouldBeDigitsOnly) {
+                    KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                } else {
+                    KeyboardOptions.Default
+                },
+                isError = !isValid,
+            )
+        }
+
+        if (isDropDownMenu) {
+            // List
+            DropdownMenu(
+                expanded = expanded,
+                offset = DpOffset(x = 32.dp, y = (-16).dp),
+                onDismissRequest = { expanded = false },
+                modifier = Modifier
+                    .width(160.dp)
+                    .wrapContentSize()
+            ) {
+                // 'itemSet' is not null when the item 'isDropDownMenu' is true
+                itemsSet!!().forEachIndexed { index, s ->
+                    val textDisplayed = if (s is String) s else stringResource(id = s as Int)
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = textDisplayed,
+                                fontSize = fieldFontSize,
+                            )
+                        },
+                        onClick = {
+                            selectedIndex = index
+                            onValueChanged("$index#$textDisplayed")
+                            expanded = false
+                        },
+                    )
+                    HorizontalDivider(
+                        thickness = 1.dp
+                    )
+                }
+            }
+        }
     }
 
+    if (isDatePicker) {
+        val dpState = rememberDatePickerState(
+            initialSelectedDateMillis = convertDateStringToMillis(fieldText!!),
+            initialDisplayMode = DisplayMode.Picker
+        )
+
+        if (openDpDialog) {
+            DatePickerDialog(
+                shape = DatePickerDefaults.shape,
+                colors = DatePickerDefaults.colors(
+                    containerColor = DP_CONTAINER_COLOR,
+                ),
+                onDismissRequest = { openDpDialog = false },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            if (dpState.selectedDateMillis != null) {
+                                fieldText = convertDateMillisToString(dpState.selectedDateMillis!!)
+                                onValueChanged(fieldText!!)
+                            }
+                            openDpDialog = false
+                        },
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.ok),
+                            color = DP_TEXT_COLOR,
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { openDpDialog = false },
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.cancel),
+                            color = DP_TEXT_COLOR,
+                        )
+                    }
+                },
+            ) {
+                DatePicker(
+                    state = dpState,
+                    colors = editScreenDatePickerColors(),
+                )
+            }
+        }
+    }
 
 }
 

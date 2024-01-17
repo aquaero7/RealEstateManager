@@ -4,10 +4,13 @@ import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -66,8 +69,6 @@ fun EditScreen(
 
         // Description
         EditScreenTextFieldItem(
-            fieldHeight = 150.dp,
-            fieldMinWidth = 400.dp,
             maxLines = 5,
             itemText = property?.description,
             labelText = stringResource(R.string.description),
@@ -78,13 +79,14 @@ fun EditScreen(
         )
 
         // Columns
-        Row {
-
+        Row(
+            modifier = Modifier.height(IntrinsicSize.Max)
+        ) {
             // Column 1
             Column(
                 modifier = Modifier
                     .weight(1F)
-                    .height(380.dp),
+                    .fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
@@ -99,12 +101,11 @@ fun EditScreen(
                     onNbOfBedroomsValueChanged = onNbOfBedroomsValueChanged,
                 )
             }
-
             // Column 2
             Column(
                 modifier = Modifier
                     .weight(1F)
-                    .height(380.dp),
+                    .fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {

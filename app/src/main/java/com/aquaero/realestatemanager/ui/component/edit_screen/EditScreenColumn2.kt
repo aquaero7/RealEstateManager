@@ -3,39 +3,56 @@ package com.aquaero.realestatemanager.ui.component.edit_screen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.ArrowCircleUp
-import androidx.compose.material.icons.filled.House
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Property
 
 @Composable
 fun EditScreenColumn2(
     property: Property?,
-    currency: String,
     agentSet: () -> MutableSet<String?>,
     agentIndex: Int?,
-    onPriceValueChanged: (String) -> Unit,
-    onDropdownMenuValueChanged: (String) -> Unit,
-    onRegistrationDateValueChanged: (String) -> Unit,
-    onSaleDateValueChanged: (String) -> Unit,
+
+    onLocationValuesChange: (Address) -> Unit,
+    onStreetNumberValueChange: (String) -> Unit,
+    onStreetNameValueChange: (String) -> Unit,
+    onAddInfoValueChange: (String) -> Unit,
+    onCityValueChange: (String) -> Unit,
+    onStateValueChange: (String) -> Unit,
+    onZipCodeValueChange: (String) -> Unit,
+    onCountryValueChange: (String) -> Unit,
+
+    onDropdownMenuValueChange: (String) -> Unit,
+    onRegistrationDateValueChange: (String) -> Unit,
+    onSaleDateValueChange: (String) -> Unit,
 ) {
-    // Price
-    EditScreenTextFieldItem(
-        itemText = property?.priceInCurrency(currency).toString(),
-        labelText = "${stringResource(R.string.price_in)} $currency",
-        placeHolderText = "${stringResource(R.string.price_in)} $currency",
-        icon = Icons.Default.Money,
-        iconCD = stringResource(id = R.string.cd_price),
-        onValueChanged = onPriceValueChanged,
-        shouldBeDigitsOnly = true,
-    )
     // Location
     EditScreenAddressItem(
-        itemText = property?.pAddress,
-        onValueChanged = { /* TODO */ }
+        labelText = stringResource(R.string.address),
+        streetNumberPlaceHolderText = stringResource(R.string.street_number),
+        streetNamePlaceHolderText = stringResource(R.string.street_name),
+        addInfoPlaceHolderText = stringResource(R.string.add_info),
+        cityPlaceHolderText = stringResource(R.string.city),
+        statePlaceHolderText = stringResource(R.string.state),
+        zipCodePlaceHolderText = stringResource(R.string.zip_code),
+        countryPlaceHolderText = stringResource(R.string.country),
+        icon = Icons.Default.LocationOn,
+        iconCD = stringResource(id = R.string.cd_address),
+        item = property?.pAddress,
+
+        onValueChange = onLocationValuesChange,
+        onStreetNumberValueChange = onStreetNumberValueChange,
+        onStreetNameValueChange = onStreetNameValueChange,
+        onAddInfoValueChange = onAddInfoValueChange,
+        onCityValueChange = onCityValueChange,
+        onStateValueChange = onStateValueChange,
+        onZipCodeValueChange = onZipCodeValueChange,
+        onCountryValueChange = onCountryValueChange,
     )
     // Agent
     EditScreenTextFieldItem(
@@ -46,7 +63,7 @@ fun EditScreenColumn2(
         iconCD = stringResource(id = R.string.cd_agent),
         itemsSet = agentSet,
         index = agentIndex,
-        onValueChanged = onDropdownMenuValueChanged,
+        onValueChange = onDropdownMenuValueChange,
     )
     // Registration date
     EditScreenTextFieldItem(
@@ -55,7 +72,8 @@ fun EditScreenColumn2(
         placeHolderText = stringResource(R.string.registration_date),
         icon = Icons.Default.ArrowCircleDown,
         iconCD = stringResource(id = R.string.cd_registration_date),
-        onValueChanged = onRegistrationDateValueChanged,
+        onValueChange = onRegistrationDateValueChange,
+        clearableDate = true,
     )
     // Sale date
     EditScreenTextFieldItem(
@@ -64,9 +82,8 @@ fun EditScreenColumn2(
         placeHolderText = stringResource(R.string.sale_date),
         icon = Icons.Default.ArrowCircleUp,
         iconCD = stringResource(id = R.string.cd_sale_date),
-        onValueChanged = onSaleDateValueChanged,
+        onValueChange = onSaleDateValueChange,
         clearableDate = true,
     )
-
 }
 

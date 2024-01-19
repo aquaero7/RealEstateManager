@@ -60,7 +60,7 @@ class PropertyRepository() {
             )
             .show()
 
-        // TODO: Update database
+        // TODO: Check if it is a creation or a modification of a property and update database
 
         // After update
         Toast
@@ -80,6 +80,7 @@ class PropertyRepository() {
      * Hardcoded data
      */
     val pTypesSet: MutableSet<Int?> = mutableSetOf(
+        R.string.not_assigned,
         R.string.flat, R.string.house, R.string.duplex, R.string.penthouse,
         R.string.loft, R.string.manor, R.string.castle, R.string.hostel
     )

@@ -6,18 +6,14 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.ApplicationRoot
-import com.aquaero.realestatemanager.DATE_LENGTH
 import com.aquaero.realestatemanager.EditDetail
 import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
@@ -49,7 +45,17 @@ class EditViewModel(
     private var nbOfBedroomsValue = -1
     private var typeValue = "-1"
     private var agentValue = "-1"
-    private var registrationDateValue = "-1"
+
+    private var addressValue: Address? = null
+    private var streetNumberValue = "-1"
+    private var streetNameValue = "-1"
+    private var addInfoValue = "-1"
+    private var cityValue = "-1"
+    private var stateValue = "-1"
+    private var zipCodeValue = "-1"
+    private var countryValue = "-1"
+
+    private var registrationDateValue: String? = "-1"
     private var saleDateValue: String? = "-1"
     private var photos = mutableListOf<Photo>()
 
@@ -113,19 +119,15 @@ class EditViewModel(
      * Temp data used as a cache for property creation or update
      */
 
-    fun onDescriptionValueChanged(value: String) {
-        // propertyRepository.onDescriptionValueChanged(value)
-
+    fun onDescriptionValueChange(propertyId: String, value: String) {
         descriptionValue = value
 
-        Log.w("EditViewModel", "New value for description is: $value")
-        Toast.makeText(context, "New value for description is: $value", Toast.LENGTH_SHORT)
+        Log.w("EditViewModel", "New value for description of property Id '$propertyId' is: $value")
+        Toast.makeText(context, "New value for description of property Id '$propertyId' is: $value", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
 
-    fun onPriceValueChanged(value: String, currency: String) {
-        // propertyRepository.onPriceValueChanged(value, currency)
-
+    fun onPriceValueChange(propertyId: String, value: String, currency: String) {
         priceValue = if (value.isNotEmpty() && value.isDigitsOnly()) {
             when (currency) {
                 "€" -> convertEuroToDollar(value.toInt())
@@ -135,53 +137,49 @@ class EditViewModel(
 
         Log.w(
             "EditViewModel",
-            "New value for price is: $priceValue dollars and input is $value $currency"
+            "New value for price of property Id '$propertyId' is: $priceValue dollars and input is $value $currency"
         )
         // TODO: To be deleted
         Toast.makeText(
             context,
-            "New value for price is: $priceValue dollars and input is $value $currency",
+            "New value for price of property Id '$propertyId' is: $priceValue dollars and input is $value $currency",
             Toast.LENGTH_SHORT
         ).show()
     }
 
-    fun onSurfaceValueChanged(value: String) {
-        // propertyRepository.onSurfaceValueChanged(value)
-
+    fun onSurfaceValueChange(propertyId: String, value: String) {
         surfaceValue = if (value.isNotEmpty()) value.toInt() else 0
 
-        Log.w("EditViewModel", "New value for surface is: $value")
-        Toast.makeText(context, "New value for surface is: $value", Toast.LENGTH_SHORT)
+        Log.w("EditViewModel", "New value for surface of property Id '$propertyId' is: $value")
+        Toast.makeText(context, "New value for surface of property Id '$propertyId' is: $value", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
 
-    fun onNbOfRoomsValueChanged(value: String) {
+    fun onNbOfRoomsValueChange(propertyId: String, value: String) {
         nbOfRoomsValue = if (value.isNotEmpty()) value.toInt() else 0
 
-        Log.w("EditViewModel", "New value for nb of rooms is: $value")
-        Toast.makeText(context, "New value for nb of rooms is: $value", Toast.LENGTH_SHORT)
+        Log.w("EditViewModel", "New value for nb of rooms of property Id '$propertyId' is: $value")
+        Toast.makeText(context, "New value for nb of rooms of property Id '$propertyId' is: $value", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
 
-    fun onNbOfBathroomsValueChanged(value: String) {
+    fun onNbOfBathroomsValueChange(propertyId: String, value: String) {
         nbOfBathroomsValue = if (value.isNotEmpty()) value.toInt() else 0
 
-        Log.w("EditViewModel", "New value for nb of bathrooms is: $value")
-        Toast.makeText(context, "New value for nb of bathrooms is: $value", Toast.LENGTH_SHORT)
+        Log.w("EditViewModel", "New value for nb of bathrooms of property Id '$propertyId' is: $value")
+        Toast.makeText(context, "New value for nb of bathrooms of property Id '$propertyId' is: $value", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
 
-    fun onNbOfBedroomsValueChanged(value: String) {
+    fun onNbOfBedroomsValueChange(propertyId: String, value: String) {
         nbOfBedroomsValue = if (value.isNotEmpty()) value.toInt() else 0
 
-        Log.w("EditViewModel", "New value for nb of bedrooms is: $value")
-        Toast.makeText(context, "New value for nb of bedrooms is: $value", Toast.LENGTH_SHORT)
+        Log.w("EditViewModel", "New value for nb of bedrooms of property Id '$propertyId' is: $value")
+        Toast.makeText(context, "New value for nb of bedrooms of property Id '$propertyId' is: $value", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
 
-    fun onDropdownMenuValueChanged(value: String) {
-        // propertyRepository.onDropdownMenuValueChanged(value, agentsSet)
-
+    fun onDropdownMenuValueChange(propertyId: String, value: String) {
         val index = value.substringBefore(
             delimiter = "#",
             missingDelimiterValue = "-1"
@@ -192,54 +190,113 @@ class EditViewModel(
         )
         when (field) {
             pTypesSet.elementAt(index)
-                ?.let { context.getString(it) } -> onTypeValueChanged(
+                ?.let { context.getString(it) } -> onTypeValueChange(
+                propertyId = propertyId,
                 index = index,
                 field = field
             )
 
-            agentsSet().elementAt(index) -> onAgentValueChanged(
+            agentsSet().elementAt(index) -> onAgentValueChange(
+                propertyId = propertyId,
                 index = index,
                 field = field
             )
         }
     }
 
-    private fun onTypeValueChanged(index: Int, field: String) {
+    private fun onTypeValueChange(propertyId: String, index: Int, field: String) {
         typeValue = field
 
-        Log.w("EditViewModel", "New index for type is: $index / New value for type is: $field")
+        Log.w("EditViewModel", "New index for type of property Id '$propertyId' is: $index / New value for type is: $field")
         Toast.makeText(
             context,
-            "New index for type is: $index / New value for type is: $field",
+            "New index for type of property Id '$propertyId' is: $index / New value for type is: $field",
             Toast.LENGTH_SHORT
         )
             .show()  // TODO: To be deleted
     }
 
-    private fun onAgentValueChanged(index: Int, field: String) {
+    private fun onAgentValueChange(propertyId: String, index: Int, field: String) {
         agentValue = field
 
-        Log.w("EditViewModel", "New index for agent is: $index / New value for agent is: $field")
+        Log.w("EditViewModel", "New index for agent of property Id '$propertyId' is: $index / New value for agent is: $field")
         Toast.makeText(
             context,
-            "New index for agent is: $index / New value for agent is: $field",
+            "New index for agent of property Id '$propertyId' is: $index / New value for agent is: $field",
             Toast.LENGTH_SHORT
         ).show()  // TODO: To be deleted
     }
 
-    fun onRegistrationDateValueChanged(value: String) {
-        registrationDateValue = value
+    fun onLocationValuesChange(propertyId: String, value: Address) {
+        addressValue = value
 
-        Log.w("EditViewModel", "New value for registration date is: $value")
-        Toast.makeText(context, "New value for registration date is: $value", Toast.LENGTH_SHORT)
+        Log.w("EditViewModel", "New value for address Id of property Id '$propertyId' is: ${value.addressId}")
+        Toast.makeText(context, "New value for address Id of property Id '$propertyId' is: ${value.addressId}", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+    fun onStreetNumberValueChange(propertyId: String, value: String) {
+        streetNumberValue = value
+
+        Log.w("EditViewModel", "New value for street number of property Id '$propertyId' is: ${value}")
+        Toast.makeText(context, "New value for street number of property Id '$propertyId' is: ${value}", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+    fun onStreetNameValueChange(propertyId: String, value: String) {
+        streetNameValue = value
+
+        Log.w("EditViewModel", "New value for street name of property Id '$propertyId' is: ${value}")
+        Toast.makeText(context, "New value for street name of property Id '$propertyId' is: ${value}", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+    fun onAddInfoValueChange(propertyId: String, value: String) {
+        addInfoValue = value
+
+        Log.w("EditViewModel", "New value for add info of property Id '$propertyId' is: ${value}")
+        Toast.makeText(context, "New value for add info of property Id '$propertyId' is: ${value}", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+    fun onCityValueChange(propertyId: String, value: String) {
+        cityValue = value
+
+        Log.w("EditViewModel", "New value for city of property Id '$propertyId' is: ${value}")
+        Toast.makeText(context, "New value for city of property Id '$propertyId' is: ${value}", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+    fun onStateValueChange(propertyId: String, value: String) {
+        stateValue = value
+
+        Log.w("EditViewModel", "New value for state of property Id '$propertyId' is: ${value}")
+        Toast.makeText(context, "New value for state of property Id '$propertyId' is: ${value}", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+    fun onZipCodeValueChange(propertyId: String, value: String) {
+        zipCodeValue = value
+
+        Log.w("EditViewModel", "New value for ZIP code of property Id '$propertyId' is: ${value}")
+        Toast.makeText(context, "New value for ZIP code of property Id '$propertyId' is: ${value}", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+    fun onCountryValueChange(propertyId: String, value: String) {
+        countryValue = value
+
+        Log.w("EditViewModel", "New value for country of property Id '$propertyId' is: ${value}")
+        Toast.makeText(context, "New value for country of property Id '$propertyId' is: ${value}", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
 
-    fun onSaleDateValueChanged(value: String) {
+    fun onRegistrationDateValueChange(propertyId: String, value: String) {
+        registrationDateValue = value.ifEmpty { null }
+
+        Log.w("EditViewModel", "New value for registration date of property Id '$propertyId' is: $registrationDateValue")
+        Toast.makeText(context, "New value for registration date of property Id '$propertyId' is: $registrationDateValue", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
+
+    fun onSaleDateValueChange(propertyId: String, value: String) {
         saleDateValue = value.ifEmpty { null }
 
-        Log.w("EditViewModel", "New value for sale date is: $saleDateValue")
-        Toast.makeText(context, "New value for sale date is: $saleDateValue", Toast.LENGTH_SHORT)
+        Log.w("EditViewModel", "New value for sale date of property Id '$propertyId' is: $saleDateValue")
+        Toast.makeText(context, "New value for sale date of property Id '$propertyId' is: $saleDateValue", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
 
@@ -311,6 +368,16 @@ class EditViewModel(
         if (nbOfBedroomsValue != -1) newValues += "/$nbOfBedroomsValue"
         if (typeValue != "-1") newValues += "/$typeValue"
         if (agentValue != "-1") newValues += "/$agentValue"
+
+        if (addressValue != null) newValues += "/${addressValue!!.addressId}"
+        if (streetNumberValue != "-1") newValues += "/$streetNumberValue"
+        if (streetNameValue != "-1") newValues += "/$streetNameValue"
+        if (addInfoValue != "-1") newValues += "/$addInfoValue"
+        if (cityValue != "-1") newValues += "/$cityValue"
+        if (stateValue != "-1") newValues += "/$stateValue"
+        if (zipCodeValue != "-1") newValues += "/$zipCodeValue"
+        if (countryValue != "-1") newValues += "/$countryValue"
+
         if (registrationDateValue != "-1") newValues += "/$registrationDateValue"
         if (saleDateValue != "-1") newValues += "/$saleDateValue"
         if (photos.isNotEmpty()) {
@@ -332,6 +399,16 @@ class EditViewModel(
         nbOfBedroomsValue = -1
         typeValue = "-1"
         agentValue = "-1"
+
+        addressValue = null
+        streetNumberValue = "-1"
+        streetNameValue = "-1"
+        addInfoValue = "-1"
+        cityValue = "-1"
+        stateValue = "-1"
+        zipCodeValue = "-1"
+        countryValue = "-1"
+
         registrationDateValue = "-1"
         saleDateValue = "-1"
         photos= mutableListOf()

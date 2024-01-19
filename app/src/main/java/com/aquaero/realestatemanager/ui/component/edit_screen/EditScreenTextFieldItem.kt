@@ -3,6 +3,7 @@ package com.aquaero.realestatemanager.ui.component.edit_screen
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -54,10 +55,12 @@ import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.Red
 import com.aquaero.realestatemanager.utils.convertDateMillisToString
 import com.aquaero.realestatemanager.utils.convertDateStringToMillis
+import com.aquaero.realestatemanager.utils.textWithEllipsis
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditScreenTextFieldItem(
+    minLines: Int = 1,
     maxLines: Int = 1,
     fieldFontSize: TextUnit = 16.sp,
     labelFontSize: TextUnit = 14.sp,
@@ -66,7 +69,7 @@ fun EditScreenTextFieldItem(
     placeHolderText: String,
     icon: ImageVector,
     iconCD: String,
-    onValueChanged: (String) -> Unit,
+    onValueChange: (String) -> Unit,
     // For keyboard input
     itemText: String? = null,
     shouldBeDigitsOnly: Boolean = false,
@@ -108,7 +111,8 @@ fun EditScreenTextFieldItem(
     // For all
     var fieldText: String? by remember(itemText, selectedIndex, storedDate) {
         if (isDropDownMenu) {
-            mutableStateOf(selectedItem)
+            // mutableStateOf(selectedItem)
+            mutableStateOf(textWithEllipsis(fullText = selectedItem, maxLength = 14, maxLines = maxLines))
         } else if (isDatePicker) {
             mutableStateOf(storedDate)
         } else {
@@ -123,7 +127,7 @@ fun EditScreenTextFieldItem(
                     .offset(y = 10.dp),
                 onClick = {
                     fieldText = ""
-                    onValueChanged(fieldText!!)
+                    onValueChange(fieldText!!)
                 },
             ) {
                 Icon(
@@ -148,13 +152,14 @@ fun EditScreenTextFieldItem(
                 // So, text color must be restored from disabled to normal when !enabled.
                 colors = TextFieldDefaults.colors(disabledTextColor = MaterialTheme.colorScheme.onSurface),
                 singleLine = (maxLines == 1),
+                minLines = minLines,
                 maxLines = maxLines,
                 value = it,
                 onValueChange = {
-                    isValid = !shouldBeDigitsOnly || (it.isNotEmpty() && it.isDigitsOnly())
+                    isValid = !shouldBeDigitsOnly || it.isEmpty() || (/* it.isNotEmpty() && */ it.isDigitsOnly())
                     if (isValid) {
                         fieldText = it
-                        onValueChanged(it)
+                        onValueChange(it)
                     }
                 },
                 textStyle = TextStyle(
@@ -216,7 +221,7 @@ fun EditScreenTextFieldItem(
                         },
                         onClick = {
                             selectedIndex = index
-                            onValueChanged("$index#$textDisplayed")
+                            onValueChange("$index#$textDisplayed")
                             expanded = false
                         },
                     )
@@ -246,7 +251,7 @@ fun EditScreenTextFieldItem(
                         onClick = {
                             if (dpState.selectedDateMillis != null) {
                                 fieldText = convertDateMillisToString(dpState.selectedDateMillis!!)
-                                onValueChanged(fieldText!!)
+                                onValueChange(fieldText!!)
                             }
                             openDpDialog = false
                         },

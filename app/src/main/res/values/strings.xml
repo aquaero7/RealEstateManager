@@ -23,6 +23,13 @@
     <string name="price">Price</string>
     <string name="price_in">Price in</string>
     <string name="address">Location</string>
+    <string name="street_number">Num.</string>
+    <string name="street_name">Street name</string>
+    <string name="add_info">Complement</string>
+    <string name="city">City</string>
+    <string name="state">State</string>
+    <string name="zip_code">ZIP</string>
+    <string name="country">Country</string>
     <string name="registration_date">Registr. date</string>
     <string name="sale_date">Sale date</string>
     <string name="date_template">yyyy-mm-dd</string>
@@ -51,6 +58,7 @@
     <string name="invalid_input">Error! Only digits are allowed!</string>
 
     <!-- TYPE OF PROPERTIES -->
+    <string name="not_assigned">Not assigned…</string>
     <string name="flat">Flat</string>
     <string name="house">House</string>
     <string name="duplex">Duplex</string>
@@ -138,5 +146,8 @@
     <string name="key_shop" translatable="false">shop</string>
     <string name="key_railway_station" translatable="false">railway_station</string>
     <string name="key_car_park" translatable="false">car_park</string>
+
+    <!-- CHARACTERS -->
+    <string name="ellipsis" translatable="false">&#8230;</string>
 
 </resources>

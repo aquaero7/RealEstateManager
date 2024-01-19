@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import coil.compose.rememberAsyncImagePainter
+import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.map_screen.MapScreenNoMap
@@ -204,32 +205,60 @@ fun AppNavHost(
                     editViewModel.agentFromId(it.agentId).toString()
                 )
             }
-            val onDescriptionValueChanged: (String) -> Unit = {
-                editViewModel.onDescriptionValueChanged(it)
+            val onDescriptionValueChange: (String) -> Unit = {
+                editViewModel.onDescriptionValueChange(propertyId, it)
             }
-            val onPriceValueChanged: (String) -> Unit = {
-                editViewModel.onPriceValueChanged(it, currency)
+            val onPriceValueChange: (String) -> Unit = {
+                editViewModel.onPriceValueChange(propertyId, it, currency)
             }
-            val onSurfaceValueChanged: (String) -> Unit = {
-                editViewModel.onSurfaceValueChanged(it)
+            val onSurfaceValueChange: (String) -> Unit = {
+                editViewModel.onSurfaceValueChange(propertyId, it)
             }
-            val onDropdownMenuValueChanged: (String) -> Unit = {
-                editViewModel.onDropdownMenuValueChanged(it)
+            val onDropdownMenuValueChange: (String) -> Unit = {
+                editViewModel.onDropdownMenuValueChange(propertyId, it)
             }
-            val onNbOfRoomsValueChanged: (String) -> Unit = {
-                editViewModel.onNbOfRoomsValueChanged(it)
+            val onNbOfRoomsValueChange: (String) -> Unit = {
+                editViewModel.onNbOfRoomsValueChange(propertyId, it)
             }
-            val onNbOfBathroomsValueChanged: (String) -> Unit = {
-                editViewModel.onNbOfBathroomsValueChanged(it)
+            val onNbOfBathroomsValueChange: (String) -> Unit = {
+                editViewModel.onNbOfBathroomsValueChange(propertyId, it)
             }
-            val onNbOfBedroomsValueChanged: (String) -> Unit = {
-                editViewModel.onNbOfBedroomsValueChanged(it)
+            val onNbOfBedroomsValueChange: (String) -> Unit = {
+                editViewModel.onNbOfBedroomsValueChange(propertyId, it)
             }
-            val onRegistrationDateValueChanged: (String) -> Unit = {
-                editViewModel.onRegistrationDateValueChanged(it)
+
+
+            val onLocationValuesChange: (Address) -> Unit = {
+                editViewModel.onLocationValuesChange(propertyId, it)
             }
-            val onSaleDateValueChanged: (String) -> Unit = {
-                editViewModel.onSaleDateValueChanged(it)
+            val onStreetNumberValueChange: (String) -> Unit = {
+                editViewModel.onStreetNumberValueChange(propertyId, it)
+            }
+            val onStreetNameValueChange: (String) -> Unit = {
+                editViewModel.onStreetNameValueChange(propertyId, it)
+            }
+            val onAddInfoValueChange: (String) -> Unit = {
+                editViewModel.onAddInfoValueChange(propertyId, it)
+            }
+            val onCityValueChange: (String) -> Unit = {
+                editViewModel.onCityValueChange(propertyId, it)
+            }
+            val onStateValueChange: (String) -> Unit = {
+                editViewModel.onStateValueChange(propertyId, it)
+            }
+            val onZipCodeValueChange: (String) -> Unit = {
+                editViewModel.onZipCodeValueChange(propertyId, it)
+            }
+            val onCountryValueChange: (String) -> Unit = {
+                editViewModel.onCountryValueChange(propertyId, it)
+            }
+
+
+            val onRegistrationDateValueChange: (String) -> Unit = {
+                editViewModel.onRegistrationDateValueChange(propertyId, it)
+            }
+            val onSaleDateValueChange: (String) -> Unit = {
+                editViewModel.onSaleDateValueChange(propertyId, it)
             }
 
 
@@ -341,15 +370,25 @@ fun AppNavHost(
                 pTypeIndex = pTypeIndex,
                 agentIndex = agentIndex,
                 currency = currency,
-                onDescriptionValueChanged = onDescriptionValueChanged,
-                onPriceValueChanged = onPriceValueChanged,
-                onSurfaceValueChanged = onSurfaceValueChanged,
-                onDropdownMenuValueChanged = onDropdownMenuValueChanged,
-                onNbOfRoomsValueChanged = onNbOfRoomsValueChanged,
-                onNbOfBathroomsValueChanged = onNbOfBathroomsValueChanged,
-                onNbOfBedroomsValueChanged = onNbOfBedroomsValueChanged,
-                onRegistrationDateValueChanged = onRegistrationDateValueChanged,
-                onSaleDateValueChanged = onSaleDateValueChanged,
+                onDescriptionValueChange = onDescriptionValueChange,
+                onPriceValueChange = onPriceValueChange,
+                onSurfaceValueChange = onSurfaceValueChange,
+                onDropdownMenuValueChange = onDropdownMenuValueChange,
+                onNbOfRoomsValueChange = onNbOfRoomsValueChange,
+                onNbOfBathroomsValueChange = onNbOfBathroomsValueChange,
+                onNbOfBedroomsValueChange = onNbOfBedroomsValueChange,
+
+                onLocationValuesChange = onLocationValuesChange,
+                onStreetNumberValueChange = onStreetNumberValueChange,
+                onStreetNameValueChange = onStreetNameValueChange,
+                onAddInfoValueChange = onAddInfoValueChange,
+                onCityValueChange = onCityValueChange,
+                onStateValueChange = onStateValueChange,
+                onZipCodeValueChange = onZipCodeValueChange,
+                onCountryValueChange = onCountryValueChange,
+
+                onRegistrationDateValueChange = onRegistrationDateValueChange,
+                onSaleDateValueChange = onSaleDateValueChange,
 
                 onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
                 onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,

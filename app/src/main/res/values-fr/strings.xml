@@ -23,6 +23,13 @@
     <string name="price">Prix</string>
     <string name="price_in">Prix en</string>
     <string name="address">Adresse</string>
+    <string name="street_number">Num.</string>
+    <string name="street_name">Rue</string>
+    <string name="add_info">Complément</string>
+    <string name="city">Ville</string>
+    <string name="state">Département</string>
+    <string name="zip_code">CP</string>
+    <string name="country">Pays</string>
     <string name="registration_date">Date enregistr.</string>
     <string name="sale_date">Date vente</string>
     <string name="date_template">aaaa-mm-jj</string>
@@ -51,6 +58,7 @@
     <string name="invalid_input">Erreur ! Seuls des chiffres sont autorisés !</string>
 
     <!-- TYPES OF PROPERTIES -->
+    <string name="not_assigned">Non assigné…</string>
     <string name="flat">Appartement</string>
     <string name="house">Maison</string>
     <string name="duplex">Duplex</string>

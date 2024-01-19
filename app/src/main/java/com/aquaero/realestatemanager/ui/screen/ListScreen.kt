@@ -77,7 +77,8 @@ fun ListScreen(
                 state = LazyListState(firstVisibleItemIndex = items.indexOf(property)),
             ) {
                 items(items = items) { propertyItem ->
-                    val phId = if (propertyItem.photos != null && property.photos!![0].phId > 0L)
+                    // val phId = if (propertyItem.photos != null && property.photos!![0].phId > 0L)
+                    val phId = if (property.photos[0].phId > 0L)
                         propertyItem.photos[0].phId else NO_PHOTO.phId
                     PropertyCard(
                         pId = propertyItem.pId,

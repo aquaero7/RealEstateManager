@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.aquaero.realestatemanager.ApplicationRoot
+import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Agent
 
 class AgentRepository() {
@@ -30,7 +31,7 @@ class AgentRepository() {
      */
     val agentsSet: () -> MutableSet<String?> = fun(): MutableSet<String?> {
         // val agentsSet: MutableSet<String?> = mutableSetOf()
-        val agentsSet: MutableSet<String?> = mutableSetOf("Not assigned...") // Empty field for unassigned agent case
+        val agentsSet: MutableSet<String?> = mutableSetOf(context.getString(R.string.not_assigned)) // Empty field for unassigned agent case
         fakeAgents.forEach { agentsSet.add(it.toString()) }
         return agentsSet
     }

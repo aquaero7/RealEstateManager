@@ -25,6 +25,7 @@ import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.ui.component.app.DetailScreenPoi
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenColumn1
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenColumn2
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenMedia
@@ -45,8 +46,6 @@ fun EditScreen(
     onNbOfRoomsValueChange: (String) -> Unit,
     onNbOfBathroomsValueChange: (String) -> Unit,
     onNbOfBedroomsValueChange: (String) -> Unit,
-
-    onLocationValuesChange: (Address) -> Unit,
     onStreetNumberValueChange: (String) -> Unit,
     onStreetNameValueChange: (String) -> Unit,
     onAddInfoValueChange: (String) -> Unit,
@@ -54,10 +53,14 @@ fun EditScreen(
     onStateValueChange: (String) -> Unit,
     onZipCodeValueChange: (String) -> Unit,
     onCountryValueChange: (String) -> Unit,
-
     onRegistrationDateValueChange: (String) -> Unit,
     onSaleDateValueChange: (String) -> Unit,
-
+    onHospitalClick: (Boolean) -> Unit,
+    onSchoolClick: (Boolean) -> Unit,
+    onRestaurantClick: (Boolean) -> Unit,
+    onShopClick: (Boolean) -> Unit,
+    onRailwayStationClick: (Boolean) -> Unit,
+    onCarParkClick: (Boolean) -> Unit,
     onShootPhotoMenuItemClick: () -> Unit,
     onSelectPhotoMenuItemClick: () -> Unit,
     buttonAddPhotoEnabled: Boolean,
@@ -126,8 +129,6 @@ fun EditScreen(
                     property = property,
                     agentSet = agentSet,
                     agentIndex = agentIndex,
-
-                    onLocationValuesChange = onLocationValuesChange,
                     onStreetNumberValueChange = onStreetNumberValueChange,
                     onStreetNameValueChange = onStreetNameValueChange,
                     onAddInfoValueChange = onAddInfoValueChange,
@@ -135,7 +136,6 @@ fun EditScreen(
                     onStateValueChange = onStateValueChange,
                     onZipCodeValueChange = onZipCodeValueChange,
                     onCountryValueChange = onCountryValueChange,
-
                     onDropdownMenuValueChange = onDropdownMenuValueChange,
                     onRegistrationDateValueChange = onRegistrationDateValueChange,
                     onSaleDateValueChange = onSaleDateValueChange,
@@ -144,6 +144,22 @@ fun EditScreen(
         }
 
         Spacer(modifier = Modifier.height(8.dp))
+
+        // POIs
+        // property?.let { DetailScreenPoi(selectedPoi = it.pPoi) }
+        DetailScreenPoi(
+            selectedPoi = (property?.pPoi ?: emptyList()).toMutableList(),
+            clickable = true,
+            onHospitalClick = onHospitalClick,
+            onSchoolClick = onSchoolClick,
+            onRestaurantClick = onRestaurantClick,
+            onShopClick = onShopClick,
+            onRailwayStationClick = onRailwayStationClick,
+            onCarParkClick = onCarParkClick,
+        )
+
+
+        Spacer(modifier = Modifier.height(32.dp))
 
         // Media
         EditScreenMedia(

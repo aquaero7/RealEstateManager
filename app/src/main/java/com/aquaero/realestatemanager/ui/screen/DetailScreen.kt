@@ -1,9 +1,7 @@
 package com.aquaero.realestatemanager.ui.screen
 
-import android.os.Build
 import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -12,9 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -27,7 +22,7 @@ import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenColu
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenDescription
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenMapThumbnail
 import com.aquaero.realestatemanager.ui.component.app.PhotosLazyRow
-import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenPoi
+import com.aquaero.realestatemanager.ui.component.app.DetailScreenPoi
 
 @Composable
 fun DetailScreen(

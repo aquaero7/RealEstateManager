@@ -1,10 +1,8 @@
-package com.aquaero.realestatemanager.ui.component.detail_screen
+package com.aquaero.realestatemanager.ui.component.app
 
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -20,17 +18,29 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.ui.theme.GrayDisabled
 
 @SuppressLint("NewApi")
 @Composable
-fun DetailScreenPoi(selectedPoi: List<String>) {
+fun DetailScreenPoi(
+    selectedPoi: MutableList<String>,
+    clickable: Boolean = false,
+    onHospitalClick: (Boolean) -> Unit = {},
+    onSchoolClick: (Boolean) -> Unit = {},
+    onRestaurantClick: (Boolean) -> Unit = {},
+    onShopClick: (Boolean) -> Unit = {},
+    onRailwayStationClick: (Boolean) -> Unit = {},
+    onCarParkClick: (Boolean) -> Unit = {},
+) {
     Text(
         text = stringResource(R.string.poi),
         fontWeight = FontWeight.Bold,
@@ -39,66 +49,89 @@ fun DetailScreenPoi(selectedPoi: List<String>) {
             .padding(top = 16.dp, bottom = 8.dp)
             .padding(horizontal = 8.dp)
     )
-    Row (
+    Row(
         horizontalArrangement = Arrangement.spacedBy(24.dp)
     ) {
+        // Hospital
         DetailScreenIcon(
             imageVector = Icons.Default.LocalHospital,
             contentDesc = stringResource(id = R.string.cd_hospital),
-            selected = selectedPoi.contains(stringResource(id = R.string.key_hospital))
+            selected = selectedPoi.contains(stringResource(id = R.string.key_hospital)),
+            clickable = clickable,
+            onClick = onHospitalClick,
         )
-
+        // School
         DetailScreenIcon(
             imageVector = Icons.Default.School,
             contentDesc = stringResource(id = R.string.cd_school),
-            selected = selectedPoi.contains(stringResource(id = R.string.key_school))
+            selected = selectedPoi.contains(stringResource(id = R.string.key_school)),
+            clickable = clickable,
+            onClick = onSchoolClick,
         )
-
+        // Restaurant
         DetailScreenIcon(
             imageVector = Icons.Default.Restaurant,
             contentDesc = stringResource(id = R.string.cd_restaurant),
-            selected = selectedPoi.contains(stringResource(id = R.string.key_restaurant))
+            selected = selectedPoi.contains(stringResource(id = R.string.key_restaurant)),
+            clickable = clickable,
+            onClick = onRestaurantClick,
         )
-
+        // Shop
         DetailScreenIcon(
             imageVector = Icons.Default.ShoppingBag,
             contentDesc = stringResource(id = R.string.cd_shop),
-            selected = selectedPoi.contains(stringResource(id = R.string.key_shop))
+            selected = selectedPoi.contains(stringResource(id = R.string.key_shop)),
+            clickable = clickable,
+            onClick = onShopClick,
         )
-
+        // Railway station
         DetailScreenIcon(
             imageVector = Icons.Default.Train,
             contentDesc = stringResource(id = R.string.cd_railway_station),
-            selected = selectedPoi.contains(stringResource(id = R.string.key_railway_station))
+            selected = selectedPoi.contains(stringResource(id = R.string.key_railway_station)),
+            clickable = clickable,
+            onClick = onRailwayStationClick,
         )
-
+        // Car park
         DetailScreenIcon(
             imageVector = Icons.Default.LocalParking,
             contentDesc = stringResource(id = R.string.cd_car_park),
-            selected = selectedPoi.contains(stringResource(id = R.string.key_car_park))
+            selected = selectedPoi.contains(stringResource(id = R.string.key_car_park)),
+            clickable = clickable,
+            onClick = onCarParkClick,
         )
     }
 }
 
 @Composable
 fun DetailScreenIcon(
+    clickable: Boolean,
+    onClick: (Boolean) -> Unit,
     imageVector: ImageVector,
     contentDesc: String,
     selected: Boolean,
 ) {
+    var isSelected by remember { mutableStateOf(selected) }
     val iconColor = MaterialTheme.colorScheme.tertiary
     val borderColor = MaterialTheme.colorScheme.secondary
 
     Icon(
         imageVector = imageVector,
         contentDescription = contentDesc,
-        tint = if (selected) iconColor else iconColor.copy(alpha = 0.3F),
+        tint = if (isSelected) iconColor else iconColor.copy(alpha = 0.3F),
         modifier = Modifier
             .size(40.dp)
             .padding(4.dp)
             .border(
                 width = 1.dp,
-                color = if (selected) borderColor else borderColor.copy(alpha = 0.3F)
+                color = if (isSelected) borderColor else borderColor.copy(alpha = 0.3F)
+            )
+            .clickable(
+                enabled = clickable,
+                onClick = {
+                    isSelected = !isSelected
+                    onClick(isSelected)
+                },
             ),
     )
 }

@@ -17,8 +17,6 @@ fun EditScreenColumn2(
     property: Property?,
     agentSet: () -> MutableSet<String?>,
     agentIndex: Int?,
-
-    onLocationValuesChange: (Address) -> Unit,
     onStreetNumberValueChange: (String) -> Unit,
     onStreetNameValueChange: (String) -> Unit,
     onAddInfoValueChange: (String) -> Unit,
@@ -26,7 +24,6 @@ fun EditScreenColumn2(
     onStateValueChange: (String) -> Unit,
     onZipCodeValueChange: (String) -> Unit,
     onCountryValueChange: (String) -> Unit,
-
     onDropdownMenuValueChange: (String) -> Unit,
     onRegistrationDateValueChange: (String) -> Unit,
     onSaleDateValueChange: (String) -> Unit,
@@ -44,8 +41,6 @@ fun EditScreenColumn2(
         icon = Icons.Default.LocationOn,
         iconCD = stringResource(id = R.string.cd_address),
         item = property?.pAddress,
-
-        onValueChange = onLocationValuesChange,
         onStreetNumberValueChange = onStreetNumberValueChange,
         onStreetNameValueChange = onStreetNameValueChange,
         onAddInfoValueChange = onAddInfoValueChange,

@@ -34,6 +34,13 @@ class EditViewModel(
     val poiSet = propertyRepository.poiSet
     val agentsSet = agentRepository.agentsSet
 
+    private val poiHospital = context.getString(R.string.key_hospital)
+    private val poiSchool = context.getString(R.string.key_school)
+    private val poiRestaurant = context.getString(R.string.key_restaurant)
+    private val poiShop = context.getString(R.string.key_shop)
+    private val poiRailwayStation = context.getString(R.string.key_railway_station)
+    private val poiCarPark = context.getString(R.string.key_car_park)
+
     /**
      * Temp data used as a cache for property creation ou update
      */
@@ -45,7 +52,6 @@ class EditViewModel(
     private var nbOfBedroomsValue = -1
     private var typeValue = "-1"
     private var agentValue = "-1"
-
     private var addressValue: Address? = null
     private var streetNumberValue = "-1"
     private var streetNameValue = "-1"
@@ -54,10 +60,16 @@ class EditViewModel(
     private var stateValue = "-1"
     private var zipCodeValue = "-1"
     private var countryValue = "-1"
-
     private var registrationDateValue: String? = "-1"
     private var saleDateValue: String? = "-1"
     private var photos = mutableListOf<Photo>()
+
+    private var poiHospitalSelected: Boolean? = null
+    private var poiSchoolSelected: Boolean? = null
+    private var poiRestaurantSelected: Boolean? = null
+    private var poiShopSelected: Boolean? = null
+    private var poiRailwayStationSelected: Boolean? = null
+    private var poiCarParkSelected: Boolean? = null
 
 
     /***/
@@ -227,13 +239,6 @@ class EditViewModel(
         ).show()  // TODO: To be deleted
     }
 
-    fun onLocationValuesChange(propertyId: String, value: Address) {
-        addressValue = value
-
-        Log.w("EditViewModel", "New value for address Id of property Id '$propertyId' is: ${value.addressId}")
-        Toast.makeText(context, "New value for address Id of property Id '$propertyId' is: ${value.addressId}", Toast.LENGTH_SHORT)
-            .show()  // TODO: To be deleted
-    }
     fun onStreetNumberValueChange(propertyId: String, value: String) {
         streetNumberValue = value
 
@@ -241,6 +246,7 @@ class EditViewModel(
         Toast.makeText(context, "New value for street number of property Id '$propertyId' is: ${value}", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
+
     fun onStreetNameValueChange(propertyId: String, value: String) {
         streetNameValue = value
 
@@ -248,6 +254,7 @@ class EditViewModel(
         Toast.makeText(context, "New value for street name of property Id '$propertyId' is: ${value}", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
+
     fun onAddInfoValueChange(propertyId: String, value: String) {
         addInfoValue = value
 
@@ -255,6 +262,7 @@ class EditViewModel(
         Toast.makeText(context, "New value for add info of property Id '$propertyId' is: ${value}", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
+
     fun onCityValueChange(propertyId: String, value: String) {
         cityValue = value
 
@@ -262,6 +270,7 @@ class EditViewModel(
         Toast.makeText(context, "New value for city of property Id '$propertyId' is: ${value}", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
+
     fun onStateValueChange(propertyId: String, value: String) {
         stateValue = value
 
@@ -269,6 +278,7 @@ class EditViewModel(
         Toast.makeText(context, "New value for state of property Id '$propertyId' is: ${value}", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
+
     fun onZipCodeValueChange(propertyId: String, value: String) {
         zipCodeValue = value
 
@@ -276,6 +286,7 @@ class EditViewModel(
         Toast.makeText(context, "New value for ZIP code of property Id '$propertyId' is: ${value}", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
+
     fun onCountryValueChange(propertyId: String, value: String) {
         countryValue = value
 
@@ -300,10 +311,19 @@ class EditViewModel(
             .show()  // TODO: To be deleted
     }
 
-
-
-
-
+    fun onPoiClick(propertyId: String, poiItem: String, isSelected: Boolean) {
+        when (poiItem) {
+            poiHospital -> { poiHospitalSelected = isSelected }
+            poiSchool -> { poiSchoolSelected = isSelected }
+            poiRestaurant -> { poiRestaurantSelected = isSelected }
+            poiShop -> { poiShopSelected = isSelected }
+            poiRailwayStation -> { poiRailwayStationSelected = isSelected }
+            poiCarPark -> { poiCarParkSelected = isSelected }
+        }
+        Log.w("EditViewModel", "New value for POI $poiItem selection of property Id '$propertyId' is: $isSelected")
+        Toast.makeText(context, "New value for POI $poiItem selection of property Id '$propertyId' is: $isSelected", Toast.LENGTH_SHORT)
+            .show()  // TODO: To be deleted
+    }
 
     fun onSavePhotoButtonClick(propertyId: Long, uri: Uri, label: String) {
         Log.w("EditViewModel", "Click on save photo button")
@@ -368,7 +388,6 @@ class EditViewModel(
         if (nbOfBedroomsValue != -1) newValues += "/$nbOfBedroomsValue"
         if (typeValue != "-1") newValues += "/$typeValue"
         if (agentValue != "-1") newValues += "/$agentValue"
-
         if (addressValue != null) newValues += "/${addressValue!!.addressId}"
         if (streetNumberValue != "-1") newValues += "/$streetNumberValue"
         if (streetNameValue != "-1") newValues += "/$streetNameValue"
@@ -377,9 +396,16 @@ class EditViewModel(
         if (stateValue != "-1") newValues += "/$stateValue"
         if (zipCodeValue != "-1") newValues += "/$zipCodeValue"
         if (countryValue != "-1") newValues += "/$countryValue"
-
         if (registrationDateValue != "-1") newValues += "/$registrationDateValue"
         if (saleDateValue != "-1") newValues += "/$saleDateValue"
+
+        if (poiHospitalSelected != null) newValues += "/$poiHospitalSelected"
+        if (poiSchoolSelected != null) newValues += "/$poiSchoolSelected"
+        if (poiRestaurantSelected != null) newValues += "/$poiRestaurantSelected"
+        if (poiShopSelected != null) newValues += "/$poiShopSelected"
+        if (poiRailwayStationSelected != null) newValues += "/$poiRailwayStationSelected"
+        if (poiCarParkSelected != null) newValues += "/$poiCarParkSelected"
+
         if (photos.isNotEmpty()) {
             var photoLabels = ""
             photos.forEach {
@@ -399,7 +425,6 @@ class EditViewModel(
         nbOfBedroomsValue = -1
         typeValue = "-1"
         agentValue = "-1"
-
         addressValue = null
         streetNumberValue = "-1"
         streetNameValue = "-1"
@@ -408,9 +433,16 @@ class EditViewModel(
         stateValue = "-1"
         zipCodeValue = "-1"
         countryValue = "-1"
-
         registrationDateValue = "-1"
         saleDateValue = "-1"
+
+        poiHospitalSelected = null
+        poiSchoolSelected = null
+        poiRestaurantSelected = null
+        poiShopSelected = null
+        poiRailwayStationSelected = null
+        poiCarParkSelected = null
+
         photos= mutableListOf()
     }
 

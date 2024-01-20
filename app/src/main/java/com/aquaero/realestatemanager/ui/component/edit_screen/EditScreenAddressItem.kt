@@ -45,8 +45,6 @@ fun EditScreenAddressItem(
     icon: ImageVector,
     iconCD: String,
     item: Address?,
-
-    onValueChange: (Address) -> Unit,
     onStreetNumberValueChange: (String) -> Unit,
     onStreetNameValueChange: (String) -> Unit,
     onAddInfoValueChange: (String) -> Unit,
@@ -93,7 +91,6 @@ fun EditScreenAddressItem(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Address
-
                 Column(
                     modifier = Modifier
                         // .height(72.dp)       // To use instead of wrapContentHeight to enable scroll

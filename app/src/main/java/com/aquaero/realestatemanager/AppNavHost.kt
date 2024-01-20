@@ -226,11 +226,6 @@ fun AppNavHost(
             val onNbOfBedroomsValueChange: (String) -> Unit = {
                 editViewModel.onNbOfBedroomsValueChange(propertyId, it)
             }
-
-
-            val onLocationValuesChange: (Address) -> Unit = {
-                editViewModel.onLocationValuesChange(propertyId, it)
-            }
             val onStreetNumberValueChange: (String) -> Unit = {
                 editViewModel.onStreetNumberValueChange(propertyId, it)
             }
@@ -252,15 +247,15 @@ fun AppNavHost(
             val onCountryValueChange: (String) -> Unit = {
                 editViewModel.onCountryValueChange(propertyId, it)
             }
-
-
             val onRegistrationDateValueChange: (String) -> Unit = {
                 editViewModel.onRegistrationDateValueChange(propertyId, it)
             }
             val onSaleDateValueChange: (String) -> Unit = {
                 editViewModel.onSaleDateValueChange(propertyId, it)
             }
-
+            val onPoiClick: (String, Boolean) -> Unit = { poiItem, isSelected ->
+                editViewModel.onPoiClick(propertyId = propertyId, poiItem = poiItem, isSelected = isSelected)
+            }
 
             /**
              * Photo shooting and picking
@@ -353,14 +348,7 @@ fun AppNavHost(
                 editViewModel.onPhotoDeletionConfirmation(photoId, propertyId.toLong())
             }
 
-
-
-
-
-
-
-
-
+            //
             val onBackPressed: () -> Unit = { navController.popBackStack() }
 
             EditScreen(
@@ -377,8 +365,6 @@ fun AppNavHost(
                 onNbOfRoomsValueChange = onNbOfRoomsValueChange,
                 onNbOfBathroomsValueChange = onNbOfBathroomsValueChange,
                 onNbOfBedroomsValueChange = onNbOfBedroomsValueChange,
-
-                onLocationValuesChange = onLocationValuesChange,
                 onStreetNumberValueChange = onStreetNumberValueChange,
                 onStreetNameValueChange = onStreetNameValueChange,
                 onAddInfoValueChange = onAddInfoValueChange,
@@ -386,10 +372,14 @@ fun AppNavHost(
                 onStateValueChange = onStateValueChange,
                 onZipCodeValueChange = onZipCodeValueChange,
                 onCountryValueChange = onCountryValueChange,
-
                 onRegistrationDateValueChange = onRegistrationDateValueChange,
                 onSaleDateValueChange = onSaleDateValueChange,
-
+                onHospitalClick = { onPoiClick(context.getString(R.string.key_hospital), it) },
+                onSchoolClick = { onPoiClick(context.getString(R.string.key_school), it) },
+                onRestaurantClick = { onPoiClick(context.getString(R.string.key_restaurant), it) },
+                onShopClick = { onPoiClick(context.getString(R.string.key_shop), it) },
+                onRailwayStationClick = { onPoiClick(context.getString(R.string.key_railway_station), it) },
+                onCarParkClick = { onPoiClick(context.getString(R.string.key_car_park), it) },
                 onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
                 onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,
                 buttonAddPhotoEnabled = buttonSavePhotoEnabled,

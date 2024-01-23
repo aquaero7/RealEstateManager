@@ -1,5 +1,7 @@
 package com.aquaero.realestatemanager.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.utils.convertDollarToEuro
 import java.text.NumberFormat
@@ -7,7 +9,9 @@ import java.time.LocalDate
 import java.util.Locale
 
 // @Serializable
+@Entity
 data class Property(
+    @PrimaryKey(autoGenerate = true)
     val pId: Long,
     val pType: Int,
     val pAddress: Address,

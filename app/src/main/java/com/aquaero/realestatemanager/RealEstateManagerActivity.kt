@@ -91,7 +91,8 @@ fun RealEstateManagerApp(
     loanViewModel: LoanViewModel,
 ) {
     RealEstateManagerTheme(dynamicColor = false) {
-        val properties: List<Property> = appViewModel.fakeProperties
+        // val properties: List<Property> = appViewModel.fakeProperties
+        val properties: List<Property> = appViewModel.items.collectAsState().value                  // TODO ROOM
 
         /**
          * Init content type, according to window's width,
@@ -143,7 +144,8 @@ fun RealEstateManagerApp(
         /**
          * Bottom bar
          */
-        val defaultPropertyId = appViewModel.fakeProperties[0].pId.toString()
+        // val defaultPropertyId = appViewModel.fakeProperties[0].pId.toString()
+        val defaultPropertyId = appViewModel.items.collectAsState().value[0].pId.toString()         // TODO ROOM
 
 
         /**

@@ -8,7 +8,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.Detail
@@ -19,6 +21,7 @@ import com.aquaero.realestatemanager.Loan
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.SearchCriteria
 import com.aquaero.realestatemanager.model.Agent
+import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.navigateToDetailEdit
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
@@ -26,6 +29,12 @@ import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.utils.CurrencyStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
@@ -40,6 +49,17 @@ class AppViewModel(
 
     @SuppressLint("NewApi")
     val fakeProperties = propertyRepository.fakeProperties
+
+    // TODO ROOM                                                                                    // TODO ROOM
+    private val _items = MutableStateFlow<List<Property>>(emptyList())
+    val items: StateFlow<List<Property>> = _items.asStateFlow()
+    init {
+        viewModelScope.launch(IO) {
+            propertyRepository.getPropertiesFromRoom()
+                .collect { listOfItems -> _items.value = listOfItems }
+        }
+    }
+    //
 
     /**
      * Init content type, according to window's width,

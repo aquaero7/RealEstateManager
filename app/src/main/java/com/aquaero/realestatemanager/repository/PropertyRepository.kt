@@ -19,15 +19,20 @@ import com.aquaero.realestatemanager.SM_SCALE
 import com.aquaero.realestatemanager.SM_SIZE
 import com.aquaero.realestatemanager.SM_TYPE
 import com.aquaero.realestatemanager.SM_URL
+import com.aquaero.realestatemanager.database.dao.PropertyDao
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
-class PropertyRepository() {
+class PropertyRepository(private val propertyDao: PropertyDao) {
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
+
 
 
     /** For fake data only */
@@ -48,8 +53,32 @@ class PropertyRepository() {
     }
 
 
-    /** Database update */
-    // Add new property values to arguments
+    /** Database CRUD */
+
+    suspend fun getPropertiesFromRoom(): Flow<List<Property>> {
+        return withContext(IO) {
+            propertyDao.getProperties()
+        }
+    }
+
+    suspend fun getPropertyFromRoom(pId: Long): Flow<Property> {
+        return withContext(IO) { propertyDao.getProperty(pId) }
+    }
+
+    suspend fun upsertPropertyInRoom(property: Property) {
+        withContext(IO) {
+            propertyDao.upsertProperty(property)
+        }
+    }
+
+
+
+
+
+
+
+
+    // TODO: Add new property values to arguments
     fun updateProperty(propertyId: Comparable<*>) {
         // TODO: To be deleted
         Toast

@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    // Room: To use Kotlin Symbol Processing (KSP)
+    id("com.google.devtools.ksp")
     // secrets-gradle-plugin
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
@@ -116,6 +118,14 @@ dependencies {
 
     // DataStore (Preferences)
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // ROOM
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    // Room: To use Kotlin Symbol Processing (KSP)
+    ksp("androidx.room:room-compiler:2.6.1")
+    // implementation("androidx.room:room-ktx:2.6.1")
+
 
     // Tests
     testImplementation("junit:junit:4.13.2")

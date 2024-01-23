@@ -2,6 +2,10 @@ package com.aquaero.realestatemanager.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.aquaero.realestatemanager.ApplicationRoot
+import com.aquaero.realestatemanager.database.AppDatabase
+import com.aquaero.realestatemanager.database.DatabaseProvider
+import com.aquaero.realestatemanager.database.dao.PropertyDao
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
@@ -10,7 +14,21 @@ import com.aquaero.realestatemanager.repository.PropertyRepository
 @Suppress("UNCHECKED_CAST")
 object ViewModelFactory:  ViewModelProvider.Factory {
 
-    private val propertyRepository: PropertyRepository = PropertyRepository()
+    /* Config 1
+    private val propertyDao: PropertyDao = DatabaseProvider.getInstance().propertyDao
+    */
+
+    /* Config 2
+    private val appDatabase: AppDatabase = DatabaseProvider.provideAppDatabase()
+    private val propertyDao: PropertyDao = DatabaseProvider.providePropertyDao(appDatabase)
+    */
+
+    // Config 3
+    private val appDatabase: AppDatabase = AppDatabase.getInstance()
+    private val propertyDao: PropertyDao = appDatabase.propertyDao
+    //
+
+    private val propertyRepository: PropertyRepository = PropertyRepository(propertyDao)
     private val agentRepository: AgentRepository = AgentRepository()
     private val locationRepository: LocationRepository = LocationRepository()
     private val photoRepository: PhotoRepository = PhotoRepository()

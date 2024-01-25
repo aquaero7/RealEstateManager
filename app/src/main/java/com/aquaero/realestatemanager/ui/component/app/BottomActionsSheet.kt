@@ -45,7 +45,7 @@ fun BottomActionsSheet(
                     ),
                 headlineContent = {
                     Text(
-                        text = "${stringResource(id = R.string.edit_photo)} ${photo.phLabel}"
+                        text = "${stringResource(id = R.string.edit_photo)} ${photo.label}"
                     )
                 },
                 leadingContent = {
@@ -67,7 +67,7 @@ fun BottomActionsSheet(
                     ),
                 headlineContent = {
                     Text(
-                        text = "${stringResource(id = R.string.delete_photo)} ${photo.phLabel}"
+                        text = "${stringResource(id = R.string.delete_photo)} ${photo.label}"
                     )
                 },
                 leadingContent = {

@@ -27,7 +27,6 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -67,10 +66,10 @@ fun PhotosLazyRow(
     ) {
         items(items = photos) { photo ->
             val resourceUri =
-                if (photo.phId.toInt() > 0) photo.phUri else R.drawable.baseline_photo_camera_black_24
+                if (photo.photoId.toInt() > 0) photo.uri else R.drawable.baseline_photo_camera_black_24
             val colorFilter =
-                if (photo.phId.toInt() > 0) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
-            val alpha = if (photo.phId.toInt() > 0) 1F else 0.2F
+                if (photo.photoId.toInt() > 0) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
+            val alpha = if (photo.photoId.toInt() > 0) 1F else 0.2F
 
             Box(
                 modifier = Modifier
@@ -91,10 +90,10 @@ fun PhotosLazyRow(
                         .padding(0.dp)
                         .alpha(alpha)
                         .combinedClickable(
-                            enabled = (longClickPhotoEnabled && photo.phId != 0L),
+                            enabled = (longClickPhotoEnabled && photo.photoId != 0L),
                             onLongClick = {
                                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                                contextMenuPhotoId = photo.phId
+                                contextMenuPhotoId = photo.photoId
                             }) {}
                 )
                 Surface(
@@ -106,7 +105,7 @@ fun PhotosLazyRow(
                     color = MaterialTheme.colorScheme.surfaceVariant,
                 ) {
                     Text(
-                        text = photo.phLabel,
+                        text = photo.label,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
@@ -123,7 +122,7 @@ fun PhotosLazyRow(
     if (contextMenuPhotoId != null) {
         BottomActionsSheet(
             onDismissSheet = { contextMenuPhotoId = null },
-            photo = photos.first { it.phId == contextMenuPhotoId },
+            photo = photos.first { it.photoId == contextMenuPhotoId },
             onEditPhotoMenuItemClickGetPhoto = onEditPhotoMenuItemClickGetPhoto,
             onDeletePhotoMenuItemClick = onDeletePhotoMenuItemClick,
         )

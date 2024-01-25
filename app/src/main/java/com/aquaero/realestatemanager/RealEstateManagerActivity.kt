@@ -18,7 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.aquaero.realestatemanager.model.Address
+import com.aquaero.realestatemanager.model.Agent
+import com.aquaero.realestatemanager.model.Photo
+import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.model.PropertyPoiJoin
 import com.aquaero.realestatemanager.ui.component.app.AppTabRow
 import com.aquaero.realestatemanager.ui.component.app.AppTopBar
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
@@ -92,7 +97,12 @@ fun RealEstateManagerApp(
 ) {
     RealEstateManagerTheme(dynamicColor = false) {
         // val properties: List<Property> = appViewModel.fakeProperties
-        val properties: List<Property> = appViewModel.items.collectAsState().value                  // TODO ROOM
+        val properties: MutableList<Property> = appViewModel.propertiesStateFlow.collectAsState().value    // TODO ROOM
+        val addresses: MutableList<Address> = appViewModel.addressesStateFlow.collectAsState().value       // TODO ROOM
+        val photos: MutableList<Photo> = appViewModel.photosStateFlow.collectAsState().value               // TODO ROOM
+        val agents: MutableList<Agent> = appViewModel.agentsStateFlow.collectAsState().value               // TODO ROOM
+        val pois: MutableList<Poi> = appViewModel.poisStateFlow.collectAsState().value                     // TODO ROOM
+        val propertyPoiJoins: MutableList<PropertyPoiJoin> = appViewModel.propertyPoiJoinsStateFlow.collectAsState().value // TODO ROOM
 
         /**
          * Init content type, according to window's width,
@@ -108,7 +118,7 @@ fun RealEstateManagerApp(
         val navController = rememberNavController()
         // Fetch current destination
         val currentBackStack by navController.currentBackStackEntryAsState()
-        val propertyId = currentBackStack?.arguments?.getString(propertyKey) ?: -1
+        val propertyId = currentBackStack?.arguments?.getString(propertyKey) ?: 0
         val currentDestination = currentBackStack?.destination
         val currentScreen = currentDestination?.route
         // Use 'ListAndDetail' as a backup screen if the returned value is null
@@ -145,7 +155,7 @@ fun RealEstateManagerApp(
          * Bottom bar
          */
         // val defaultPropertyId = appViewModel.fakeProperties[0].pId.toString()
-        val defaultPropertyId = appViewModel.items.collectAsState().value[0].pId.toString()         // TODO ROOM
+        val defaultPropertyId = if (properties.isNotEmpty()) properties[0].propertyId.toString() else null // TODO ROOM
 
 
         /**
@@ -181,6 +191,10 @@ fun RealEstateManagerApp(
                 contentType = contentType,
                 navController = navController,
                 properties = properties,
+                addresses = addresses,
+                photos = photos,
+                agents = agents,
+                pois = pois,
                 appViewModel = appViewModel,
                 listViewModel = listViewModel,
                 detailViewModel = detailViewModel,

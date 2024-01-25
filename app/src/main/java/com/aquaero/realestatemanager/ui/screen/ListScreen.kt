@@ -1,7 +1,5 @@
 package com.aquaero.realestatemanager.ui.screen
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,11 +24,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.model.Address
+import com.aquaero.realestatemanager.model.NO_PHOTO
+import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.list_screen.PropertyCard
 import com.aquaero.realestatemanager.ui.theme.White
@@ -39,9 +38,11 @@ import com.aquaero.realestatemanager.utils.AppContentType
 @Composable
 fun ListScreen(
     items: List<Property>,
+    addresses: List<Address>,
+    photos: List<Photo>,
     contentType: AppContentType,
     currency: String,
-    property: Property,
+    property: Property?,
     onPropertyClick: (Long) -> Unit,
     onFabClick: () -> Unit,
 ) {
@@ -78,20 +79,21 @@ fun ListScreen(
             ) {
                 items(items = items) { propertyItem ->
                     // val phId = if (propertyItem.photos != null && property.photos!![0].phId > 0L)
-                    val phId = if (property.photos[0].phId > 0L)
-                        propertyItem.photos[0].phId else NO_PHOTO.phId
+                    // val phId = if (property.photos[0].photoId > 0L) propertyItem.photos[0].photoId else NO_PHOTO.photoId
+                    val phId = photos.find { it.propertyId == propertyItem.propertyId }?.photoId ?: NO_PHOTO.photoId
                     PropertyCard(
-                        pId = propertyItem.pId,
-                        pType = propertyItem.pType,
-                        pCity = propertyItem.pAddress.city,
+                        pId = propertyItem.propertyId,
+                        pType = propertyItem.type,
+                        // pCity = propertyItem.addressId.city,
+                        pCity = addresses.find { it.addressId == propertyItem.addressId }!!.city,
                         phId = phId,
                         pPriceFormatted = propertyItem.priceStringInCurrency(currency),
                         contentType = contentType,
-                        selected = selectedId == propertyItem.pId ||
-                                property.pId.toString() == propertyItem.pId.toString(), // For compatibility with ListAndDetailScreen
+                        selected = selectedId == propertyItem.propertyId ||
+                                property?.propertyId.toString() == propertyItem.propertyId.toString(), // For compatibility with ListAndDetailScreen
                         unselectedByDefaultDisplay =
-                                property.pId.toString() != propertyItem.pId.toString(), // For compatibility with ListAndDetailScreen
-                        onSelection = { selectedId = propertyItem.pId },                // For compatibility with ListAndDetailScreen
+                                property?.propertyId.toString() != propertyItem.propertyId.toString(), // For compatibility with ListAndDetailScreen
+                        onSelection = { selectedId = propertyItem.propertyId },                        // For compatibility with ListAndDetailScreen
                         onPropertyClick = onPropertyClick,
                     )
                 }

@@ -1,32 +1,38 @@
 package com.aquaero.realestatemanager.ui.screen
 
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.aquaero.realestatemanager.model.Address
+import com.aquaero.realestatemanager.model.Photo
+import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.utils.AppContentType
-import com.aquaero.realestatemanager.viewmodel.DetailViewModel
-import com.aquaero.realestatemanager.viewmodel.ListViewModel
 
 @SuppressLint("NewApi")
 @Composable
 fun ListAndDetailScreen(
     items: List<Property>,
-    thumbnailUrl: String,
+    addresses: List<Address>,
+    stringLatitude: String,
+    stringLongitude: String,
+    photos: List<Photo>,
     contentType: AppContentType,
     onPropertyClick: (Long) -> Unit,
-    property: Property,
-    currency: String,
+    property: Property?,
+    thumbnailUrl: String,
     stringAgent: String,
+    stringAddress: String,
+    itemPhotos: MutableList<Photo>,
+    itemPois: MutableList<Poi>,
+    currency: String,
     internetAvailable: Boolean,
     onFabClick: () -> Unit,
     onBackPressed: () -> Unit,
@@ -36,8 +42,9 @@ fun ListAndDetailScreen(
             modifier = Modifier.weight(1F)
         ) {
             ListScreen(
-                // listViewModel = listViewModel,   // TODo : To be removed
                 items = items,
+                addresses = addresses,
+                photos = photos,
                 contentType = contentType,
                 currency = currency,
                 property = property,
@@ -47,7 +54,7 @@ fun ListAndDetailScreen(
         }
         if (contentType == AppContentType.SCREEN_WITH_DETAIL) {
             // Spacer(modifier = Modifier.width(2.dp))
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier
                     .width(2.dp)
                     .fillMaxHeight(),
@@ -59,8 +66,13 @@ fun ListAndDetailScreen(
             ) {
                 DetailScreen(
                     property = property,
+                    stringAddress = stringAddress,
+                    stringLatitude = stringLatitude,
+                    stringLongitude = stringLongitude,
                     thumbnailUrl = thumbnailUrl,
                     stringAgent = stringAgent,
+                    itemPhotos = itemPhotos,
+                    itemPois = itemPois,
                     currency = currency,
                     internetAvailable = internetAvailable,
                     onBackPressed = onBackPressed,

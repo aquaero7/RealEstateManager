@@ -29,8 +29,8 @@ const val DATE_LENGTH = 10 // Equals to "####-##-##".count
 const val RATE_OF_DOLLAR_IN_EURO = 0.812
 // const val SM_KEY = "&key=${BuildConfig.MAPS_API_KEY}"
 
-// Item for lazyList if the property has no photo
-val NO_PHOTO = Photo(0, Uri.EMPTY, "")
+// Item for lazyList, lazyRow and EditScreen if the property has no photo
+// val NO_PHOTO = Photo(0, Uri.EMPTY, "")
 
 val DEFAULT_LOCATION = Location("").apply { latitude = 0.0 ; longitude = 0.0 }
 val LOCATION_PERMISSIONS = listOf(
@@ -43,3 +43,13 @@ val DP_TEXT_COLOR = White
 val DP_HEADERS_COLOR = White
 val DP_CONTENT_COLOR = PurpleGrey80
 val DP_CONTAINER_COLOR = PurpleGrey40
+
+// POIs
+enum class POI(val key: String) {
+    HOSPITAL(key = "hospital"),
+    SCHOOL(key = "school"),
+    RESTAURANT(key = "restaurant"),
+    SHOP(key = "shop"),
+    RAILWAY_STATION(key = "railway_station"),
+    CAR_PARK(key = "car_park"),
+}

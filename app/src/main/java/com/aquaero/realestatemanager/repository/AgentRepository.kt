@@ -1,18 +1,58 @@
 package com.aquaero.realestatemanager.repository
 
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.database.dao.AgentDao
 import com.aquaero.realestatemanager.model.Agent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 
-class AgentRepository() {
+class AgentRepository(private val agentDao: AgentDao) {
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
+
+
+    /** Room: Database CRUD **/
+
+    suspend fun upsertAgentInRoom(agent: Agent) {
+        withContext(Dispatchers.IO) {
+            agentDao.upsertAgent(agent)
+        }
+    }
+
+    suspend fun deleteAgentFromRoom(agent: Agent) {
+        withContext(Dispatchers.IO) {
+            agentDao.deleteAgent(agent)
+        }
+    }
+
+    suspend fun getAgentFromRoom(aId: Long): Flow<Agent> {
+        return withContext(Dispatchers.IO) {
+            agentDao.getAgent(aId)
+        }
+    }
+
+    suspend fun getAgentsFromRoom(): Flow<MutableList<Agent>> {
+        return withContext(Dispatchers.IO) {
+            agentDao.getAgents()
+        }
+    }
+
+    suspend fun getAgentsOrderedByIdFromRoom(): Flow<MutableList<Agent>> {
+        return withContext(Dispatchers.IO) {
+            agentDao.getAgentsOrderedById()
+        }
+    }
+
+    suspend fun getAgentsOrderedByNameFromRoom(): Flow<MutableList<Agent>> {
+        return withContext(Dispatchers.IO) {
+            agentDao.getAgentsOrderedByName()
+        }
+    }
+
+    /***/
 
 
     fun agentFromId(agentId: Long): Agent? {
@@ -20,6 +60,10 @@ class AgentRepository() {
             if (it.agentId == agentId) return it
         }
         return null
+    }
+
+    fun stringAgent(agents: MutableList<Agent>, agentId: Long): String {
+        return agents.find { it.agentId == agentId }.toString()
     }
 
 
@@ -48,20 +92,21 @@ class AgentRepository() {
 
     val fakeAgents = listOf(
         Agent(
-            agentId = 0,
-            agentName = "N0000000",
-            agentFirstName = "F0000000"
+            agentId = -1,
+            lastName = "N1111111",
+            firstName = "F1111111"
         ),
         Agent(
-            agentId = 1,
-            agentName = "N1111111",
-            agentFirstName = "F1111111"
+            agentId = -2,
+            lastName = "N2222222",
+            firstName = "F2222222"
         ),
         Agent(
-            agentId = 2,
-            agentName = "N2222222",
-            agentFirstName = "F2222222"
-        )
+            agentId = -3,
+            lastName = "N3333333",
+            firstName = "F3333333"
+        ),
+
     )
     //
 }

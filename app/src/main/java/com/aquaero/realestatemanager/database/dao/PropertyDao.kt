@@ -1,14 +1,12 @@
 package com.aquaero.realestatemanager.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
 import com.aquaero.realestatemanager.model.Property
 import kotlinx.coroutines.flow.Flow
-import java.util.Properties
 
 @Dao
 interface PropertyDao {
@@ -24,15 +22,16 @@ interface PropertyDao {
     suspend fun deleteProperty(property: Property)
     */
 
-    @Query("SELECT * FROM property")
-    fun getProperties(): Flow<List<Property>>
-
-    @Query("SELECT * FROM property ORDER BY pId ASC")
-    fun getPropertiesOrderedById(): Flow<List<Property>>
-
-    @Query("SELECT * FROM property WHERE pId = :pId")
+    @Query("SELECT * FROM property WHERE propertyId = :pId")
     fun getProperty(pId: Long): Flow<Property>
 
+    @Query("SELECT * FROM property")
+    fun getProperties(): Flow<MutableList<Property>>
 
+    @Query("SELECT * FROM property ORDER BY propertyId ASC")
+    fun getPropertiesOrderedById(): Flow<MutableList<Property>>
+
+    @Query("SELECT * FROM property ORDER BY registrationDate DESC")
+    fun getPropertiesOrderedByRegistrationDate(): Flow<MutableList<Property>>
 
 }

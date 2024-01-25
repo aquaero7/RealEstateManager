@@ -4,7 +4,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -15,6 +14,7 @@ import com.aquaero.realestatemanager.model.Property
 @Composable
 fun EditScreenColumn2(
     property: Property?,
+    addresses: List<Address>,
     agentSet: () -> MutableSet<String?>,
     agentIndex: Int?,
     onStreetNumberValueChange: (String) -> Unit,
@@ -40,7 +40,8 @@ fun EditScreenColumn2(
         countryPlaceHolderText = stringResource(R.string.country),
         icon = Icons.Default.LocationOn,
         iconCD = stringResource(id = R.string.cd_address),
-        item = property?.pAddress,
+        // item = property?.addressId,
+        item = addresses.find { it.addressId == property?.addressId },
         onStreetNumberValueChange = onStreetNumberValueChange,
         onStreetNameValueChange = onStreetNameValueChange,
         onAddInfoValueChange = onAddInfoValueChange,

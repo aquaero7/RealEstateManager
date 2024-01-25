@@ -18,7 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.aquaero.realestatemanager.DEFAULT_ZOOM
 import com.aquaero.realestatemanager.R
@@ -28,7 +27,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -99,12 +97,12 @@ fun MapScreenMap(
                 Marker(
                     state = MarkerState(
                         position = LatLng(
-                            it.pAddress.latLng.latitude,
-                            it.pAddress.latLng.longitude
+                            it.addressId.latLng.latitude,
+                            it.addressId.latLng.longitude
                         )
                     ),
-                    title = it.pAddress.city,
-                    snippet = stringResource(it.pType),
+                    title = it.addressId.city,
+                    snippet = stringResource(it.type),
                     icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)
                 )
             }

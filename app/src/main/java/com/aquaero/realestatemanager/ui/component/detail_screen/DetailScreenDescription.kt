@@ -47,9 +47,10 @@ fun DetailScreenDescription(
                 enabled = true
             )
     ) {
-        description?.let {
+        // description?.let {
             Text(
-                text = it,
+                // text = it,
+                text = description ?: "",
                 // color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Justify,
                 fontSize = 14.sp,
@@ -59,6 +60,6 @@ fun DetailScreenDescription(
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp, vertical = 8.dp)
             )
-        }
+        // }
     }
 }

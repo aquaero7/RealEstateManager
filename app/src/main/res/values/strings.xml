@@ -56,6 +56,7 @@
     <string name="photo_deletion_dialog_text">Delete photo \"%s\"?</string>
     <string name="photo_deleted">Photo \"%s\" deleted!</string>
     <string name="invalid_input">Error! Only digits are allowed!</string>
+    <string name="general_error">An error has occurred!</string>
 
     <!-- TYPE OF PROPERTIES -->
     <string name="not_assigned">Not assigned…</string>
@@ -140,12 +141,14 @@
     <string name="euro" translatable="false">€</string>
 
     <!-- POINT OF INTEREST KEY -->
+    <!--
     <string name="key_hospital" translatable="false">hospital</string>
     <string name="key_school" translatable="false">school</string>
     <string name="key_restaurant" translatable="false">restaurant</string>
     <string name="key_shop" translatable="false">shop</string>
     <string name="key_railway_station" translatable="false">railway_station</string>
     <string name="key_car_park" translatable="false">car_park</string>
+    -->
 
     <!-- CHARACTERS -->
     <string name="ellipsis" translatable="false">&#8230;</string>

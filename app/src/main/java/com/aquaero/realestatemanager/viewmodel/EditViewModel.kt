@@ -6,40 +6,58 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
+import androidx.compose.ui.res.stringResource
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.EditDetail
-import com.aquaero.realestatemanager.NO_PHOTO
+import com.aquaero.realestatemanager.POI
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
+import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
+import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.model.PropertyPoiJoin
+import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
+import com.aquaero.realestatemanager.repository.PoiRepository
+import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class EditViewModel(
-    private val agentRepository: AgentRepository,
     private val propertyRepository: PropertyRepository,
+    private val addressRepository: AddressRepository,
     private val photoRepository: PhotoRepository,
+    private val agentRepository : AgentRepository,
+    private val poiRepository: PoiRepository,
+    private val propertyPoiJoinRepository: PropertyPoiJoinRepository,
 ) : ViewModel() {
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
-    val pTypesSet = propertyRepository.pTypesSet
-    val poiSet = propertyRepository.poiSet
+    val pTypesSet = propertyRepository.typesSet
+    // val poiSet = propertyRepository.poiSet
     val agentsSet = agentRepository.agentsSet
 
+    /*
     private val poiHospital = context.getString(R.string.key_hospital)
     private val poiSchool = context.getString(R.string.key_school)
     private val poiRestaurant = context.getString(R.string.key_restaurant)
     private val poiShop = context.getString(R.string.key_shop)
     private val poiRailwayStation = context.getString(R.string.key_railway_station)
     private val poiCarPark = context.getString(R.string.key_car_park)
+    */
 
     /**
      * Temp data used as a cache for property creation ou update
@@ -62,7 +80,7 @@ class EditViewModel(
     private var countryValue = "-1"
     private var registrationDateValue: String? = "-1"
     private var saleDateValue: String? = "-1"
-    private var photos = mutableListOf<Photo>()
+    private var itemPhotos = mutableListOf<Photo>()
 
     private var poiHospitalSelected: Boolean? = null
     private var poiSchoolSelected: Boolean? = null
@@ -71,6 +89,52 @@ class EditViewModel(
     private var poiRailwayStationSelected: Boolean? = null
     private var poiCarParkSelected: Boolean? = null
 
+    /***/
+
+
+    /** Room **/
+
+    private val _propertiesStateFlow = MutableStateFlow<MutableList<Property>>(emptyList<Property>().toMutableList())
+    val propertiesStateFlow: StateFlow<MutableList<Property>> = _propertiesStateFlow.asStateFlow()
+
+    private val _addressesStateFlow = MutableStateFlow<MutableList<Address>>(emptyList<Address>().toMutableList())
+    val addressesStateFlow: StateFlow<MutableList<Address>> = _addressesStateFlow.asStateFlow()
+
+    private val _photosStateFlow = MutableStateFlow<MutableList<Photo>>(emptyList<Photo>().toMutableList())
+    val photosStateFlow: StateFlow<MutableList<Photo>> = _photosStateFlow.asStateFlow()
+
+    private val _agentsStateFlow = MutableStateFlow<MutableList<Agent>>(emptyList<Agent>().toMutableList())
+    val agentsStateFlow: StateFlow<MutableList<Agent>> = _agentsStateFlow.asStateFlow()
+
+    private val _poisStateFlow = MutableStateFlow<MutableList<Poi>>(emptyList<Poi>().toMutableList())
+    val poisStateFlow: StateFlow<MutableList<Poi>> = _poisStateFlow.asStateFlow()
+
+    private val _propertyPoiJoinsStateFlow = MutableStateFlow<MutableList<PropertyPoiJoin>>(emptyList<PropertyPoiJoin>().toMutableList())
+    val propertyPoiJoinsStateFlow: StateFlow<MutableList<PropertyPoiJoin>> = _propertyPoiJoinsStateFlow.asStateFlow()
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+
+            propertyRepository.getPropertiesFromRoom()
+                .collect { listOfProperties -> _propertiesStateFlow.value = listOfProperties }
+
+            addressRepository.getAddressesFromRoom()
+                .collect { listOfAddresses -> _addressesStateFlow.value = listOfAddresses }
+
+            photoRepository.getPhotosFromRoom()
+                .collect { listOfPhotos -> _photosStateFlow.value = listOfPhotos }
+
+            agentRepository.getAgentsFromRoom()
+                .collect { listOfAgents -> _agentsStateFlow.value = listOfAgents }
+
+            poiRepository.getPoisFromRoom()
+                .collect { listOfPois -> _poisStateFlow.value = listOfPois }
+
+            propertyPoiJoinRepository.getPropertyPoiJoinsFromRoom()
+                .collect { listOfPropertyPoiJoins -> _propertyPoiJoinsStateFlow.value = listOfPropertyPoiJoins }
+
+        }
+    }
 
     /***/
 
@@ -313,12 +377,18 @@ class EditViewModel(
 
     fun onPoiClick(propertyId: String, poiItem: String, isSelected: Boolean) {
         when (poiItem) {
-            poiHospital -> { poiHospitalSelected = isSelected }
-            poiSchool -> { poiSchoolSelected = isSelected }
-            poiRestaurant -> { poiRestaurantSelected = isSelected }
-            poiShop -> { poiShopSelected = isSelected }
-            poiRailwayStation -> { poiRailwayStationSelected = isSelected }
-            poiCarPark -> { poiCarParkSelected = isSelected }
+            // poiHospital -> { poiHospitalSelected = isSelected }
+            POI.HOSPITAL.key -> { poiHospitalSelected = isSelected }
+            // poiSchool -> { poiSchoolSelected = isSelected }
+            POI.SCHOOL.key -> { poiSchoolSelected = isSelected }
+            // poiRestaurant -> { poiRestaurantSelected = isSelected }
+            POI.RESTAURANT.key -> { poiRestaurantSelected = isSelected }
+            // poiShop -> { poiShopSelected = isSelected }
+            POI.SHOP.key -> { poiShopSelected = isSelected }
+            // poiRailwayStation -> { poiRailwayStationSelected = isSelected }
+            POI.RAILWAY_STATION.key -> { poiRailwayStationSelected = isSelected }
+            // poiCarPark -> { poiCarParkSelected = isSelected }
+            POI.CAR_PARK.key -> { poiCarParkSelected = isSelected }
         }
         Log.w("EditViewModel", "New value for POI $poiItem selection of property Id '$propertyId' is: $isSelected")
         Toast.makeText(context, "New value for POI $poiItem selection of property Id '$propertyId' is: $isSelected", Toast.LENGTH_SHORT)
@@ -329,31 +399,62 @@ class EditViewModel(
         Log.w("EditViewModel", "Click on save photo button")
         Log.w("EditViewModel", "Saving photo: Label = $label, Uri = $uri")
 
-        photos = propertyFromId(propertyId).photos
+        // itemPhotos = propertyFromId(propertyId).photos
+        itemPhotos = photoRepository.itemPhotos(photosStateFlow.value, propertyId)
 
         // Check if the photo already exists
+        val photo: Photo? = itemPhotos.find { it.uri == uri }
+        val alreadyExists: Boolean = (photo != null)
+        /*
         var photoId: Long? = null
-        photos.forEach {
-            if (it.phUri == uri) {
+        itemPhotos.forEach {
+            if (it.uri == uri) {
                 // The photo already exists
-                photoId = it.phId
+                photoId = it.photoId
             }
         }
+        */
 
-        if (photoId != null) {
+        // if (photoId != null) {
+        if (alreadyExists) {
             // Save the label modification of an existing photo
-            photoRepository.photoFromId(photos, photoId!!).phLabel = label
+            // photoRepository.photoFromId(itemPhotos, photoId!!).label = label
+            val photoToUpdate = Photo(
+                photoId = photo!!.photoId,
+                uri = photo.uri,
+                label = label,
+                propertyId = propertyId)
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    photoRepository.upsertPhotoInRoom(photoToUpdate)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Toast.makeText(context, context.getString(R.string.general_error), Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
 
             Toast.makeText(
-                context,
-                "Updating photo: Label = $label, Uri = $uri",
-                Toast.LENGTH_SHORT
-            )
+                context, "Updating photo: Label = $label, Uri = $uri", Toast.LENGTH_SHORT)
                 .show()  // TODO: To be deleted
         } else {
             // Save a new photo
-            if (photos.size == 1 && photos.elementAt(0).phId == 0L) photos.removeAt(0)
-            photos.add(Photo((Math.random() * 9999).toLong(), uri, label))
+            // if (itemPhotos.size == 1 && itemPhotos.elementAt(0).photoId == 0L) itemPhotos.removeAt(0)
+            // photos.add(Photo((Math.random() * 9999).toLong(), uri, label, propertyId))
+            // itemPhotos.add(Photo(uri = uri, label = label, propertyId = propertyId))
+            val photoToAdd = Photo(
+                uri = uri,
+                label = label,
+                propertyId = propertyId)
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    photoRepository.upsertPhotoInRoom(photoToAdd)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Toast.makeText(context, context.getString(R.string.general_error), Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
 
             Toast.makeText(context, "Saving photo: Label = $label, Uri = $uri", Toast.LENGTH_SHORT)
                 .show()  // TODO: To be deleted
@@ -363,19 +464,30 @@ class EditViewModel(
     fun onPhotoDeletionConfirmation(photoId: Long, propertyId: Long) {
         Log.w("EditViewModel", "Click on delete photo (id: $photoId) button")
 
-        photos = propertyFromId(propertyId).photos
-        val photoToRemove = photoRepository.photoFromId(photos = photos, photoId = photoId)
+        // itemPhotos = propertyFromId(propertyId).photos
+        itemPhotos = photoRepository.itemPhotos(photosStateFlow.value, propertyId)
+        val photoToRemove = photoRepository.photoFromId(photos = itemPhotos, photoId = photoId)
 
-        Log.w("EditViewModel", "Before action, photos list size is: ${photos.size}")
+        Log.w("EditViewModel", "Before action, photos list size is: ${itemPhotos.size}")
 
-        photos.remove(photoToRemove)
-        if (photos.size == 0) photos.add(NO_PHOTO)
+        // itemPhotos.remove(photoToRemove)
+        // if (itemPhotos.size == 0) itemPhotos.add(NO_PHOTO)
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                photoRepository.deletePhotoFromRoom(photoToRemove)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(context, context.getString(R.string.general_error), Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+
         Toast
-            .makeText(context, context.getString(R.string.photo_deleted, photoToRemove.phLabel),
+            .makeText(context, context.getString(R.string.photo_deleted, photoToRemove.label),
                 Toast.LENGTH_SHORT)
             .show()
 
-        Log.w("EditViewModel", "After action. photos list size is: ${photos?.size}")
+        Log.w("EditViewModel", "After action. photos list size is: ${itemPhotos.size}")
     }
 
     private fun tempPropertyModificationsValidated(): String {
@@ -406,10 +518,10 @@ class EditViewModel(
         if (poiRailwayStationSelected != null) newValues += "/$poiRailwayStationSelected"
         if (poiCarParkSelected != null) newValues += "/$poiCarParkSelected"
 
-        if (photos.isNotEmpty()) {
+        if (itemPhotos.isNotEmpty()) {
             var photoLabels = ""
-            photos.forEach {
-                photoLabels += "/${it.phLabel}"
+            itemPhotos.forEach {
+                photoLabels += "/${it.label}"
             }
             newValues += "/$photoLabels"
         }
@@ -443,7 +555,7 @@ class EditViewModel(
         poiRailwayStationSelected = null
         poiCarParkSelected = null
 
-        photos= mutableListOf()
+        itemPhotos= mutableListOf()
     }
 
     /***/

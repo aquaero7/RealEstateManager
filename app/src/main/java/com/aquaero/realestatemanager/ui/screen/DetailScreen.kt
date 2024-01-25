@@ -16,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.aquaero.realestatemanager.model.Photo
+import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenColumn1
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenColumn2
@@ -26,9 +28,14 @@ import com.aquaero.realestatemanager.ui.component.app.DetailScreenPoi
 
 @Composable
 fun DetailScreen(
-    property: Property,
+    property: Property?,
+    stringAddress: String,
+    stringLatitude: String,
+    stringLongitude: String,
     thumbnailUrl: String,
     stringAgent: String,
+    itemPhotos: MutableList<Photo>,
+    itemPois: MutableList<Poi>,
     currency: String,
     internetAvailable: Boolean,
     onBackPressed: () -> Unit,
@@ -45,15 +52,14 @@ fun DetailScreen(
 
         // Media (photos row)
         PhotosLazyRow(
-            // property = property, // TODO: To be deleted
-            photos = property.photos,
+            photos = itemPhotos,
             longClickPhotoEnabled = false,
             onEditPhotoMenuItemClickGetPhoto = {},
             onDeletePhotoMenuItemClick = {},
         )
 
         // Description
-        DetailScreenDescription(description = property.description)
+        DetailScreenDescription(description = property?.description)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -94,6 +100,7 @@ fun DetailScreen(
                 ) {*/
                     DetailScreenColumn2(
                         property = property,
+                        stringAddress = stringAddress,
                         stringAgent = stringAgent,
                         currency = currency,
                     )
@@ -104,7 +111,7 @@ fun DetailScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // POIs
-        DetailScreenPoi(selectedPoi = property.pPoi)
+        DetailScreenPoi(itemPois = itemPois)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -112,7 +119,10 @@ fun DetailScreen(
         DetailScreenMapThumbnail(
             internetAvailable = internetAvailable,
             thumbnailUrl = thumbnailUrl,
-            latLng = property.pAddress.latLng,
+            // latLng = property.addressId.latLng,
+            // latLng = addresses.find { it.addressId == property.addressId }!!.latLng,
+            stringLatitude = stringLatitude,
+            stringLongitude = stringLongitude,
         )
 
         // To manage back nav

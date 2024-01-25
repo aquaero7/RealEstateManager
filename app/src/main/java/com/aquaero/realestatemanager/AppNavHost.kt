@@ -20,7 +20,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import coil.compose.rememberAsyncImagePainter
 import com.aquaero.realestatemanager.model.Address
+import com.aquaero.realestatemanager.model.Agent
+import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
+import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.map_screen.MapScreenNoMap
 import com.aquaero.realestatemanager.ui.screen.DetailScreen
@@ -50,6 +53,10 @@ fun AppNavHost(
     contentType: AppContentType,
     navController: NavHostController,
     properties: List<Property>,
+    addresses: List<Address>,
+    photos: List<Photo>,
+    agents: List<Agent>,
+    pois: List<Poi>,
     appViewModel: AppViewModel,
     listViewModel: ListViewModel,
     detailViewModel: DetailViewModel,
@@ -68,32 +75,55 @@ fun AppNavHost(
         composable(
             route = ListAndDetail.routeWithArgs, arguments = ListAndDetail.arguments
         ) { navBackStackEntry ->
-            (navBackStackEntry.arguments!!.getString(propertyKey)
-                ?: properties[0].pId.toString()).also {
+            (navBackStackEntry.arguments?.getString(propertyKey)
+                    // ?: properties[0].propertyId.toString()).also {
+                    ).also {
+                        ///
+                    val propertyId = it?.let { navBackStackEntry.arguments!!.getString(propertyKey)!!.toLong() }    ///
 
-                val property = listViewModel.propertyFromId(it.toLong())
-                val thumbnailUrl = listViewModel.thumbnailUrl(property)
-                val onPropertyClick: (Long) -> Unit = { propertyId ->
-                    navController.navigateToDetail(propertyId.toString(), contentType)
+                    // val property = listViewModel.propertyFromId(it.toLong())
+                    val property = it?.let { listViewModel.propertyFromId(it.toLong()) }            ///
+                    // val thumbnailUrl = listViewModel.thumbnailUrl(property)
+                    val thumbnailUrl = it?.let { listViewModel.thumbnailUrl(propertyId!!) } ?: ""   ///
+                    val stringAgent = it?.let { listViewModel.stringAgent(property!!.agentId) } ?: ""   ///
+                    val stringAddress = it?.let { listViewModel.stringAddress(property!!.addressId) } ?: "" ///
+                    val stringLatitude = it?.let { listViewModel.stringLatitude(property!!.addressId) } ?: "" ///
+                    val stringLongitude = it?.let { listViewModel.stringLongitude(property!!.addressId) } ?: "" ///
+                    val itemPhotos = it?.let { listViewModel.itemPhotos(propertyId!!) } ?: listOf(NO_PHOTO).toMutableList() ///
+
+                    // val itemPois = it?.let { listViewModel.itemPois(propertyId!!) } ?: emptyList<Poi>().toMutableList() ///
+                    // var itemPois: MutableList<Poi> = emptyList<Poi>().toMutableList()
+                    var itemPois by remember { mutableStateOf(emptyList<Poi>()) }
+                    listViewModel.itemPois(propertyId!!) { result -> itemPois = result }
+
+                    val onPropertyClick: (Long) -> Unit = { propId ->
+                        navController.navigateToDetail(propId.toString(), contentType)
+                    }
+                    val connection by connectivityState()
+                    val internetAvailable = listViewModel.checkForConnection(connection = connection)
+                    val onFabClick = { navController.navigateToDetailEdit("-1") }
+                    val onBackPressed: () -> Unit = { navController.popBackStack() }
+
+                    ListAndDetailScreen(
+                        items = properties,
+                        addresses = addresses,
+                        photos = photos,
+                        contentType = contentType,
+                        onPropertyClick = onPropertyClick,
+                        property = property,
+                        thumbnailUrl = thumbnailUrl,
+                        stringAgent = stringAgent,
+                        stringAddress = stringAddress,
+                        stringLatitude = stringLatitude,
+                        stringLongitude = stringLongitude,
+                        itemPhotos = itemPhotos,
+                        itemPois = itemPois.toMutableList(),
+                        currency = currency,
+                        internetAvailable = internetAvailable,
+                        onFabClick = onFabClick,
+                        onBackPressed = onBackPressed,
+                    )
                 }
-                val connection by connectivityState()
-                val internetAvailable = listViewModel.checkForConnection(connection = connection)
-                val onFabClick = { navController.navigateToDetailEdit("-1") }
-                val onBackPressed: () -> Unit = { navController.popBackStack() }
-
-                ListAndDetailScreen(
-                    items = properties,
-                    thumbnailUrl = thumbnailUrl,
-                    contentType = contentType,
-                    onPropertyClick = onPropertyClick,
-                    property = property,
-                    currency = currency,
-                    stringAgent = appViewModel.agentFromId(property.agentId).toString(),
-                    internetAvailable = internetAvailable,
-                    onFabClick = onFabClick,
-                    onBackPressed = onBackPressed,
-                )
-            }
         }
 
         composable(route = GeolocMap.route) {
@@ -162,17 +192,33 @@ fun AppNavHost(
             route = Detail.routeWithArgs,
             arguments = Detail.arguments
         ) { navBackStackEntry ->
-            val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)!!
-            val property = detailViewModel.propertyFromId(propertyId.toLong())
-            val thumbnailUrl = detailViewModel.thumbnailUrl(property)
+            val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)!!.toLong()
+            val property = detailViewModel.propertyFromId(propertyId)
+            val stringAddress = detailViewModel.stringAddress(property.addressId)
+            val stringLatitude = detailViewModel.stringLatitude(property.addressId)
+            val stringLongitude = detailViewModel.stringLongitude(property.addressId)
+            val thumbnailUrl = detailViewModel.thumbnailUrl(propertyId)
+            val stringAgent = detailViewModel.stringAgent(property.agentId)
+            val itemPhotos = detailViewModel.itemPhotos(propertyId)
+
+            // val itemPois = detailViewModel.itemPois(propertyId)
+            // var itemPois: MutableList<Poi> = emptyList<Poi>().toMutableList()
+            var itemPois by remember { mutableStateOf(emptyList<Poi>()) }
+            detailViewModel.itemPois(propertyId) { result -> itemPois = result }
+
             val connection by connectivityState()
             val internetAvailable = detailViewModel.checkForConnection(connection = connection)
             val onBackPressed: () -> Unit = { navController.popBackStack() }
 
             DetailScreen(
                 property = property,
+                stringAddress = stringAddress,
+                stringLatitude = stringLatitude,
+                stringLongitude = stringLongitude,
                 thumbnailUrl = thumbnailUrl,
-                stringAgent = appViewModel.agentFromId(property.agentId).toString(),
+                stringAgent = stringAgent,
+                itemPhotos = itemPhotos,
+                itemPois = itemPois.toMutableList(),
                 currency = currency,
                 internetAvailable = internetAvailable,
                 onBackPressed = onBackPressed,
@@ -184,19 +230,20 @@ fun AppNavHost(
             arguments = EditDetail.arguments
         ) { navBackStackEntry ->
             val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)
-            val property: Property? = if (propertyId != "-1") {
+            val property: Property? = if (propertyId != "0") {
                 // Edition mode
                 editViewModel.propertyFromId(propertyId!!.toLong())
             } else {
                 // Creation mode
                 null
             }
+
             val pTypeSet = { editViewModel.pTypesSet }
             val agentSet = editViewModel.agentsSet
             val pTypeIndex = property?.let {
                 editViewModel.mutableSetIndex(
                     run(pTypeSet) as MutableSet<Any?>,
-                    stringResource(it.pType)
+                    stringResource(it.type)
                 )
             }
             val agentIndex = property?.let {
@@ -254,7 +301,11 @@ fun AppNavHost(
                 editViewModel.onSaleDateValueChange(propertyId, it)
             }
             val onPoiClick: (String, Boolean) -> Unit = { poiItem, isSelected ->
-                editViewModel.onPoiClick(propertyId = propertyId, poiItem = poiItem, isSelected = isSelected)
+                editViewModel.onPoiClick(
+                    propertyId = propertyId,
+                    poiItem = poiItem,
+                    isSelected = isSelected
+                )
             }
 
             /**
@@ -341,7 +392,7 @@ fun AppNavHost(
                 photoToAddUri = Uri.EMPTY
             }
             val onEditPhotoMenuItemClick: (Photo) -> Unit = { photo ->
-                photoToAddUri = photo.phUri
+                photoToAddUri = photo.uri
                 buttonSavePhotoEnabled = true
             }
             val onPhotoDeletionConfirmation: (Long) -> Unit = { photoId ->
@@ -355,6 +406,7 @@ fun AppNavHost(
                 pTypeSet = pTypeSet,
                 agentSet = agentSet,
                 property = property,
+                addresses = addresses,
                 pTypeIndex = pTypeIndex,
                 agentIndex = agentIndex,
                 currency = currency,
@@ -374,12 +426,18 @@ fun AppNavHost(
                 onCountryValueChange = onCountryValueChange,
                 onRegistrationDateValueChange = onRegistrationDateValueChange,
                 onSaleDateValueChange = onSaleDateValueChange,
-                onHospitalClick = { onPoiClick(context.getString(R.string.key_hospital), it) },
-                onSchoolClick = { onPoiClick(context.getString(R.string.key_school), it) },
-                onRestaurantClick = { onPoiClick(context.getString(R.string.key_restaurant), it) },
-                onShopClick = { onPoiClick(context.getString(R.string.key_shop), it) },
-                onRailwayStationClick = { onPoiClick(context.getString(R.string.key_railway_station), it) },
-                onCarParkClick = { onPoiClick(context.getString(R.string.key_car_park), it) },
+                // onHospitalClick = { onPoiClick(context.getString(R.string.key_hospital), it) },
+                onHospitalClick = { onPoiClick(POI.HOSPITAL.key, it) },
+                // onSchoolClick = { onPoiClick(context.getString(R.string.key_school), it) },
+                onSchoolClick = { onPoiClick(POI.SCHOOL.key, it) },
+                // onRestaurantClick = { onPoiClick(context.getString(R.string.key_restaurant), it) },
+                onRestaurantClick = { onPoiClick(POI.RESTAURANT.key, it) },
+                // onShopClick = { onPoiClick(context.getString(R.string.key_shop), it) },
+                onShopClick = { onPoiClick(POI.SHOP.key, it) },
+                // onRailwayStationClick = { onPoiClick(context.getString(R.string.key_railway_station), it) },
+                onRailwayStationClick = { onPoiClick(POI.RAILWAY_STATION.key, it) },
+                // onCarParkClick = { onPoiClick(context.getString(R.string.key_car_park), it) },
+                onCarParkClick = { onPoiClick(POI.CAR_PARK.key, it) },
                 onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
                 onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,
                 buttonAddPhotoEnabled = buttonSavePhotoEnabled,
@@ -393,7 +451,7 @@ fun AppNavHost(
     }
 }
 
-fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String) {
+fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String?) {
     val route =
         if (destination == ListAndDetail) "${destination.route}/${propertyId}" else destination.route
     this.navigate(route) {

@@ -20,9 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.aquaero.realestatemanager.NO_PHOTO
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
+import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.app.DetailScreenPoi
@@ -36,6 +36,7 @@ fun EditScreen(
     pTypeSet: () -> MutableSet<Int?>,
     agentSet: () -> MutableSet<String?>,
     property: Property?,
+    addresses: List<Address>,
     pTypeIndex: Int?,
     agentIndex: Int?,
     currency: String,
@@ -127,6 +128,7 @@ fun EditScreen(
             ) {
                 EditScreenColumn2(
                     property = property,
+                    addresses = addresses,
                     agentSet = agentSet,
                     agentIndex = agentIndex,
                     onStreetNumberValueChange = onStreetNumberValueChange,
@@ -148,7 +150,7 @@ fun EditScreen(
         // POIs
         // property?.let { DetailScreenPoi(selectedPoi = it.pPoi) }
         DetailScreenPoi(
-            selectedPoi = (property?.pPoi ?: emptyList()).toMutableList(),
+            itemPois = (property?.poi ?: emptyList()).toMutableList(),
             clickable = true,
             onHospitalClick = onHospitalClick,
             onSchoolClick = onSchoolClick,

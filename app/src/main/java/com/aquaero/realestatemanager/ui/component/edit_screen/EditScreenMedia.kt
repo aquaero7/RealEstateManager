@@ -68,7 +68,7 @@ fun EditScreenMedia(
     var photoLabel by remember { mutableStateOf("") }
 
     val onEditPhotoMenuItemClickGetPhoto: (Photo) -> Unit = { photo ->
-        photoLabel = photo.phLabel
+        photoLabel = photo.label
         onEditPhotoMenuItemClick(photo)
     }
 
@@ -76,7 +76,7 @@ fun EditScreenMedia(
     var photoToDelete by remember { mutableStateOf<Photo?>(null) }
     val onDismiss: () -> Unit = { displayPhotoDeletionDialog = false }
     val onOkClick: () -> Unit = {
-        onPhotoDeletionConfirmation(photoToDelete!!.phId)
+        onPhotoDeletionConfirmation(photoToDelete!!.photoId)
         onDismiss()
     }
     fun showDeletionConfirmationDialog(photo: Photo) {
@@ -87,7 +87,7 @@ fun EditScreenMedia(
         AppDialog(
             subject = PHOTO_DELETION,
             title = stringResource(id = R.string.photo_deletion_dialog_title),
-            text = (stringResource(id = R.string.photo_deletion_dialog_text, photoToDelete!!.phLabel)),
+            text = (stringResource(id = R.string.photo_deletion_dialog_text, photoToDelete!!.label)),
             okLabel = stringResource(id = R.string.confirm),
             onOkClick = onOkClick,
             cnlLabel = stringResource(id = R.string.abort),

@@ -6,18 +6,16 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
-import androidx.compose.ui.res.stringResource
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.EditDetail
-import com.aquaero.realestatemanager.POI
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
-import com.aquaero.realestatemanager.model.NO_PHOTO
+import com.aquaero.realestatemanager.model.POI
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
@@ -94,22 +92,22 @@ class EditViewModel(
 
     /** Room **/
 
-    private val _propertiesStateFlow = MutableStateFlow<MutableList<Property>>(emptyList<Property>().toMutableList())
+    private val _propertiesStateFlow = MutableStateFlow(mutableListOf<Property>())
     val propertiesStateFlow: StateFlow<MutableList<Property>> = _propertiesStateFlow.asStateFlow()
 
-    private val _addressesStateFlow = MutableStateFlow<MutableList<Address>>(emptyList<Address>().toMutableList())
+    private val _addressesStateFlow = MutableStateFlow(mutableListOf<Address>())
     val addressesStateFlow: StateFlow<MutableList<Address>> = _addressesStateFlow.asStateFlow()
 
-    private val _photosStateFlow = MutableStateFlow<MutableList<Photo>>(emptyList<Photo>().toMutableList())
+    private val _photosStateFlow = MutableStateFlow(mutableListOf<Photo>())
     val photosStateFlow: StateFlow<MutableList<Photo>> = _photosStateFlow.asStateFlow()
 
-    private val _agentsStateFlow = MutableStateFlow<MutableList<Agent>>(emptyList<Agent>().toMutableList())
+    private val _agentsStateFlow = MutableStateFlow(mutableListOf<Agent>())
     val agentsStateFlow: StateFlow<MutableList<Agent>> = _agentsStateFlow.asStateFlow()
 
-    private val _poisStateFlow = MutableStateFlow<MutableList<Poi>>(emptyList<Poi>().toMutableList())
+    private val _poisStateFlow = MutableStateFlow(mutableListOf<Poi>())
     val poisStateFlow: StateFlow<MutableList<Poi>> = _poisStateFlow.asStateFlow()
 
-    private val _propertyPoiJoinsStateFlow = MutableStateFlow<MutableList<PropertyPoiJoin>>(emptyList<PropertyPoiJoin>().toMutableList())
+    private val _propertyPoiJoinsStateFlow = MutableStateFlow(mutableListOf<PropertyPoiJoin>())
     val propertyPoiJoinsStateFlow: StateFlow<MutableList<PropertyPoiJoin>> = _propertyPoiJoinsStateFlow.asStateFlow()
 
     init {
@@ -204,11 +202,12 @@ class EditViewModel(
     }
 
     fun onPriceValueChange(propertyId: String, value: String, currency: String) {
+
         priceValue = if (value.isNotEmpty() && value.isDigitsOnly()) {
             when (currency) {
                 "€" -> convertEuroToDollar(value.toInt())
                 else -> value.toInt()
-            }
+            }!!
         } else 0
 
         Log.w(

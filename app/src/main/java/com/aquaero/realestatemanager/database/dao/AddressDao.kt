@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AddressDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun prepopulateWithAddresses(addresses: List<Address>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun prepopulateWithAddresses(addresses: List<Address>)
 
     @Upsert     // Insert ou update (if primary key already exists)
     suspend fun upsertAddress(address: Address)

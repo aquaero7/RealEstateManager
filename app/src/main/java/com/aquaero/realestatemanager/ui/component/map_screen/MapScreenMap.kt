@@ -102,7 +102,7 @@ fun MapScreenMap(
                         )
                     ),
                     title = it.addressId.city,
-                    snippet = stringResource(it.type),
+                    snippet = stringResource(it.typeId),
                     icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)
                 )
             }

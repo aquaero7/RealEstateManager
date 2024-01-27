@@ -150,7 +150,7 @@ fun EditScreen(
         // POIs
         // property?.let { DetailScreenPoi(selectedPoi = it.pPoi) }
         DetailScreenPoi(
-            itemPois = (property?.poi ?: emptyList()).toMutableList(),
+            itemPois = (property?.poi ?: mutableListOf()),
             clickable = true,
             onHospitalClick = onHospitalClick,
             onSchoolClick = onSchoolClick,

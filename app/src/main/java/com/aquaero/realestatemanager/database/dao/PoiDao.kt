@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PoiDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun prepopulateWithPois(pois: List<Poi>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun prepopulateWithPois(pois: List<Poi>)
 
     @Upsert     // Insert ou update (if primary key already exists)
     suspend fun upsertPoi(poi: Poi)

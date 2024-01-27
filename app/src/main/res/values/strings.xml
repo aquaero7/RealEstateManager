@@ -59,7 +59,7 @@
     <string name="general_error">An error has occurred!</string>
 
     <!-- TYPE OF PROPERTIES -->
-    <string name="not_assigned">Not assigned…</string>
+    <string name="unassigned">Unassigned…</string>
     <string name="flat">Flat</string>
     <string name="house">House</string>
     <string name="duplex">Duplex</string>

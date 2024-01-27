@@ -24,6 +24,7 @@ import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
+import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.ui.component.app.AppTabRow
 import com.aquaero.realestatemanager.ui.component.app.AppTopBar
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
@@ -101,6 +102,7 @@ fun RealEstateManagerApp(
         val addresses: MutableList<Address> = appViewModel.addressesStateFlow.collectAsState().value       // TODO ROOM
         val photos: MutableList<Photo> = appViewModel.photosStateFlow.collectAsState().value               // TODO ROOM
         val agents: MutableList<Agent> = appViewModel.agentsStateFlow.collectAsState().value               // TODO ROOM
+        val types: MutableList<Type> = appViewModel.typesStateFlow.collectAsState().value                  // TODO ROOM
         val pois: MutableList<Poi> = appViewModel.poisStateFlow.collectAsState().value                     // TODO ROOM
         val propertyPoiJoins: MutableList<PropertyPoiJoin> = appViewModel.propertyPoiJoinsStateFlow.collectAsState().value // TODO ROOM
 
@@ -194,7 +196,9 @@ fun RealEstateManagerApp(
                 addresses = addresses,
                 photos = photos,
                 agents = agents,
+                types = types,
                 pois = pois,
+                propertyPoiJoins = propertyPoiJoins,
                 appViewModel = appViewModel,
                 listViewModel = listViewModel,
                 detailViewModel = detailViewModel,

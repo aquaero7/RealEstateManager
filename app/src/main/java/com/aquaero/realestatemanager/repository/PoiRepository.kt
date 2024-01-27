@@ -48,5 +48,8 @@ class PoiRepository(private val poiDao: PoiDao) {
     /***/
 
 
+    fun poiFromId(pois: MutableList<Poi>, poiId: String): Poi {
+        return pois.first { it.poiId == poiId }
+    }
 
 }

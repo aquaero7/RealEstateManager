@@ -43,22 +43,22 @@ class DetailViewModel(
 
     /** Room **/
 
-    private val _propertiesStateFlow = MutableStateFlow<MutableList<Property>>(emptyList<Property>().toMutableList())
+    private val _propertiesStateFlow = MutableStateFlow(mutableListOf<Property>())
     val propertiesStateFlow: StateFlow<MutableList<Property>> = _propertiesStateFlow.asStateFlow()
 
-    private val _addressesStateFlow = MutableStateFlow<MutableList<Address>>(emptyList<Address>().toMutableList())
+    private val _addressesStateFlow = MutableStateFlow(mutableListOf<Address>())
     val addressesStateFlow: StateFlow<MutableList<Address>> = _addressesStateFlow.asStateFlow()
 
-    private val _photosStateFlow = MutableStateFlow<MutableList<Photo>>(emptyList<Photo>().toMutableList())
+    private val _photosStateFlow = MutableStateFlow(mutableListOf<Photo>())
     val photosStateFlow: StateFlow<MutableList<Photo>> = _photosStateFlow.asStateFlow()
 
-    private val _agentsStateFlow = MutableStateFlow<MutableList<Agent>>(emptyList<Agent>().toMutableList())
+    private val _agentsStateFlow = MutableStateFlow(mutableListOf<Agent>())
     val agentsStateFlow: StateFlow<MutableList<Agent>> = _agentsStateFlow.asStateFlow()
 
-    private val _poisStateFlow = MutableStateFlow<MutableList<Poi>>(emptyList<Poi>().toMutableList())
+    private val _poisStateFlow = MutableStateFlow(mutableListOf<Poi>())
     val poisStateFlow: StateFlow<MutableList<Poi>> = _poisStateFlow.asStateFlow()
 
-    private val _propertyPoiJoinsStateFlow = MutableStateFlow<MutableList<PropertyPoiJoin>>(emptyList<PropertyPoiJoin>().toMutableList())
+    private val _propertyPoiJoinsStateFlow = MutableStateFlow(mutableListOf<PropertyPoiJoin>())
     val propertyPoiJoinsStateFlow: StateFlow<MutableList<PropertyPoiJoin>> = _propertyPoiJoinsStateFlow.asStateFlow()
 
     init {
@@ -104,9 +104,10 @@ class DetailViewModel(
         return connection === ConnectionState.Available
     }
 
-    fun thumbnailUrl(propertyId: Long): String {
-        val address = addressRepository.addressFromId(propertyFromId(propertyId).addressId)
-        return propertyRepository.thumbnailUrl(address)
+    fun thumbnailUrl(addresses: MutableList<Address>, addressId: Long): String {
+//        val address = addressRepository.addressFromId(propertyFromId(propertyId).addressId)
+//        return propertyRepository.thumbnailUrl(address)
+        return addressRepository.thumbnailUrlFromAddressId(addresses, addressId)
     }
 
     fun stringAgent(agentId: Long): String {
@@ -143,7 +144,7 @@ class DetailViewModel(
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    onResult(emptyList<Poi>().toMutableList())
+                    onResult(mutableListOf())
                 }
             }
         }

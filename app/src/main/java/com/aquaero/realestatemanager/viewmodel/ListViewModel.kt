@@ -43,22 +43,22 @@ class ListViewModel(
 
     /** Room **/
 
-    private val _propertiesStateFlow = MutableStateFlow(emptyList<Property>().toMutableList())
+    private val _propertiesStateFlow = MutableStateFlow(mutableListOf<Property>())
     val propertiesStateFlow: StateFlow<MutableList<Property>> = _propertiesStateFlow.asStateFlow()
 
-    private val _addressesStateFlow = MutableStateFlow(emptyList<Address>().toMutableList())
+    private val _addressesStateFlow = MutableStateFlow(mutableListOf<Address>())
     val addressesStateFlow: StateFlow<MutableList<Address>> = _addressesStateFlow.asStateFlow()
 
-    private val _photosStateFlow = MutableStateFlow(emptyList<Photo>().toMutableList())
+    private val _photosStateFlow = MutableStateFlow(mutableListOf<Photo>())
     val photosStateFlow: StateFlow<MutableList<Photo>> = _photosStateFlow.asStateFlow()
 
-    private val _agentsStateFlow = MutableStateFlow(emptyList<Agent>().toMutableList())
+    private val _agentsStateFlow = MutableStateFlow(mutableListOf<Agent>())
     val agentsStateFlow: StateFlow<MutableList<Agent>> = _agentsStateFlow.asStateFlow()
 
-    private val _poisStateFlow = MutableStateFlow(emptyList<Poi>().toMutableList())
+    private val _poisStateFlow = MutableStateFlow(mutableListOf<Poi>())
     val poisStateFlow: StateFlow<MutableList<Poi>> = _poisStateFlow.asStateFlow()
 
-    private val _propertyPoiJoinsStateFlow = MutableStateFlow(emptyList<PropertyPoiJoin>().toMutableList())
+    private val _propertyPoiJoinsStateFlow = MutableStateFlow(mutableListOf<PropertyPoiJoin>())
     val propertyPoiJoinsStateFlow: StateFlow<MutableList<PropertyPoiJoin>> = _propertyPoiJoinsStateFlow.asStateFlow()
 
     init {
@@ -98,40 +98,46 @@ class ListViewModel(
         return agentRepository.agentFromId(agentId)
     }
 
+    fun poiFromId(pois: MutableList<Poi>, poiId: String): Poi {
+        return poiRepository.poiFromId(pois, poiId)
+    }
+
     fun checkForConnection(connection: ConnectionState): Boolean {
         return connection === ConnectionState.Available
     }
 
-    fun thumbnailUrl(propertyId: Long): String {
-        val address = addressRepository.addressFromId(propertyFromId(propertyId).addressId)
-        return propertyRepository.thumbnailUrl(address)
+    fun thumbnailUrl(addresses: MutableList<Address>, addressId: Long): String {
+//        val address = addressRepository.addressFromId(propertyFromId(propertyId).addressId)
+//        return propertyRepository.thumbnailUrl(address)
+        return addressRepository.thumbnailUrlFromAddressId(addresses, addressId)
     }
 
-    fun stringAgent(agentId: Long): String {
-        val agents = agentsStateFlow.value
+    fun stringAgent(agents: MutableList<Agent>, agentId: Long): String {
+//        val agents = agentsStateFlow.value
         return agentRepository.stringAgent(agents, agentId)
     }
 
-    fun stringAddress(addressId: Long): String {
-        val addresses = addressesStateFlow.value
+    fun stringAddress(addresses: MutableList<Address>, addressId: Long): String {
+//        val addresses = addressesStateFlow.value
         return addressRepository.stringAddress(addresses, addressId)
     }
 
-    fun stringLatitude(addressId: Long): String {
-        val addresses = addressesStateFlow.value
+    fun stringLatitude(addresses: MutableList<Address>, addressId: Long): String {
+//        val addresses = addressesStateFlow.value
         return addressRepository.stringLatitude(addresses, addressId)
     }
 
-    fun stringLongitude(addressId: Long): String {
-        val addresses = addressesStateFlow.value
+    fun stringLongitude(addresses: MutableList<Address>, addressId: Long): String {
+//        val addresses = addressesStateFlow.value
         return addressRepository.stringLongitude(addresses, addressId)
     }
 
-    fun itemPhotos(propertyId: Long): MutableList<Photo> {
-        val photos = photosStateFlow.value
+    fun itemPhotos(photos: MutableList<Photo>, propertyId: Long): MutableList<Photo> {
+//        val photos = photosStateFlow.value
         return photoRepository.itemPhotos(photos, propertyId)
     }
 
+    /** Option 1 for itemPois **/   // TODO: To be deleted if option 1 works (in AppNavHost)
     fun itemPois(propertyId: Long, onResult: (MutableList<Poi>) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -141,12 +147,27 @@ class ListViewModel(
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    onResult(emptyList<Poi>().toMutableList())
+                    onResult(mutableListOf())
                 }
             }
         }
     }
 
+    /** Option 2 for itemPois **/
+    fun itemPois(propertyPoiJoins: MutableList<PropertyPoiJoin>, pois: MutableList<Poi>, propertyId: Long): MutableList<Poi> {
+        return mutableListOf<Poi>().apply {
+            /*
+            for (join in propertyPoiJoins.filter { propertyPoi ->
+                propertyPoi.propertyId == propertyId
+            }) {
+                this.add(poiFromId(pois, join.poiId))
+            }
+            */
+            propertyPoiJoins
+                .filter { join -> join.propertyId == propertyId }
+                .mapTo(this) { join -> poiFromId(pois, join.poiId) }
+        }
+    }
 
 
 

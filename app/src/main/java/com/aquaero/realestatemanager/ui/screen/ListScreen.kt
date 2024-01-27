@@ -83,7 +83,7 @@ fun ListScreen(
                     val phId = photos.find { it.propertyId == propertyItem.propertyId }?.photoId ?: NO_PHOTO.photoId
                     PropertyCard(
                         pId = propertyItem.propertyId,
-                        pType = propertyItem.type,
+                        pType = propertyItem.typeId,
                         // pCity = propertyItem.addressId.city,
                         pCity = addresses.find { it.addressId == propertyItem.addressId }!!.city,
                         phId = phId,

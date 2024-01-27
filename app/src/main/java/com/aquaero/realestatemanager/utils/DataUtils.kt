@@ -10,12 +10,14 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
-fun convertDollarToEuro(dollars: Int): Int {
-    return (dollars * RATE_OF_DOLLAR_IN_EURO).roundToInt()
+fun convertDollarToEuro(dollars: Int?): Int? {
+//    return (dollars * RATE_OF_DOLLAR_IN_EURO).roundToInt()
+    return dollars?.let { (it * RATE_OF_DOLLAR_IN_EURO).roundToInt() }
 }
 
-fun convertEuroToDollar(euros: Int): Int {
-    return (euros / RATE_OF_DOLLAR_IN_EURO).roundToInt()
+fun convertEuroToDollar(euros: Int?): Int? {
+//    return (euros / RATE_OF_DOLLAR_IN_EURO).roundToInt()
+    return euros?.let { (it / RATE_OF_DOLLAR_IN_EURO).roundToInt() }
 }
 
 @SuppressLint("NewApi")

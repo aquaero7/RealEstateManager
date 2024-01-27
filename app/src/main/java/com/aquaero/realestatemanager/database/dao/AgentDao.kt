@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AgentDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun prepopulateWithAgents(agents: List<Agent>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun prepopulateWithAgents(agents: List<Agent>)
 
     @Upsert     // Insert ou update (if primary key already exists)
     suspend fun upsertAgent(agent: Agent)

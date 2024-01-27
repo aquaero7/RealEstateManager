@@ -8,8 +8,14 @@ import androidx.room.PrimaryKey
     tableName = "property_poi_join",
     primaryKeys = ["propertyId", "poiId"],
     foreignKeys = [
-        ForeignKey(entity = Property::class, parentColumns = ["propertyId"], childColumns = ["propertyId"]),
-        ForeignKey(entity = Poi::class, parentColumns = ["poiId"], childColumns = ["poiId"]),
+        ForeignKey(
+            entity = Property::class, parentColumns = ["propertyId"], childColumns = ["propertyId"],
+            onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE,
+        ),
+        ForeignKey(
+            entity = Poi::class, parentColumns = ["poiId"], childColumns = ["poiId"],
+            onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE,
+        ),
     ],
 )
 data class PropertyPoiJoin(

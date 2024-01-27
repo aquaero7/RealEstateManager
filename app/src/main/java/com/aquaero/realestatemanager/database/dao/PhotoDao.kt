@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PhotoDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun prepopulateWithPhotos(photos: List<Photo>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun prepopulateWithPhotos(photos: List<Photo>)
 
     @Upsert     // Insert ou update (if primary key already exists)
     suspend fun upsertPhoto(photo: Photo)

@@ -9,33 +9,48 @@ import java.text.Normalizer
 data class Address(
     @PrimaryKey(autoGenerate = true)
     val addressId: Long,
-    val streetNumber: String,
-    val streetName: String,
-    val addInfo: String,
-    val city: String,
-    val state: String,
-    val zipCode: String,
-    val country: String,
-    val latLng: LatLng,
+    val streetNumber: String?,
+    val streetName: String?,
+    val addInfo: String?,
+    val city: String?,
+    val state: String?,
+    val zipCode: String?,
+    val country: String?,
+    // val latLng: LatLng,
+    val latitude: Double?,
+    val longitude: Double?,
 ) {
     override fun toString(): String {
-        val line1: String =
-            if (streetNumber.isNotEmpty()) "$streetNumber $streetName" else streetName
-        val line2: String = addInfo
-        val line3: String = city
-        val line4 = if (state.isNotEmpty()) "$state $zipCode" else zipCode
-        val line5: String = country
-        return if (line2.isNotEmpty()) "$line1\n$line2\n$line3\n$line4\n$line5" else "$line1\n$line3\n$line4\n$line5"
+        return buildString {
+            val line1: String = "${streetNumber.orEmpty()} ${streetName.orEmpty()}".trim()
+            val line2: String = addInfo.orEmpty()
+            val line3: String = city.orEmpty()
+            val line4 = "${state.orEmpty()} ${zipCode.orEmpty()}".trim()
+            val line5: String = country.orEmpty()
+
+            val allLines = listOf(line1, line2, line3, line4, line5)
+            for (line in allLines) {
+                if (line.isNotEmpty()) appendLine(line)
+            }
+        }
     }
 
     fun toUrl(): String {
-        val part1: String =
-            if (streetNumber.isNotEmpty()) "${streetNumber.toU()}+${streetName.toU()}"
-            else streetName.toU()
-        val part2: String = addInfo.toU()
-        val part3: String = city.toU()
-        val part4 = if (state.isNotEmpty()) "${state.toU()}+${zipCode.toU()}" else zipCode.toU()
-        val part5: String = country.toU()
+//        val part1: String = if (streetNumber.isNotEmpty()) "${streetNumber.toU()}+${streetName.toU()}" else streetName.toU()
+        val part1 = "${
+            streetNumber.orEmpty().toU()
+        }${if (!streetNumber.isNullOrEmpty() && !streetName.isNullOrEmpty()) "+" else ""}${
+            streetName.orEmpty().toU()
+        }"
+        val part2 = addInfo.orEmpty().toU()
+        val part3 = city.orEmpty().toU()
+//        val part4 = if (state.isNotEmpty()) "${state.toU()}+${zipCode.toU()}" else zipCode.toU()
+        val part4 = "${
+            state.orEmpty().toU()
+        }${if (!state.isNullOrEmpty() && !zipCode.isNullOrEmpty()) "+" else ""}${
+            zipCode.orEmpty().toU()
+        }"
+        val part5 = country.orEmpty().toU()
         val staticUrl = "$part1,$part2,$part3,$part4,$part5"
         // String normalized
         val normalizedUrl = Normalizer.normalize(staticUrl, Normalizer.Form.NFD)
@@ -58,7 +73,9 @@ val ADDRESS_PREPOPULATION_DATA = listOf(
         state = "",                            //"d1111111",
         zipCode = "91140",                     //"z1111111",
         country = "FR",                        //"c1111111",
-        latLng = LatLng(48.6860854, 2.2201107)
+        latitude = 48.6860854,
+        longitude = 2.2201107,
+//        latLng = LatLng(48.6860854, 2.2201107)
     ),
     Address(
         addressId = -2,
@@ -69,7 +86,9 @@ val ADDRESS_PREPOPULATION_DATA = listOf(
         state = "",                            //"d2222222",
         zipCode = "77340",                     //"z2222222",
         country = "FR",                        //"c2222222",
-        latLng = LatLng(48.7765790,2.5906768)
+        latitude = 48.7765790,
+        longitude = 2.5906768,
+//        latLng = LatLng(48.7765790, 2.5906768)
     ),
     Address(
         addressId = -3,
@@ -80,7 +99,9 @@ val ADDRESS_PREPOPULATION_DATA = listOf(
         state = "GA",                          //"d3333333",
         zipCode = "30319",                     //"z3333333",
         country = "US",                        //"c3333333",
-        latLng = LatLng(33.8725435,-84.3370041)
+        latitude = 33.8725435,
+        longitude = -84.3370041,
+//        latLng = LatLng(33.8725435, -84.3370041)
     ),
 )
 

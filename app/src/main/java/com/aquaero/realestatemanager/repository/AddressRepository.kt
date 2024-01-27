@@ -2,6 +2,12 @@ package com.aquaero.realestatemanager.repository
 
 import android.content.Context
 import com.aquaero.realestatemanager.ApplicationRoot
+import com.aquaero.realestatemanager.SM_KEY
+import com.aquaero.realestatemanager.SM_MARKER_COLOR
+import com.aquaero.realestatemanager.SM_SCALE
+import com.aquaero.realestatemanager.SM_SIZE
+import com.aquaero.realestatemanager.SM_TYPE
+import com.aquaero.realestatemanager.SM_URL
 import com.aquaero.realestatemanager.database.dao.AddressDao
 import com.aquaero.realestatemanager.model.Address
 import com.google.android.gms.maps.model.LatLng
@@ -55,8 +61,14 @@ class AddressRepository(private val addressDao: AddressDao) {
     /***/
 
 
-    fun addressFromId(addressId: Long): Address {
-        return fakeAddresses.find { it.addressId == addressId }!!
+    fun addressFromId(addresses: MutableList<Address>, addressId: Long): Address {
+//        return fakeAddresses.find { it.addressId == addressId }!!
+        return addresses.first { it.addressId == addressId }
+    }
+
+    fun thumbnailUrlFromAddressId(addresses: MutableList<Address>, addressId: Long): String {
+        val smMarkerAddress = addressFromId(addresses, addressId).toUrl()
+        return SM_URL + SM_SIZE + SM_SCALE + SM_TYPE + SM_MARKER_COLOR + smMarkerAddress + SM_KEY
     }
 
     fun stringAddress(addresses: MutableList<Address>, addressId: Long): String {
@@ -64,11 +76,11 @@ class AddressRepository(private val addressDao: AddressDao) {
     }
 
     fun stringLatitude(addresses: MutableList<Address>, addressId: Long): String {
-        return addresses.find { it.addressId == addressId }?.latLng?.latitude.toString()
+        return addresses.find { it.addressId == addressId }?.latitude?.toString() ?: ""
     }
 
     fun stringLongitude(addresses: MutableList<Address>, addressId: Long): String {
-        return addresses.find { it.addressId == addressId }?.latLng?.longitude.toString()
+        return addresses.find { it.addressId == addressId }?.longitude?.toString() ?: ""
     }
 
 
@@ -86,7 +98,9 @@ class AddressRepository(private val addressDao: AddressDao) {
             state = "",                            //"d1111111",
             zipCode = "91140",                     //"z1111111",
             country = "FR",                        //"c1111111",
-            latLng = LatLng(48.6860854, 2.2201107)
+            latitude = 48.6860854,
+            longitude = 2.2201107,
+//            latLng = LatLng(48.6860854, 2.2201107)
         ),
         Address(
             addressId = -2,
@@ -97,7 +111,9 @@ class AddressRepository(private val addressDao: AddressDao) {
             state = "",                           //"d2222222",
             zipCode = "77340",                    //"z2222222",
             country = "FR",                       //"c2222222",
-            latLng = LatLng(48.7765790,2.5906768)
+            latitude = 48.7765790,
+            longitude = 2.5906768,
+//            latLng = LatLng(48.7765790,2.5906768)
         ),
         Address(
             addressId = -3,
@@ -108,7 +124,9 @@ class AddressRepository(private val addressDao: AddressDao) {
             state = "GA",                        //"d3333333",
             zipCode = "30319",                   //"z3333333",
             country = "US",                      //"c3333333",
-            latLng = LatLng(33.8725435,-84.3370041)
+            latitude = 33.8725435,
+            longitude = -84.3370041,
+//            latLng = LatLng(33.8725435,-84.3370041)
         )
     )
     //

@@ -5,17 +5,9 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.aquaero.realestatemanager.ApplicationRoot
-import com.aquaero.realestatemanager.POI
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.SM_KEY
-import com.aquaero.realestatemanager.SM_MK_COLOR1
-import com.aquaero.realestatemanager.SM_SCALE
-import com.aquaero.realestatemanager.SM_SIZE
-import com.aquaero.realestatemanager.SM_TYPE
-import com.aquaero.realestatemanager.SM_URL
 import com.aquaero.realestatemanager.database.AppDatabase
 import com.aquaero.realestatemanager.database.dao.PropertyDao
-import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Property
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
@@ -80,11 +72,12 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
         return SM_URL + SM_SIZE + SM_SCALE + SM_TYPE + SM_MK_COLOR1 + smMkAddress1 + SM_KEY
     }
     */
+    /*
     fun thumbnailUrl(address: Address): String {
-        val smMkAddress1 = address.toUrl()
-        return SM_URL + SM_SIZE + SM_SCALE + SM_TYPE + SM_MK_COLOR1 + smMkAddress1 + SM_KEY
+        val smMarkerAddress = address.toUrl()
+        return SM_URL + SM_SIZE + SM_SCALE + SM_TYPE + SM_MARKER_COLOR + smMarkerAddress + SM_KEY
     }
-
+    */
 
     // TODO: Add new property values to arguments
     fun updateProperty(propertyId: Comparable<*>) {
@@ -117,7 +110,7 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
      * Hardcoded data
      */
     val typesSet: MutableSet<Int?> = mutableSetOf(
-        R.string.not_assigned,
+        R.string.unassigned,
         R.string.flat, R.string.house, R.string.duplex, R.string.penthouse,
         R.string.loft, R.string.manor, R.string.castle, R.string.hostel
     )
@@ -140,7 +133,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
     val fakeProperties = listOf(
         Property(
             propertyId = -1,
-            type = R.string.flat,   // "House",
+//            typeId = R.string.flat,   // "House",
+            typeId = "flat",
             // addressId = addressRepository.fakeAddresses[0],
             addressId = -1,
             price = 11111111,
@@ -155,7 +149,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
                 fakePhotos[5], fakePhotos[6], fakePhotos[7]
             ),
             */
-            registrationDate = LocalDate.of(2023, 9, 11),  // LocalDate.parse("2023-09-11"),
+//            registrationDate = LocalDate.of(2023, 9, 11),  // LocalDate.parse("2023-09-11"),
+            registrationDate = "2023-09-11",  // LocalDate.parse("2023-09-11"),
             saleDate = null,
             // poi = mutableListOf("hospital", "restaurant", "shop", "car_park"),
             // poi = mutableListOf(POI.HOSPITAL.key, POI.RESTAURANT.key, POI.SHOP.key, POI.CAR_PARK.key),
@@ -163,7 +158,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
         ),
         Property(
             propertyId = -2,
-            type = R.string.house,    // "Duplex",
+//            typeId = R.string.house,    // "Duplex",
+            typeId = "house",
             // addressId = addressRepository.fakeAddresses[1],
             addressId = -2,
             price = 12222222,
@@ -178,7 +174,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
                 fakePhotos[5], fakePhotos[6], fakePhotos[7]
             ),
             */
-            registrationDate = LocalDate.of(2023, 9, 12),  // LocalDate.parse("2023-09-12"),
+//            registrationDate = LocalDate.of(2023, 9, 12),  // LocalDate.parse("2023-09-12"),
+            registrationDate = "2023-09-12",  // LocalDate.parse("2023-09-12"),
             saleDate = null,
             // poi = mutableListOf("hospital", "restaurant", "shop", "car_park"),
             // poi = mutableListOf(POI.HOSPITAL.key, POI.RESTAURANT.key, POI.SHOP.key, POI.CAR_PARK.key),
@@ -186,7 +183,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
         ),
         Property(
             propertyId = -3,
-            type = R.string.duplex,    // "Penthouse",
+//            typeId = R.string.duplex,    // "Penthouse",
+            typeId = "duplex",
             // addressId = addressRepository.fakeAddresses[2],
             addressId = -3,
             price = 13333333,
@@ -201,7 +199,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
                 fakePhotos[5], fakePhotos[6], fakePhotos[7]
             ),
             */
-            registrationDate = LocalDate.of(2023, 9, 13),  // LocalDate.parse("2023-09-13"),
+//            registrationDate = LocalDate.of(2023, 9, 13),  // LocalDate.parse("2023-09-13"),
+            registrationDate = "2023-09-13",  // LocalDate.parse("2023-09-13"),
             saleDate = null,
             // poi = mutableListOf("hospital", "restaurant", "shop", "car_park"),
             // poi = mutableListOf(POI.HOSPITAL.key, POI.RESTAURANT.key, POI.SHOP.key, POI.CAR_PARK.key),
@@ -209,7 +208,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
         ),
         Property(
             propertyId = -4,
-            type = R.string.penthouse,    // "Loft",
+//            typeId = R.string.penthouse,    // "Loft",
+            typeId = "penthouse",
             // addressId = addressRepository.fakeAddresses[0],
             addressId = -1,
             price = 14444444,
@@ -224,7 +224,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
                 fakePhotos[5], fakePhotos[6], fakePhotos[7]
             ),
             */
-            registrationDate = LocalDate.of(2023, 9, 14),  // LocalDate.parse("2023-09-14"),
+//            registrationDate = LocalDate.of(2023, 9, 14),  // LocalDate.parse("2023-09-14"),
+            registrationDate = "2023-09-14",  // LocalDate.parse("2023-09-14"),
             saleDate = null,
             // poi = mutableListOf("hospital", "restaurant", "shop", "car_park"),
             // poi = mutableListOf(POI.HOSPITAL.key, POI.RESTAURANT.key, POI.SHOP.key, POI.CAR_PARK.key),
@@ -232,7 +233,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
         ),
         Property(
             propertyId = -5,
-            type = R.string.loft,    // "Manor",
+//            typeId = R.string.loft,    // "Manor",
+            typeId = "loft",
             // addressId = addressRepository.fakeAddresses[1],
             addressId = -2,
             price = 15555555,
@@ -247,7 +249,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
                 fakePhotos[5], fakePhotos[6], fakePhotos[7]
             ),
             */
-            registrationDate = LocalDate.of(2023, 9, 15),  // LocalDate.parse("2023-09-15"),
+//            registrationDate = LocalDate.of(2023, 9, 15),  // LocalDate.parse("2023-09-15"),
+            registrationDate = "2023-09-15",  // LocalDate.parse("2023-09-15"),
             saleDate = null,
             // poi = mutableListOf("hospital", "restaurant", "shop", "car_park"),
             // poi = mutableListOf(POI.HOSPITAL.key, POI.RESTAURANT.key, POI.SHOP.key, POI.CAR_PARK.key),
@@ -255,7 +258,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
         ),
         Property(
             propertyId = -6,
-            type = R.string.manor,    // "Castle",
+//            typeId = R.string.manor,    // "Castle",
+            typeId = "manor",
             // addressId = addressRepository.fakeAddresses[2],
             addressId = -3,
             price = 16666666,
@@ -270,7 +274,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
                 fakePhotos[5], fakePhotos[6], fakePhotos[7]
             ),
             */
-            registrationDate = LocalDate.of(2023, 9, 16),  // LocalDate.parse("2023-09-16"),
+//            registrationDate = LocalDate.of(2023, 9, 16),  // LocalDate.parse("2023-09-16"),
+            registrationDate = "2023-09-16",  // LocalDate.parse("2023-09-16"),
             saleDate = null,
             // poi = mutableListOf("hospital", "shop", "car_park"),
             // poi = mutableListOf(POI.HOSPITAL.key, POI.SHOP.key, POI.CAR_PARK.key),
@@ -278,7 +283,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
         ),
         Property(
             propertyId = -7,
-            type = R.string.castle,    // "Hostel",
+//            typeId = R.string.castle,    // "Hostel",
+            typeId = "castle",
             // addressId = addressRepository.fakeAddresses[0],
             addressId = -1,
             price = 17777777,
@@ -293,15 +299,18 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
                 fakePhotos[5], fakePhotos[6], fakePhotos[7]
             ),
             */
-            registrationDate = LocalDate.of(2023, 9, 17),  // LocalDate.parse("2023-09-17"),
-            saleDate = LocalDate.of(2023, 9, 30),  // LocalDate.parse("2023-09-17"),
+//            registrationDate = LocalDate.of(2023, 9, 17),  // LocalDate.parse("2023-09-17"),
+            registrationDate = "2023-09-17",  // LocalDate.parse("2023-09-17"),
+//            saleDate = LocalDate.of(2023, 9, 30),  // LocalDate.parse("2023-09-17"),
+            saleDate = "2023-09-17",  // LocalDate.parse("2023-09-17"),
             // poi = mutableListOf("restaurant", "shop", "car_park"),
             // poi = mutableListOf(POI.RESTAURANT.key, POI.SHOP.key, POI.CAR_PARK.key),
             agentId = agentRepository.fakeAgents[0].agentId
         ),
         Property(
             propertyId = -8,
-            type = R.string.hostel,    // "t8888888",
+//            typeId = R.string.hostel,    // "t8888888",
+            typeId = "hostel",
             // addressId = addressRepository.fakeAddresses[1],
             addressId = -2,
             price = 18888888,
@@ -316,7 +325,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
                 fakePhotos[5], fakePhotos[6], fakePhotos[7]
             ),
             */
-            registrationDate = LocalDate.of(2023, 9, 18),  // LocalDate.parse("2023-09-18"),
+//            registrationDate = LocalDate.of(2023, 9, 18),  // LocalDate.parse("2023-09-18"),
+            registrationDate = "2023-09-18",  // LocalDate.parse("2023-09-18"),
             saleDate = null,
             // poi = mutableListOf("hospital", "restaurant", "shop", "car_park"),
             // poi = mutableListOf(POI.HOSPITAL.key, POI.RESTAURANT.key, POI.SHOP.key, POI.CAR_PARK.key),
@@ -324,7 +334,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
         ),
         Property(
             propertyId = -9,
-            type = R.string.flat,   // "t9999999",
+//            typeId = R.string.flat,   // "t9999999",
+            typeId = "unassigned",
             // addressId = addressRepository.fakeAddresses[2],
             addressId = -3,
             price = 19999999,
@@ -334,7 +345,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
             nbOfBathrooms = 19,
             nbOfBedrooms = 19,
             // photos = mutableListOf(NO_PHOTO),
-            registrationDate = LocalDate.of(2023, 9, 19),  // LocalDate.parse("2023-09-19"),
+//            registrationDate = LocalDate.of(2023, 9, 19),  // LocalDate.parse("2023-09-19"),
+            registrationDate = "2023-09-19",  // LocalDate.parse("2023-09-19"),
             saleDate = null,
             // poi = mutableListOf("hospital", "restaurant", "shop", "car_park"),
             // poi = mutableListOf(POI.HOSPITAL.key, POI.RESTAURANT.key, POI.SHOP.key, POI.CAR_PARK.key),

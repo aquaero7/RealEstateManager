@@ -10,9 +10,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.OtherHouses
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
@@ -44,7 +41,7 @@ fun DetailScreenColumn1(
         contentDesc = stringResource(id = R.string.cd_type),
         label = stringResource(id = R.string.type),
         // value = stringResource(property.type),
-        value = property?.let { stringResource(property.type) } ?: "",
+        value = property?.let { stringResource(property.typeId) } ?: "",
     )
     // Info surface
     DetailScreenInformationItem(

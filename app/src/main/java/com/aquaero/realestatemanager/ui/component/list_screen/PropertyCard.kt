@@ -38,7 +38,7 @@ import com.aquaero.realestatemanager.utils.AppContentType
 @Composable
 fun PropertyCard(
     pId: Long,
-    pType: Int,
+    pType: String,
     pCity: String,
     phId: Long,
     pPriceFormatted: String,
@@ -102,7 +102,8 @@ fun PropertyCard(
                     Column {
                         Text(
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                            text = stringResource(pType),
+                            // text = stringResource(pType ?: R.string.unassigned),
+                            text = pType,
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )

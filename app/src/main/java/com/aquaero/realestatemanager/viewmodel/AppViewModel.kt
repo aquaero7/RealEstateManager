@@ -21,12 +21,14 @@ import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
+import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.PoiRepository
 import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
+import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.utils.CurrencyStore
 import kotlinx.coroutines.CoroutineScope
@@ -43,6 +45,7 @@ class AppViewModel(
     private val addressRepository: AddressRepository,
     private val photoRepository: PhotoRepository,
     private val agentRepository : AgentRepository,
+    private val typeRepository : TypeRepository,
     private val poiRepository: PoiRepository,
     private val propertyPoiJoinRepository: PropertyPoiJoinRepository,
 ) : ViewModel() {
@@ -57,22 +60,25 @@ class AppViewModel(
 
     /** Room **/
 
-    private val _propertiesStateFlow = MutableStateFlow<MutableList<Property>>(emptyList<Property>().toMutableList())
+    private val _propertiesStateFlow = MutableStateFlow(mutableListOf<Property>())
     val propertiesStateFlow: StateFlow<MutableList<Property>> = _propertiesStateFlow.asStateFlow()
 
-    private val _addressesStateFlow = MutableStateFlow<MutableList<Address>>(emptyList<Address>().toMutableList())
+    private val _addressesStateFlow = MutableStateFlow(mutableListOf<Address>())
     val addressesStateFlow: StateFlow<MutableList<Address>> = _addressesStateFlow.asStateFlow()
 
-    private val _photosStateFlow = MutableStateFlow<MutableList<Photo>>(emptyList<Photo>().toMutableList())
+    private val _photosStateFlow = MutableStateFlow(mutableListOf<Photo>())
     val photosStateFlow: StateFlow<MutableList<Photo>> = _photosStateFlow.asStateFlow()
 
-    private val _agentsStateFlow = MutableStateFlow<MutableList<Agent>>(emptyList<Agent>().toMutableList())
+    private val _agentsStateFlow = MutableStateFlow(mutableListOf<Agent>())
     val agentsStateFlow: StateFlow<MutableList<Agent>> = _agentsStateFlow.asStateFlow()
 
-    private val _poisStateFlow = MutableStateFlow<MutableList<Poi>>(emptyList<Poi>().toMutableList())
+    private val _typesStateFlow = MutableStateFlow(mutableListOf<Type>())
+    val typesStateFlow: StateFlow<MutableList<Type>> = _typesStateFlow.asStateFlow()
+
+    private val _poisStateFlow = MutableStateFlow(mutableListOf<Poi>())
     val poisStateFlow: StateFlow<MutableList<Poi>> = _poisStateFlow.asStateFlow()
 
-    private val _propertyPoiJoinsStateFlow = MutableStateFlow<MutableList<PropertyPoiJoin>>(emptyList<PropertyPoiJoin>().toMutableList())
+    private val _propertyPoiJoinsStateFlow = MutableStateFlow(mutableListOf<PropertyPoiJoin>())
     val propertyPoiJoinsStateFlow: StateFlow<MutableList<PropertyPoiJoin>> = _propertyPoiJoinsStateFlow.asStateFlow()
 
     init {
@@ -90,12 +96,14 @@ class AppViewModel(
             agentRepository.getAgentsFromRoom()
                 .collect { listOfAgents -> _agentsStateFlow.value = listOfAgents }
 
+            typeRepository.getTypesFromRoom()
+                .collect { listOfTypes -> _typesStateFlow.value = listOfTypes }
+
             poiRepository.getPoisFromRoom()
                 .collect { listOfPois -> _poisStateFlow.value = listOfPois }
 
             propertyPoiJoinRepository.getPropertyPoiJoinsFromRoom()
                 .collect { listOfPropertyPoiJoins -> _propertyPoiJoinsStateFlow.value = listOfPropertyPoiJoins }
-
         }
     }
 

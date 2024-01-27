@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PropertyDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun prepopulateWithProperties(properties: List<Property>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun prepopulateWithProperties(properties: List<Property>)
 
     @Upsert     // Insert ou update (if primary key already exists)
     suspend fun upsertProperty(property: Property)

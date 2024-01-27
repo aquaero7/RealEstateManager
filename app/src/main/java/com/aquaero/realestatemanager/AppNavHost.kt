@@ -22,9 +22,12 @@ import coil.compose.rememberAsyncImagePainter
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.NO_PHOTO
+import com.aquaero.realestatemanager.model.POI
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.model.PropertyPoiJoin
+import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.ui.component.map_screen.MapScreenNoMap
 import com.aquaero.realestatemanager.ui.screen.DetailScreen
 import com.aquaero.realestatemanager.ui.screen.EditScreen
@@ -52,11 +55,13 @@ fun AppNavHost(
     modifier: Modifier,
     contentType: AppContentType,
     navController: NavHostController,
-    properties: List<Property>,
-    addresses: List<Address>,
-    photos: List<Photo>,
-    agents: List<Agent>,
-    pois: List<Poi>,
+    properties: MutableList<Property>,
+    addresses: MutableList<Address>,
+    photos: MutableList<Photo>,
+    agents: MutableList<Agent>,
+    types: MutableList<Type>,
+    pois: MutableList<Poi>,
+    propertyPoiJoins: MutableList<PropertyPoiJoin>,
     appViewModel: AppViewModel,
     listViewModel: ListViewModel,
     detailViewModel: DetailViewModel,
@@ -77,24 +82,29 @@ fun AppNavHost(
         ) { navBackStackEntry ->
             (navBackStackEntry.arguments?.getString(propertyKey)
                     // ?: properties[0].propertyId.toString()).also {
-                    ).also {
-                        ///
+                    ).also {    ///
                     val propertyId = it?.let { navBackStackEntry.arguments!!.getString(propertyKey)!!.toLong() }    ///
 
                     // val property = listViewModel.propertyFromId(it.toLong())
                     val property = it?.let { listViewModel.propertyFromId(it.toLong()) }            ///
                     // val thumbnailUrl = listViewModel.thumbnailUrl(property)
-                    val thumbnailUrl = it?.let { listViewModel.thumbnailUrl(propertyId!!) } ?: ""   ///
-                    val stringAgent = it?.let { listViewModel.stringAgent(property!!.agentId) } ?: ""   ///
-                    val stringAddress = it?.let { listViewModel.stringAddress(property!!.addressId) } ?: "" ///
-                    val stringLatitude = it?.let { listViewModel.stringLatitude(property!!.addressId) } ?: "" ///
-                    val stringLongitude = it?.let { listViewModel.stringLongitude(property!!.addressId) } ?: "" ///
-                    val itemPhotos = it?.let { listViewModel.itemPhotos(propertyId!!) } ?: listOf(NO_PHOTO).toMutableList() ///
+//                    val thumbnailUrl = it?.let { listViewModel.thumbnailUrl(addresses, propertyId!!) } ?: ""   ///
+                    val thumbnailUrl = property?.addressId?.let { addressId -> listViewModel.thumbnailUrl(addresses, addressId) } ?: ""   ///
+                    val stringAgent = it?.let { listViewModel.stringAgent(agents, property!!.agentId) } ?: ""   ///
+                    val stringAddress = property?.addressId?.let { addressId -> listViewModel.stringAddress(addresses, addressId) } ?: "" ///
+                    val stringLatitude = property?.addressId?.let { addressId -> listViewModel.stringLatitude(addresses, addressId) } ?: "" ///
+                    val stringLongitude = property?.addressId?.let { addressId -> listViewModel.stringLongitude(addresses, addressId) } ?: "" ///
+                    val itemPhotos = it?.let { listViewModel.itemPhotos(photos, propertyId!!) } ?: mutableListOf(NO_PHOTO) ///
 
-                    // val itemPois = it?.let { listViewModel.itemPois(propertyId!!) } ?: emptyList<Poi>().toMutableList() ///
-                    // var itemPois: MutableList<Poi> = emptyList<Poi>().toMutableList()
+                    // val itemPois = it?.let { listViewModel.itemPois(propertyId!!) } ?: mutableListOf<Poi>() ///
+                    // var itemPois: MutableList<Poi> = mutableListOf<Poi>()
+                    /** Option 1 for itemPois **/
+                    /*
                     var itemPois by remember { mutableStateOf(emptyList<Poi>()) }
                     listViewModel.itemPois(propertyId!!) { result -> itemPois = result }
+                    */
+                    /** Option 2 for itemPois **/
+                    val itemPois = it?.let { listViewModel.itemPois(propertyPoiJoins, pois, propertyId!!) } ?: mutableListOf()
 
                     val onPropertyClick: (Long) -> Unit = { propId ->
                         navController.navigateToDetail(propId.toString(), contentType)
@@ -117,7 +127,7 @@ fun AppNavHost(
                         stringLatitude = stringLatitude,
                         stringLongitude = stringLongitude,
                         itemPhotos = itemPhotos,
-                        itemPois = itemPois.toMutableList(),
+                        itemPois = itemPois,
                         currency = currency,
                         internetAvailable = internetAvailable,
                         onFabClick = onFabClick,
@@ -194,10 +204,10 @@ fun AppNavHost(
         ) { navBackStackEntry ->
             val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)!!.toLong()
             val property = detailViewModel.propertyFromId(propertyId)
-            val stringAddress = detailViewModel.stringAddress(property.addressId)
-            val stringLatitude = detailViewModel.stringLatitude(property.addressId)
-            val stringLongitude = detailViewModel.stringLongitude(property.addressId)
-            val thumbnailUrl = detailViewModel.thumbnailUrl(propertyId)
+            val stringAddress = property.addressId?.let { detailViewModel.stringAddress(it) } ?: ""
+            val stringLatitude = property.addressId?.let { detailViewModel.stringLatitude(it) } ?: ""
+            val stringLongitude = property.addressId?.let { detailViewModel.stringLongitude(it) } ?: ""
+            val thumbnailUrl = detailViewModel.thumbnailUrl(addresses, propertyId)
             val stringAgent = detailViewModel.stringAgent(property.agentId)
             val itemPhotos = detailViewModel.itemPhotos(propertyId)
 
@@ -243,7 +253,7 @@ fun AppNavHost(
             val pTypeIndex = property?.let {
                 editViewModel.mutableSetIndex(
                     run(pTypeSet) as MutableSet<Any?>,
-                    stringResource(it.type)
+                    stringResource(it.typeId)
                 )
             }
             val agentIndex = property?.let {

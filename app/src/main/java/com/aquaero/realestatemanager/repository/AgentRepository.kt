@@ -75,7 +75,7 @@ class AgentRepository(private val agentDao: AgentDao) {
      */
     val agentsSet: () -> MutableSet<String?> = fun(): MutableSet<String?> {
         // val agentsSet: MutableSet<String?> = mutableSetOf()
-        val agentsSet: MutableSet<String?> = mutableSetOf(context.getString(R.string.not_assigned)) // Empty field for unassigned agent case
+        val agentsSet: MutableSet<String?> = mutableSetOf(context.getString(R.string.unassigned)) // Empty field for unassigned agent case
         fakeAgents.forEach { agentsSet.add(it.toString()) }
         return agentsSet
     }
@@ -93,20 +93,19 @@ class AgentRepository(private val agentDao: AgentDao) {
     val fakeAgents = listOf(
         Agent(
             agentId = -1,
+            firstName = "F1111111",
             lastName = "N1111111",
-            firstName = "F1111111"
         ),
         Agent(
             agentId = -2,
+            firstName = "F2222222",
             lastName = "N2222222",
-            firstName = "F2222222"
         ),
         Agent(
             agentId = -3,
+            firstName = "F3333333",
             lastName = "N3333333",
-            firstName = "F3333333"
         ),
-
     )
     //
 }

@@ -11,6 +11,7 @@ import com.aquaero.realestatemanager.database.dao.PhotoDao
 import com.aquaero.realestatemanager.database.dao.PoiDao
 import com.aquaero.realestatemanager.database.dao.PropertyDao
 import com.aquaero.realestatemanager.database.dao.PropertyPoiJoinDao
+import com.aquaero.realestatemanager.database.dao.TypeDao
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.LocationRepository
@@ -18,6 +19,7 @@ import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.PoiRepository
 import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
+import com.aquaero.realestatemanager.repository.TypeRepository
 
 @Suppress("UNCHECKED_CAST")
 object ViewModelFactory:  ViewModelProvider.Factory {
@@ -37,6 +39,7 @@ object ViewModelFactory:  ViewModelProvider.Factory {
     private val addressDao: AddressDao = appDatabase.addressDao
     private val photoDao: PhotoDao = appDatabase.photoDao
     private val agentDao: AgentDao = appDatabase.agentDao
+    private val typeDao: TypeDao = appDatabase.typeDao
     private val poiDao: PoiDao = appDatabase.poiDao
     private val propertyPoiJoinDao: PropertyPoiJoinDao = appDatabase.propertyPoiJoinDao
     //
@@ -45,6 +48,7 @@ object ViewModelFactory:  ViewModelProvider.Factory {
     private val addressRepository: AddressRepository = AddressRepository(addressDao)
     private val photoRepository: PhotoRepository = PhotoRepository(photoDao)
     private val agentRepository: AgentRepository = AgentRepository(agentDao)
+    private val typeRepository: TypeRepository = TypeRepository(typeDao)
     private val poiRepository: PoiRepository = PoiRepository(poiDao)
     private val propertyPoiJoinRepository: PropertyPoiJoinRepository = PropertyPoiJoinRepository(propertyPoiJoinDao)
     private val locationRepository: LocationRepository = LocationRepository()
@@ -53,7 +57,7 @@ object ViewModelFactory:  ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
             AppViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
-                poiRepository, propertyPoiJoinRepository) as T
+                typeRepository, poiRepository, propertyPoiJoinRepository) as T
         } else if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
             ListViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
                 poiRepository, propertyPoiJoinRepository) as T

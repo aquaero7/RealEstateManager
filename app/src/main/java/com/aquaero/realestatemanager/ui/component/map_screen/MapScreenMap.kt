@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.aquaero.realestatemanager.DEFAULT_ZOOM
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.utils.MyLocationSource
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -37,6 +38,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 @Composable
 fun MapScreenMap(
     properties: List<Property>,
+    addresses: List<Address>,
     locationState: State<Location>,
     locationSource: MyLocationSource,
 ) {
@@ -93,18 +95,25 @@ fun MapScreenMap(
                 snippet = stringResource(id = R.string.current_location),
             )
             // Markers for properties
-            properties.forEach { it ->
-                Marker(
-                    state = MarkerState(
-                        position = LatLng(
-                            it.addressId.latLng.latitude,
-                            it.addressId.latLng.longitude
-                        )
-                    ),
-                    title = it.addressId.city,
-                    snippet = stringResource(it.typeId),
-                    icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)
-                )
+            properties.forEach { property ->
+
+                val latitude: Double? = addresses.find { it.addressId == property.addressId }?.latitude
+                val longitude: Double? = addresses.find { it.addressId == property.addressId }?.longitude
+                val city: String? = addresses.find { it.addressId == property.addressId }?.city
+
+                if (latitude != null && longitude != null) {
+                    Marker(
+                        state = MarkerState(
+                            position = LatLng(latitude, longitude)
+                            // position = LatLng(property.addressId.latitude, property.addressId.longitude)
+                        ),
+//                    title = property.addressId.city,
+                        title = city ?: "",
+//                    snippet = stringResource(property.typeId),
+                        snippet = property.typeId,
+                        icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)
+                    )
+                }
             }
         }
     }

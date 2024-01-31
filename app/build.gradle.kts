@@ -62,6 +62,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        // jvmTarget = "19"
     }
     buildFeatures {
         compose = true
@@ -69,7 +70,8 @@ android {
         buildConfig = true  // Added to allow BuildConfig import in Compose
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        // kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
     packaging {
         resources {
@@ -124,7 +126,7 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     // Room: To use Kotlin Symbol Processing (KSP)
     ksp("androidx.room:room-compiler:2.6.1")
-    // implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
 
 
     // Tests

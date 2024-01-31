@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -19,6 +20,8 @@ import androidx.room.PrimaryKey
     ],
 )
 data class PropertyPoiJoin(
+    @ColumnInfo(index = true)
     val propertyId: Long,
+    @ColumnInfo(index = true)
     val poiId: String,
 )

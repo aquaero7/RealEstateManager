@@ -34,28 +34,40 @@ class AddressRepository(private val addressDao: AddressDao) {
         }
     }
 
-    suspend fun getAddressFromRoom(adId: Long): Flow<Address> {
+    /*suspend*/ fun getAddressFromRoom(adId: Long): Flow<Address> {
+        /*
         return withContext(Dispatchers.IO) {
             addressDao.getAddress(adId)
         }
+        */
+        return addressDao.getAddress(adId)
     }
 
-    suspend fun getAddressesFromRoom(): Flow<MutableList<Address>> {
+    /*suspend*/ fun getAddressesFromRoom(): Flow<MutableList<Address>> {
+        /*
         return withContext(Dispatchers.IO) {
             addressDao.getAddresses()
         }
+        */
+        return addressDao.getAddresses()
     }
 
-    suspend fun getAddressesOrderedByIdFromRoom(): Flow<MutableList<Address>> {
+    /*suspend*/ fun getAddressesOrderedByIdFromRoom(): Flow<MutableList<Address>> {
+        /*
         return withContext(Dispatchers.IO) {
             addressDao.getAddressesOrderedById()
         }
+        */
+        return addressDao.getAddressesOrderedById()
     }
 
-    suspend fun getAddressesOrderedByCityFromRoom(): Flow<MutableList<Address>> {
+    /*suspend*/ fun getAddressesOrderedByCityFromRoom(): Flow<MutableList<Address>> {
+        /*
         return withContext(Dispatchers.IO) {
             addressDao.getAddressesOrderedByCity()
         }
+        */
+        return addressDao.getAddressesOrderedByCity()
     }
 
     /***/

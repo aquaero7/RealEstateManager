@@ -44,7 +44,6 @@ fun EditScreenAddressItem(
     countryPlaceHolderText: String,
     icon: ImageVector,
     iconCD: String,
-    item: Address?,
     onStreetNumberValueChange: (String) -> Unit,
     onStreetNameValueChange: (String) -> Unit,
     onAddInfoValueChange: (String) -> Unit,
@@ -52,6 +51,7 @@ fun EditScreenAddressItem(
     onStateValueChange: (String) -> Unit,
     onZipCodeValueChange: (String) -> Unit,
     onCountryValueChange: (String) -> Unit,
+    item: Address?,
 ) {
     Surface(
         modifier = Modifier
@@ -103,50 +103,50 @@ fun EditScreenAddressItem(
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = streetNumberPlaceHolderText,
-                            itemText = it?.streetNumber ?: "",
                             onValueChange = onStreetNumberValueChange,
+                            itemText = it?.streetNumber ?: "",
                         )
                         // Street name
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = streetNamePlaceHolderText,
-                            itemText = it?.streetName ?: "",
                             onValueChange = onStreetNameValueChange,
+                            itemText = it?.streetName ?: "",
                         )
                         // Additional information
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = addInfoPlaceHolderText,
-                            itemText = it?.addInfo ?: "",
                             onValueChange = onAddInfoValueChange,
+                            itemText = it?.addInfo ?: "",
                         )
                         // City
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = cityPlaceHolderText,
-                            itemText = it?.city ?: "",
                             onValueChange = onCityValueChange,
+                            itemText = it?.city ?: "",
                         )
                         // State
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = statePlaceHolderText,
-                            itemText = it?.state ?: "",
                             onValueChange = onStateValueChange,
+                            itemText = it?.state ?: "",
                         )
                         // ZIP code
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = zipCodePlaceHolderText,
-                            itemText = it?.zipCode ?: "",
                             onValueChange = onZipCodeValueChange,
+                            itemText = it?.zipCode ?: "",
                         )
                         // Country
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = countryPlaceHolderText,
-                            itemText = it?.country ?: "",
                             onValueChange = onCountryValueChange,
+                            itemText = it?.country ?: "",
                         )
                     }
                 }

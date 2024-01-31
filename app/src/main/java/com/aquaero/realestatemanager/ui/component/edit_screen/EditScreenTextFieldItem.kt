@@ -3,7 +3,6 @@ package com.aquaero.realestatemanager.ui.component.edit_screen
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -52,6 +51,7 @@ import androidx.core.text.isDigitsOnly
 import com.aquaero.realestatemanager.DP_CONTAINER_COLOR
 import com.aquaero.realestatemanager.DP_TEXT_COLOR
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.ui.theme.Red
 import com.aquaero.realestatemanager.utils.convertDateMillisToString
 import com.aquaero.realestatemanager.utils.convertDateStringToMillis
@@ -74,8 +74,12 @@ fun EditScreenTextFieldItem(
     itemText: String? = null,
     shouldBeDigitsOnly: Boolean = false,
     // For DropDownMenu
-    itemsSet: (() -> MutableSet<*>)? = null,    // Not null when the item is a DropDownMenu
+    itemsSet: (() -> MutableSet<*>)? = null,    // Not null when the item is a DropdownMenu
     index: Int? = null,
+    types: MutableList<Type>? = null,           // Not null when the item is a Type DropdownMenu
+    stringItems: MutableList<String>? = null,   // Not null when the item is a Type DropdownMenu
+    stringItem: String? = null,                 // Not null when the item is a Type DropdownMenu
+    dropdownMenuCategory: String? = null,       // Not null when the item is a Type DropdownMenu
     // For DatePicker
     storedDate: String? = null,                 // Not null when the item is a DatePicker
     clearableDate: Boolean = false,
@@ -83,22 +87,27 @@ fun EditScreenTextFieldItem(
     // For keyboard input
     var isValid by remember { mutableStateOf(true) }
 
-    // For DropDownMenu
-    val isDropDownMenu by remember { mutableStateOf(itemsSet != null) }
+    // For DropdownMenu
+//    val isDropdownMenu by remember { mutableStateOf(itemsSet != null) }
+    val isDropdownMenu by remember { mutableStateOf(dropdownMenuCategory != null) }
     var expanded by remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableIntStateOf(index ?: 0) }
+    /*
     val selectedItem = itemsSet?.let { it() }?.elementAt(selectedIndex).let {
-        if (it is String) it else if (it is Int) stringResource(id = it as Int) else ""
+        if (it is String) it else if (it is Int) stringResource(id = it) else ""
     }
+    */
+//    val selectedItem by remember(selectedIndex) { mutableStateOf(if (!stringItems.isNullOrEmpty()) stringItems.elementAt(selectedIndex) else "") }
+    var selectedItem by remember { mutableStateOf(stringItem ?: "") }
 
     // For DatePicker
     val isDatePicker by remember { mutableStateOf(storedDate != null) }
     var openDpDialog by remember { mutableStateOf(false) }
 
-    // For DropDownMenu and DatePicker
+    // For DropdownMenu and DatePicker
     val onClick: () -> Unit = {
         // Triggered if !enabled only (i.e., if itemSet or storedDate is not null)
-        if (isDropDownMenu) {
+        if (isDropdownMenu) {
             expanded = true
             Log.w("EditScreen", "Click in list field")
         }
@@ -109,8 +118,9 @@ fun EditScreenTextFieldItem(
     }
 
     // For all
-    var fieldText: String? by remember(itemText, selectedIndex, storedDate) {
-        if (isDropDownMenu) {
+//    var fieldText: String? by remember(itemText, selectedIndex, storedDate) {
+    var fieldText: String? by remember(itemText, selectedItem, storedDate) {
+        if (isDropdownMenu) {
             // mutableStateOf(selectedItem)
             mutableStateOf(textWithEllipsis(fullText = selectedItem, maxLength = 14, maxLines = maxLines))
         } else if (isDatePicker) {
@@ -147,7 +157,8 @@ fun EditScreenTextFieldItem(
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp, vertical = 4.dp)
                     .clickable(onClick = onClick),
-                enabled = (itemsSet == null && storedDate == null),
+//                enabled = (itemsSet == null && storedDate == null),
+                enabled = (dropdownMenuCategory == null && storedDate == null),
                 // Enabled must be false to make click launching a specific action.
                 // So, text color must be restored from disabled to normal when !enabled.
                 colors = TextFieldDefaults.colors(disabledTextColor = MaterialTheme.colorScheme.onSurface),
@@ -199,7 +210,7 @@ fun EditScreenTextFieldItem(
             )
         }
 
-        if (isDropDownMenu) {
+        if (isDropdownMenu) {
             // List
             DropdownMenu(
                 expanded = expanded,
@@ -209,19 +220,22 @@ fun EditScreenTextFieldItem(
                     .width(160.dp)
                     .wrapContentSize()
             ) {
-                // 'itemSet' is not null when the item 'isDropDownMenu' is true
-                itemsSet!!().forEachIndexed { index, s ->
-                    val textDisplayed = if (s is String) s else stringResource(id = s as Int)
+                // 'itemSet' is not null when the item 'isDropdownMenu' is true
+//                itemsSet!!().forEachIndexed { index, s ->
+                stringItems!!.forEachIndexed { index, s ->
+//                    val textDisplayed = if (s is String) s else stringResource(id = s as Int)
                     DropdownMenuItem(
                         text = {
                             Text(
-                                text = textDisplayed,
+                                text = s,
                                 fontSize = fieldFontSize,
                             )
                         },
                         onClick = {
                             selectedIndex = index
-                            onValueChange("$index#$textDisplayed")
+                            selectedItem = s
+//                            onValueChange("$index#$s")
+                            onValueChange("$dropdownMenuCategory#$index")
                             expanded = false
                         },
                     )

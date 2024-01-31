@@ -9,8 +9,8 @@ data class Type(
     val typeId: String,
 )
 
-enum class TYPE(val key: String) {
-    UNASSIGNED(key = "unassigned"),
+enum class TypeEnum(val key: String) {
+    UNASSIGNED(key = "_unassigned_"),
     FLAT(key = "flat"),
     HOUSE(key = "house"),
     DUPLEX(key = "duplex"),
@@ -22,13 +22,13 @@ enum class TYPE(val key: String) {
 }
 
 val TYPE_PREPOPULATION_DATA = listOf(
-    Type(TYPE.UNASSIGNED.key),
-    Type(TYPE.FLAT.key),
-    Type(TYPE.HOUSE.key),
-    Type(TYPE.DUPLEX.key),
-    Type(TYPE.PENTHOUSE.key),
-    Type(TYPE.LOFT.key),
-    Type(TYPE.MANOR.key),
-    Type(TYPE.CASTLE.key),
-    Type(TYPE.HOSTEL.key),
-)
+    Type(TypeEnum.UNASSIGNED.key),
+    Type(TypeEnum.FLAT.key),
+    Type(TypeEnum.HOUSE.key),
+    Type(TypeEnum.DUPLEX.key),
+    Type(TypeEnum.PENTHOUSE.key),
+    Type(TypeEnum.LOFT.key),
+    Type(TypeEnum.MANOR.key),
+    Type(TypeEnum.CASTLE.key),
+    Type(TypeEnum.HOSTEL.key),
+).sortedBy { it.typeId }

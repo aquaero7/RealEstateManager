@@ -37,12 +37,12 @@ import com.aquaero.realestatemanager.utils.AppContentType
 
 @Composable
 fun ListScreen(
+    property: Property?,
+    currency: String,
+    contentType: AppContentType,
     items: List<Property>,
     addresses: List<Address>,
     photos: List<Photo>,
-    contentType: AppContentType,
-    currency: String,
-    property: Property?,
     onPropertyClick: (Long) -> Unit,
     onFabClick: () -> Unit,
 ) {
@@ -75,20 +75,21 @@ fun ListScreen(
                     // .padding(vertical = 20.dp)
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                state = LazyListState(firstVisibleItemIndex = items.indexOf(property)),
+//                state = LazyListState(firstVisibleItemIndex = items.indexOf(property)),
+                state = LazyListState(firstVisibleItemIndex = property?.let { items.indexOf(property) } ?: 0),
             ) {
                 items(items = items) { propertyItem ->
                     // val phId = if (propertyItem.photos != null && property.photos!![0].phId > 0L)
                     // val phId = if (property.photos[0].photoId > 0L) propertyItem.photos[0].photoId else NO_PHOTO.photoId
                     val phId = photos.find { it.propertyId == propertyItem.propertyId }?.photoId ?: NO_PHOTO.photoId
                     PropertyCard(
+                        contentType = contentType,
                         pId = propertyItem.propertyId,
                         pType = propertyItem.typeId,
                         // pCity = propertyItem.addressId.city,
-                        pCity = addresses.find { it.addressId == propertyItem.addressId }!!.city,
+                        pCity = addresses.find { it.addressId == propertyItem.addressId }?.city ?: "",
                         phId = phId,
-                        pPriceFormatted = propertyItem.priceStringInCurrency(currency),
-                        contentType = contentType,
+                        pPriceFormatted = propertyItem.priceFormattedInCurrency(currency),
                         selected = selectedId == propertyItem.propertyId ||
                                 property?.propertyId.toString() == propertyItem.propertyId.toString(), // For compatibility with ListAndDetailScreen
                         unselectedByDefaultDisplay =

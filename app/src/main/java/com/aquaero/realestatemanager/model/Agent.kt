@@ -2,24 +2,31 @@ package com.aquaero.realestatemanager.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.aquaero.realestatemanager.NO_ITEM_ID
+import com.aquaero.realestatemanager.NULL_ITEM_ID
 
 @Entity
 data class Agent(
     @PrimaryKey(autoGenerate = true)
-    val agentId: Long,
+    val agentId: Long = 0,
     val firstName: String,
     val lastName: String?,
 ) {
     override fun toString(): String {
-        return "$firstName $lastName"
+//        return "$firstName $lastName"
+        return firstName + (lastName?.let { " $it" } ?: "")
     }
+}
+
+enum class AgentEnum(val key: String) {
+    UNASSIGNED(key = "_unassigned_"),
 }
 
 val AGENT_PREPOPULATION_DATA = listOf(
     Agent(
-        agentId = 0,
-        firstName = "",
-        lastName = "",
+        agentId = NULL_ITEM_ID,
+        firstName = AgentEnum.UNASSIGNED.key,
+        lastName = null,
     ),
     Agent(
         agentId = 1,
@@ -36,4 +43,4 @@ val AGENT_PREPOPULATION_DATA = listOf(
         firstName = "F3333333",
         lastName = "N3333333",
     ),
-)
+).sortedBy { it.lastName + it.firstName }

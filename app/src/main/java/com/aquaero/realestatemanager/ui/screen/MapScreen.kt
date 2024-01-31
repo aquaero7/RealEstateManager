@@ -11,6 +11,7 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.map_screen.MapScreenMap
 import com.aquaero.realestatemanager.utils.MyLocationSource
@@ -20,12 +21,14 @@ import com.google.android.gms.maps.model.LatLng
 fun MapScreen(
     showMap: Boolean,
     properties: List<Property>,
+    addresses: List<Address>,
     locationState: State<Location>,
     locationSource: MyLocationSource,
 ) {
     if (showMap) {
         MapScreenMap(
             properties = properties,
+            addresses = addresses,
             locationState = locationState,
             locationSource = locationSource,
         )

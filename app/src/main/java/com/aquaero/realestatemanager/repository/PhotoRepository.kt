@@ -12,6 +12,7 @@ import androidx.core.content.FileProvider
 import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.BuildConfig
 import com.aquaero.realestatemanager.database.dao.PhotoDao
+import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -41,35 +42,47 @@ class PhotoRepository(private val photoDao: PhotoDao) {
         }
     }
 
-    suspend fun getPhotoFromRoom(phId: Long): Flow<Photo> {
+    /*suspend*/ fun getPhotoFromRoom(phId: Long): Flow<Photo> {
+        /*
         return withContext(Dispatchers.IO) {
             photoDao.getPhoto(phId)
         }
+        */
+        return photoDao.getPhoto(phId)
     }
 
-    suspend fun getPhotosFromRoom(): Flow<MutableList<Photo>> {
+    /*suspend*/ fun getPhotosFromRoom(): Flow<MutableList<Photo>> {
+        /*
         return withContext(Dispatchers.IO) {
             photoDao.getPhotos()
         }
+        */
+        return photoDao.getPhotos()
     }
 
-    suspend fun getPhotosOrderedByIdFromRoom(): Flow<MutableList<Photo>> {
+    /*suspend*/ fun getPhotosOrderedByIdFromRoom(): Flow<MutableList<Photo>> {
+        /*
         return withContext(Dispatchers.IO) {
             photoDao.getPhotosOrderedById()
         }
+        */
+        return photoDao.getPhotosOrderedById()
     }
 
-    suspend fun getPhotosOrderedByLabelFromRoom(): Flow<MutableList<Photo>> {
+    /*suspend*/ fun getPhotosOrderedByLabelFromRoom(): Flow<MutableList<Photo>> {
+        /*
         return withContext(Dispatchers.IO) {
             photoDao.getPhotosOrderedByLabel()
         }
+        */
+        return photoDao.getPhotosOrderedByLabel()
     }
 
     /***/
 
 
     fun photoFromId(photos: MutableList<Photo>, photoId: Long): Photo {
-        return photos.find { it.photoId == photoId }!!
+        return photos.first { it.photoId == photoId }
     }
 
     private fun Context.createImageFile(): File {
@@ -117,7 +130,12 @@ class PhotoRepository(private val photoDao: PhotoDao) {
     }
 
     fun itemPhotos(photos: MutableList<Photo>, propertyId: Long): MutableList<Photo> {
-        return photos.filter { it.propertyId == propertyId }.toMutableList()
+//        return photos.filter { it.propertyId == propertyId }.toMutableList()
+        val itemPhotos = photos.filter { it.propertyId == propertyId }.toMutableList()
+        return itemPhotos.ifEmpty { mutableListOf(NO_PHOTO) }
+
+
+
         /*
         val itemPhotos = emptyList<Photo>().toMutableList()
         photos.forEach() { if (it.propertyId == propertyId) itemPhotos.add(it) }
@@ -138,55 +156,55 @@ class PhotoRepository(private val photoDao: PhotoDao) {
     val fakePhotos = listOf(
         Photo(
             photoId = -1,
-            uri = Uri.EMPTY,  // "U1111111"
+            uri = "",  // "U1111111"
             label = "L1111111",
             propertyId = -1,
         ),
         Photo(
             photoId = -2,
-            uri = Uri.EMPTY,  // "U2222222"
+            uri = "",  // "U2222222"
             label = "L2222222",
             propertyId = -2,
         ),
         Photo(
             photoId = -3,
-            uri = Uri.EMPTY,  // "U3333333"
+            uri = "",  // "U3333333"
             label = "L3333333",
             propertyId = -3,
         ),
         Photo(
             photoId = -4,
-            uri = Uri.EMPTY,  // "U4444444"
+            uri = "",  // "U4444444"
             label = "L4444444",
             propertyId = -4,
         ),
         Photo(
             photoId = -5,
-            uri = Uri.EMPTY,  // "U5555555"
+            uri = "",  // "U5555555"
             label = "L5555555",
             propertyId = -5,
         ),
         Photo(
             photoId = -6,
-            uri = Uri.EMPTY,  // "U6666666"
+            uri = "",  // "U6666666"
             label = "L6666666",
             propertyId = -6,
         ),
         Photo(
             photoId = -7,
-            uri = Uri.EMPTY,  // "U7777777"
+            uri = "",  // "U7777777"
             label = "L7777777",
             propertyId = -7,
         ),
         Photo(
             photoId = -8,
-            uri = Uri.EMPTY,  // "U8888888"
+            uri = "",  // "U8888888"
             label = "L1888888",
             propertyId = -1,
         ),
         Photo(
             photoId = -9,
-            uri = Uri.EMPTY,  // "U9999999"
+            uri = "",  // "U9999999"
             label = "L2999999",
             propertyId = -2,
         ),

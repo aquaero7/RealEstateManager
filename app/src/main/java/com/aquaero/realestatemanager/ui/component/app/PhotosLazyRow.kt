@@ -105,7 +105,7 @@ fun PhotosLazyRow(
                     color = MaterialTheme.colorScheme.surfaceVariant,
                 ) {
                     Text(
-                        text = photo.label,
+                        text = photo.label ?: "",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,

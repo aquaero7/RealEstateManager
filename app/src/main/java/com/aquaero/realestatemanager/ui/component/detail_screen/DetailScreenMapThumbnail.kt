@@ -15,6 +15,9 @@ import androidx.compose.material.icons.filled.LocationOff
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -35,6 +38,18 @@ fun DetailScreenMapThumbnail(
     stringLatitude: String,
     stringLongitude: String,
 ) {
+    val addressComplete by remember { mutableStateOf(thumbnailUrl.isNotEmpty()) }
+    val mapAvailable by remember { mutableStateOf(addressComplete && internetAvailable) }
+
+    val internetUnavailableText = stringResource(R.string.network_unavailable)
+    val addressIncompleteText = stringResource(R.string.address_incomplete)
+    val mapUnavailableText by remember {
+        when {
+            !internetAvailable -> { mutableStateOf(internetUnavailableText) }
+            else -> { mutableStateOf(addressIncompleteText) }
+        }
+    }
+
     Text(
         text = stringResource(R.string.map_thumbnail),
         fontWeight = FontWeight.Bold,
@@ -83,7 +98,7 @@ fun DetailScreenMapThumbnail(
         }
 
     } else {
-        // Network is unavailable, so no map is available
+        // Network is unavailable or property address is incomplete, so no map is available
         Image(
             modifier = Modifier
                 .size(320.dp)
@@ -98,7 +113,7 @@ fun DetailScreenMapThumbnail(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = stringResource(R.string.network_unavailable),
+            text = mapUnavailableText,
             color = Red
         )
     }

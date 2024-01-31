@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.viewmodel
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
@@ -11,12 +12,15 @@ import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
+import com.aquaero.realestatemanager.model.Type
+import com.aquaero.realestatemanager.model.TypeEnum
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.PoiRepository
 import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
+import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.ConnectionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,14 +38,18 @@ class ListViewModel(
     private val addressRepository: AddressRepository,
     private val photoRepository: PhotoRepository,
     private val agentRepository: AgentRepository,
+    private val typeRepository : TypeRepository,
     private val poiRepository: PoiRepository,
     private val propertyPoiJoinRepository: PropertyPoiJoinRepository,
 ) : ViewModel() {
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
+    val pTypesSet = propertyRepository.typesSet
+    val agentsSet = agentRepository.agentsSet
 
     /** Room **/
+/*
 
     private val _propertiesStateFlow = MutableStateFlow(mutableListOf<Property>())
     val propertiesStateFlow: StateFlow<MutableList<Property>> = _propertiesStateFlow.asStateFlow()
@@ -86,20 +94,31 @@ class ListViewModel(
 
         }
     }
+*/
 
     /***/
 
 
-    fun propertyFromId(propertyId: Long): Property {
-        return propertyRepository.propertyFromId(propertyId)
+    fun propertyFromId(properties: MutableList<Property>, propertyId: Long): Property? {
+        return propertyRepository.propertyFromId(properties, propertyId)
     }
 
-    fun agentFromId(agentId: Long): Agent? {
-        return agentRepository.agentFromId(agentId)
-    }
+
 
     fun poiFromId(pois: MutableList<Poi>, poiId: String): Poi {
         return poiRepository.poiFromId(pois, poiId)
+    }
+
+    fun mutableSetIndex(set: MutableSet<Any>, item: String): Int {
+        var index = 0
+        for (setItem in set) {
+            if (setItem is Int) {
+                if (context.getString(setItem) == item) index = set.indexOf(setItem)
+            } else {
+                if (setItem as String == item) index = set.indexOf(setItem)
+            }
+        }
+        return index
     }
 
     fun checkForConnection(connection: ConnectionState): Boolean {
@@ -112,9 +131,24 @@ class ListViewModel(
         return addressRepository.thumbnailUrlFromAddressId(addresses, addressId)
     }
 
+    @SuppressLint("DiscouragedApi")
+    fun stringType(types: MutableList<Type>, typeId: String): String {
+        val type = types.find { it.typeId == typeId }?.typeId ?: TypeEnum.UNASSIGNED.key
+        val resourceId = context.resources.getIdentifier(type, "string", context.packageName)
+        return if (resourceId != 0) context.getString(resourceId) else type
+    }
+
+    fun stringType(types: MutableList<Type>, stringTypes: MutableList<String>, typeId: String): String {
+        return typeRepository.stringType(types, stringTypes, typeId)
+    }
+
     fun stringAgent(agents: MutableList<Agent>, agentId: Long): String {
 //        val agents = agentsStateFlow.value
         return agentRepository.stringAgent(agents, agentId)
+    }
+
+    fun stringAgent(agents: MutableList<Agent>, stringAgents: MutableList<String>, agentId: Long): String {
+        return agentRepository.stringAgent(agents, stringAgents, agentId)
     }
 
     fun stringAddress(addresses: MutableList<Address>, addressId: Long): String {

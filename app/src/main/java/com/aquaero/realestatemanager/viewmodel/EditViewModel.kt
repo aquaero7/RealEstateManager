@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.viewmodel
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -11,21 +12,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.ApplicationRoot
+import com.aquaero.realestatemanager.DropdownMenuCategory
 import com.aquaero.realestatemanager.EditDetail
+import com.aquaero.realestatemanager.NO_ITEM_ID
+import com.aquaero.realestatemanager.NULL_ITEM_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
-import com.aquaero.realestatemanager.model.POI
+import com.aquaero.realestatemanager.model.PoiEnum
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
+import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.PoiRepository
 import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
+import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,6 +44,7 @@ class EditViewModel(
     private val addressRepository: AddressRepository,
     private val photoRepository: PhotoRepository,
     private val agentRepository : AgentRepository,
+    private val typeRepository: TypeRepository,
     private val poiRepository: PoiRepository,
     private val propertyPoiJoinRepository: PropertyPoiJoinRepository,
 ) : ViewModel() {
@@ -76,8 +83,8 @@ class EditViewModel(
     private var stateValue = "-1"
     private var zipCodeValue = "-1"
     private var countryValue = "-1"
-    private var registrationDateValue: String? = "-1"
-    private var saleDateValue: String? = "-1"
+    private var registrationDateValue = "-1"
+    private var saleDateValue = "-1"
     private var itemPhotos = mutableListOf<Photo>()
 
     private var poiHospitalSelected: Boolean? = null
@@ -91,6 +98,7 @@ class EditViewModel(
 
 
     /** Room **/
+/*
 
     private val _propertiesStateFlow = MutableStateFlow(mutableListOf<Property>())
     val propertiesStateFlow: StateFlow<MutableList<Property>> = _propertiesStateFlow.asStateFlow()
@@ -133,6 +141,7 @@ class EditViewModel(
 
         }
     }
+*/
 
     /***/
 
@@ -149,15 +158,23 @@ class EditViewModel(
         navController.popBackStack()
     }
 
-    fun propertyFromId(propertyId: Long): Property {
-        return propertyRepository.propertyFromId(propertyId)
+    fun propertyFromId(properties: MutableList<Property>, propertyId: Long): Property? {
+        return propertyRepository.propertyFromId(properties, propertyId)
     }
 
-    fun agentFromId(agentId: Long): Agent? {
-        return agentRepository.agentFromId(agentId)
+    fun agentFromId(agents: MutableList<Agent>, agentId: Long): Agent {
+        return agentRepository.agentFromId(agents, agentId)
     }
 
-    fun mutableSetIndex(set: MutableSet<Any?>, item: String): Int {
+    fun typeFromId(types: MutableList<Type>, typeId: String): Type {
+        return typeRepository.typeFromId(types, typeId)
+    }
+
+    fun poiFromId(pois: MutableList<Poi>, poiId: String): Poi {
+        return poiRepository.poiFromId(pois, poiId)
+    }
+
+    fun mutableSetIndex(set: MutableSet<Any>, item: String): Int {
         var index: Int = 0
         for (setItem in set) {
             if (setItem is Int?) {
@@ -169,6 +186,28 @@ class EditViewModel(
         }
         return index
     }
+
+    fun stringType(types: MutableList<Type>, stringTypes: MutableList<String>, typeId: String): String {
+        return typeRepository.stringType(types, stringTypes, typeId)
+    }
+
+    fun stringAgent(agents: MutableList<Agent>, stringAgents: MutableList<String>, agentId: Long): String {
+        return agentRepository.stringAgent(agents, stringAgents, agentId)
+    }
+
+    fun itemPhotos(photos: MutableList<Photo>, propertyId: Long): MutableList<Photo> {
+        return photoRepository.itemPhotos(photos, propertyId)
+    }
+
+    fun itemPois(propertyPoiJoins: MutableList<PropertyPoiJoin>, pois: MutableList<Poi>, propertyId: Long): MutableList<Poi> {
+        return mutableListOf<Poi>().apply {
+            propertyPoiJoins
+                .filter { join -> join.propertyId == propertyId }
+                .mapTo(this) { join -> poiFromId(pois, join.poiId) }
+        }
+    }
+
+
 
     fun getPhotoUri(): Uri {
         return photoRepository.getPhotoUri()
@@ -193,7 +232,7 @@ class EditViewModel(
      * Temp data used as a cache for property creation or update
      */
 
-    fun onDescriptionValueChange(propertyId: String, value: String) {
+    fun onDescriptionValueChange(propertyId: Long, value: String) {
         descriptionValue = value
 
         Log.w("EditViewModel", "New value for description of property Id '$propertyId' is: $value")
@@ -201,7 +240,7 @@ class EditViewModel(
             .show()  // TODO: To be deleted
     }
 
-    fun onPriceValueChange(propertyId: String, value: String, currency: String) {
+    fun onPriceValueChange(propertyId: Long, value: String, currency: String) {
 
         priceValue = if (value.isNotEmpty() && value.isDigitsOnly()) {
             when (currency) {
@@ -222,7 +261,7 @@ class EditViewModel(
         ).show()
     }
 
-    fun onSurfaceValueChange(propertyId: String, value: String) {
+    fun onSurfaceValueChange(propertyId: Long, value: String) {
         surfaceValue = if (value.isNotEmpty()) value.toInt() else 0
 
         Log.w("EditViewModel", "New value for surface of property Id '$propertyId' is: $value")
@@ -230,7 +269,7 @@ class EditViewModel(
             .show()  // TODO: To be deleted
     }
 
-    fun onNbOfRoomsValueChange(propertyId: String, value: String) {
+    fun onNbOfRoomsValueChange(propertyId: Long, value: String) {
         nbOfRoomsValue = if (value.isNotEmpty()) value.toInt() else 0
 
         Log.w("EditViewModel", "New value for nb of rooms of property Id '$propertyId' is: $value")
@@ -238,7 +277,7 @@ class EditViewModel(
             .show()  // TODO: To be deleted
     }
 
-    fun onNbOfBathroomsValueChange(propertyId: String, value: String) {
+    fun onNbOfBathroomsValueChange(propertyId: Long, value: String) {
         nbOfBathroomsValue = if (value.isNotEmpty()) value.toInt() else 0
 
         Log.w("EditViewModel", "New value for nb of bathrooms of property Id '$propertyId' is: $value")
@@ -246,7 +285,7 @@ class EditViewModel(
             .show()  // TODO: To be deleted
     }
 
-    fun onNbOfBedroomsValueChange(propertyId: String, value: String) {
+    fun onNbOfBedroomsValueChange(propertyId: Long, value: String) {
         nbOfBedroomsValue = if (value.isNotEmpty()) value.toInt() else 0
 
         Log.w("EditViewModel", "New value for nb of bedrooms of property Id '$propertyId' is: $value")
@@ -254,7 +293,8 @@ class EditViewModel(
             .show()  // TODO: To be deleted
     }
 
-    fun onDropdownMenuValueChange(propertyId: String, value: String) {
+    /*
+    fun onDropdownMenuValueChange(propertyId: Long, value: String) {
         val index = value.substringBefore(
             delimiter = "#",
             missingDelimiterValue = "-1"
@@ -267,42 +307,56 @@ class EditViewModel(
             pTypesSet.elementAt(index)
                 ?.let { context.getString(it) } -> onTypeValueChange(
                 propertyId = propertyId,
-                index = index,
-                field = field
+                index = index
             )
 
             agentsSet().elementAt(index) -> onAgentValueChange(
                 propertyId = propertyId,
-                index = index,
-                field = field
+                index = index
             )
         }
     }
+    */
 
-    private fun onTypeValueChange(propertyId: String, index: Int, field: String) {
-        typeValue = field
+    fun onDropdownMenuValueChange(properties: MutableList<Property>, types: MutableList<Type>, agents: MutableList<Agent>, propertyId: Long, value: String) {
+        val category = value.substringBefore(
+            delimiter = "#",
+            missingDelimiterValue = ""
+        )
+        val index = value.substringAfter(
+            delimiter = "#",
+            missingDelimiterValue = value
+        ).toInt()
+        when (category) {
+            DropdownMenuCategory.TYPE.key -> onTypeValueChange(properties = properties, types = types, propertyId = propertyId, index = index)
+            DropdownMenuCategory.AGENT.key -> onAgentValueChange(properties = properties, agents = agents, propertyId = propertyId, index = index)
+        }
+    }
 
-        Log.w("EditViewModel", "New index for type of property Id '$propertyId' is: $index / New value for type is: $field")
+    private fun onTypeValueChange(properties: MutableList<Property>, types: MutableList<Type>, propertyId: Long, index: Int) {
+        typeValue = types.elementAt(index).typeId
+
+        Log.w("EditViewModel", "New value for type of property Id '$propertyId' is: $typeValue at index: $index")
         Toast.makeText(
             context,
-            "New index for type of property Id '$propertyId' is: $index / New value for type is: $field",
+            "New value for type of property Id '$propertyId' is: $typeValue at index: $index",
             Toast.LENGTH_SHORT
         )
             .show()  // TODO: To be deleted
     }
 
-    private fun onAgentValueChange(propertyId: String, index: Int, field: String) {
-        agentValue = field
+    private fun onAgentValueChange(properties: MutableList<Property>, agents: MutableList<Agent>, propertyId: Long, index: Int) {
+        agentValue = agents.elementAt(index).toString()
 
-        Log.w("EditViewModel", "New index for agent of property Id '$propertyId' is: $index / New value for agent is: $field")
+        Log.w("EditViewModel", "New value for agent of property Id '$propertyId' is: $agentValue at index: $index" )
         Toast.makeText(
             context,
-            "New index for agent of property Id '$propertyId' is: $index / New value for agent is: $field",
+            "New value for agent of property Id '$propertyId' is: $agentValue at index $index",
             Toast.LENGTH_SHORT
         ).show()  // TODO: To be deleted
     }
 
-    fun onStreetNumberValueChange(propertyId: String, value: String) {
+    fun onStreetNumberValueChange(propertyId: Long, value: String) {
         streetNumberValue = value
 
         Log.w("EditViewModel", "New value for street number of property Id '$propertyId' is: ${value}")
@@ -310,7 +364,7 @@ class EditViewModel(
             .show()  // TODO: To be deleted
     }
 
-    fun onStreetNameValueChange(propertyId: String, value: String) {
+    fun onStreetNameValueChange(propertyId: Long, value: String) {
         streetNameValue = value
 
         Log.w("EditViewModel", "New value for street name of property Id '$propertyId' is: ${value}")
@@ -318,7 +372,7 @@ class EditViewModel(
             .show()  // TODO: To be deleted
     }
 
-    fun onAddInfoValueChange(propertyId: String, value: String) {
+    fun onAddInfoValueChange(propertyId: Long, value: String) {
         addInfoValue = value
 
         Log.w("EditViewModel", "New value for add info of property Id '$propertyId' is: ${value}")
@@ -326,7 +380,7 @@ class EditViewModel(
             .show()  // TODO: To be deleted
     }
 
-    fun onCityValueChange(propertyId: String, value: String) {
+    fun onCityValueChange(propertyId: Long, value: String) {
         cityValue = value
 
         Log.w("EditViewModel", "New value for city of property Id '$propertyId' is: ${value}")
@@ -334,7 +388,7 @@ class EditViewModel(
             .show()  // TODO: To be deleted
     }
 
-    fun onStateValueChange(propertyId: String, value: String) {
+    fun onStateValueChange(propertyId: Long, value: String) {
         stateValue = value
 
         Log.w("EditViewModel", "New value for state of property Id '$propertyId' is: ${value}")
@@ -342,7 +396,7 @@ class EditViewModel(
             .show()  // TODO: To be deleted
     }
 
-    fun onZipCodeValueChange(propertyId: String, value: String) {
+    fun onZipCodeValueChange(propertyId: Long, value: String) {
         zipCodeValue = value
 
         Log.w("EditViewModel", "New value for ZIP code of property Id '$propertyId' is: ${value}")
@@ -350,7 +404,7 @@ class EditViewModel(
             .show()  // TODO: To be deleted
     }
 
-    fun onCountryValueChange(propertyId: String, value: String) {
+    fun onCountryValueChange(propertyId: Long, value: String) {
         countryValue = value
 
         Log.w("EditViewModel", "New value for country of property Id '$propertyId' is: ${value}")
@@ -358,51 +412,53 @@ class EditViewModel(
             .show()  // TODO: To be deleted
     }
 
-    fun onRegistrationDateValueChange(propertyId: String, value: String) {
-        registrationDateValue = value.ifEmpty { null }
+    fun onRegistrationDateValueChange(propertyId: Long, value: String) {
+//        registrationDateValue = value.ifEmpty { null }
+        registrationDateValue = value
 
         Log.w("EditViewModel", "New value for registration date of property Id '$propertyId' is: $registrationDateValue")
         Toast.makeText(context, "New value for registration date of property Id '$propertyId' is: $registrationDateValue", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
 
-    fun onSaleDateValueChange(propertyId: String, value: String) {
-        saleDateValue = value.ifEmpty { null }
+    fun onSaleDateValueChange(propertyId: Long, value: String) {
+//        saleDateValue = value.ifEmpty { null }
+        saleDateValue = value
 
         Log.w("EditViewModel", "New value for sale date of property Id '$propertyId' is: $saleDateValue")
         Toast.makeText(context, "New value for sale date of property Id '$propertyId' is: $saleDateValue", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
 
-    fun onPoiClick(propertyId: String, poiItem: String, isSelected: Boolean) {
+    fun onPoiClick(propertyId: Long, poiItem: String, isSelected: Boolean) {
         when (poiItem) {
             // poiHospital -> { poiHospitalSelected = isSelected }
-            POI.HOSPITAL.key -> { poiHospitalSelected = isSelected }
+            PoiEnum.HOSPITAL.key -> { poiHospitalSelected = isSelected }
             // poiSchool -> { poiSchoolSelected = isSelected }
-            POI.SCHOOL.key -> { poiSchoolSelected = isSelected }
+            PoiEnum.SCHOOL.key -> { poiSchoolSelected = isSelected }
             // poiRestaurant -> { poiRestaurantSelected = isSelected }
-            POI.RESTAURANT.key -> { poiRestaurantSelected = isSelected }
+            PoiEnum.RESTAURANT.key -> { poiRestaurantSelected = isSelected }
             // poiShop -> { poiShopSelected = isSelected }
-            POI.SHOP.key -> { poiShopSelected = isSelected }
+            PoiEnum.SHOP.key -> { poiShopSelected = isSelected }
             // poiRailwayStation -> { poiRailwayStationSelected = isSelected }
-            POI.RAILWAY_STATION.key -> { poiRailwayStationSelected = isSelected }
+            PoiEnum.RAILWAY_STATION.key -> { poiRailwayStationSelected = isSelected }
             // poiCarPark -> { poiCarParkSelected = isSelected }
-            POI.CAR_PARK.key -> { poiCarParkSelected = isSelected }
+            PoiEnum.CAR_PARK.key -> { poiCarParkSelected = isSelected }
         }
         Log.w("EditViewModel", "New value for POI $poiItem selection of property Id '$propertyId' is: $isSelected")
         Toast.makeText(context, "New value for POI $poiItem selection of property Id '$propertyId' is: $isSelected", Toast.LENGTH_SHORT)
             .show()  // TODO: To be deleted
     }
 
-    fun onSavePhotoButtonClick(propertyId: Long, uri: Uri, label: String) {
+    fun onSavePhotoButtonClick(itemPhotos: MutableList<Photo>, propertyId: Long, uri: Uri, label: String) {
         Log.w("EditViewModel", "Click on save photo button")
         Log.w("EditViewModel", "Saving photo: Label = $label, Uri = $uri")
 
         // itemPhotos = propertyFromId(propertyId).photos
-        itemPhotos = photoRepository.itemPhotos(photosStateFlow.value, propertyId)
+//        itemPhotos = photoRepository.itemPhotos(photosStateFlow.value, propertyId)
 
         // Check if the photo already exists
-        val photo: Photo? = itemPhotos.find { it.uri == uri }
+        val photo: Photo? = itemPhotos.find { it.uri == uri.toString() }
         val alreadyExists: Boolean = (photo != null)
         /*
         var photoId: Long? = null
@@ -442,9 +498,10 @@ class EditViewModel(
             // photos.add(Photo((Math.random() * 9999).toLong(), uri, label, propertyId))
             // itemPhotos.add(Photo(uri = uri, label = label, propertyId = propertyId))
             val photoToAdd = Photo(
-                uri = uri,
+                uri = uri.toString(),
                 label = label,
-                propertyId = propertyId)
+//                propertyId = propertyId)
+                propertyId = NULL_ITEM_ID)
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     photoRepository.upsertPhotoInRoom(photoToAdd)
@@ -460,11 +517,11 @@ class EditViewModel(
         }
     }
 
-    fun onPhotoDeletionConfirmation(photoId: Long, propertyId: Long) {
+    fun onPhotoDeletionConfirmation(itemPhotos: MutableList<Photo>, photoId: Long, propertyId: Long) {
         Log.w("EditViewModel", "Click on delete photo (id: $photoId) button")
 
         // itemPhotos = propertyFromId(propertyId).photos
-        itemPhotos = photoRepository.itemPhotos(photosStateFlow.value, propertyId)
+//        itemPhotos = photoRepository.itemPhotos(photosStateFlow.value, propertyId)
         val photoToRemove = photoRepository.photoFromId(photos = itemPhotos, photoId = photoId)
 
         Log.w("EditViewModel", "Before action, photos list size is: ${itemPhotos.size}")

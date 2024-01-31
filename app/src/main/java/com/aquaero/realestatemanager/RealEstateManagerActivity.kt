@@ -12,8 +12,15 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -76,7 +83,6 @@ class RealEstateManagerActivity : ComponentActivity() {
     @SuppressLint("NewApi")
     override fun onResume() {
         super.onResume()
-        // appViewModel.checkForInternet() // TODO: To be deleted
         mapViewModel.checkForPermissions()
     }
 
@@ -97,21 +103,23 @@ fun RealEstateManagerApp(
     loanViewModel: LoanViewModel,
 ) {
     RealEstateManagerTheme(dynamicColor = false) {
-        // val properties: List<Property> = appViewModel.fakeProperties
-        val properties: MutableList<Property> = appViewModel.propertiesStateFlow.collectAsState().value    // TODO ROOM
-        val addresses: MutableList<Address> = appViewModel.addressesStateFlow.collectAsState().value       // TODO ROOM
-        val photos: MutableList<Photo> = appViewModel.photosStateFlow.collectAsState().value               // TODO ROOM
-        val agents: MutableList<Agent> = appViewModel.agentsStateFlow.collectAsState().value               // TODO ROOM
-        val types: MutableList<Type> = appViewModel.typesStateFlow.collectAsState().value                  // TODO ROOM
-        val pois: MutableList<Poi> = appViewModel.poisStateFlow.collectAsState().value                     // TODO ROOM
-        val propertyPoiJoins: MutableList<PropertyPoiJoin> = appViewModel.propertyPoiJoinsStateFlow.collectAsState().value // TODO ROOM
+
+        val properties: MutableList<Property> by appViewModel.properties.collectAsState(initial = mutableListOf())
+        val addresses: MutableList<Address> by appViewModel.addresses.collectAsState(initial = mutableListOf())
+        val photos: MutableList<Photo> by appViewModel.photos.collectAsState(initial = mutableListOf())
+        val agents: MutableList<Agent> by appViewModel.agentsOrderedByName.collectAsState(initial = mutableListOf())
+        val types: MutableList<Type> by appViewModel.typesOrderedById.collectAsState(initial = mutableListOf())
+        val pois: MutableList<Poi> by appViewModel.pois.collectAsState(initial = mutableListOf())
+        val propertyPoiJoins: MutableList<PropertyPoiJoin> by appViewModel.propertyPoiJoins.collectAsState(initial = mutableListOf())
+        val stringTypes: MutableList<String> by appViewModel.stringTypesOrderedById.collectAsState(initial = mutableListOf())
+        val stringAgents: MutableList<String> by appViewModel.stringAgentsOrderedByName.collectAsState(initial = mutableListOf())
 
         /**
          * Init content type, according to window's width,
          * to choose dynamically, on screen state changes, whether to show
          * just a list content, or both a list and detail content
          */
-        val contentType: AppContentType = appViewModel.contentType(windowSize)
+        val contentType: AppContentType = appViewModel.contentType(windowSize = windowSize)
 
         /**
          * Init navigation data
@@ -130,15 +138,15 @@ fun RealEstateManagerApp(
          * TopBar
          */
         // TopBar Menu
-        val menuIcon = appViewModel.menuIcon(currentScreen)
-        val menuIconContentDesc = stringResource(appViewModel.menuIconContentDesc(currentScreen))
-        val menuEnabled = appViewModel.menuEnabled(currentScreen, windowSize)
+        val menuIcon = appViewModel.menuIcon(currentScreen = currentScreen)
+        val menuIconContentDesc = stringResource(appViewModel.menuIconContentDesc(currentScreen = currentScreen))
+        val menuEnabled = appViewModel.menuEnabled(currentScreen = currentScreen, windowSize = windowSize)
         val onClickMenu: () -> Unit = when (currentScreen) {
             ListAndDetail.routeWithArgs, Detail.routeWithArgs -> {
-                { detailViewModel.onClickMenu(navController, propertyId) }
+                { detailViewModel.onClickMenu(navController = navController, propertyId = propertyId) }
             }
             EditDetail.routeWithArgs -> {
-                { editViewModel.onClickMenu(navController, propertyId) }
+                { editViewModel.onClickMenu(navController = navController, propertyId = propertyId) }
             }
             SearchCriteria.route -> {
                 { searchViewModel.onClickMenu() }
@@ -156,8 +164,7 @@ fun RealEstateManagerApp(
         /**
          * Bottom bar
          */
-        // val defaultPropertyId = appViewModel.fakeProperties[0].pId.toString()
-        val defaultPropertyId = if (properties.isNotEmpty()) properties[0].propertyId.toString() else null // TODO ROOM
+        val defaultPropertyId = if (properties.isNotEmpty()) properties[0].propertyId.toString() else NULL_ITEM_ID.toString()
 
 
         /**
@@ -179,8 +186,8 @@ fun RealEstateManagerApp(
                     allScreens = tabRowScreens,
                     onTabSelected = { newScreen ->
                         navController.navigateSingleTopTo(
-                            newScreen,
-                            defaultPropertyId
+                            destination = newScreen,
+                            propertyId = defaultPropertyId
                         )
                     },
                     currentScreen = currentTabScreen,
@@ -199,6 +206,8 @@ fun RealEstateManagerApp(
                 types = types,
                 pois = pois,
                 propertyPoiJoins = propertyPoiJoins,
+                stringTypes = stringTypes,
+                stringAgents = stringAgents,
                 appViewModel = appViewModel,
                 listViewModel = listViewModel,
                 detailViewModel = detailViewModel,

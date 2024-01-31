@@ -37,9 +37,15 @@ val DP_CONTENT_COLOR = PurpleGrey80
 val DP_CONTAINER_COLOR = PurpleGrey40
 
 // Miscellaneous
+const val NULL_ITEM_ID = -1L
+const val NO_ITEM_ID = 0L
 const val PHOTO_DELETION = "photoDeletion"
 const val DATE_PATTERN = "yyyy-MM-dd"
 const val DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm"
 const val DATE_LENGTH = 10 // Equals to "####-##-##".count
 const val RATE_OF_DOLLAR_IN_EURO = 0.812
 
+enum class DropdownMenuCategory(val key: String) {
+    TYPE(key = "type"),
+    AGENT(key = "agent")
+}

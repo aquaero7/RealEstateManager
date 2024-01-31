@@ -9,8 +9,8 @@ import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import com.aquaero.realestatemanager.NULL_ITEM_ID
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Property
 
 @SuppressLint("NewApi")
@@ -27,7 +27,7 @@ fun DetailScreenColumn2(
         contentDesc = stringResource(id = R.string.cd_price),
         label = stringResource(R.string.price),
         // value = property.priceStringInCurrency(currency),
-        value = property?.let { property.priceStringInCurrency(currency) } ?: "",
+        value = property?.priceFormattedInCurrency(currency) ?: "",
     )
     // Info location
     DetailScreenInformationItem(
@@ -45,7 +45,8 @@ fun DetailScreenColumn2(
         image = Icons.Default.Person,
         contentDesc = stringResource(id = R.string.cd_agent),
         label = stringResource(id = R.string.agent),
-        value = stringAgent,
+        value = if (property != null && property.propertyId != NULL_ITEM_ID) stringAgent else "",
+//        value = if (property != null) stringAgent else "",   // TODO: For test only
     )
     // Info registration date
     DetailScreenInformationItem(
@@ -53,14 +54,17 @@ fun DetailScreenColumn2(
         contentDesc = stringResource(id = R.string.cd_registration_date),
         label = stringResource(id = R.string.registration_date),
         // value = property.registrationDate.toString(),
-        value = property?.let { property.registrationDate.toString() } ?: "",
+//        value = property?.let { it.registrationDate ?: "-" } ?: "",
+        value = property?.registrationDate ?: "",
     )
     // Info sale date
     DetailScreenInformationItem(
         image = Icons.Default.ArrowCircleUp,
         contentDesc = stringResource(id = R.string.cd_sale_date),
         label = stringResource(id = R.string.sale_date),
-        // value = if (property.saleDate != null) property.saleDate.toString() else "-",
-        value = property?.saleDate?.let { property.saleDate.toString() } ?: property?.let { "-" } ?: "",
+//        value = if (property.saleDate != null) property.saleDate.toString() else "-",
+//        value = property?.saleDate?.let { property.saleDate.toString() } ?: property?.let { "-" } ?: "",
+//        value = property?.let { it.saleDate ?: "-" } ?: "",
+        value = property?.saleDate ?: "",
     )
 }

@@ -24,19 +24,22 @@ import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenColu
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenDescription
 import com.aquaero.realestatemanager.ui.component.detail_screen.DetailScreenMapThumbnail
 import com.aquaero.realestatemanager.ui.component.app.PhotosLazyRow
-import com.aquaero.realestatemanager.ui.component.app.DetailScreenPoi
+import com.aquaero.realestatemanager.ui.component.app.PointsOfInterest
 
 @Composable
 fun DetailScreen(
     property: Property?,
+    currency: String,
+    itemPhotos: MutableList<Photo>,
+    itemPois: MutableList<Poi>,
+    pTypeSet: () -> MutableSet<Int>,
+    pTypeIndex: Int,
+    stringType: String,
+    stringAgent: String,
     stringAddress: String,
     stringLatitude: String,
     stringLongitude: String,
     thumbnailUrl: String,
-    stringAgent: String,
-    itemPhotos: MutableList<Photo>,
-    itemPois: MutableList<Poi>,
-    currency: String,
     internetAvailable: Boolean,
     onBackPressed: () -> Unit,
 ) {
@@ -81,7 +84,12 @@ fun DetailScreen(
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.SpaceBetween,
                 ) {*/
-                    DetailScreenColumn1(property = property)
+                DetailScreenColumn1(
+                    property = property,
+                    pTypeSet = pTypeSet,
+                    pTypeIndex = pTypeIndex,
+                    stringType = stringType,
+                )
                 //}
             }
             // Column 2
@@ -111,7 +119,7 @@ fun DetailScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // POIs
-        DetailScreenPoi(itemPois = itemPois)
+        PointsOfInterest(itemPois = itemPois)
 
         Spacer(modifier = Modifier.height(16.dp))
 

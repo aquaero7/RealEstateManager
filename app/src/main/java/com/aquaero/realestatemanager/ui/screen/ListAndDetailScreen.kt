@@ -19,22 +19,28 @@ import com.aquaero.realestatemanager.utils.AppContentType
 @SuppressLint("NewApi")
 @Composable
 fun ListAndDetailScreen(
+    // For both list and detail screens
+    property: Property?,
+    currency: String,
+    // For list screen only
+    contentType: AppContentType,
     items: List<Property>,
     addresses: List<Address>,
-    stringLatitude: String,
-    stringLongitude: String,
     photos: List<Photo>,
-    contentType: AppContentType,
     onPropertyClick: (Long) -> Unit,
-    property: Property?,
-    thumbnailUrl: String,
-    stringAgent: String,
-    stringAddress: String,
+    onFabClick: () -> Unit,
+    // For detail screen only
     itemPhotos: MutableList<Photo>,
     itemPois: MutableList<Poi>,
-    currency: String,
+    pTypeSet: () -> MutableSet<Int>,
+    pTypeIndex: Int,
+    stringType: String,
+    stringAgent: String,
+    stringAddress: String,
+    stringLatitude: String,
+    stringLongitude: String,
+    thumbnailUrl: String,
     internetAvailable: Boolean,
-    onFabClick: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
     Row {
@@ -42,12 +48,12 @@ fun ListAndDetailScreen(
             modifier = Modifier.weight(1F)
         ) {
             ListScreen(
+                property = property,
+                currency = currency,
+                contentType = contentType,
                 items = items,
                 addresses = addresses,
                 photos = photos,
-                contentType = contentType,
-                currency = currency,
-                property = property,
                 onPropertyClick = onPropertyClick,
                 onFabClick = onFabClick,
             )
@@ -66,14 +72,17 @@ fun ListAndDetailScreen(
             ) {
                 DetailScreen(
                     property = property,
+                    currency = currency,
+                    itemPhotos = itemPhotos,
+                    itemPois = itemPois,
+                    pTypeSet = pTypeSet,
+                    pTypeIndex = pTypeIndex,
+                    stringType = stringType,
+                    stringAgent = stringAgent,
                     stringAddress = stringAddress,
                     stringLatitude = stringLatitude,
                     stringLongitude = stringLongitude,
                     thumbnailUrl = thumbnailUrl,
-                    stringAgent = stringAgent,
-                    itemPhotos = itemPhotos,
-                    itemPois = itemPois,
-                    currency = currency,
                     internetAvailable = internetAvailable,
                     onBackPressed = onBackPressed,
                 )

@@ -52,14 +52,16 @@
     <string name="recorded">Données enregistrées!</string>
     <string name="perms_revoked">Carte indisponible car\nles permissions de localisation\nont été refusées !</string>
     <string name="network_unavailable">Réseau indisponible !</string>
+    <string name="address_incomplete">Adresse incomplète !</string>
     <string name="photo_deletion_dialog_title">Confirmation de suppression de photo</string>
-    <string name="photo_deletion_dialog_text">Supprimer la photo \"%s\" ?</string>
+    <string name="photo_deletion_dialog_text">Supprimer la photo %s ?</string>
+    <string name="no_label">sans étiquette</string>
     <string name="photo_deleted">Photo \"%s\" supprimée !</string>
     <string name="invalid_input">Erreur ! Seuls des chiffres sont autorisés !</string>
     <string name="general_error">Une erreur est survenue !</string>
 
     <!-- TYPES OF PROPERTIES -->
-    <string name="unassigned">Non attribué…</string>
+    <string name="_unassigned_">Non attribué</string>
     <string name="flat">Appartement</string>
     <string name="house">Maison</string>
     <string name="duplex">Duplex</string>

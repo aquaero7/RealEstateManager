@@ -10,7 +10,13 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.OtherHouses
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
+import com.aquaero.realestatemanager.NULL_ITEM_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.theme.Magenta
@@ -19,29 +25,48 @@ import com.aquaero.realestatemanager.ui.theme.White
 @SuppressLint("NewApi")
 @Composable
 fun DetailScreenColumn1(
-    property: Property?
+    property: Property?,
+    pTypeSet: () -> MutableSet<Int>,
+    pTypeIndex: Int,
+    stringType: String,
 ) {
     // Info status
+    val labelSold = stringResource(id = R.string.sold)
+    val labelForSale = stringResource(id = R.string.for_sale)
+    val value by remember {
+        mutableStateOf(
+            property?.saleDate?.let { labelSold }
+                ?: property?.let { if (it.propertyId != NULL_ITEM_ID) labelForSale else "" }
+                ?: ""
+        )
+    }
     DetailScreenInformationItem(
         image = Icons.Default.Info,
         contentDesc = stringResource(id = R.string.cd_status),
         label = stringResource(id = R.string.status),
         // value = if (property.saleDate != null) stringResource(id = R.string.sold) else stringResource(id = R.string.for_sale),
-        value = property?.saleDate?.let { stringResource(id = R.string.sold) }
-            ?: property?.let { stringResource(id = R.string.for_sale) }
-            ?: "",
+        value = value,
         // valueColor = if (property.saleDate != null) White else MaterialTheme.colorScheme.onSurface,
         valueColor = property?.saleDate?.let { White } ?: MaterialTheme.colorScheme.onSurface,
         // valueBackgroundColor = if (property.saleDate != null) Magenta else MaterialTheme.colorScheme.surface
         valueBackgroundColor = property?.saleDate?.let { Magenta } ?: MaterialTheme.colorScheme.surface,
     )
     // Info type
+//    val selectedIndex by remember { mutableIntStateOf(pTypeIndex) }
+
     DetailScreenInformationItem(
         image = Icons.Default.House,
         contentDesc = stringResource(id = R.string.cd_type),
         label = stringResource(id = R.string.type),
-        // value = stringResource(property.type),
-        value = property?.let { stringResource(property.typeId) } ?: "",
+//        value = stringResource(property.type),
+//        value = property?.let { stringResource(property.typeId) } ?: "",
+//        value = property?.typeId ?: "",
+        /*
+        value = if (property != null && property.propertyId != NULL_ITEM_ID)
+            stringResource(id = pTypeSet().elementAt(selectedIndex)) else "",
+        */
+        value = if (property != null && property.propertyId != NULL_ITEM_ID) stringType else "",
+//        value = if (property != null) stringType else "",   // TODO: For test only
     )
     // Info surface
     DetailScreenInformationItem(
@@ -49,7 +74,7 @@ fun DetailScreenColumn1(
         contentDesc = stringResource(id = R.string.cd_surface),
         label = stringResource(id = R.string.surface),
         // value = property.surface.toString(),
-        value = property?.let { property.surface.toString() } ?: "   ",
+        value = property?.surface?.toString() ?: "   ",
         suffix = stringResource(id = R.string.surface_unit)
     )
     // Info number of rooms
@@ -58,7 +83,7 @@ fun DetailScreenColumn1(
         contentDesc = stringResource(id = R.string.cd_rooms),
         label = stringResource(id = R.string.rooms),
         // value = property.nbOfRooms.toString(),
-        value = property?.let { property.nbOfRooms.toString() } ?: "",
+        value = property?.nbOfRooms?.toString() ?: "",
     )
     // Info number of bathrooms
     DetailScreenInformationItem(
@@ -66,7 +91,7 @@ fun DetailScreenColumn1(
         contentDesc = stringResource(id = R.string.cd_bathrooms),
         label = stringResource(id = R.string.bathrooms),
         // value = property.nbOfBathrooms.toString(),
-        value = property?.let { property.nbOfBathrooms.toString() } ?: "",
+        value = property?.nbOfBathrooms?.toString() ?: "",
     )
     // Info number of bedrooms
     DetailScreenInformationItem(
@@ -74,6 +99,6 @@ fun DetailScreenColumn1(
         contentDesc = stringResource(id = R.string.cd_bedrooms),
         label = stringResource(id = R.string.bedrooms),
         // value = property.nbOfBedrooms.toString(),
-        value = property?.let { property.nbOfBedrooms.toString() } ?: "",
+        value = property?.nbOfBedrooms?.toString() ?: "",
     )
 }

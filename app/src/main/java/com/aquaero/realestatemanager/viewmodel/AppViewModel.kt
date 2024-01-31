@@ -7,7 +7,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.EditDetail
 import com.aquaero.realestatemanager.GeolocMap
@@ -15,13 +14,7 @@ import com.aquaero.realestatemanager.ListAndDetail
 import com.aquaero.realestatemanager.Loan
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.SearchCriteria
-import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
-import com.aquaero.realestatemanager.model.Photo
-import com.aquaero.realestatemanager.model.Poi
-import com.aquaero.realestatemanager.model.Property
-import com.aquaero.realestatemanager.model.PropertyPoiJoin
-import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
@@ -33,10 +26,6 @@ import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.utils.CurrencyStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
@@ -60,6 +49,21 @@ class AppViewModel(
 
     /** Room **/
 
+    val properties = propertyRepository.getPropertiesFromRoom()
+    val addresses = addressRepository.getAddressesFromRoom()
+    val photos = photoRepository.getPhotosFromRoom()
+    val agents = agentRepository.getAgentsFromRoom()
+    val agentsOrderedByName = agentRepository.getAgentsOrderedByNameFromRoom()
+    val types = typeRepository.getTypesFromRoom()
+    val typesOrderedById = typeRepository.getTypesOrderedByIdFromRoom()
+    val pois = poiRepository.getPoisFromRoom()
+    val propertyPoiJoins = propertyPoiJoinRepository.getPropertyPoiJoinsFromRoom()
+    val stringTypes = typeRepository.getStringTypesFromRoom(context)
+    val stringTypesOrderedById = typeRepository.getStringTypesOrderedByIdFromRoom(context)
+    val stringAgents = agentRepository.getStringAgentsFromRoom()
+    val stringAgentsOrderedByName = agentRepository.getStringAgentsOrderedByNameFromRoom()
+
+    /*
     private val _propertiesStateFlow = MutableStateFlow(mutableListOf<Property>())
     val propertiesStateFlow: StateFlow<MutableList<Property>> = _propertiesStateFlow.asStateFlow()
 
@@ -83,7 +87,6 @@ class AppViewModel(
 
     init {
         viewModelScope.launch(IO) {
-
             propertyRepository.getPropertiesFromRoom()
                 .collect { listOfProperties -> _propertiesStateFlow.value = listOfProperties }
 
@@ -106,6 +109,7 @@ class AppViewModel(
                 .collect { listOfPropertyPoiJoins -> _propertyPoiJoinsStateFlow.value = listOfPropertyPoiJoins }
         }
     }
+    */
 
     /***/
 
@@ -168,10 +172,19 @@ class AppViewModel(
     /** End TopBar */
 
 
-    fun agentFromId(agentId: Long): Agent? {
-        return agentRepository.agentFromId(agentId)
-    }
 
+
+    /*
+    @SuppressLint("DiscouragedApi")
+    fun stringTypes(types: MutableList<Type>): MutableList<String> {
+        val stringTypes: MutableList<String> = mutableListOf()
+        for (type in types) {
+            val resourceId = context.resources.getIdentifier(type.typeId, "string", context.packageName)
+            stringTypes.add(if (resourceId != 0) context.getString(resourceId) else type.typeId)
+        }
+        return stringTypes
+    }
+    */
 
 
 

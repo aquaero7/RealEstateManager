@@ -9,7 +9,7 @@ data class Poi(
     val poiId: String,
 )
 
-enum class POI(val key: String) {
+enum class PoiEnum(val key: String) {
     HOSPITAL(key = "hospital"),
     SCHOOL(key = "school"),
     RESTAURANT(key = "restaurant"),
@@ -19,10 +19,10 @@ enum class POI(val key: String) {
 }
 
 val POI_PREPOPULATION_DATA = listOf(
-    Poi(POI.HOSPITAL.key),
-    Poi(POI.SCHOOL.key),
-    Poi(POI.RESTAURANT.key),
-    Poi(POI.SHOP.key),
-    Poi(POI.RAILWAY_STATION.key),
-    Poi(POI.CAR_PARK.key),
+    Poi(PoiEnum.HOSPITAL.key),
+    Poi(PoiEnum.SCHOOL.key),
+    Poi(PoiEnum.RESTAURANT.key),
+    Poi(PoiEnum.SHOP.key),
+    Poi(PoiEnum.RAILWAY_STATION.key),
+    Poi(PoiEnum.CAR_PARK.key),
 )

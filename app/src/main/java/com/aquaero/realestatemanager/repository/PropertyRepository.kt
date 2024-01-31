@@ -12,7 +12,6 @@ import com.aquaero.realestatemanager.model.Property
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import java.time.LocalDate
 
 class PropertyRepository(private val propertyDao: PropertyDao) {
 
@@ -35,35 +34,48 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
         }
     }
 
-    suspend fun getPropertyFromRoom(pId: Long): Flow<Property> {
+    /*suspend*/ fun getPropertyFromRoom(pId: Long): Flow<Property> {
+        /*
         return withContext(IO) {
             propertyDao.getProperty(pId)
         }
+        */
+        return propertyDao.getProperty(pId)
     }
 
-    suspend fun getPropertiesFromRoom(): Flow<MutableList<Property>> {
+    /*suspend*/ fun getPropertiesFromRoom(): Flow<MutableList<Property>> {
+        /*
         return withContext(IO) {
             propertyDao.getProperties()
         }
+        */
+        return propertyDao.getProperties()
     }
 
-    suspend fun getPropertiesOrderedByIdFromRoom(): Flow<MutableList<Property>> {
+    /*suspend*/ fun getPropertiesOrderedByIdFromRoom(): Flow<MutableList<Property>> {
+        /*
         return withContext(IO) {
             propertyDao.getPropertiesOrderedById()
         }
+        */
+        return propertyDao.getPropertiesOrderedById()
     }
 
-    suspend fun getPropertiesOrderedByRegistrationDateFromRoom(): Flow<MutableList<Property>> {
+    /*suspend*/ fun getPropertiesOrderedByRegistrationDateFromRoom(): Flow<MutableList<Property>> {
+        /*
         return withContext(IO) {
             propertyDao.getPropertiesOrderedByRegistrationDate()
         }
+        */
+        return propertyDao.getPropertiesOrderedByRegistrationDate()
     }
 
     /***/
 
 
-    fun propertyFromId(propertyId: Long): Property {
-        return fakeProperties.find { it.propertyId == propertyId }!!
+    fun propertyFromId(properties: MutableList<Property>, propertyId: Long): Property {
+//        return fakeProperties.find { it.propertyId == propertyId }!!
+        return properties.first() { it.propertyId == propertyId }
     }
 
     /*
@@ -109,13 +121,13 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
     /**
      * Hardcoded data
      */
-    val typesSet: MutableSet<Int?> = mutableSetOf(
-        R.string.unassigned,
+    val typesSet: MutableSet<Int> = mutableSetOf(
+        R.string._unassigned_,
         R.string.flat, R.string.house, R.string.duplex, R.string.penthouse,
         R.string.loft, R.string.manor, R.string.castle, R.string.hostel
     )
 
-    val poiSet: MutableSet<Int?> = mutableSetOf(
+    val poiSet: MutableSet<Int> = mutableSetOf(
         R.string.hospital, R.string.school, R.string.restaurant,
         R.string.shop, R.string.railway_station, R.string.car_park,
     )

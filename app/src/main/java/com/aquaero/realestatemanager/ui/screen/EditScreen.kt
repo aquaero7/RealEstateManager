@@ -22,10 +22,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
+import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
+import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
-import com.aquaero.realestatemanager.ui.component.app.DetailScreenPoi
+import com.aquaero.realestatemanager.model.Type
+import com.aquaero.realestatemanager.ui.component.app.PointsOfInterest
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenColumn1
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenColumn2
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenMedia
@@ -33,11 +36,19 @@ import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenTextFiel
 
 @Composable
 fun EditScreen(
-    pTypeSet: () -> MutableSet<Int?>,
+    types: MutableList<Type>,
+    stringTypes: MutableList<String>,
+    stringType: String?,
+    agents: MutableList<Agent>,
+    stringAgents: MutableList<String>,
+    stringAgent: String?,
+    itemPhotos: MutableList<Photo>,
+    itemPois: MutableList<Poi>,
+    pTypeSet: () -> MutableSet<Int>,
     agentSet: () -> MutableSet<String?>,
     property: Property?,
     addresses: List<Address>,
-    pTypeIndex: Int?,
+    pTypeIndex: Int,
     agentIndex: Int?,
     currency: String,
     onDescriptionValueChange: (String) -> Unit,
@@ -106,6 +117,9 @@ fun EditScreen(
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 EditScreenColumn1(
+                    types = types,
+                    stringTypes = stringTypes,
+                    stringType = stringType,
                     property = property,
                     currency = currency,
                     pTypeSet = pTypeSet,
@@ -127,6 +141,9 @@ fun EditScreen(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 EditScreenColumn2(
+                    agents = agents,
+                    stringAgents = stringAgents,
+                    stringAgent = stringAgent,
                     property = property,
                     addresses = addresses,
                     agentSet = agentSet,
@@ -149,15 +166,16 @@ fun EditScreen(
 
         // POIs
         // property?.let { DetailScreenPoi(selectedPoi = it.pPoi) }
-        DetailScreenPoi(
-            itemPois = (property?.poi ?: mutableListOf()),
-            clickable = true,
+        PointsOfInterest(
             onHospitalClick = onHospitalClick,
             onSchoolClick = onSchoolClick,
             onRestaurantClick = onRestaurantClick,
             onShopClick = onShopClick,
             onRailwayStationClick = onRailwayStationClick,
             onCarParkClick = onCarParkClick,
+//            itemPois = (property?.poi ?: mutableListOf()),
+            itemPois = itemPois,
+            clickable = true,
         )
 
 
@@ -165,17 +183,16 @@ fun EditScreen(
 
         // Media
         EditScreenMedia(
-            photos = property?.photos ?: mutableListOf(NO_PHOTO),
             onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
             onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,
             buttonAddPhotoEnabled = buttonAddPhotoEnabled,
-            painter = painter,
             onSavePhotoButtonClick = onSavePhotoButtonClick,
             onEditPhotoMenuItemClick = onEditPhotoMenuItemClick,
             onPhotoDeletionConfirmation = onPhotoDeletionConfirmation,
+            painter = painter,
+//            photos = property?.photos ?: mutableListOf(NO_PHOTO),
+            photos = itemPhotos,
         )
-
-
 
     }
 

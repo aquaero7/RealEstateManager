@@ -24,10 +24,10 @@ interface PropertyPoiJoinDao {
     suspend fun deletePropertyPoiJoin(propertyPoiJoin: PropertyPoiJoin)
 
     @Query("SELECT * FROM poi INNER JOIN property_poi_join ON poi.poiId = property_poi_join.poiId WHERE property_poi_join.propertyId = :propertyId")
-    suspend fun getPoisForProperty(propertyId: Long): Flow<MutableList<Poi>>
+    fun getPoisForProperty(propertyId: Long): Flow<MutableList<Poi>>
 
     @Query("SELECT * FROM property INNER JOIN property_poi_join ON property.propertyId = property_poi_join.propertyId WHERE property_poi_join.poiId = :poiId")
-    suspend fun getPropertiesForPoi(poiId: String): Flow<MutableList<Property>>
+    fun getPropertiesForPoi(poiId: String): Flow<MutableList<Property>>
 
     @Query("SELECT * FROM property_poi_join")
     fun getPropertyPoiJoins(): Flow<MutableList<PropertyPoiJoin>>

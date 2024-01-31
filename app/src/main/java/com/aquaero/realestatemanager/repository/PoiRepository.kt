@@ -27,22 +27,31 @@ class PoiRepository(private val poiDao: PoiDao) {
         }
     }
 
-    suspend fun getPoiFromRoom(poiId: String): Flow<Poi> {
+    /*suspend*/ fun getPoiFromRoom(poiId: String): Flow<Poi> {
+        /*
         return withContext(Dispatchers.IO) {
             poiDao.getPoi(poiId)
         }
+        */
+        return poiDao.getPoi(poiId)
     }
 
-    suspend fun getPoisFromRoom(): Flow<MutableList<Poi>> {
+    /*suspend*/ fun getPoisFromRoom(): Flow<MutableList<Poi>> {
+        /*
         return withContext(Dispatchers.IO) {
             poiDao.getPois()
         }
+        */
+        return poiDao.getPois()
     }
 
-    suspend fun getPoisOrderedByIdFromRoom(): Flow<MutableList<Poi>> {
+    /*suspend*/ fun getPoisOrderedByIdFromRoom(): Flow<MutableList<Poi>> {
+        /*
         return withContext(Dispatchers.IO) {
             poiDao.getPoisOrderedById()
         }
+        */
+        return poiDao.getPoisOrderedById()
     }
 
     /***/

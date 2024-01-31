@@ -36,21 +36,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aquaero.realestatemanager.POI
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.model.PoiEnum
 import com.aquaero.realestatemanager.model.Poi
 
 @SuppressLint("NewApi")
 @Composable
-fun DetailScreenPoi(
-    itemPois: MutableList<Poi>,
-    clickable: Boolean = false,
+fun PointsOfInterest(
     onHospitalClick: (Boolean) -> Unit = {},
     onSchoolClick: (Boolean) -> Unit = {},
     onRestaurantClick: (Boolean) -> Unit = {},
     onShopClick: (Boolean) -> Unit = {},
     onRailwayStationClick: (Boolean) -> Unit = {},
     onCarParkClick: (Boolean) -> Unit = {},
+    itemPois: MutableList<Poi>,
+    clickable: Boolean = false,
 ) {
     Text(
         text = stringResource(R.string.poi),
@@ -71,74 +71,74 @@ fun DetailScreenPoi(
         horizontalArrangement = Arrangement.SpaceAround
     ) {
         // Hospital
-        DetailScreenIcon(
+        PoiIcon(
             imageVector = Icons.Default.LocalHospital,
             // contentDesc = stringResource(id = R.string.cd_hospital),
-            contentDesc = POI.HOSPITAL.key,
+            contentDesc = PoiEnum.HOSPITAL.key,
             label = stringResource(id = R.string.hospital),
             // selected = selectedPoi.contains(stringResource(id = R.string.key_hospital)),
             // selected = itemPois.contains(Poi(POI.HOSPITAL.key)),
-            selected = (itemPois.find { it.poiId == POI.HOSPITAL.key } != null),
+            selected = (itemPois.find { it.poiId == PoiEnum.HOSPITAL.key } != null),
             clickable = clickable,
             onClick = onHospitalClick,
         )
         // School
-        DetailScreenIcon(
+        PoiIcon(
             imageVector = Icons.Default.School,
             // contentDesc = stringResource(id = R.string.cd_school),
-            contentDesc = POI.SCHOOL.key,
+            contentDesc = PoiEnum.SCHOOL.key,
             label = stringResource(id = R.string.school),
             // selected = selectedPoi.contains(stringResource(id = R.string.key_school)),
             // selected = itemPois.contains(Poi(POI.SCHOOL.key)),
-            selected = (itemPois.find { it.poiId == POI.SCHOOL.key } != null),
+            selected = (itemPois.find { it.poiId == PoiEnum.SCHOOL.key } != null),
             clickable = clickable,
             onClick = onSchoolClick,
         )
         // Restaurant
-        DetailScreenIcon(
+        PoiIcon(
             imageVector = Icons.Default.Restaurant,
             //contentDesc = stringResource(id = R.string.cd_restaurant),
-            contentDesc = POI.RESTAURANT.key,
+            contentDesc = PoiEnum.RESTAURANT.key,
             label = stringResource(id = R.string.restaurant),
             // selected = selectedPoi.contains(stringResource(id = R.string.key_restaurant)),
             // selected = itemPois.contains(Poi(POI.RESTAURANT.key)),
-            selected = (itemPois.find { it.poiId == POI.RESTAURANT.key } != null),
+            selected = (itemPois.find { it.poiId == PoiEnum.RESTAURANT.key } != null),
             clickable = clickable,
             onClick = onRestaurantClick,
         )
         // Shop
-        DetailScreenIcon(
+        PoiIcon(
             imageVector = Icons.Default.ShoppingBag,
             // contentDesc = stringResource(id = R.string.cd_shop),
-            contentDesc = POI.SHOP.key,
+            contentDesc = PoiEnum.SHOP.key,
             label = stringResource(id = R.string.shop),
             // selected = selectedPoi.contains(stringResource(id = R.string.key_shop)),
             // selected = itemPois.contains(Poi(POI.SHOP.key)),
-            selected = (itemPois.find { it.poiId == POI.SHOP.key } != null),
+            selected = (itemPois.find { it.poiId == PoiEnum.SHOP.key } != null),
             clickable = clickable,
             onClick = onShopClick,
         )
         // Railway station
-        DetailScreenIcon(
+        PoiIcon(
             imageVector = Icons.Default.Train,
             // contentDesc = stringResource(id = R.string.cd_railway_station),
-            contentDesc = POI.RAILWAY_STATION.key,
+            contentDesc = PoiEnum.RAILWAY_STATION.key,
             label = stringResource(id = R.string.railway_station),
             // selected = selectedPoi.contains(stringResource(id = R.string.key_railway_station)),
             // selected = itemPois.contains(Poi(POI.RAILWAY_STATION.key)),
-            selected = (itemPois.find { it.poiId == POI.RAILWAY_STATION.key } != null),
+            selected = (itemPois.find { it.poiId == PoiEnum.RAILWAY_STATION.key } != null),
             clickable = clickable,
             onClick = onRailwayStationClick,
         )
         // Car park
-        DetailScreenIcon(
+        PoiIcon(
             imageVector = Icons.Default.LocalParking,
             // contentDesc = stringResource(id = R.string.cd_car_park),
-            contentDesc = POI.CAR_PARK.key,
+            contentDesc = PoiEnum.CAR_PARK.key,
             label = stringResource(id = R.string.car_park),
             // selected = selectedPoi.contains(stringResource(id = R.string.key_car_park)),
             // selected = itemPois.contains(Poi(POI.CAR_PARK.key)),
-            selected = (itemPois.find { it.poiId == POI.CAR_PARK.key } != null),
+            selected = (itemPois.find { it.poiId == PoiEnum.CAR_PARK.key } != null),
             clickable = clickable,
             onClick = onCarParkClick,
         )
@@ -146,7 +146,7 @@ fun DetailScreenPoi(
 }
 
 @Composable
-fun DetailScreenIcon(
+fun PoiIcon(
     clickable: Boolean,
     onClick: (Boolean) -> Unit,
     imageVector: ImageVector,

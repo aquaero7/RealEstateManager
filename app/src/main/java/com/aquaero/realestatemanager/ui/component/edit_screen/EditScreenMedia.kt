@@ -53,14 +53,14 @@ import com.aquaero.realestatemanager.ui.component.app.PhotosLazyRow
 @SuppressLint("NewApi")
 @Composable
 fun EditScreenMedia(
-    photos: MutableList<Photo>,
     onShootPhotoMenuItemClick: () -> Unit,
     onSelectPhotoMenuItemClick: () -> Unit,
     buttonAddPhotoEnabled: Boolean,
-    painter: Painter,
     onSavePhotoButtonClick: (String) -> Unit,
     onEditPhotoMenuItemClick: (Photo) -> Unit,
     onPhotoDeletionConfirmation: (Long) -> Unit,
+    painter: Painter,
+    photos: MutableList<Photo>,
 ) {
     var addPhoto by rememberSaveable { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
@@ -68,7 +68,7 @@ fun EditScreenMedia(
     var photoLabel by remember { mutableStateOf("") }
 
     val onEditPhotoMenuItemClickGetPhoto: (Photo) -> Unit = { photo ->
-        photoLabel = photo.label
+        photoLabel = photo.label ?: ""
         onEditPhotoMenuItemClick(photo)
     }
 
@@ -84,10 +84,12 @@ fun EditScreenMedia(
         displayPhotoDeletionDialog = true
     }
     if (displayPhotoDeletionDialog) {
+        val label = photoToDelete!!.label?.let { "\"$it\"" } ?: stringResource(id = R.string.no_label)
         AppDialog(
             subject = PHOTO_DELETION,
             title = stringResource(id = R.string.photo_deletion_dialog_title),
-            text = (stringResource(id = R.string.photo_deletion_dialog_text, photoToDelete!!.label)),
+//            text = (stringResource(id = R.string.photo_deletion_dialog_text, photoToDelete!!.label ?: "?")),
+            text = (stringResource(id = R.string.photo_deletion_dialog_text, label)),
             okLabel = stringResource(id = R.string.confirm),
             onOkClick = onOkClick,
             cnlLabel = stringResource(id = R.string.abort),
@@ -156,12 +158,12 @@ fun EditScreenMedia(
             ) {
                 // Description field
                 EditScreenTextFieldItem(
-                    itemText = photoLabel,
                     labelText = stringResource(id = R.string.photo_label),
                     placeHolderText = stringResource(id = R.string.photo_label),
                     icon = Icons.Default.Description,
                     iconCD = stringResource(id = R.string.cd_photo_label),
                     onValueChange = { photoLabel = it },
+                    itemText = photoLabel,
                 )
 
                 // Button to add the photo to property list

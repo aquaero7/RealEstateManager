@@ -46,16 +46,16 @@ import com.aquaero.realestatemanager.ui.theme.White
 @Composable
 fun DetailScreenInformationItem(
     maxLines: Int = 1,
-    fieldLineHeight: TextUnit = 16.sp,  // 14.sp
-    fieldFontSize: TextUnit = 14.sp,    // 16.sp
-    labelFontSize: TextUnit = 14.sp,    // 14.sp
+    fieldLineHeight: TextUnit = 16.sp,
+    fieldFontSize: TextUnit = 14.sp,
+    labelFontSize: TextUnit = 14.sp,
     iconSize: Dp = 40.dp,
     image: ImageVector,
     contentDesc: String,
     label: String,
     value: String,
     suffix: String? = null,
-    iconColor: Color = MaterialTheme.colorScheme.tertiary, // Pink40,
+    iconColor: Color = MaterialTheme.colorScheme.tertiary,
     valueColor: Color = MaterialTheme.colorScheme.onSurface,
     valueBackgroundColor: Color = MaterialTheme.colorScheme.surface
 ) {
@@ -69,7 +69,6 @@ fun DetailScreenInformationItem(
     ) {
         // Icon
         Box(
-            // verticalAlignment = Alignment.CenterVertically,
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .wrapContentSize()
@@ -82,7 +81,6 @@ fun DetailScreenInformationItem(
                 modifier = Modifier.size(iconSize),
             )
         }
-        // Spacer(modifier = Modifier.width(8.dp))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -118,7 +116,6 @@ fun DetailScreenInformationItem(
                     maxLines = maxLines,
                     overflow = TextOverflow.Ellipsis,
                     color = valueColor,
-                    // fontWeight = FontWeight.Bold,
                     lineHeight = fieldLineHeight,
                     modifier = Modifier.padding(horizontal = 2.dp)
                 )

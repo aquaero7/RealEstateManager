@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Label
 import androidx.compose.material.icons.filled.PhotoCamera
@@ -44,13 +45,11 @@ fun BottomActionsSheet(
                         }
                     ),
                 headlineContent = {
-                    Text(
-                        text = "${stringResource(id = R.string.edit_photo)} ${photo.label}"
-                    )
+                    Text(text = "${stringResource(id = R.string.edit_photo)} ${photo.label}")
                 },
                 leadingContent = {
                     Icon(
-                        imageVector = Icons.Default.Label,
+                        imageVector = Icons.Default.Description,
                         contentDescription = stringResource(id = R.string.cd_menu_item_edit_photo),
                     )
                 }
@@ -66,9 +65,7 @@ fun BottomActionsSheet(
                         }
                     ),
                 headlineContent = {
-                    Text(
-                        text = "${stringResource(id = R.string.delete_photo)} ${photo.label}"
-                    )
+                    Text(text = "${stringResource(id = R.string.delete_photo)} ${photo.label}")
                 },
                 leadingContent = {
                     Icon(
@@ -91,9 +88,7 @@ fun BottomActionsSheet(
                         }
                     ),
                 headlineContent = {
-                    Text(
-                        text = stringResource(id = R.string.shoot_photo)
-                    )
+                    Text(text = stringResource(id = R.string.shoot_photo))
                 },
                 leadingContent = {
                     Icon(
@@ -113,9 +108,7 @@ fun BottomActionsSheet(
                         }
                     ),
                 headlineContent = {
-                    Text(
-                        text = stringResource(id = R.string.select_photo)
-                    )
+                    Text(text = stringResource(id = R.string.select_photo))
                 },
                 leadingContent = {
                     Icon(

@@ -1,6 +1,8 @@
 package com.aquaero.realestatemanager
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ManageSearch
+import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Details
 import androidx.compose.material.icons.filled.EditNote
@@ -31,7 +33,7 @@ interface AppDestination {
 const val propertyKey = "single_property"
 
 object ListAndDetail: AppDestination {
-    override val icon = Icons.Filled.ViewList
+    override val icon = Icons.AutoMirrored.Filled.ViewList
     override val route = "list"
     override val label = context.getString(R.string.list)
     val routeWithArgs = "$route/{$propertyKey}"
@@ -45,7 +47,7 @@ object GeolocMap: AppDestination {
 }
 
 object SearchCriteria: AppDestination {
-    override val icon = Icons.Filled.ManageSearch
+    override val icon = Icons.AutoMirrored.Filled.ManageSearch
     override val route = "search_criteria"
     override val label = context.getString(R.string.search_criteria)
 }

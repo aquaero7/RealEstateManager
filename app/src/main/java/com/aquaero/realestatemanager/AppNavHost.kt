@@ -22,9 +22,9 @@ import coil.compose.rememberAsyncImagePainter
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.NO_PHOTO
-import com.aquaero.realestatemanager.model.PoiEnum
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
+import com.aquaero.realestatemanager.model.PoiEnum
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
 import com.aquaero.realestatemanager.model.Type
@@ -36,7 +36,6 @@ import com.aquaero.realestatemanager.ui.screen.LoanScreen
 import com.aquaero.realestatemanager.ui.screen.LocationPermissionsScreen
 import com.aquaero.realestatemanager.ui.screen.MapScreen
 import com.aquaero.realestatemanager.ui.screen.SearchScreen
-import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.utils.MyLocationSource
 import com.aquaero.realestatemanager.utils.connectivityState
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
@@ -112,15 +111,6 @@ fun AppNavHost(
                             propertyId = propertyId!!
                         )
                     } ?: mutableListOf()
-/*
-                val pTypeSet = { listViewModel.pTypesSet }
-                val pTypeIndex = property?.let {
-                    listViewModel.mutableSetIndex(
-                        run(pTypeSet) as MutableSet<Any>,
-                        it.typeId
-                    )
-                } ?: 0
-*/
                 val stringType = property?.let {
                     listViewModel.stringType(types = types, stringTypes = stringTypes, typeId = property.typeId)
                 } ?: ""
@@ -141,7 +131,9 @@ fun AppNavHost(
                     listViewModel.thumbnailUrl(addresses = addresses, addressId = addressId)
                 } ?: ""
                 val connection by connectivityState()
-                val internetAvailable = listViewModel.checkForConnection(connection = connection)
+                val internetAvailable by remember(connection) {
+                    mutableStateOf(listViewModel.checkForConnection(connection = connection))
+                }
                 val onBackPressed: () -> Unit = { navController.popBackStack() }
 
                 ListAndDetailScreen(
@@ -158,8 +150,6 @@ fun AppNavHost(
                     // For detail screen only
                     itemPhotos = itemPhotos,
                     itemPois = itemPois,
-//                    pTypeSet = pTypeSet,
-//                    pTypeIndex = pTypeIndex,
                     stringType = stringType,
                     stringAgent = stringAgent,
                     stringAddress = stringAddress,
@@ -175,7 +165,9 @@ fun AppNavHost(
         composable(route = GeolocMap.route) {
             // Get network connection availability
             val connection by connectivityState()
-            val internetAvailable = mapViewModel.checkForConnection(connection = connection)
+            val internetAvailable by remember(connection) {
+                mutableStateOf(mapViewModel.checkForConnection(connection = connection))
+            }
             // Get permission grants
             var locationPermissionsGranted by remember { mutableStateOf(mapViewModel.areLocPermsGranted()) }
 
@@ -245,15 +237,6 @@ fun AppNavHost(
                 pois = pois,
                 propertyId = propertyId
             )
-/*
-            val pTypeSet = { detailViewModel.pTypesSet }
-            val pTypeIndex = property?.let {
-                detailViewModel.mutableSetIndex(
-                    run(pTypeSet) as MutableSet<Any>,
-                    it.typeId
-                )
-            } ?: 0
-*/
             val stringType = property?.let {
                 detailViewModel.stringType(
                     types = types,
@@ -281,7 +264,9 @@ fun AppNavHost(
                 detailViewModel.thumbnailUrl(addresses = addresses, addressId = it)
             } ?: ""
             val connection by connectivityState()
-            val internetAvailable = detailViewModel.checkForConnection(connection = connection)
+            val internetAvailable by remember(connection) {
+                mutableStateOf(detailViewModel.checkForConnection(connection = connection))
+            }
             val onBackPressed: () -> Unit = { navController.popBackStack() }
 
             DetailScreen(
@@ -289,8 +274,6 @@ fun AppNavHost(
                 currency = currency,
                 itemPhotos = itemPhotos,
                 itemPois = itemPois,
-//                pTypeSet = pTypeSet,
-//                pTypeIndex = pTypeIndex,
                 stringType = stringType,
                 stringAgent = stringAgent,
                 stringAddress = stringAddress,
@@ -314,23 +297,6 @@ fun AppNavHost(
                 // Creation mode
                 null
             }
-/*
-            val pTypeSet = { editViewModel.pTypesSet }
-            val agentSet = editViewModel.agentsSet
-            val pTypeIndex = property?.let {
-                editViewModel.mutableSetIndex(
-                    run(pTypeSet) as MutableSet<Any>,
-//                    stringResource(it.typeId)
-                    it.typeId
-                )
-            } ?: 0
-            val agentIndex = property?.let {
-                editViewModel.mutableSetIndex(
-                    run(agentSet) as MutableSet<Any>,
-                    editViewModel.agentFromId(agents, it.agentId).toString()
-                )
-            }
-*/
             val stringType = property?.let {
                 editViewModel.stringType(types = types, stringTypes = stringTypes, typeId = it.typeId)
             }
@@ -339,65 +305,66 @@ fun AppNavHost(
             }
             val itemPhotos = editViewModel.itemPhotos(photos = photos, propertyId = propertyId)
             val itemPois = editViewModel.itemPois(
-                propertyPoiJoins = propertyPoiJoins,
-                pois = pois,
-                propertyId = propertyId
+                propertyPoiJoins = propertyPoiJoins, pois = pois, propertyId = propertyId
             )
 
             val onDescriptionValueChange: (String) -> Unit = {
-                editViewModel.onDescriptionValueChange(propertyId, it)
+                editViewModel.onDescriptionValueChange(propertyId = propertyId, value = it)
             }
             val onPriceValueChange: (String) -> Unit = {
-                editViewModel.onPriceValueChange(propertyId, it, currency)
+                editViewModel.onPriceValueChange(propertyId = propertyId, value = it, currency = currency)
             }
             val onSurfaceValueChange: (String) -> Unit = {
-                editViewModel.onSurfaceValueChange(propertyId, it)
+                editViewModel.onSurfaceValueChange(propertyId = propertyId, value = it)
             }
             val onDropdownMenuValueChange: (String) -> Unit = {
-//                editViewModel.onDropdownMenuValueChange(propertyId, it)
-                editViewModel.onDropdownMenuValueChange(properties, types, agents, propertyId, it)
+                editViewModel.onDropdownMenuValueChange(
+                    properties = properties,
+                    types = types,
+                    agents = agents,
+                    propertyId = propertyId,
+                    value = it
+                )
             }
             val onNbOfRoomsValueChange: (String) -> Unit = {
-                editViewModel.onNbOfRoomsValueChange(propertyId, it)
+                editViewModel.onNbOfRoomsValueChange(propertyId = propertyId, value = it)
             }
             val onNbOfBathroomsValueChange: (String) -> Unit = {
-                editViewModel.onNbOfBathroomsValueChange(propertyId, it)
+                editViewModel.onNbOfBathroomsValueChange(propertyId = propertyId, value = it)
             }
             val onNbOfBedroomsValueChange: (String) -> Unit = {
-                editViewModel.onNbOfBedroomsValueChange(propertyId, it)
+                editViewModel.onNbOfBedroomsValueChange(propertyId = propertyId, value = it)
             }
             val onStreetNumberValueChange: (String) -> Unit = {
-                editViewModel.onStreetNumberValueChange(propertyId, it)
+                editViewModel.onStreetNumberValueChange(propertyId = propertyId, value = it)
             }
             val onStreetNameValueChange: (String) -> Unit = {
-                editViewModel.onStreetNameValueChange(propertyId, it)
+                editViewModel.onStreetNameValueChange(propertyId = propertyId, value = it)
             }
             val onAddInfoValueChange: (String) -> Unit = {
-                editViewModel.onAddInfoValueChange(propertyId, it)
+                editViewModel.onAddInfoValueChange(propertyId = propertyId, value = it)
             }
             val onCityValueChange: (String) -> Unit = {
-                editViewModel.onCityValueChange(propertyId, it)
+                editViewModel.onCityValueChange(propertyId = propertyId, value = it)
             }
             val onStateValueChange: (String) -> Unit = {
-                editViewModel.onStateValueChange(propertyId, it)
+                editViewModel.onStateValueChange(propertyId = propertyId, value = it)
             }
             val onZipCodeValueChange: (String) -> Unit = {
-                editViewModel.onZipCodeValueChange(propertyId, it)
+                editViewModel.onZipCodeValueChange(propertyId = propertyId, value = it)
             }
             val onCountryValueChange: (String) -> Unit = {
-                editViewModel.onCountryValueChange(propertyId, it)
+                editViewModel.onCountryValueChange(propertyId = propertyId, value = it)
             }
             val onRegistrationDateValueChange: (String) -> Unit = {
-                editViewModel.onRegistrationDateValueChange(propertyId, it)
+                editViewModel.onRegistrationDateValueChange(propertyId = propertyId, value = it)
             }
             val onSaleDateValueChange: (String) -> Unit = {
-                editViewModel.onSaleDateValueChange(propertyId, it)
+                editViewModel.onSaleDateValueChange(propertyId = propertyId, value = it)
             }
             val onPoiClick: (String, Boolean) -> Unit = { poiItem, isSelected ->
                 editViewModel.onPoiClick(
-                    propertyId = propertyId,
-                    poiItem = poiItem,
-                    isSelected = isSelected
+                    propertyId = propertyId, poiItem = poiItem, isSelected = isSelected
                 )
             }
 
@@ -412,18 +379,15 @@ fun AppNavHost(
             /**
              * Photo shooting
              */
-//            val cameraUri: Uri = editViewModel.getPhotoUri()
             val cameraUri: Uri = editViewModel.getPhotoUri()
             var capturedImageUri by remember { mutableStateOf(Uri.EMPTY) }
-            val cameraLauncher =
-                rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-                    capturedImageUri = cameraUri
-                }
+            val cameraLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.TakePicture()
+            ) { capturedImageUri = cameraUri }
             val permissionLauncher = rememberLauncherForActivityResult(
-                ActivityResultContracts.RequestPermission()
+                contract = ActivityResultContracts.RequestPermission()
             ) {
                 if (it) {
-                    // Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show()
                     cameraLauncher.launch(cameraUri)
                 } else {
                     Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
@@ -431,9 +395,7 @@ fun AppNavHost(
             }
             val onShootPhotoMenuItemClick: () -> Unit = {
                 editViewModel.onShootPhotoMenuItemClick(
-                    uri = cameraUri,
-                    cameraLauncher = cameraLauncher,
-                    permissionLauncher = permissionLauncher,
+                    uri = cameraUri, cameraLauncher = cameraLauncher, permissionLauncher = permissionLauncher,
                 )
             }
 
@@ -442,11 +404,11 @@ fun AppNavHost(
              */
             var pickerUri by remember { mutableStateOf(Uri.EMPTY) }
             val pickerLauncher =
-                rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                    //When the user has selected a photo, its URI is returned here
-                    if (uri != null) {
-                        pickerUri = uri
-                    }
+                rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.PickVisualMedia()
+                ) {
+                    //When the user selects a photo, its URI is returned here
+                    uri -> if (uri != null) { pickerUri = uri }
                 }
             val onSelectPhotoMenuItemClick: () -> Unit = {
                 editViewModel.onSelectPhotoMenuItemClick(pickerLauncher = pickerLauncher)
@@ -455,34 +417,27 @@ fun AppNavHost(
             /**
              * Photo shooting and picking
              */
-            // if (capturedImageUri.path?.isNotEmpty() == true) {
             if (capturedImageUri != Uri.EMPTY) {
                 photoToAddUri = capturedImageUri
                 capturedImageUri = Uri.EMPTY
             }
-            // if (pickerUri.path?.isNotEmpty() == true) {
             if (pickerUri != Uri.EMPTY) {
                 photoToAddUri = pickerUri
                 pickerUri = Uri.EMPTY
             }
-            //
+
             if (photoToAddUri != Uri.EMPTY) {
                 painter = rememberAsyncImagePainter(model = photoToAddUri)
-                /*  // or...
-                painter = rememberAsyncImagePainter(
-                    ImageRequest
-                        .Builder(context)
-                        .data(data = photoToAddUri)
-                        .build()
-                )
-                */
                 buttonSavePhotoEnabled = true
             } else {
                 painter = painterResource
                 buttonSavePhotoEnabled = false
             }
+
             val onSavePhotoButtonClick: (String) -> Unit = {
-                editViewModel.onSavePhotoButtonClick(itemPhotos, propertyId, photoToAddUri, it)
+                editViewModel.onSavePhotoButtonClick(
+                    itemPhotos = itemPhotos, propertyId = propertyId, uri = photoToAddUri, label = it
+                )
                 photoToAddUri = Uri.EMPTY
             }
             val onEditPhotoMenuItemClick: (Photo) -> Unit = { photo ->
@@ -490,10 +445,11 @@ fun AppNavHost(
                 buttonSavePhotoEnabled = true
             }
             val onPhotoDeletionConfirmation: (Long) -> Unit = { photoId ->
-                editViewModel.onPhotoDeletionConfirmation(itemPhotos, photoId, propertyId)
+                editViewModel.onPhotoDeletionConfirmation(
+                    itemPhotos = itemPhotos, photoId = photoId, propertyId = propertyId
+                )
             }
 
-            //
             val onBackPressed: () -> Unit = { navController.popBackStack() }
 
             EditScreen(
@@ -505,12 +461,8 @@ fun AppNavHost(
                 stringAgent = stringAgent,
                 itemPhotos = itemPhotos,
                 itemPois = itemPois,
-                pTypeSet = pTypeSet,
-                agentSet = agentSet,
                 property = property,
                 addresses = addresses,
-                pTypeIndex = pTypeIndex,
-                agentIndex = agentIndex,
                 currency = currency,
                 onDescriptionValueChange = onDescriptionValueChange,
                 onPriceValueChange = onPriceValueChange,
@@ -528,17 +480,11 @@ fun AppNavHost(
                 onCountryValueChange = onCountryValueChange,
                 onRegistrationDateValueChange = onRegistrationDateValueChange,
                 onSaleDateValueChange = onSaleDateValueChange,
-                // onHospitalClick = { onPoiClick(context.getString(R.string.key_hospital), it) },
                 onHospitalClick = { onPoiClick(PoiEnum.HOSPITAL.key, it) },
-                // onSchoolClick = { onPoiClick(context.getString(R.string.key_school), it) },
                 onSchoolClick = { onPoiClick(PoiEnum.SCHOOL.key, it) },
-                // onRestaurantClick = { onPoiClick(context.getString(R.string.key_restaurant), it) },
                 onRestaurantClick = { onPoiClick(PoiEnum.RESTAURANT.key, it) },
-                // onShopClick = { onPoiClick(context.getString(R.string.key_shop), it) },
                 onShopClick = { onPoiClick(PoiEnum.SHOP.key, it) },
-                // onRailwayStationClick = { onPoiClick(context.getString(R.string.key_railway_station), it) },
                 onRailwayStationClick = { onPoiClick(PoiEnum.RAILWAY_STATION.key, it) },
-                // onCarParkClick = { onPoiClick(context.getString(R.string.key_car_park), it) },
                 onCarParkClick = { onPoiClick(PoiEnum.CAR_PARK.key, it) },
                 onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
                 onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,
@@ -556,8 +502,8 @@ fun AppNavHost(
 fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String?) {
     val route =
         if (destination == ListAndDetail) "${destination.route}/${propertyId}" else destination.route
-    this.navigate(route) {
-        popUpTo(this@navigateSingleTopTo.graph.findStartDestination().id) { saveState = false }
+    this.navigate(route = route) {
+        popUpTo(id = this@navigateSingleTopTo.graph.findStartDestination().id) { saveState = false }
         launchSingleTop = true
         restoreState = false
     }
@@ -565,14 +511,14 @@ fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyI
 
 fun NavHostController.navigateToDetail(propertyId: String, contentType: AppContentType) {
     if (contentType == AppContentType.SCREEN_ONLY) {
-        this.navigate("${Detail.route}/$propertyId")
+        this.navigate(route = "${Detail.route}/$propertyId")
     } else {
-        this.navigateSingleTopTo(ListAndDetail, propertyId)
+        this.navigateSingleTopTo(destination = ListAndDetail, propertyId = propertyId)
     }
 }
 
 fun NavHostController.navigateToDetailEdit(propertyId: String) {
-    this.navigate("${EditDetail.route}/$propertyId")
+    this.navigate(route = "${EditDetail.route}/$propertyId")
 }
 
 

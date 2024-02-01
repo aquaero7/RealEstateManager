@@ -28,20 +28,8 @@ fun AppDialog(
                 modifier = modifier,
                 title = { Text(text = title) },
                 text = { Text(text = text) },
-                confirmButton = {
-                    Button(
-                        onClick = onOkClick
-                    ) {
-                        Text(text = okLabel)
-                    }
-                },
-                dismissButton = {
-                    Button(
-                        onClick = onCnlClick,
-                    ) {
-                        Text(text = cnlLabel)
-                    }
-                },
+                confirmButton = { Button(onClick = onOkClick) { Text(text = okLabel) } },
+                dismissButton = { Button(onClick = onCnlClick,) { Text(text = cnlLabel) } },
                 onDismissRequest = onDismiss,
             )
 
@@ -50,13 +38,7 @@ fun AppDialog(
                 modifier = modifier,
                 title = { Text(text = title) },
                 text = { Text(text = text) },
-                confirmButton = {
-                    Button(
-                        onClick = onOkClick
-                    ) {
-                        Text(text = okLabel)
-                    }
-                },
+                confirmButton = { Button(onClick = onOkClick) { Text(text = okLabel) } },
                 onDismissRequest = onDismiss,
             )
 
@@ -65,20 +47,8 @@ fun AppDialog(
                 modifier = modifier,
                 title = { Text(text = title) },
                 text = { Text(text = text) },
-                confirmButton = {
-                    Button(
-                        onClick = onOkClick
-                    ) {
-                        Text(text = okLabel)
-                    }
-                },
-                dismissButton = {
-                    Button(
-                        onClick = onCnlClick,
-                    ) {
-                        Text(text = cnlLabel)
-                    }
-                },
+                confirmButton = { Button(onClick = onOkClick) { Text(text = okLabel) } },
+                dismissButton = { Button(onClick = onCnlClick,) { Text(text = cnlLabel) } },
                 onDismissRequest = onDismiss,
             )
 

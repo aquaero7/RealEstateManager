@@ -32,8 +32,6 @@ fun DetailScreen(
     currency: String,
     itemPhotos: MutableList<Photo>,
     itemPois: MutableList<Poi>,
-    pTypeSet: () -> MutableSet<Int>,
-    pTypeIndex: Int,
     stringType: String,
     stringAgent: String,
     stringAddress: String,
@@ -52,7 +50,6 @@ fun DetailScreen(
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
         // Media (photos row)
         PhotosLazyRow(
             photos = itemPhotos,
@@ -74,45 +71,26 @@ fun DetailScreen(
             Column(
                 modifier = Modifier
                     .weight(1F)
-                    .fillMaxHeight(),    // .height(320.dp),
+                    .fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                /*Column(
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                ) {*/
-                DetailScreenColumn1(
-                    property = property,
-                    pTypeSet = pTypeSet,
-                    pTypeIndex = pTypeIndex,
-                    stringType = stringType,
-                )
-                //}
+                DetailScreenColumn1(property = property, stringType = stringType,)
             }
             // Column 2
             Column(
                 modifier = Modifier
                     .weight(1F)
-                    .fillMaxHeight(),    // .height(320.dp),
+                    .fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                /*Column(
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                ) {*/
-                    DetailScreenColumn2(
-                        property = property,
-                        stringAddress = stringAddress,
-                        stringAgent = stringAgent,
-                        currency = currency,
-                    )
-                //}
+                DetailScreenColumn2(
+                    property = property,
+                    stringAddress = stringAddress,
+                    stringAgent = stringAgent,
+                    currency = currency,
+                )
             }
         }
 
@@ -127,8 +105,6 @@ fun DetailScreen(
         DetailScreenMapThumbnail(
             internetAvailable = internetAvailable,
             thumbnailUrl = thumbnailUrl,
-            // latLng = property.addressId.latLng,
-            // latLng = addresses.find { it.addressId == property.addressId }!!.latLng,
             stringLatitude = stringLatitude,
             stringLongitude = stringLongitude,
         )

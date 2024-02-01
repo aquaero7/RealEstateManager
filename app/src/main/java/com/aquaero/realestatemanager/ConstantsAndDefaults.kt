@@ -2,9 +2,23 @@ package com.aquaero.realestatemanager
 
 import android.Manifest
 import android.location.Location
+import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.ui.theme.PurpleGrey40
 import com.aquaero.realestatemanager.ui.theme.PurpleGrey80
 import com.aquaero.realestatemanager.ui.theme.White
+
+// AppTabRow
+val TAB_HEIGHT = 64.dp
+const val TAB_FADE_IN_ANIMATION_DURATION = 150
+const val TAB_FADE_OUT_ANIMATION_DURATION = 100
+const val TAB_FADE_IN_ANIMATION_DELAY = 100
+const val INACTIVE_TAB_OPACITY = 0.60f
+
+// Content type (Content shown depending on size and windows state of device)
+enum class AppContentType {
+    SCREEN_ONLY,
+    SCREEN_WITH_DETAIL,
+}
 
 // Map
 const val MAPS_API_KEY = BuildConfig.MAPS_API_KEY
@@ -45,7 +59,15 @@ const val DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm"
 const val DATE_LENGTH = 10 // Equals to "####-##-##".count
 const val RATE_OF_DOLLAR_IN_EURO = 0.812
 
+enum class DropdownMenuCategory {
+    TYPE,
+    AGENT,
+}
+
+/*
 enum class DropdownMenuCategory(val key: String) {
     TYPE(key = "type"),
     AGENT(key = "agent")
 }
+*/
+

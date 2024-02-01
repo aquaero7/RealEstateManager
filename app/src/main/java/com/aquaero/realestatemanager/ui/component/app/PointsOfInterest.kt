@@ -73,11 +73,8 @@ fun PointsOfInterest(
         // Hospital
         PoiIcon(
             imageVector = Icons.Default.LocalHospital,
-            // contentDesc = stringResource(id = R.string.cd_hospital),
             contentDesc = PoiEnum.HOSPITAL.key,
             label = stringResource(id = R.string.hospital),
-            // selected = selectedPoi.contains(stringResource(id = R.string.key_hospital)),
-            // selected = itemPois.contains(Poi(POI.HOSPITAL.key)),
             selected = (itemPois.find { it.poiId == PoiEnum.HOSPITAL.key } != null),
             clickable = clickable,
             onClick = onHospitalClick,
@@ -85,11 +82,8 @@ fun PointsOfInterest(
         // School
         PoiIcon(
             imageVector = Icons.Default.School,
-            // contentDesc = stringResource(id = R.string.cd_school),
             contentDesc = PoiEnum.SCHOOL.key,
             label = stringResource(id = R.string.school),
-            // selected = selectedPoi.contains(stringResource(id = R.string.key_school)),
-            // selected = itemPois.contains(Poi(POI.SCHOOL.key)),
             selected = (itemPois.find { it.poiId == PoiEnum.SCHOOL.key } != null),
             clickable = clickable,
             onClick = onSchoolClick,
@@ -97,11 +91,8 @@ fun PointsOfInterest(
         // Restaurant
         PoiIcon(
             imageVector = Icons.Default.Restaurant,
-            //contentDesc = stringResource(id = R.string.cd_restaurant),
             contentDesc = PoiEnum.RESTAURANT.key,
             label = stringResource(id = R.string.restaurant),
-            // selected = selectedPoi.contains(stringResource(id = R.string.key_restaurant)),
-            // selected = itemPois.contains(Poi(POI.RESTAURANT.key)),
             selected = (itemPois.find { it.poiId == PoiEnum.RESTAURANT.key } != null),
             clickable = clickable,
             onClick = onRestaurantClick,
@@ -109,11 +100,8 @@ fun PointsOfInterest(
         // Shop
         PoiIcon(
             imageVector = Icons.Default.ShoppingBag,
-            // contentDesc = stringResource(id = R.string.cd_shop),
             contentDesc = PoiEnum.SHOP.key,
             label = stringResource(id = R.string.shop),
-            // selected = selectedPoi.contains(stringResource(id = R.string.key_shop)),
-            // selected = itemPois.contains(Poi(POI.SHOP.key)),
             selected = (itemPois.find { it.poiId == PoiEnum.SHOP.key } != null),
             clickable = clickable,
             onClick = onShopClick,
@@ -121,11 +109,8 @@ fun PointsOfInterest(
         // Railway station
         PoiIcon(
             imageVector = Icons.Default.Train,
-            // contentDesc = stringResource(id = R.string.cd_railway_station),
             contentDesc = PoiEnum.RAILWAY_STATION.key,
             label = stringResource(id = R.string.railway_station),
-            // selected = selectedPoi.contains(stringResource(id = R.string.key_railway_station)),
-            // selected = itemPois.contains(Poi(POI.RAILWAY_STATION.key)),
             selected = (itemPois.find { it.poiId == PoiEnum.RAILWAY_STATION.key } != null),
             clickable = clickable,
             onClick = onRailwayStationClick,
@@ -133,11 +118,8 @@ fun PointsOfInterest(
         // Car park
         PoiIcon(
             imageVector = Icons.Default.LocalParking,
-            // contentDesc = stringResource(id = R.string.cd_car_park),
             contentDesc = PoiEnum.CAR_PARK.key,
             label = stringResource(id = R.string.car_park),
-            // selected = selectedPoi.contains(stringResource(id = R.string.key_car_park)),
-            // selected = itemPois.contains(Poi(POI.CAR_PARK.key)),
             selected = (itemPois.find { it.poiId == PoiEnum.CAR_PARK.key } != null),
             clickable = clickable,
             onClick = onCarParkClick,

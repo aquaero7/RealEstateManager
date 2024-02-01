@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.lifecycle.ViewModel
+import com.aquaero.realestatemanager.AppContentType
 import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.EditDetail
 import com.aquaero.realestatemanager.GeolocMap
@@ -14,7 +15,6 @@ import com.aquaero.realestatemanager.ListAndDetail
 import com.aquaero.realestatemanager.Loan
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.SearchCriteria
-import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
@@ -22,7 +22,6 @@ import com.aquaero.realestatemanager.repository.PoiRepository
 import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
-import com.aquaero.realestatemanager.utils.AppContentType
 import com.aquaero.realestatemanager.utils.CurrencyStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

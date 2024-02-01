@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -28,13 +26,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.aquaero.realestatemanager.AppContentType
 import com.aquaero.realestatemanager.NULL_ITEM_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.Red
 import com.aquaero.realestatemanager.ui.theme.Yellow
-import com.aquaero.realestatemanager.utils.AppContentType
 
 @Composable
 fun PropertyCard(
@@ -51,7 +48,10 @@ fun PropertyCard(
 ) {
     Card(
         modifier = Modifier
-            .padding(horizontal = 8.dp, vertical = 0.dp) // Vertical padding handled by LazyRow verticalArrangement
+            .padding(
+                horizontal = 8.dp,
+                vertical = 0.dp
+            ) // Vertical padding handled by LazyRow verticalArrangement
             .fillMaxWidth()
             .wrapContentHeight()
             .border(
@@ -62,7 +62,7 @@ fun PropertyCard(
                 onSelection()
                 onPropertyClick(pId)
             },
-        shape = RoundedCornerShape(0.dp),   // = MaterialTheme.shapes.medium // = CutCornerShape(topEnd = 10.dp)
+        shape = RoundedCornerShape(0.dp), // or MaterialTheme.shapes.medium // or CutCornerShape(topEnd = 10.dp)
         elevation = CardDefaults.cardElevation(),
         colors = CardDefaults.cardColors()
     ) {
@@ -70,10 +70,8 @@ fun PropertyCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             val resourceId =
-//                if (phId.toInt() > 0) phId.toInt() else R.drawable.baseline_photo_camera_black_24
                 if (phId != NULL_ITEM_ID) phId.toInt() else R.drawable.baseline_photo_camera_black_24
             val colorFilter =
-//                if (phId.toInt() > 0) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
                 if (phId != NULL_ITEM_ID) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
             val alpha = if (phId.toInt() > 0) 1F else 0.2F
 
@@ -90,9 +88,9 @@ fun PropertyCard(
             )
             Surface(
                 color = if (
-                    selected && contentType == AppContentType.SCREEN_WITH_DETAIL &&
-                    !unselectedByDefaultDisplay
-                    ) MaterialTheme.colorScheme.outlineVariant else MaterialTheme.colorScheme.surface,
+                    selected && contentType == AppContentType.SCREEN_WITH_DETAIL
+                    && !unselectedByDefaultDisplay
+                ) MaterialTheme.colorScheme.outlineVariant else MaterialTheme.colorScheme.surface,
                 modifier = Modifier.fillMaxSize(),
                 ) {
                 Column(
@@ -105,7 +103,6 @@ fun PropertyCard(
                     Column {
                         Text(
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                            // text = stringResource(pType ?: R.string.unassigned),
                             text = pType,
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.onSurface

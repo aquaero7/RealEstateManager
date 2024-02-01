@@ -60,8 +60,10 @@
     <string name="invalid_input">Erreur ! Seuls des chiffres sont autorisés !</string>
     <string name="general_error">Une erreur est survenue !</string>
 
-    <!-- TYPES OF PROPERTIES -->
+    <!-- AGENT OR TYPE OF PROPERTY -->
     <string name="_unassigned_">Non attribué</string>
+
+    <!-- TYPE OF PROPERTY -->
     <string name="flat">Appartement</string>
     <string name="house">Maison</string>
     <string name="duplex">Duplex</string>
@@ -71,7 +73,7 @@
     <string name="castle">Château</string>
     <string name="hostel">Hôtel</string>
 
-    <!-- POINTS OF INTEREST -->
+    <!-- POINT OF INTEREST -->
     <string name="hospital">Hôpital</string>
     <string name="school">Ecole</string>
     <string name="restaurant">Restaurant</string>

@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.aquaero.realestatemanager.AppContentType
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.NO_PHOTO
@@ -33,7 +34,6 @@ import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.component.list_screen.PropertyCard
 import com.aquaero.realestatemanager.ui.theme.White
-import com.aquaero.realestatemanager.utils.AppContentType
 
 @Composable
 fun ListScreen(
@@ -47,7 +47,6 @@ fun ListScreen(
     onFabClick: () -> Unit,
 ) {
     Scaffold (
-        // floatingActionButtonPosition = FabPosition.End, // = default
         floatingActionButton = {
             SmallFloatingActionButton(
                 onClick = onFabClick,
@@ -71,22 +70,16 @@ fun ListScreen(
 
             Spacer(modifier = Modifier.height(4.dp))
             LazyColumn(
-                modifier = Modifier
-                    // .padding(vertical = 20.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-//                state = LazyListState(firstVisibleItemIndex = items.indexOf(property)),
                 state = LazyListState(firstVisibleItemIndex = property?.let { items.indexOf(property) } ?: 0),
             ) {
                 items(items = items) { propertyItem ->
-                    // val phId = if (propertyItem.photos != null && property.photos!![0].phId > 0L)
-                    // val phId = if (property.photos[0].photoId > 0L) propertyItem.photos[0].photoId else NO_PHOTO.photoId
                     val phId = photos.find { it.propertyId == propertyItem.propertyId }?.photoId ?: NO_PHOTO.photoId
                     PropertyCard(
                         contentType = contentType,
                         pId = propertyItem.propertyId,
                         pType = propertyItem.typeId,
-                        // pCity = propertyItem.addressId.city,
                         pCity = addresses.find { it.addressId == propertyItem.addressId }?.city ?: "",
                         phId = phId,
                         pPriceFormatted = propertyItem.priceFormattedInCurrency(currency),

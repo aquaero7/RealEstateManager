@@ -328,8 +328,8 @@ class EditViewModel(
             missingDelimiterValue = value
         ).toInt()
         when (category) {
-            DropdownMenuCategory.TYPE.key -> onTypeValueChange(properties = properties, types = types, propertyId = propertyId, index = index)
-            DropdownMenuCategory.AGENT.key -> onAgentValueChange(properties = properties, agents = agents, propertyId = propertyId, index = index)
+            DropdownMenuCategory.TYPE.name -> onTypeValueChange(properties = properties, types = types, propertyId = propertyId, index = index)
+            DropdownMenuCategory.AGENT.name -> onAgentValueChange(properties = properties, agents = agents, propertyId = propertyId, index = index)
         }
     }
 

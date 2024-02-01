@@ -33,6 +33,11 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.AppDestination
+import com.aquaero.realestatemanager.INACTIVE_TAB_OPACITY
+import com.aquaero.realestatemanager.TAB_FADE_IN_ANIMATION_DELAY
+import com.aquaero.realestatemanager.TAB_FADE_IN_ANIMATION_DURATION
+import com.aquaero.realestatemanager.TAB_FADE_OUT_ANIMATION_DURATION
+import com.aquaero.realestatemanager.TAB_HEIGHT
 import com.aquaero.realestatemanager.ui.theme.White
 import java.util.Locale
 
@@ -46,12 +51,11 @@ fun AppTabRow(
 ) {
     Surface(
         modifier = modifier
-            .height(tabHeight)
+            .height(TAB_HEIGHT)
             .fillMaxWidth()
     ) {
         Row(
             modifier = Modifier.selectableGroup().background(MaterialTheme.colorScheme.secondary),
-            //horizontalArrangement = Arrangement.Center,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             allScreens.forEach { screen ->
@@ -76,7 +80,7 @@ private fun AppTab(
     selected: Boolean,
     colorAnimLabel: String,
 ) {
-    val color = White   // if (selected) Yellow else White
+    val color = White
     val durationMillis = if (selected) TAB_FADE_IN_ANIMATION_DURATION else TAB_FADE_OUT_ANIMATION_DURATION
     val animSpec = remember {
         tween<Color>(
@@ -91,10 +95,9 @@ private fun AppTab(
     )
     Row(
         modifier = modifier
-            // .padding(16.dp)
             .padding(vertical = 16.dp, horizontal = 20.dp)
             .animateContentSize()
-            .height(tabHeight)
+            .height(TAB_HEIGHT)
             .selectable(
                 selected = selected,
                 onClick = onSelected,
@@ -112,13 +115,7 @@ private fun AppTab(
         Icon(imageVector = icon, contentDescription = text, tint = tabTintColor)
         if (selected) {
             Spacer(Modifier.width(12.dp))
-            Text(text.uppercase(Locale.getDefault()), color = tabTintColor)
+            Text(text = text.uppercase(Locale.getDefault()), color = tabTintColor)
         }
     }
 }
-
-private val tabHeight = 64.dp   //56.dp
-private const val TAB_FADE_IN_ANIMATION_DURATION = 150
-private const val TAB_FADE_OUT_ANIMATION_DURATION = 100
-private const val TAB_FADE_IN_ANIMATION_DELAY = 100
-private const val INACTIVE_TAB_OPACITY = 0.60f

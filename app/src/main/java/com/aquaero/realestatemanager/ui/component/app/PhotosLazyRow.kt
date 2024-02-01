@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.aquaero.realestatemanager.NULL_ITEM_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Photo
 
@@ -66,10 +67,10 @@ fun PhotosLazyRow(
     ) {
         items(items = photos) { photo ->
             val resourceUri =
-                if (photo.photoId.toInt() > 0) photo.uri else R.drawable.baseline_photo_camera_black_24
+                if (photo.photoId != NULL_ITEM_ID) photo.uri else R.drawable.baseline_photo_camera_black_24
             val colorFilter =
-                if (photo.photoId.toInt() > 0) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
-            val alpha = if (photo.photoId.toInt() > 0) 1F else 0.2F
+                if (photo.photoId != NULL_ITEM_ID) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
+            val alpha = if (photo.photoId != NULL_ITEM_ID) 1F else 0.2F
 
             Box(
                 modifier = Modifier
@@ -79,9 +80,8 @@ fun PhotosLazyRow(
                 contentAlignment = Alignment.BottomCenter,
             ) {
                 Image(
-                    // painter = painterResource(id = resourceId),  // TODO: To be deleted
                     painter = rememberAsyncImagePainter(resourceUri),
-                    contentDescription = null,
+                    contentDescription = stringResource(id = R.string.cd_photo),
                     contentScale = ContentScale.FillBounds,
                     colorFilter = colorFilter,
                     modifier = Modifier
@@ -94,7 +94,9 @@ fun PhotosLazyRow(
                             onLongClick = {
                                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                 contextMenuPhotoId = photo.photoId
-                            }) {}
+                            },
+                            onClick = {}
+                        )
                 )
                 Surface(
                     modifier = Modifier
@@ -109,7 +111,6 @@ fun PhotosLazyRow(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
-                        // color = MaterialTheme.colorScheme.tertiary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(top = 8.dp),

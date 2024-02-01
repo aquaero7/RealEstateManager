@@ -18,6 +18,7 @@ data class Agent(
     }
 }
 
+/** Theis Enum key should be set inside string resource file for formatted display and translation **/
 enum class AgentEnum(val key: String) {
     UNASSIGNED(key = "_unassigned_"),
 }

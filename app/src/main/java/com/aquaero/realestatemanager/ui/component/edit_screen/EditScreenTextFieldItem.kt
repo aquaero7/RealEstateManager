@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.aquaero.realestatemanager.DP_CONTAINER_COLOR
 import com.aquaero.realestatemanager.DP_TEXT_COLOR
+import com.aquaero.realestatemanager.DropdownMenuCategory
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.ui.theme.Red
@@ -74,12 +75,12 @@ fun EditScreenTextFieldItem(
     itemText: String? = null,
     shouldBeDigitsOnly: Boolean = false,
     // For DropDownMenu
-    itemsSet: (() -> MutableSet<*>)? = null,    // Not null when the item is a DropdownMenu
-    index: Int? = null,
+//    itemsSet: (() -> MutableSet<*>)? = null,    // Not null when the item is a DropdownMenu
+//    index: Int? = null,
     types: MutableList<Type>? = null,           // Not null when the item is a Type DropdownMenu
     stringItems: MutableList<String>? = null,   // Not null when the item is a Type DropdownMenu
     stringItem: String? = null,                 // Not null when the item is a Type DropdownMenu
-    dropdownMenuCategory: String? = null,       // Not null when the item is a Type DropdownMenu
+    dropdownMenuCategory: DropdownMenuCategory? = null,       // Not null when the item is a Type DropdownMenu
     // For DatePicker
     storedDate: String? = null,                 // Not null when the item is a DatePicker
     clearableDate: Boolean = false,
@@ -91,7 +92,8 @@ fun EditScreenTextFieldItem(
 //    val isDropdownMenu by remember { mutableStateOf(itemsSet != null) }
     val isDropdownMenu by remember { mutableStateOf(dropdownMenuCategory != null) }
     var expanded by remember { mutableStateOf(false) }
-    var selectedIndex by remember { mutableIntStateOf(index ?: 0) }
+//    var selectedIndex by remember { mutableIntStateOf(index ?: 0) }
+    var selectedIndex by remember { mutableIntStateOf(stringItems?.indexOf(stringItem) ?: 0) }
     /*
     val selectedItem = itemsSet?.let { it() }?.elementAt(selectedIndex).let {
         if (it is String) it else if (it is Int) stringResource(id = it) else ""
@@ -235,7 +237,7 @@ fun EditScreenTextFieldItem(
                             selectedIndex = index
                             selectedItem = s
 //                            onValueChange("$index#$s")
-                            onValueChange("$dropdownMenuCategory#$index")
+                            onValueChange("${dropdownMenuCategory!!.name}#$index")
                             expanded = false
                         },
                     )

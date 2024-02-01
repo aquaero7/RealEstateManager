@@ -9,6 +9,7 @@ data class Poi(
     val poiId: String,
 )
 
+/** These Enum keys should be set inside string resource file for formatted display and translation **/
 enum class PoiEnum(val key: String) {
     HOSPITAL(key = "hospital"),
     SCHOOL(key = "school"),

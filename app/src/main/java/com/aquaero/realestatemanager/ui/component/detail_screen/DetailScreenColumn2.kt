@@ -26,7 +26,6 @@ fun DetailScreenColumn2(
         image = Icons.Default.Money,
         contentDesc = stringResource(id = R.string.cd_price),
         label = stringResource(R.string.price),
-        // value = property.priceStringInCurrency(currency),
         value = property?.priceFormattedInCurrency(currency) ?: "",
     )
     // Info location
@@ -35,8 +34,6 @@ fun DetailScreenColumn2(
         image = Icons.Default.LocationOn,
         contentDesc = stringResource(id = R.string.cd_address),
         label = stringResource(id = R.string.address),
-        // value = property.addressId.toString(),
-        // value = addresses.find { it.addressId == property.addressId }.toString(),
         value = stringAddress,
     )
     // Info agent
@@ -53,8 +50,6 @@ fun DetailScreenColumn2(
         image = Icons.Default.ArrowCircleDown,
         contentDesc = stringResource(id = R.string.cd_registration_date),
         label = stringResource(id = R.string.registration_date),
-        // value = property.registrationDate.toString(),
-//        value = property?.let { it.registrationDate ?: "-" } ?: "",
         value = property?.registrationDate ?: "",
     )
     // Info sale date
@@ -62,9 +57,6 @@ fun DetailScreenColumn2(
         image = Icons.Default.ArrowCircleUp,
         contentDesc = stringResource(id = R.string.cd_sale_date),
         label = stringResource(id = R.string.sale_date),
-//        value = if (property.saleDate != null) property.saleDate.toString() else "-",
-//        value = property?.saleDate?.let { property.saleDate.toString() } ?: property?.let { "-" } ?: "",
-//        value = property?.let { it.saleDate ?: "-" } ?: "",
         value = property?.saleDate ?: "",
     )
 }

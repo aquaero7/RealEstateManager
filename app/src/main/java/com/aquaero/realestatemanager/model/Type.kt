@@ -9,6 +9,7 @@ data class Type(
     val typeId: String,
 )
 
+/** These Enum keys should be set inside string resource file for formatted display and translation **/
 enum class TypeEnum(val key: String) {
     UNASSIGNED(key = "_unassigned_"),
     FLAT(key = "flat"),

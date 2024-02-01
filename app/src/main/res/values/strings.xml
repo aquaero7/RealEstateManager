@@ -60,8 +60,10 @@
     <string name="invalid_input">Error! Only digits are allowed!</string>
     <string name="general_error">An error has occurred!</string>
 
-    <!-- TYPE OF PROPERTIES -->
+    <!-- AGENT OR TYPE OF PROPERTY -->
     <string name="_unassigned_">Unassigned</string>
+
+    <!-- TYPE OF PROPERTY -->
     <string name="flat">Flat</string>
     <string name="house">House</string>
     <string name="duplex">Duplex</string>
@@ -134,6 +136,7 @@
     <string name="cd_menu_item_delete_photo" translatable="false">delete_photo</string>
     <string name="cd_menu_item_shoot_photo" translatable="false">shoot_photo</string>
     <string name="cd_menu_item_select_photo" translatable="false">select_photo</string>
+    <string name="cd_photo" translatable="false">photo</string>
     <string name="cd_photo_label" translatable="false">photo_label</string>
     <string name="cd_button_cancel" translatable="false">button_cancel</string>
     <string name="lb_tab_color_anim" translatable="false">tab_color_anim</string>

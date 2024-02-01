@@ -21,8 +21,8 @@ fun EditScreenColumn1(
     stringType: String?,
     property: Property?,
     currency: String,
-    pTypeSet: () -> MutableSet<Int>,
-    pTypeIndex: Int?,
+//    pTypeSet: () -> MutableSet<Int>,
+//    pTypeIndex: Int?,
     onPriceValueChange: (String) -> Unit,
     onSurfaceValueChange: (String) -> Unit,
     onDropdownMenuValueChange: (String) -> Unit,
@@ -47,12 +47,12 @@ fun EditScreenColumn1(
         icon = Icons.Default.House,
         iconCD = stringResource(id = R.string.cd_type),
         onValueChange = onDropdownMenuValueChange,
-        itemsSet = pTypeSet,
-        index = pTypeIndex,
+//        itemsSet = pTypeSet,
+//        index = pTypeIndex,
         types = types,
         stringItems = stringTypes,
         stringItem = stringType,
-        dropdownMenuCategory = DropdownMenuCategory.TYPE.key,
+        dropdownMenuCategory = DropdownMenuCategory.TYPE,
     )
     // Surface
     EditScreenTextFieldItem(

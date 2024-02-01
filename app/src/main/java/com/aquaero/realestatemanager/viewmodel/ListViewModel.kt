@@ -99,7 +99,7 @@ class ListViewModel(
     /***/
 
 
-    fun propertyFromId(properties: MutableList<Property>, propertyId: Long): Property? {
+    fun propertyFromId(properties: MutableList<Property>, propertyId: Long): Property {
         return propertyRepository.propertyFromId(properties, propertyId)
     }
 

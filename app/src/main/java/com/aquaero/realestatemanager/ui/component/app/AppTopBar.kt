@@ -49,14 +49,13 @@ fun AppTopBar(
     onClickMenu: () -> Unit,
     onClickRadioButton: (String) -> Unit,
     currency: String,
-    titleText: String = stringResource(id = R.string.app_name),
-    colors: TopAppBarColors = TopAppBarDefaults
-        .topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary),
-    dollar: String = stringResource(id = R.string.dollar),
-    euro: String = stringResource(id = R.string.euro),
 ) {
-    // var selectedOption by remember { mutableStateOf(dollar) }    // TODO : To remove
-    var selectedOption = currency
+    val colors: TopAppBarColors =
+        TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary)
+    val titleText: String = stringResource(id = R.string.app_name)
+    val dollar: String = stringResource(id = R.string.dollar)
+    val euro: String = stringResource(id = R.string.euro)
+    var selectedOption by remember(currency) { mutableStateOf(currency) }
 
     TopAppBar(
         modifier = modifier.height(48.dp),
@@ -106,12 +105,11 @@ fun AppTopBar(
 fun TopBarRadioButton(
     modifier: Modifier = Modifier,
     selected: Boolean,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit,
     text: String,
 ) {
     Box(
         modifier = modifier,
-        // contentAlignment = Alignment.Center  // TODO : To be deleted
     ) {
         RadioButton(
             selected = selected,

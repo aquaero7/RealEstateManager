@@ -26,8 +26,6 @@ import com.aquaero.realestatemanager.ui.theme.White
 @Composable
 fun DetailScreenColumn1(
     property: Property?,
-    pTypeSet: () -> MutableSet<Int>,
-    pTypeIndex: Int,
     stringType: String,
 ) {
     // Info status
@@ -44,27 +42,15 @@ fun DetailScreenColumn1(
         image = Icons.Default.Info,
         contentDesc = stringResource(id = R.string.cd_status),
         label = stringResource(id = R.string.status),
-        // value = if (property.saleDate != null) stringResource(id = R.string.sold) else stringResource(id = R.string.for_sale),
         value = value,
-        // valueColor = if (property.saleDate != null) White else MaterialTheme.colorScheme.onSurface,
         valueColor = property?.saleDate?.let { White } ?: MaterialTheme.colorScheme.onSurface,
-        // valueBackgroundColor = if (property.saleDate != null) Magenta else MaterialTheme.colorScheme.surface
         valueBackgroundColor = property?.saleDate?.let { Magenta } ?: MaterialTheme.colorScheme.surface,
     )
     // Info type
-//    val selectedIndex by remember { mutableIntStateOf(pTypeIndex) }
-
     DetailScreenInformationItem(
         image = Icons.Default.House,
         contentDesc = stringResource(id = R.string.cd_type),
         label = stringResource(id = R.string.type),
-//        value = stringResource(property.type),
-//        value = property?.let { stringResource(property.typeId) } ?: "",
-//        value = property?.typeId ?: "",
-        /*
-        value = if (property != null && property.propertyId != NULL_ITEM_ID)
-            stringResource(id = pTypeSet().elementAt(selectedIndex)) else "",
-        */
         value = if (property != null && property.propertyId != NULL_ITEM_ID) stringType else "",
 //        value = if (property != null) stringType else "",   // TODO: For test only
     )
@@ -73,7 +59,6 @@ fun DetailScreenColumn1(
         image = Icons.Default.AspectRatio,
         contentDesc = stringResource(id = R.string.cd_surface),
         label = stringResource(id = R.string.surface),
-        // value = property.surface.toString(),
         value = property?.surface?.toString() ?: "   ",
         suffix = stringResource(id = R.string.surface_unit)
     )
@@ -82,7 +67,6 @@ fun DetailScreenColumn1(
         image = Icons.Default.OtherHouses,
         contentDesc = stringResource(id = R.string.cd_rooms),
         label = stringResource(id = R.string.rooms),
-        // value = property.nbOfRooms.toString(),
         value = property?.nbOfRooms?.toString() ?: "",
     )
     // Info number of bathrooms
@@ -90,7 +74,6 @@ fun DetailScreenColumn1(
         image = Icons.Default.Bathtub,
         contentDesc = stringResource(id = R.string.cd_bathrooms),
         label = stringResource(id = R.string.bathrooms),
-        // value = property.nbOfBathrooms.toString(),
         value = property?.nbOfBathrooms?.toString() ?: "",
     )
     // Info number of bedrooms
@@ -98,7 +81,6 @@ fun DetailScreenColumn1(
         image = Icons.Default.Bed,
         contentDesc = stringResource(id = R.string.cd_bedrooms),
         label = stringResource(id = R.string.bedrooms),
-        // value = property.nbOfBedrooms.toString(),
         value = property?.nbOfBedrooms?.toString() ?: "",
     )
 }

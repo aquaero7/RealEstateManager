@@ -10,11 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.aquaero.realestatemanager.AppContentType
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
-import com.aquaero.realestatemanager.utils.AppContentType
 
 @SuppressLint("NewApi")
 @Composable
@@ -32,8 +32,6 @@ fun ListAndDetailScreen(
     // For detail screen only
     itemPhotos: MutableList<Photo>,
     itemPois: MutableList<Poi>,
-    pTypeSet: () -> MutableSet<Int>,
-    pTypeIndex: Int,
     stringType: String,
     stringAgent: String,
     stringAddress: String,
@@ -59,14 +57,12 @@ fun ListAndDetailScreen(
             )
         }
         if (contentType == AppContentType.SCREEN_WITH_DETAIL) {
-            // Spacer(modifier = Modifier.width(2.dp))
             HorizontalDivider(
                 modifier = Modifier
                     .width(2.dp)
                     .fillMaxHeight(),
                 color = Color.LightGray
             )
-            // Spacer(modifier = Modifier.width(2.dp))
             Column(
                 modifier = Modifier.weight(2F)
             ) {
@@ -75,8 +71,6 @@ fun ListAndDetailScreen(
                     currency = currency,
                     itemPhotos = itemPhotos,
                     itemPois = itemPois,
-                    pTypeSet = pTypeSet,
-                    pTypeIndex = pTypeIndex,
                     stringType = stringType,
                     stringAgent = stringAgent,
                     stringAddress = stringAddress,

@@ -38,12 +38,13 @@ fun DetailScreenMapThumbnail(
     stringLatitude: String,
     stringLongitude: String,
 ) {
-    val addressComplete by remember { mutableStateOf(thumbnailUrl.isNotEmpty()) }
-    val mapAvailable by remember { mutableStateOf(addressComplete && internetAvailable) }
-
+    val addressComplete by remember(thumbnailUrl) { mutableStateOf(thumbnailUrl.isNotEmpty()) }
+    val mapAvailable by remember(internetAvailable, addressComplete) {
+        mutableStateOf(addressComplete && internetAvailable)
+    }
     val internetUnavailableText = stringResource(R.string.network_unavailable)
     val addressIncompleteText = stringResource(R.string.address_incomplete)
-    val mapUnavailableText by remember {
+    val mapUnavailableText by remember(internetAvailable) {
         when {
             !internetAvailable -> { mutableStateOf(internetUnavailableText) }
             else -> { mutableStateOf(addressIncompleteText) }
@@ -59,14 +60,12 @@ fun DetailScreenMapThumbnail(
             .padding(horizontal = 8.dp)
     )
 
-    if (internetAvailable && thumbnailUrl.isNotEmpty()) {
-        // Network is available, so display static map
-        // GlideImage if using Glide or AsyncImage if using Coil
-        GlideImage(
+    if (mapAvailable) {
+        // Network is available and address is complete, so display static map
+        GlideImage( /* GlideImage to use Glide or AsyncImage to use Coil */
             model = thumbnailUrl,
             contentDescription = stringResource(R.string.cd_static_map),
             modifier = Modifier
-                //.size(400.dp)
                 .wrapContentSize()
                 .border(width = 2.dp, color = MaterialTheme.colorScheme.tertiary)
                 .padding(4.dp),

@@ -20,8 +20,8 @@ fun EditScreenColumn2(
     stringAgent: String?,
     property: Property?,
     addresses: List<Address>,
-    agentSet: () -> MutableSet<String?>,
-    agentIndex: Int?,
+//    agentSet: () -> MutableSet<String?>,
+//    agentIndex: Int?,
     onStreetNumberValueChange: (String) -> Unit,
     onStreetNameValueChange: (String) -> Unit,
     onAddInfoValueChange: (String) -> Unit,
@@ -63,11 +63,11 @@ fun EditScreenColumn2(
         icon = Icons.Default.Person,
         iconCD = stringResource(id = R.string.cd_agent),
         onValueChange = onDropdownMenuValueChange,
-        itemsSet = agentSet,
-        index = agentIndex,
+//        itemsSet = agentSet,
+//        index = agentIndex,
         stringItems = stringAgents,
         stringItem = stringAgent,
-        dropdownMenuCategory = DropdownMenuCategory.AGENT.key,
+        dropdownMenuCategory = DropdownMenuCategory.AGENT,
     )
     // Registration date
     EditScreenTextFieldItem(

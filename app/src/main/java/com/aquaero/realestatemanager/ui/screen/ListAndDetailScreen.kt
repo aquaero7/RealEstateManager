@@ -38,7 +38,7 @@ fun ListAndDetailScreen(
     stringLatitude: String,
     stringLongitude: String,
     thumbnailUrl: String,
-    internetAvailable: Boolean,
+    networkAvailable: Boolean,
     onBackPressed: () -> Unit,
 ) {
     Row {
@@ -77,7 +77,7 @@ fun ListAndDetailScreen(
                     stringLatitude = stringLatitude,
                     stringLongitude = stringLongitude,
                     thumbnailUrl = thumbnailUrl,
-                    internetAvailable = internetAvailable,
+                    networkAvailable = networkAvailable,
                     onBackPressed = onBackPressed,
                 )
             }

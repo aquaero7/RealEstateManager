@@ -93,12 +93,12 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     // Using icons extension, make sure to use R8 / ProGuard to remove unused icons from this application
-    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+    implementation("androidx.compose.material:material-icons-extended:1.6.0")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
     // DatePickerColors with complete customized colors
     implementation("androidx.compose.material3:material3:1.1.2")
-    implementation("androidx.compose.material3:material3-adaptive:1.0.0-alpha04")
+    implementation("androidx.compose.material3:material3-adaptive:1.0.0-alpha05")
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0-alpha02")
     //
     implementation("androidx.navigation:navigation-compose:2.7.6")
@@ -109,9 +109,9 @@ dependencies {
     implementation("com.google.maps.android:maps-compose:2.11.5")
     // Google Maps Service
     implementation("com.google.android.gms:play-services-maps:18.2.0")
-    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.google.android.gms:play-services-location:21.1.0")
     // Google Maps Utils
-    implementation("com.google.maps.android:android-maps-utils:3.8.0")
+    implementation("com.google.maps.android:android-maps-utils:3.8.2")
 
     // GLIDE
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")

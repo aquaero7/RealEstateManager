@@ -1,6 +1,7 @@
 package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
+import android.location.Location
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -46,6 +47,7 @@ import com.aquaero.realestatemanager.viewmodel.LoanViewModel
 import com.aquaero.realestatemanager.viewmodel.MapViewModel
 import com.aquaero.realestatemanager.viewmodel.SearchViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
 
 @SuppressLint("NewApi")
@@ -131,9 +133,8 @@ fun AppNavHost(
                     listViewModel.thumbnailUrl(addresses = addresses, addressId = addressId)
                 } ?: ""
                 val connection by connectivityState()
-                val internetAvailable by remember(connection) {
-                    mutableStateOf(listViewModel.checkForConnection(connection = connection))
-                }
+                val internetAvailable = listViewModel.checkForConnection(connection = connection)
+                val networkAvailable by remember(internetAvailable) { mutableStateOf(internetAvailable) }
                 val onBackPressed: () -> Unit = { navController.popBackStack() }
 
                 ListAndDetailScreen(
@@ -156,7 +157,7 @@ fun AppNavHost(
                     stringLatitude = stringLatitude,
                     stringLongitude = stringLongitude,
                     thumbnailUrl = thumbnailUrl,
-                    internetAvailable = internetAvailable,
+                    networkAvailable = networkAvailable,
                     onBackPressed = onBackPressed,
                 )
             }
@@ -168,31 +169,22 @@ fun AppNavHost(
             val internetAvailable by remember(connection) {
                 mutableStateOf(mapViewModel.checkForConnection(connection = connection))
             }
+            val networkAvailable by remember(internetAvailable) { mutableStateOf(internetAvailable) }
             // Get permission grants
             var locationPermissionsGranted by remember { mutableStateOf(mapViewModel.areLocPermsGranted()) }
 
-            if (internetAvailable) {
+            val startLocationUpdates: () -> Unit = { mapViewModel.startLocationUpdates() }
+            val stopLocationUpdates: () -> Unit = { mapViewModel.stopLocationUpdates() }
+            val getLocationUpdates: () -> StateFlow<Location?> = { mapViewModel.getLocationUpdates() }
+
+            if (networkAvailable) {
                 if (locationPermissionsGranted) {
-                    var showMap by remember { mutableStateOf(false) }
-                    var currentLocation by remember { mutableStateOf(DEFAULT_LOCATION) }
-                    val locationFlow = callbackFlow {
-                        while (true) {
-                            mapViewModel.getCurrentLocation {
-                                currentLocation = it
-                                showMap = true
-                                trySend(it)
-                            }
-                            delay(1)
-                        }
-                    }
-                    val locationState = locationFlow.collectAsState(initial = currentLocation)
-                    val locationSource = MyLocationSource()
                     MapScreen(
-                        showMap = showMap,
                         properties = properties,
                         addresses = addresses,
-                        locationState = locationState,
-                        locationSource = locationSource,
+                        startLocationUpdates = startLocationUpdates,
+                        stopLocationUpdates = stopLocationUpdates,
+                        getLocationUpdates = getLocationUpdates,
                     )
                 } else {
                     val onOpenAppSettings = { mapViewModel.openAppSettings() }
@@ -203,7 +195,6 @@ fun AppNavHost(
                         onPermissionsGranted = onPermissionsGranted,
                     )
                 }
-
             } else {
                 // No network
                 MapScreenNoMap(stringResource(id = R.string.network_unavailable))
@@ -264,9 +255,8 @@ fun AppNavHost(
                 detailViewModel.thumbnailUrl(addresses = addresses, addressId = it)
             } ?: ""
             val connection by connectivityState()
-            val internetAvailable by remember(connection) {
-                mutableStateOf(detailViewModel.checkForConnection(connection = connection))
-            }
+            val internetAvailable = detailViewModel.checkForConnection(connection = connection)
+            val networkAvailable by remember(internetAvailable) { mutableStateOf(internetAvailable) }
             val onBackPressed: () -> Unit = { navController.popBackStack() }
 
             DetailScreen(
@@ -280,7 +270,7 @@ fun AppNavHost(
                 stringLatitude = stringLatitude,
                 stringLongitude = stringLongitude,
                 thumbnailUrl = thumbnailUrl,
-                internetAvailable = internetAvailable,
+                networkAvailable = networkAvailable,
                 onBackPressed = onBackPressed,
             )
         }

@@ -30,12 +30,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".MainActivityToBeDeleted"
-            android:exported="true"
-            android:theme="@style/Theme.RealEstateManager">
-        </activity>
-
         <!-- FOR GOOGLE MAPS -->
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="${MAPS_API_KEY}"/>
 

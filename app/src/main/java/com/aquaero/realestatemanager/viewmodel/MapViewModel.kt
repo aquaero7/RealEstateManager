@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.utils.ConnectionState
+import kotlinx.coroutines.flow.StateFlow
 
 class MapViewModel(
     private val locationRepository: LocationRepository
@@ -28,15 +29,17 @@ class MapViewModel(
         return locationRepository.areLocPermsGranted()
     }
 
-    fun getCurrentLocation(onLocationFetched: (location: Location) -> Unit) {
-        locationRepository.getCurrentLocation(onLocationFetched)
+    fun startLocationUpdates() {
+        locationRepository.startLocationUpdates()
     }
 
-    /*  // TODO : Should it be deleted because replaced with getCurrentLocation() ?
-    fun getCurrentLatLng(onLocationFetched: (location: LatLng) -> Unit) {
-        locationRepository.getCurrentLatLng(onLocationFetched)
+    fun stopLocationUpdates() {
+        locationRepository.stopLocationUpdates()
     }
-    */
+
+    fun getLocationUpdates(): StateFlow<Location?> {
+        return locationRepository.getLocationUpdates()
+    }
 
     fun openAppSettings() {
         Intent(

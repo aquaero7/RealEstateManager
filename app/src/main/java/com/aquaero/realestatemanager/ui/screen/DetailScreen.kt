@@ -38,7 +38,7 @@ fun DetailScreen(
     stringLatitude: String,
     stringLongitude: String,
     thumbnailUrl: String,
-    internetAvailable: Boolean,
+    networkAvailable: Boolean,
     onBackPressed: () -> Unit,
 ) {
     Column(
@@ -103,7 +103,7 @@ fun DetailScreen(
 
         // Map thumbnail
         DetailScreenMapThumbnail(
-            internetAvailable = internetAvailable,
+            networkAvailable = networkAvailable,
             thumbnailUrl = thumbnailUrl,
             stringLatitude = stringLatitude,
             stringLongitude = stringLongitude,

@@ -7,17 +7,43 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.aquaero.realestatemanager.ApplicationRoot
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlin.properties.Delegates
 
 class LocationRepository {
 
     private val context: Context by lazy { ApplicationRoot.getContext() }
     private var locPermsGranted by Delegates.notNull<Boolean>()
+    private val fusedLocationClient: FusedLocationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(context)
+    }
+    private val locationUpdatesFlow = MutableStateFlow<Location?>(null)
+    private val locationCallback = object: LocationCallback() {
+        override fun onLocationResult(p0: LocationResult) {
+            // super.onLocationResult(p0)
+            p0.lastLocation?.let {
+                location -> locationUpdatesFlow.value = location
+
+                Log.w(
+                    "Location Repository",
+                    "Location update callback: Lat: ${location.latitude}, Lng: ${location.longitude}"
+                )
+            }
+        }
+    }
+
 
     fun checkForPermissions(): Boolean {
         locPermsGranted = !(ActivityCompat.checkSelfPermission(
@@ -37,40 +63,30 @@ class LocationRepository {
     }
 
     @SuppressLint("MissingPermission")
-    fun getCurrentLocation(onLocationFetched: (location: Location) -> Unit) {
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    fun startLocationUpdates() {
+        val locationRequest = LocationRequest.Builder(10000)
+            .setIntervalMillis(10000)
+            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+            .build()
 
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    onLocationFetched(location)
-                }
-            }
-            .addOnFailureListener { exception: Exception ->
-                Log.w("Location exception", exception.message.toString())
-            }
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
+
+        Log.w("LocationRepository", "Location updates started!")
     }
 
-    /*  // TODO : Should it be deleted because replaced with getCurrentLocation() ?
-    @SuppressLint("MissingPermission")
-    fun getCurrentLatLng(onLocationFetched: (location: LatLng) -> Unit) {
-        var latLng: LatLng
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    val latitude = location.latitude
-                    val longitude = location.longitude
-                    latLng = LatLng(latitude, longitude)
-                    onLocationFetched(latLng)
-                }
-            }
-            .addOnFailureListener { exception: Exception ->
-                Log.w("Location exception", exception.message.toString())
-            }
+    fun stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+        Log.w("LocationRepository", "Location updates stopped!")
     }
-    */
+
+    fun getLocationUpdates(): StateFlow<Location?> {
+        return locationUpdatesFlow
+    }
+
 
 }
 
@@ -100,3 +116,4 @@ fun getLocationFromAddress(strAddress: String?, internetAvailable: Boolean): Lat
     }
     return latLng
 }
+

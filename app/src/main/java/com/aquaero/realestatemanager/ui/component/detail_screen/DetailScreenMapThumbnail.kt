@@ -33,20 +33,20 @@ import com.bumptech.glide.integration.compose.GlideImage
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun DetailScreenMapThumbnail(
-    internetAvailable: Boolean,
+    networkAvailable: Boolean,
     thumbnailUrl: String,
     stringLatitude: String,
     stringLongitude: String,
 ) {
     val addressComplete by remember(thumbnailUrl) { mutableStateOf(thumbnailUrl.isNotEmpty()) }
-    val mapAvailable by remember(internetAvailable, addressComplete) {
-        mutableStateOf(addressComplete && internetAvailable)
+    val mapAvailable by remember(networkAvailable, addressComplete) {
+        mutableStateOf(addressComplete && networkAvailable)
     }
     val internetUnavailableText = stringResource(R.string.network_unavailable)
     val addressIncompleteText = stringResource(R.string.address_incomplete)
-    val mapUnavailableText by remember(internetAvailable) {
+    val mapUnavailableText by remember(networkAvailable) {
         when {
-            !internetAvailable -> { mutableStateOf(internetUnavailableText) }
+            !networkAvailable -> { mutableStateOf(internetUnavailableText) }
             else -> { mutableStateOf(addressIncompleteText) }
         }
     }

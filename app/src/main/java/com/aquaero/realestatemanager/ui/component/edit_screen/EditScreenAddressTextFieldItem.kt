@@ -46,8 +46,6 @@ fun EditScreenAddressTextFieldItem(
     fieldText?.let { it ->
         BasicTextField(
             modifier = Modifier,
-                //.wrapContentHeight()
-                //.fillMaxWidth()
             enabled = enabled,
             singleLine = (maxLines == 1),
             minLines = minLines,
@@ -60,9 +58,7 @@ fun EditScreenAddressTextFieldItem(
                     onValueChange(it)
                 }
             },
-            textStyle = TextStyle(
-                fontSize = fieldFontSize,
-            ),
+            textStyle = TextStyle(fontSize = fieldFontSize),
             keyboardOptions = if (shouldBeDigitsOnly) {
                 KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
             } else {

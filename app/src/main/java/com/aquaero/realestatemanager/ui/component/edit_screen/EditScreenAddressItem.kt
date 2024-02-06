@@ -55,7 +55,7 @@ fun EditScreenAddressItem(
 ) {
     Surface(
         modifier = Modifier
-            .height(IntrinsicSize.Max)
+            .height(intrinsicSize = IntrinsicSize.Max)
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 4.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
@@ -66,7 +66,6 @@ fun EditScreenAddressItem(
                 modifier = Modifier
                     .fillMaxHeight()
                     .padding(vertical = 4.dp, horizontal = 4.dp),
-                // contentAlignment = Alignment.TopCenter
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -94,7 +93,7 @@ fun EditScreenAddressItem(
                 Column(
                     modifier = Modifier
                         // .height(72.dp)       // To use instead of wrapContentHeight to enable scroll
-                        .wrapContentHeight() // To use instead of height to display all address fields
+                        .wrapContentHeight()    // To use instead of height to display all address fields
                         .fillMaxWidth()
                         .verticalScroll(state = rememberScrollState(), enabled = true)
                 ) {

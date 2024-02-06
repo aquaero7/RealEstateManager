@@ -72,43 +72,32 @@ fun EditScreenTextFieldItem(
     iconCD: String,
     onValueChange: (String) -> Unit,
     // For keyboard input
-    itemText: String? = null,
+    itemText: String? = null,                           // Not null when the item is an input field
     shouldBeDigitsOnly: Boolean = false,
     // For DropDownMenu
-//    itemsSet: (() -> MutableSet<*>)? = null,    // Not null when the item is a DropdownMenu
-//    index: Int? = null,
-    types: MutableList<Type>? = null,           // Not null when the item is a Type DropdownMenu
-    stringItems: MutableList<String>? = null,   // Not null when the item is a Type DropdownMenu
-    stringItem: String? = null,                 // Not null when the item is a Type DropdownMenu
-    dropdownMenuCategory: DropdownMenuCategory? = null,       // Not null when the item is a Type DropdownMenu
+    stringItems: MutableList<String>? = null,           // Not null when the item is a DropdownMenu
+    stringItem: String? = null,                         // Not null when the item is a DropdownMenu
+    dropdownMenuCategory: DropdownMenuCategory? = null, // Not null when the item is a DropdownMenu
     // For DatePicker
-    storedDate: String? = null,                 // Not null when the item is a DatePicker
+    storedDate: String? = null,                         // Not null when the item is a DatePicker
     clearableDate: Boolean = false,
 ) {
     // For keyboard input
     var isValid by remember { mutableStateOf(true) }
 
     // For DropdownMenu
-//    val isDropdownMenu by remember { mutableStateOf(itemsSet != null) }
-    val isDropdownMenu by remember { mutableStateOf(dropdownMenuCategory != null) }
+    val isDropdownMenu = dropdownMenuCategory != null
     var expanded by remember { mutableStateOf(false) }
-//    var selectedIndex by remember { mutableIntStateOf(index ?: 0) }
     var selectedIndex by remember { mutableIntStateOf(stringItems?.indexOf(stringItem) ?: 0) }
-    /*
-    val selectedItem = itemsSet?.let { it() }?.elementAt(selectedIndex).let {
-        if (it is String) it else if (it is Int) stringResource(id = it) else ""
-    }
-    */
-//    val selectedItem by remember(selectedIndex) { mutableStateOf(if (!stringItems.isNullOrEmpty()) stringItems.elementAt(selectedIndex) else "") }
     var selectedItem by remember { mutableStateOf(stringItem ?: "") }
 
     // For DatePicker
-    val isDatePicker by remember { mutableStateOf(storedDate != null) }
+    val isDatePicker = storedDate != null
     var openDpDialog by remember { mutableStateOf(false) }
 
     // For DropdownMenu and DatePicker
     val onClick: () -> Unit = {
-        // Triggered if !enabled only (i.e., if itemSet or storedDate is not null)
+        // Triggered only if field is !enabled (i.e., if dropdownMenuCategory or storedDate is not null)
         if (isDropdownMenu) {
             expanded = true
             Log.w("EditScreen", "Click in list field")
@@ -120,16 +109,18 @@ fun EditScreenTextFieldItem(
     }
 
     // For all
-//    var fieldText: String? by remember(itemText, selectedIndex, storedDate) {
     var fieldText: String? by remember(itemText, selectedItem, storedDate) {
         if (isDropdownMenu) {
-            // mutableStateOf(selectedItem)
-            mutableStateOf(textWithEllipsis(fullText = selectedItem, maxLength = 14, maxLines = maxLines))
+            mutableStateOf(
+                textWithEllipsis(fullText = selectedItem, maxLength = 14, maxLines = maxLines)
+            )
         } else if (isDatePicker) {
             mutableStateOf(storedDate)
         } else {
             mutableStateOf(itemText)
         }
+        // At least one of the 3 items (itemText, selectedItem, storedDate) is not null.
+        // Thus, fieldText is never null.
     }
     val trailingIcon: @Composable (() -> Unit)? = if (clearableDate && !fieldText.isNullOrBlank()) {
         {
@@ -159,25 +150,22 @@ fun EditScreenTextFieldItem(
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp, vertical = 4.dp)
                     .clickable(onClick = onClick),
-//                enabled = (itemsSet == null && storedDate == null),
                 enabled = (dropdownMenuCategory == null && storedDate == null),
-                // Enabled must be false to make click launching a specific action.
-                // So, text color must be restored from disabled to normal when !enabled.
+                // Field must be !enabled to allow a click to launch a specific action.
+                // In that case, text color must be restored from disabled to normal when filed is !enabled.
                 colors = TextFieldDefaults.colors(disabledTextColor = MaterialTheme.colorScheme.onSurface),
                 singleLine = (maxLines == 1),
                 minLines = minLines,
                 maxLines = maxLines,
                 value = it,
                 onValueChange = {
-                    isValid = !shouldBeDigitsOnly || it.isEmpty() || (/* it.isNotEmpty() && */ it.isDigitsOnly())
+                    isValid = !shouldBeDigitsOnly || it.isEmpty() || it.isDigitsOnly()
                     if (isValid) {
                         fieldText = it
                         onValueChange(it)
                     }
                 },
-                textStyle = TextStyle(
-                    fontSize = fieldFontSize,
-                ),
+                textStyle = TextStyle(fontSize = fieldFontSize),
                 label = {
                     Text(
                         modifier = Modifier.padding(bottom = 8.dp),
@@ -222,28 +210,18 @@ fun EditScreenTextFieldItem(
                     .width(160.dp)
                     .wrapContentSize()
             ) {
-                // 'itemSet' is not null when the item 'isDropdownMenu' is true
-//                itemsSet!!().forEachIndexed { index, s ->
+                // 'stringItems' is not null when the item is a DropdownMenu
                 stringItems!!.forEachIndexed { index, s ->
-//                    val textDisplayed = if (s is String) s else stringResource(id = s as Int)
                     DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = s,
-                                fontSize = fieldFontSize,
-                            )
-                        },
+                        text = { Text(text = s, fontSize = fieldFontSize) },
                         onClick = {
                             selectedIndex = index
                             selectedItem = s
-//                            onValueChange("$index#$s")
                             onValueChange("${dropdownMenuCategory!!.name}#$index")
                             expanded = false
                         },
                     )
-                    HorizontalDivider(
-                        thickness = 1.dp
-                    )
+                    HorizontalDivider(thickness = 1.dp)
                 }
             }
         }
@@ -258,9 +236,7 @@ fun EditScreenTextFieldItem(
         if (openDpDialog) {
             DatePickerDialog(
                 shape = DatePickerDefaults.shape,
-                colors = DatePickerDefaults.colors(
-                    containerColor = DP_CONTAINER_COLOR,
-                ),
+                colors = DatePickerDefaults.colors(containerColor = DP_CONTAINER_COLOR,),
                 onDismissRequest = { openDpDialog = false },
                 confirmButton = {
                     TextButton(

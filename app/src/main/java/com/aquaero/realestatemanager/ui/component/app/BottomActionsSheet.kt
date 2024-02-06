@@ -34,6 +34,10 @@ fun BottomActionsSheet(
     ModalBottomSheet(onDismissRequest = onDismissSheet) {
         // Action = Edit or delete photo
         if (photo != null && onEditPhotoMenuItemClickGetPhoto != null && onDeletePhotoMenuItemClick != null) {
+
+            val label =
+                if (photo.label.isNullOrEmpty()) stringResource(id = R.string.no_label) else "\"${photo.label}\""
+
             // Action = Edit a photo
             ListItem(
                 modifier = Modifier
@@ -45,7 +49,7 @@ fun BottomActionsSheet(
                         }
                     ),
                 headlineContent = {
-                    Text(text = "${stringResource(id = R.string.edit_photo)} ${photo.label}")
+                    Text(text = "${stringResource(id = R.string.edit_photo)} $label")
                 },
                 leadingContent = {
                     Icon(
@@ -65,7 +69,7 @@ fun BottomActionsSheet(
                         }
                     ),
                 headlineContent = {
-                    Text(text = "${stringResource(id = R.string.delete_photo)} ${photo.label}")
+                    Text(text = "${stringResource(id = R.string.delete_photo)} $label")
                 },
                 leadingContent = {
                     Icon(

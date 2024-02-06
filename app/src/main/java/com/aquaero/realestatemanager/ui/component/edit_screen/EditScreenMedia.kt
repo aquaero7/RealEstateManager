@@ -66,12 +66,10 @@ fun EditScreenMedia(
     val haptics = LocalHapticFeedback.current
     val lineColor = MaterialTheme.colorScheme.onBackground
     var photoLabel by remember { mutableStateOf("") }
-
     val onEditPhotoMenuItemClickGetPhoto: (Photo) -> Unit = { photo ->
         photoLabel = photo.label ?: ""
         onEditPhotoMenuItemClick(photo)
     }
-
     var displayPhotoDeletionDialog by remember { mutableStateOf(false) }
     var photoToDelete by remember { mutableStateOf<Photo?>(null) }
     val onDismiss: () -> Unit = { displayPhotoDeletionDialog = false }
@@ -83,12 +81,15 @@ fun EditScreenMedia(
         photoToDelete = photo
         displayPhotoDeletionDialog = true
     }
+
+
     if (displayPhotoDeletionDialog) {
-        val label = photoToDelete!!.label?.let { "\"$it\"" } ?: stringResource(id = R.string.no_label)
+        val label =
+            if (photoToDelete!!.label.isNullOrEmpty()) stringResource(id = R.string.no_label) else "\"${photoToDelete!!.label}\""
+
         AppDialog(
             subject = PHOTO_DELETION,
             title = stringResource(id = R.string.photo_deletion_dialog_title),
-//            text = (stringResource(id = R.string.photo_deletion_dialog_text, photoToDelete!!.label ?: "?")),
             text = (stringResource(id = R.string.photo_deletion_dialog_text, label)),
             okLabel = stringResource(id = R.string.confirm),
             onOkClick = onOkClick,
@@ -121,7 +122,7 @@ fun EditScreenMedia(
             photos = photos,
             longClickPhotoEnabled = true,
             onEditPhotoMenuItemClickGetPhoto = onEditPhotoMenuItemClickGetPhoto,
-            onDeletePhotoMenuItemClick = { photo -> showDeletionConfirmationDialog(photo) },
+            onDeletePhotoMenuItemClick = { photo -> showDeletionConfirmationDialog(photo = photo) },
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -139,16 +140,14 @@ fun EditScreenMedia(
                     .padding(4.dp)
                     .background(color = MaterialTheme.colorScheme.surfaceVariant)
                     .alpha(1F)
-                    .combinedClickable(
-                        enabled = true,
-                        onClick = {
-                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                            addPhoto = true
-                        }),
+                    .combinedClickable(enabled = true, onClick = {
+                        haptics.performHapticFeedback(hapticFeedbackType = HapticFeedbackType.LongPress)
+                        addPhoto = true
+                    }),
                 painter = painter,
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds,
-                colorFilter = if (!buttonAddPhotoEnabled) ColorFilter.tint(MaterialTheme.colorScheme.tertiary) else null
+                colorFilter = if (!buttonAddPhotoEnabled) ColorFilter.tint(color = MaterialTheme.colorScheme.tertiary) else null
             )
 
             Spacer(modifier = Modifier.width(20.dp))
@@ -206,12 +205,8 @@ fun EditScreenMedia(
     if (addPhoto) {
         BottomActionsSheet(
             onDismissSheet = { addPhoto = false },
-            onShootPhotoMenuItemClick = {
-                onShootPhotoMenuItemClick()
-            },
-            onSelectPhotoMenuItemClick = {
-                onSelectPhotoMenuItemClick()
-            },
+            onShootPhotoMenuItemClick = { onShootPhotoMenuItemClick() },
+            onSelectPhotoMenuItemClick = { onSelectPhotoMenuItemClick() },
         )
     }
 

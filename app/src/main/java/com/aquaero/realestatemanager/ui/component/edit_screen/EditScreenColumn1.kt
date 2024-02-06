@@ -16,13 +16,10 @@ import com.aquaero.realestatemanager.model.Type
 
 @Composable
 fun EditScreenColumn1(
-    types: MutableList<Type>,
     stringTypes: MutableList<String>,
     stringType: String?,
     property: Property?,
     currency: String,
-//    pTypeSet: () -> MutableSet<Int>,
-//    pTypeIndex: Int?,
     onPriceValueChange: (String) -> Unit,
     onSurfaceValueChange: (String) -> Unit,
     onDropdownMenuValueChange: (String) -> Unit,
@@ -32,8 +29,8 @@ fun EditScreenColumn1(
 ) {
     // Price
     EditScreenTextFieldItem(
-        labelText = "${stringResource(R.string.price_in)} $currency",
-        placeHolderText = "${stringResource(R.string.price_in)} $currency",
+        labelText = "${stringResource(id = R.string.price_in)} $currency",
+        placeHolderText = "${stringResource(id = R.string.price_in)} $currency",
         icon = Icons.Default.Money,
         iconCD = stringResource(id = R.string.cd_price),
         onValueChange = onPriceValueChange,
@@ -42,22 +39,19 @@ fun EditScreenColumn1(
     )
     // Type
     EditScreenTextFieldItem(
-        labelText = stringResource(R.string.type),
-        placeHolderText = stringResource(R.string.type),
+        labelText = stringResource(id = R.string.type),
+        placeHolderText = stringResource(id = R.string.type),
         icon = Icons.Default.House,
         iconCD = stringResource(id = R.string.cd_type),
         onValueChange = onDropdownMenuValueChange,
-//        itemsSet = pTypeSet,
-//        index = pTypeIndex,
-        types = types,
         stringItems = stringTypes,
         stringItem = stringType,
         dropdownMenuCategory = DropdownMenuCategory.TYPE,
     )
     // Surface
     EditScreenTextFieldItem(
-        labelText = "${stringResource(R.string.surface_in)} ${stringResource(R.string.surface_unit)}",
-        placeHolderText = "${stringResource(R.string.surface_in)} ${stringResource(R.string.surface_unit)}",
+        labelText = "${stringResource(id = R.string.surface_in)} ${stringResource(id = R.string.surface_unit)}",
+        placeHolderText = "${stringResource(id = R.string.surface_in)} ${stringResource(id = R.string.surface_unit)}",
         icon = Icons.Default.AspectRatio,
         iconCD = stringResource(id = R.string.cd_surface),
         onValueChange = onSurfaceValueChange,
@@ -66,8 +60,8 @@ fun EditScreenColumn1(
     )
     // Number of rooms
     EditScreenTextFieldItem(
-        labelText = stringResource(R.string.rooms),
-        placeHolderText = stringResource(R.string.rooms),
+        labelText = stringResource(id = R.string.rooms),
+        placeHolderText = stringResource(id = R.string.rooms),
         icon = Icons.Default.OtherHouses,
         iconCD = stringResource(id = R.string.cd_rooms),
         onValueChange = onNbOfRoomsValueChange,
@@ -76,8 +70,8 @@ fun EditScreenColumn1(
     )
     // Number of bathrooms
     EditScreenTextFieldItem(
-        labelText = stringResource(R.string.bathrooms),
-        placeHolderText = stringResource(R.string.bathrooms),
+        labelText = stringResource(id = R.string.bathrooms),
+        placeHolderText = stringResource(id = R.string.bathrooms),
         icon = Icons.Default.Bathtub,
         iconCD = stringResource(id = R.string.cd_bathrooms),
         onValueChange = onNbOfBathroomsValueChange,
@@ -86,8 +80,8 @@ fun EditScreenColumn1(
     )
     // Number of bedrooms
     EditScreenTextFieldItem(
-        labelText = stringResource(R.string.bedrooms),
-        placeHolderText = stringResource(R.string.bedrooms),
+        labelText = stringResource(id = R.string.bedrooms),
+        placeHolderText = stringResource(id = R.string.bedrooms),
         icon = Icons.Default.Bed,
         iconCD = stringResource(id = R.string.cd_bedrooms),
         onValueChange = onNbOfBedroomsValueChange,

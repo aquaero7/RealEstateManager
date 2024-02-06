@@ -53,7 +53,7 @@ fun PointsOfInterest(
     clickable: Boolean = false,
 ) {
     Text(
-        text = stringResource(R.string.poi),
+        text = stringResource(id = R.string.poi),
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.tertiary,
         modifier = Modifier

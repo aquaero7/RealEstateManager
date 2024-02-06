@@ -443,10 +443,8 @@ fun AppNavHost(
             val onBackPressed: () -> Unit = { navController.popBackStack() }
 
             EditScreen(
-                types = types,
                 stringTypes = stringTypes,
                 stringType = stringType,
-                agents = agents,
                 stringAgents = stringAgents,
                 stringAgent = stringAgent,
                 itemPhotos = itemPhotos,

@@ -36,20 +36,14 @@ import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenTextFiel
 
 @Composable
 fun EditScreen(
-    types: MutableList<Type>,
     stringTypes: MutableList<String>,
     stringType: String?,
-    agents: MutableList<Agent>,
     stringAgents: MutableList<String>,
     stringAgent: String?,
     itemPhotos: MutableList<Photo>,
     itemPois: MutableList<Poi>,
-//    pTypeSet: () -> MutableSet<Int>,
-//    agentSet: () -> MutableSet<String?>,
     property: Property?,
     addresses: List<Address>,
-//    pTypeIndex: Int,
-//    agentIndex: Int?,
     currency: String,
     onDescriptionValueChange: (String) -> Unit,
     onPriceValueChange: (String) -> Unit,
@@ -97,8 +91,8 @@ fun EditScreen(
             minLines = 2,
             maxLines = 5,
             itemText = property?.description ?: "",
-            labelText = stringResource(R.string.description),
-            placeHolderText = stringResource(R.string.description),
+            labelText = stringResource(id = R.string.description),
+            placeHolderText = stringResource(id = R.string.description),
             icon = Icons.Default.AccessTime,
             iconCD = stringResource(id = R.string.cd_description),
             onValueChange = onDescriptionValueChange,
@@ -117,13 +111,10 @@ fun EditScreen(
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 EditScreenColumn1(
-                    types = types,
                     stringTypes = stringTypes,
                     stringType = stringType,
                     property = property,
                     currency = currency,
-//                    pTypeSet = pTypeSet,
-//                    pTypeIndex = pTypeIndex,
                     onPriceValueChange = onPriceValueChange,
                     onSurfaceValueChange = onSurfaceValueChange,
                     onDropdownMenuValueChange = onDropdownMenuValueChange,
@@ -141,13 +132,10 @@ fun EditScreen(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 EditScreenColumn2(
-                    agents = agents,
                     stringAgents = stringAgents,
                     stringAgent = stringAgent,
                     property = property,
                     addresses = addresses,
-//                    agentSet = agentSet,
-//                    agentIndex = agentIndex,
                     onStreetNumberValueChange = onStreetNumberValueChange,
                     onStreetNameValueChange = onStreetNameValueChange,
                     onAddInfoValueChange = onAddInfoValueChange,
@@ -165,7 +153,6 @@ fun EditScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         // POIs
-        // property?.let { DetailScreenPoi(selectedPoi = it.pPoi) }
         PointsOfInterest(
             onHospitalClick = onHospitalClick,
             onSchoolClick = onSchoolClick,
@@ -173,11 +160,9 @@ fun EditScreen(
             onShopClick = onShopClick,
             onRailwayStationClick = onRailwayStationClick,
             onCarParkClick = onCarParkClick,
-//            itemPois = (property?.poi ?: mutableListOf()),
             itemPois = itemPois,
             clickable = true,
         )
-
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -190,13 +175,11 @@ fun EditScreen(
             onEditPhotoMenuItemClick = onEditPhotoMenuItemClick,
             onPhotoDeletionConfirmation = onPhotoDeletionConfirmation,
             painter = painter,
-//            photos = property?.photos ?: mutableListOf(NO_PHOTO),
             photos = itemPhotos,
         )
-
     }
 
-    BackHandler(true) {
+    BackHandler(enabled = true) {
         Log.w("TAG", "OnBackPressed")
         run(onBackPressed)
     }

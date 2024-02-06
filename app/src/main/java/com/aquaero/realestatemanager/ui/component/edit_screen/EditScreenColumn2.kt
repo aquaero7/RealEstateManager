@@ -15,13 +15,10 @@ import com.aquaero.realestatemanager.model.Property
 
 @Composable
 fun EditScreenColumn2(
-    agents: MutableList<Agent>,
     stringAgents: MutableList<String>,
     stringAgent: String?,
     property: Property?,
     addresses: List<Address>,
-//    agentSet: () -> MutableSet<String?>,
-//    agentIndex: Int?,
     onStreetNumberValueChange: (String) -> Unit,
     onStreetNameValueChange: (String) -> Unit,
     onAddInfoValueChange: (String) -> Unit,
@@ -35,14 +32,14 @@ fun EditScreenColumn2(
 ) {
     // Location
     EditScreenAddressItem(
-        labelText = stringResource(R.string.address),
-        streetNumberPlaceHolderText = stringResource(R.string.street_number),
-        streetNamePlaceHolderText = stringResource(R.string.street_name),
-        addInfoPlaceHolderText = stringResource(R.string.add_info),
-        cityPlaceHolderText = stringResource(R.string.city),
-        statePlaceHolderText = stringResource(R.string.state),
-        zipCodePlaceHolderText = stringResource(R.string.zip_code),
-        countryPlaceHolderText = stringResource(R.string.country),
+        labelText = stringResource(id = R.string.address),
+        streetNumberPlaceHolderText = stringResource(id = R.string.street_number),
+        streetNamePlaceHolderText = stringResource(id = R.string.street_name),
+        addInfoPlaceHolderText = stringResource(id = R.string.add_info),
+        cityPlaceHolderText = stringResource(id = R.string.city),
+        statePlaceHolderText = stringResource(id = R.string.state),
+        zipCodePlaceHolderText = stringResource(id = R.string.zip_code),
+        countryPlaceHolderText = stringResource(id = R.string.country),
         icon = Icons.Default.LocationOn,
         iconCD = stringResource(id = R.string.cd_address),
         onStreetNumberValueChange = onStreetNumberValueChange,
@@ -52,42 +49,37 @@ fun EditScreenColumn2(
         onStateValueChange = onStateValueChange,
         onZipCodeValueChange = onZipCodeValueChange,
         onCountryValueChange = onCountryValueChange,
-        // item = property?.addressId,
         item = addresses.find { it.addressId == property?.addressId },
     )
     // Agent
     EditScreenTextFieldItem(
         maxLines = 2,
-        labelText = stringResource(R.string.agent),
-        placeHolderText = stringResource(R.string.agent),
+        labelText = stringResource(id = R.string.agent),
+        placeHolderText = stringResource(id = R.string.agent),
         icon = Icons.Default.Person,
         iconCD = stringResource(id = R.string.cd_agent),
         onValueChange = onDropdownMenuValueChange,
-//        itemsSet = agentSet,
-//        index = agentIndex,
         stringItems = stringAgents,
         stringItem = stringAgent,
         dropdownMenuCategory = DropdownMenuCategory.AGENT,
     )
     // Registration date
     EditScreenTextFieldItem(
-        labelText = stringResource(R.string.registration_date),
-        placeHolderText = stringResource(R.string.registration_date),
+        labelText = stringResource(id = R.string.registration_date),
+        placeHolderText = stringResource(id = R.string.registration_date),
         icon = Icons.Default.ArrowCircleDown,
         iconCD = stringResource(id = R.string.cd_registration_date),
         onValueChange = onRegistrationDateValueChange,
-//        storedDate = if (property?.registrationDate != null) property.registrationDate.toString() else "",
         storedDate = property?.registrationDate ?: "",
         clearableDate = true,
     )
     // Sale date
     EditScreenTextFieldItem(
-        labelText = stringResource(R.string.sale_date),
-        placeHolderText = stringResource(R.string.sale_date),
+        labelText = stringResource(id = R.string.sale_date),
+        placeHolderText = stringResource(id = R.string.sale_date),
         icon = Icons.Default.ArrowCircleUp,
         iconCD = stringResource(id = R.string.cd_sale_date),
         onValueChange = onSaleDateValueChange,
-//        storedDate = if (property?.saleDate != null) property.saleDate.toString() else "",
         storedDate = property?.saleDate ?: "",
         clearableDate = true,
     )

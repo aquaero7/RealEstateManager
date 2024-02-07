@@ -89,10 +89,8 @@ fun AppNavHost(
                 val propertyId = it?.let {
                     navBackStackEntry.arguments!!.getString(propertyKey)!!.toLong()
                 }
-                val property = it?.let { listViewModel.propertyFromId(
-                        properties = properties,
-                        propertyId = it.toLong()
-                    )
+                val property = it?.let {
+                    listViewModel.propertyFromId(propertyId = it.toLong(), properties = properties)
                 }
 
                 /** For list screen only **/
@@ -103,34 +101,33 @@ fun AppNavHost(
 
                 /** For detail screen only **/
                 val itemPhotos =
-                    it?.let { listViewModel.itemPhotos(photos = photos, propertyId = propertyId!!)
+                    it?.let { listViewModel.itemPhotos(propertyId = propertyId!!, photos = photos)
                     } ?: mutableListOf(NO_PHOTO)
                 val itemPois =
                     it?.let {
                         listViewModel.itemPois(
+                            propertyId = propertyId!!,
                             propertyPoiJoins = propertyPoiJoins,
                             pois = pois,
-                            propertyId = propertyId!!
                         )
                     } ?: mutableListOf()
                 val stringType = property?.let {
-                    listViewModel.stringType(types = types, stringTypes = stringTypes, typeId = property.typeId)
+                    listViewModel.stringType(typeId = property.typeId, types = types, stringTypes = stringTypes)
                 } ?: ""
                 val stringAgent = property?.let {
-                    listViewModel.stringAgent(agents = agents, stringAgents = stringAgents, agentId = property.agentId
-                    )
+                    listViewModel.stringAgent(agentId = property.agentId, agents = agents, stringAgents = stringAgents)
                 } ?: ""
                 val stringAddress = property?.addressId?.let { addressId ->
-                    listViewModel.stringAddress(addresses = addresses, addressId = addressId)
+                    listViewModel.stringAddress(addressId = addressId, addresses = addresses)
                 } ?: ""
                 val stringLatitude = property?.addressId?.let { addressId ->
-                    listViewModel.stringLatitude(addresses = addresses, addressId = addressId)
+                    listViewModel.stringLatitude(addressId = addressId, addresses = addresses)
                 } ?: ""
                 val stringLongitude = property?.addressId?.let { addressId ->
-                    listViewModel.stringLongitude(addresses = addresses, addressId = addressId)
+                    listViewModel.stringLongitude(addressId = addressId, addresses = addresses)
                 } ?: ""
                 val thumbnailUrl = property?.addressId?.let { addressId ->
-                    listViewModel.thumbnailUrl(addresses = addresses, addressId = addressId)
+                    listViewModel.thumbnailUrl(addressId = addressId, addresses = addresses)
                 } ?: ""
                 val connection by connectivityState()
                 val internetAvailable = listViewModel.checkForConnection(connection = connection)
@@ -221,38 +218,32 @@ fun AppNavHost(
             arguments = Detail.arguments
         ) { navBackStackEntry ->
             val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)!!.toLong()
-            val property = detailViewModel.propertyFromId(properties = properties, propertyId = propertyId)
-            val itemPhotos = detailViewModel.itemPhotos(photos = photos, propertyId = propertyId)
+            val property = detailViewModel.propertyFromId(propertyId = propertyId, properties = properties)
+            val itemPhotos = detailViewModel.itemPhotos(propertyId = propertyId, photos = photos)
             val itemPois = detailViewModel.itemPois(
-                propertyPoiJoins = propertyPoiJoins,
-                pois = pois,
-                propertyId = propertyId
+                propertyId = propertyId, propertyPoiJoins = propertyPoiJoins, pois = pois,
             )
             val stringType = property?.let {
                 detailViewModel.stringType(
-                    types = types,
-                    stringTypes = stringTypes,
-                    typeId = it.typeId
+                    typeId = it.typeId, types = types, stringTypes = stringTypes,
                 )
             } ?: ""
             val stringAgent = property?.let {
                 detailViewModel.stringAgent(
-                    agents = agents,
-                    stringAgents = stringAgents,
-                    agentId = it.agentId
+                    agentId = it.agentId, agents = agents, stringAgents = stringAgents,
                 )
             } ?: ""
             val stringAddress = property?.addressId?.let {
-                detailViewModel.stringAddress(addresses = addresses, addressId = it)
+                detailViewModel.stringAddress(addressId = it, addresses = addresses)
             } ?: ""
             val stringLatitude = property?.addressId?.let {
-                detailViewModel.stringLatitude(addresses = addresses, addressId = it)
+                detailViewModel.stringLatitude(addressId = it, addresses = addresses)
             } ?: ""
             val stringLongitude = property?.addressId?.let {
-                detailViewModel.stringLongitude(addresses = addresses, addressId = it)
+                detailViewModel.stringLongitude(addressId = it, addresses = addresses)
             } ?: ""
             val thumbnailUrl = property?.addressId?.let {
-                detailViewModel.thumbnailUrl(addresses = addresses, addressId = it)
+                detailViewModel.thumbnailUrl(addressId = it, addresses = addresses)
             } ?: ""
             val connection by connectivityState()
             val internetAvailable = detailViewModel.checkForConnection(connection = connection)
@@ -282,20 +273,20 @@ fun AppNavHost(
             val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)!!.toLong()
             val property: Property? = if (propertyId != NULL_ITEM_ID) {
                 // Edition mode
-                editViewModel.propertyFromId(properties, propertyId)
+                editViewModel.propertyFromId(propertyId = propertyId, properties = properties)
             } else {
                 // Creation mode
                 null
             }
             val stringType = property?.let {
-                editViewModel.stringType(types = types, stringTypes = stringTypes, typeId = it.typeId)
+                editViewModel.stringType(typeId = it.typeId, types = types, stringTypes = stringTypes)
             }
             val stringAgent = property?.let {
-                editViewModel.stringAgent(agents = agents, stringAgents = stringAgents, agentId = it.agentId)
+                editViewModel.stringAgent(agentId = it.agentId, agents = agents, stringAgents = stringAgents)
             }
-            val itemPhotos = editViewModel.itemPhotos(photos = photos, propertyId = propertyId)
+            val itemPhotos = editViewModel.itemPhotos(propertyId = propertyId, photos = photos)
             val itemPois = editViewModel.itemPois(
-                propertyPoiJoins = propertyPoiJoins, pois = pois, propertyId = propertyId
+                propertyId = propertyId, propertyPoiJoins = propertyPoiJoins, pois = pois
             )
 
             val onDescriptionValueChange: (String) -> Unit = {
@@ -309,11 +300,10 @@ fun AppNavHost(
             }
             val onDropdownMenuValueChange: (String) -> Unit = {
                 editViewModel.onDropdownMenuValueChange(
-                    properties = properties,
+                    propertyId = propertyId,
+                    value = it,
                     types = types,
                     agents = agents,
-                    propertyId = propertyId,
-                    value = it
                 )
             }
             val onNbOfRoomsValueChange: (String) -> Unit = {
@@ -426,7 +416,7 @@ fun AppNavHost(
 
             val onSavePhotoButtonClick: (String) -> Unit = {
                 editViewModel.onSavePhotoButtonClick(
-                    itemPhotos = itemPhotos, propertyId = propertyId, uri = photoToAddUri, label = it
+                    propertyId = propertyId, uri = photoToAddUri, label = it, itemPhotos = itemPhotos,
                 )
                 photoToAddUri = Uri.EMPTY
             }
@@ -436,7 +426,7 @@ fun AppNavHost(
             }
             val onPhotoDeletionConfirmation: (Long) -> Unit = { photoId ->
                 editViewModel.onPhotoDeletionConfirmation(
-                    itemPhotos = itemPhotos, photoId = photoId, propertyId = propertyId
+                    propertyId = propertyId, photoId = photoId, itemPhotos = itemPhotos
                 )
             }
 

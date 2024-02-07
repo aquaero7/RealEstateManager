@@ -20,7 +20,7 @@ class AddressRepository(private val addressDao: AddressDao) {
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
 
-    /** Room: Database CRUD **/
+    /** Room: Database CRUD */
 
     suspend fun upsertAddressInRoom(address: Address) {
         withContext(Dispatchers.IO) {
@@ -34,72 +34,50 @@ class AddressRepository(private val addressDao: AddressDao) {
         }
     }
 
-    /*suspend*/ fun getAddressFromRoom(adId: Long): Flow<Address> {
-        /*
-        return withContext(Dispatchers.IO) {
-            addressDao.getAddress(adId)
-        }
-        */
+    fun getAddressFromRoom(adId: Long): Flow<Address> {
         return addressDao.getAddress(adId)
     }
 
-    /*suspend*/ fun getAddressesFromRoom(): Flow<MutableList<Address>> {
-        /*
-        return withContext(Dispatchers.IO) {
-            addressDao.getAddresses()
-        }
-        */
+    fun getAddressesFromRoom(): Flow<MutableList<Address>> {
         return addressDao.getAddresses()
     }
 
-    /*suspend*/ fun getAddressesOrderedByIdFromRoom(): Flow<MutableList<Address>> {
-        /*
-        return withContext(Dispatchers.IO) {
-            addressDao.getAddressesOrderedById()
-        }
-        */
+    fun getAddressesOrderedByIdFromRoom(): Flow<MutableList<Address>> {
         return addressDao.getAddressesOrderedById()
     }
 
-    /*suspend*/ fun getAddressesOrderedByCityFromRoom(): Flow<MutableList<Address>> {
-        /*
-        return withContext(Dispatchers.IO) {
-            addressDao.getAddressesOrderedByCity()
-        }
-        */
+    fun getAddressesOrderedByCityFromRoom(): Flow<MutableList<Address>> {
         return addressDao.getAddressesOrderedByCity()
     }
 
     /***/
 
 
-    fun addressFromId(addresses: MutableList<Address>, addressId: Long): Address {
-//        return fakeAddresses.find { it.addressId == addressId }!!
+    private fun addressFromId(addressId: Long, addresses: MutableList<Address>): Address {
         return addresses.first { it.addressId == addressId }
     }
 
-    fun thumbnailUrlFromAddressId(addresses: MutableList<Address>, addressId: Long): String {
-        val smMarkerAddress = addressFromId(addresses, addressId).toUrl()
+    fun thumbnailUrlFromAddressId(addressId: Long, addresses: MutableList<Address>): String {
+        val smMarkerAddress = addressFromId(addressId = addressId, addresses = addresses).toUrl()
         return SM_URL + SM_SIZE + SM_SCALE + SM_TYPE + SM_MARKER_COLOR + smMarkerAddress + SM_KEY
     }
 
-    fun stringAddress(addresses: MutableList<Address>, addressId: Long): String {
+    fun stringAddress(addressId: Long, addresses: MutableList<Address>): String {
         return addresses.find { it.addressId == addressId }.toString()
     }
 
-    fun stringLatitude(addresses: MutableList<Address>, addressId: Long): String {
+    fun stringLatitude(addressId: Long, addresses: MutableList<Address>): String {
         return addresses.find { it.addressId == addressId }?.latitude?.toString() ?: ""
     }
 
-    fun stringLongitude(addresses: MutableList<Address>, addressId: Long): String {
+    fun stringLongitude(addressId: Long, addresses: MutableList<Address>): String {
         return addresses.find { it.addressId == addressId }?.longitude?.toString() ?: ""
     }
 
 
-    /**
-     * FAKE ADDRESSES
-     */
 
+    /** FAKE ADDRESSES */
+    /*
     val fakeAddresses = listOf(
         Address(
             addressId = -1,
@@ -141,7 +119,8 @@ class AddressRepository(private val addressDao: AddressDao) {
 //            latLng = LatLng(33.8725435,-84.3370041)
         )
     )
-    //
+    */
+
 
 }
 

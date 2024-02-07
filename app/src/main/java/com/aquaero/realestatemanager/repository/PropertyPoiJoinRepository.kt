@@ -15,7 +15,7 @@ class PropertyPoiJoinRepository(private val propertyPoiJoinDao: PropertyPoiJoinD
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
 
-    /** Room: Database CRUD **/
+    /** Room: Database CRUD */
 
     suspend fun upsertPropertyPoiJoinInRoom(propertyPoiJoin: PropertyPoiJoin) {
         withContext(Dispatchers.IO) {
@@ -29,30 +29,15 @@ class PropertyPoiJoinRepository(private val propertyPoiJoinDao: PropertyPoiJoinD
         }
     }
 
-    /*suspend*/ fun getPoisForPropertyFromRoom(pId: Long): Flow<MutableList<Poi>> {
-        /*
-        return withContext(Dispatchers.IO) {
-            propertyPoiJoinDao.getPoisForProperty(pId)
-        }
-        */
+    fun getPoisForPropertyFromRoom(pId: Long): Flow<MutableList<Poi>> {
         return propertyPoiJoinDao.getPoisForProperty(pId)
     }
 
-    /*suspend*/ fun getPropertiesForPoiFromRoom(poiId: String): Flow<MutableList<Property>> {
-        /*
-        return withContext(Dispatchers.IO) {
-            propertyPoiJoinDao.getPropertiesForPoi(poiId)
-        }
-        */
+    fun getPropertiesForPoiFromRoom(poiId: String): Flow<MutableList<Property>> {
         return propertyPoiJoinDao.getPropertiesForPoi(poiId)
     }
 
-    /*suspend*/ fun getPropertyPoiJoinsFromRoom(): Flow<MutableList<PropertyPoiJoin>> {
-        /*
-        return withContext(Dispatchers.IO) {
-            propertyPoiJoinDao.getPropertyPoiJoins()
-        }
-        */
+    fun getPropertyPoiJoinsFromRoom(): Flow<MutableList<PropertyPoiJoin>> {
         return propertyPoiJoinDao.getPropertyPoiJoins()
     }
 

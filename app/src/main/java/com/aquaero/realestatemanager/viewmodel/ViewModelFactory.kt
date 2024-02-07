@@ -23,17 +23,7 @@ import com.aquaero.realestatemanager.repository.TypeRepository
 
 @Suppress("UNCHECKED_CAST")
 object ViewModelFactory:  ViewModelProvider.Factory {
-
-    /* Config 1
-    private val propertyDao: PropertyDao = DatabaseProvider.getInstance().propertyDao
-    */
-
-    /* Config 2
-    private val appDatabase: AppDatabase = DatabaseProvider.provideAppDatabase()
-    private val propertyDao: PropertyDao = DatabaseProvider.providePropertyDao(appDatabase)
-    */
-
-    // Config 3
+    // DAO
     private val appDatabase: AppDatabase = AppDatabase.getInstance()
     private val propertyDao: PropertyDao = appDatabase.propertyDao
     private val addressDao: AddressDao = appDatabase.addressDao
@@ -42,8 +32,7 @@ object ViewModelFactory:  ViewModelProvider.Factory {
     private val typeDao: TypeDao = appDatabase.typeDao
     private val poiDao: PoiDao = appDatabase.poiDao
     private val propertyPoiJoinDao: PropertyPoiJoinDao = appDatabase.propertyPoiJoinDao
-    //
-
+    // Repositories
     private val propertyRepository: PropertyRepository = PropertyRepository(propertyDao)
     private val addressRepository: AddressRepository = AddressRepository(addressDao)
     private val photoRepository: PhotoRepository = PhotoRepository(photoDao)

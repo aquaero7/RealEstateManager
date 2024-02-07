@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 class MapViewModel(
     private val locationRepository: LocationRepository
 ): ViewModel() {
-
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
     fun checkForConnection(connection: ConnectionState): Boolean {

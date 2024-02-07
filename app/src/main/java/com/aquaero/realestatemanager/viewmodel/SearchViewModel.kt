@@ -12,7 +12,6 @@ import com.aquaero.realestatemanager.SearchCriteria
 class SearchViewModel(
 
 ): ViewModel() {
-
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
 

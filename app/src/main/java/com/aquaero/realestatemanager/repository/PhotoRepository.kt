@@ -28,7 +28,7 @@ class PhotoRepository(private val photoDao: PhotoDao) {
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
 
-    /** Room: Database CRUD **/
+    /** Room: Database CRUD */
 
     suspend fun upsertPhotoInRoom(photo: Photo) {
         withContext(Dispatchers.IO) {
@@ -42,46 +42,26 @@ class PhotoRepository(private val photoDao: PhotoDao) {
         }
     }
 
-    /*suspend*/ fun getPhotoFromRoom(phId: Long): Flow<Photo> {
-        /*
-        return withContext(Dispatchers.IO) {
-            photoDao.getPhoto(phId)
-        }
-        */
+    fun getPhotoFromRoom(phId: Long): Flow<Photo> {
         return photoDao.getPhoto(phId)
     }
 
-    /*suspend*/ fun getPhotosFromRoom(): Flow<MutableList<Photo>> {
-        /*
-        return withContext(Dispatchers.IO) {
-            photoDao.getPhotos()
-        }
-        */
+    fun getPhotosFromRoom(): Flow<MutableList<Photo>> {
         return photoDao.getPhotos()
     }
 
-    /*suspend*/ fun getPhotosOrderedByIdFromRoom(): Flow<MutableList<Photo>> {
-        /*
-        return withContext(Dispatchers.IO) {
-            photoDao.getPhotosOrderedById()
-        }
-        */
+    fun getPhotosOrderedByIdFromRoom(): Flow<MutableList<Photo>> {
         return photoDao.getPhotosOrderedById()
     }
 
-    /*suspend*/ fun getPhotosOrderedByLabelFromRoom(): Flow<MutableList<Photo>> {
-        /*
-        return withContext(Dispatchers.IO) {
-            photoDao.getPhotosOrderedByLabel()
-        }
-        */
+    fun getPhotosOrderedByLabelFromRoom(): Flow<MutableList<Photo>> {
         return photoDao.getPhotosOrderedByLabel()
     }
 
     /***/
 
 
-    fun photoFromId(photos: MutableList<Photo>, photoId: Long): Photo {
+    fun photoFromId(photoId: Long, photos: MutableList<Photo>): Photo {
         return photos.first { it.photoId == photoId }
     }
 
@@ -98,8 +78,6 @@ class PhotoRepository(private val photoDao: PhotoDao) {
 
     fun getPhotoUri(): Uri {
         val file = context.createImageFile()
-
-        // val uri = FileProvider.getUriForFile(
         return FileProvider.getUriForFile(
             Objects.requireNonNull(context),
             BuildConfig.APPLICATION_ID + ".provider", file
@@ -111,9 +89,9 @@ class PhotoRepository(private val photoDao: PhotoDao) {
         cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
         permissionLauncher: ManagedActivityResultLauncher<String, Boolean>
     ) {
-        val permissionCheckResult =
-            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+        val permissionCheckResult = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
         if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+            // Launch camera
             cameraLauncher.launch(uri)
         } else {
             // Request a permission
@@ -129,30 +107,15 @@ class PhotoRepository(private val photoDao: PhotoDao) {
         )
     }
 
-    fun itemPhotos(photos: MutableList<Photo>, propertyId: Long): MutableList<Photo> {
-//        return photos.filter { it.propertyId == propertyId }.toMutableList()
+    fun itemPhotos(propertyId: Long, photos: MutableList<Photo>): MutableList<Photo> {
         val itemPhotos = photos.filter { it.propertyId == propertyId }.toMutableList()
         return itemPhotos.ifEmpty { mutableListOf(NO_PHOTO) }
-
-
-
-        /*
-        val itemPhotos = emptyList<Photo>().toMutableList()
-        photos.forEach() { if (it.propertyId == propertyId) itemPhotos.add(it) }
-        return itemPhotos
-        */
     }
 
 
 
-
-
-
-    //
-    /**
-     * FAKE PHOTOS
-     */
-
+    /** FAKE PHOTOS */
+    /*
     val fakePhotos = listOf(
         Photo(
             photoId = -1,
@@ -210,7 +173,8 @@ class PhotoRepository(private val photoDao: PhotoDao) {
         ),
 
     )
-    //
+    */
+
 
 }
 

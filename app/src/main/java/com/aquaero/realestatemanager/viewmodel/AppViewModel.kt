@@ -29,37 +29,31 @@ import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
 class AppViewModel(
-    private val propertyRepository: PropertyRepository,
-    private val addressRepository: AddressRepository,
-    private val photoRepository: PhotoRepository,
-    private val agentRepository : AgentRepository,
-    private val typeRepository : TypeRepository,
-    private val poiRepository: PoiRepository,
-    private val propertyPoiJoinRepository: PropertyPoiJoinRepository,
+    propertyRepository: PropertyRepository,
+    addressRepository: AddressRepository,
+    photoRepository: PhotoRepository,
+    agentRepository : AgentRepository,
+    typeRepository : TypeRepository,
+    poiRepository: PoiRepository,
+    propertyPoiJoinRepository: PropertyPoiJoinRepository,
 ) : ViewModel() {
-
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
-    private var internetAvailable by Delegates.notNull<Boolean>()
 
-    @SuppressLint("NewApi")
-    val fakeProperties = propertyRepository.fakeProperties
-
-
-    /** Room **/
+    /** Room */
 
     val properties = propertyRepository.getPropertiesFromRoom()
     val addresses = addressRepository.getAddressesFromRoom()
     val photos = photoRepository.getPhotosFromRoom()
-    val agents = agentRepository.getAgentsFromRoom()
+//    val agents = agentRepository.getAgentsFromRoom()
     val agentsOrderedByName = agentRepository.getAgentsOrderedByNameFromRoom()
-    val types = typeRepository.getTypesFromRoom()
+//    val types = typeRepository.getTypesFromRoom()
     val typesOrderedById = typeRepository.getTypesOrderedByIdFromRoom()
     val pois = poiRepository.getPoisFromRoom()
     val propertyPoiJoins = propertyPoiJoinRepository.getPropertyPoiJoinsFromRoom()
-    val stringTypes = typeRepository.getStringTypesFromRoom(context)
+//    val stringTypes = typeRepository.getStringTypesFromRoom(context)
     val stringTypesOrderedById = typeRepository.getStringTypesOrderedByIdFromRoom(context)
-    val stringAgents = agentRepository.getStringAgentsFromRoom()
+//    val stringAgents = agentRepository.getStringAgentsFromRoom()
     val stringAgentsOrderedByName = agentRepository.getStringAgentsOrderedByNameFromRoom()
 
     /*
@@ -112,38 +106,24 @@ class AppViewModel(
 
     /***/
 
+
     /**
      * Init content type, according to window's width,
      * to choose dynamically, on screen state changes, whether to show
      * just a list content, or both a list and detail content
      */
     fun contentType(windowSize: WindowWidthSizeClass): AppContentType = when (windowSize) {
-        WindowWidthSizeClass.Expanded -> {
-            AppContentType.SCREEN_WITH_DETAIL
-        }
-
-        else -> {
-            AppContentType.SCREEN_ONLY
-        }
-    }
-
-    /* TODO: Function to be deleted
-    fun checkForInternet(): Boolean {
-        internetAvailable = isInternetAvailable(context)
-        return internetAvailable
-    }
-    */
-
-    fun isInternetAvailable(): Boolean {
-        return internetAvailable
+        WindowWidthSizeClass.Expanded -> { AppContentType.SCREEN_WITH_DETAIL }
+        else -> { AppContentType.SCREEN_ONLY }
     }
 
     // Init CurrencyStore
     val currencyStore = CurrencyStore(context)
 
-    /**
-     * TopBar
-     */
+    /***/
+
+
+    /** TopBar */
 
     fun menuIcon(currentScreen: String?) = if (
         currentScreen == EditDetail.routeWithArgs ||
@@ -168,22 +148,9 @@ class AppViewModel(
         }
     }
 
-    /** End TopBar */
+    /***/
 
 
-
-
-    /*
-    @SuppressLint("DiscouragedApi")
-    fun stringTypes(types: MutableList<Type>): MutableList<String> {
-        val stringTypes: MutableList<String> = mutableListOf()
-        for (type in types) {
-            val resourceId = context.resources.getIdentifier(type.typeId, "string", context.packageName)
-            stringTypes.add(if (resourceId != 0) context.getString(resourceId) else type.typeId)
-        }
-        return stringTypes
-    }
-    */
 
 
 

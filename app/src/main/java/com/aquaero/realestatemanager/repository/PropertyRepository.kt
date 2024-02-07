@@ -18,15 +18,7 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
 
-    /** For fake data only */
-    private val agentRepository = AgentRepository(AppDatabase.getInstance().agentDao)
-    private val addressRepository = AddressRepository(AppDatabase.getInstance().addressDao)
-    private val photoRepository = PhotoRepository(AppDatabase.getInstance().photoDao)
-    private val fakePhotos = photoRepository.fakePhotos
-    /***/
-
-
-    /** Room: Database CRUD **/
+    /** Room: Database CRUD */
 
     suspend fun upsertPropertyInRoom(property: Property) {
         withContext(IO) {
@@ -34,111 +26,50 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
         }
     }
 
-    /*suspend*/ fun getPropertyFromRoom(pId: Long): Flow<Property> {
-        /*
-        return withContext(IO) {
-            propertyDao.getProperty(pId)
-        }
-        */
+    fun getPropertyFromRoom(pId: Long): Flow<Property> {
         return propertyDao.getProperty(pId)
     }
 
-    /*suspend*/ fun getPropertiesFromRoom(): Flow<MutableList<Property>> {
-        /*
-        return withContext(IO) {
-            propertyDao.getProperties()
-        }
-        */
+    fun getPropertiesFromRoom(): Flow<MutableList<Property>> {
         return propertyDao.getProperties()
     }
 
-    /*suspend*/ fun getPropertiesOrderedByIdFromRoom(): Flow<MutableList<Property>> {
-        /*
-        return withContext(IO) {
-            propertyDao.getPropertiesOrderedById()
-        }
-        */
+    fun getPropertiesOrderedByIdFromRoom(): Flow<MutableList<Property>> {
         return propertyDao.getPropertiesOrderedById()
     }
 
-    /*suspend*/ fun getPropertiesOrderedByRegistrationDateFromRoom(): Flow<MutableList<Property>> {
-        /*
-        return withContext(IO) {
-            propertyDao.getPropertiesOrderedByRegistrationDate()
-        }
-        */
+    fun getPropertiesOrderedByRegistrationDateFromRoom(): Flow<MutableList<Property>> {
         return propertyDao.getPropertiesOrderedByRegistrationDate()
     }
 
     /***/
 
 
-    fun propertyFromId(properties: MutableList<Property>, propertyId: Long): Property {
-//        return fakeProperties.find { it.propertyId == propertyId }!!
+    fun propertyFromId(propertyId: Long, properties: MutableList<Property>): Property {
         return properties.first() { it.propertyId == propertyId }
     }
-
-    /*
-    fun thumbnailUrl(property: Property): String {
-        val smMkAddress1 = property.addressId.toUrl()
-        return SM_URL + SM_SIZE + SM_SCALE + SM_TYPE + SM_MK_COLOR1 + smMkAddress1 + SM_KEY
-    }
-    */
-    /*
-    fun thumbnailUrl(address: Address): String {
-        val smMarkerAddress = address.toUrl()
-        return SM_URL + SM_SIZE + SM_SCALE + SM_TYPE + SM_MARKER_COLOR + smMarkerAddress + SM_KEY
-    }
-    */
 
     // TODO: Add new property values to arguments
     fun updateProperty(propertyId: Comparable<*>) {
         // TODO: To be deleted
         Toast
-            .makeText(
-                context,
-                "Click on ${context.getString(R.string.valid)}, for id $propertyId, from EditScreen",
-                Toast.LENGTH_SHORT
-            )
+            .makeText(context,"Click on ${context.getString(R.string.valid)}, for id $propertyId, from EditScreen", Toast.LENGTH_SHORT)
             .show()
 
         // TODO: Check if it is a creation or a modification of a property and update database
 
         // After update
         Toast
-            .makeText(
-                context,
-                context.getString(
+            .makeText(context, context.getString(
                     R.string.recorded
-                ),
-                Toast.LENGTH_SHORT
-            )
+                ), Toast.LENGTH_SHORT)
             .show()
     }
-    /***/
 
 
-    /**
-     * Hardcoded data
-     */
-    val typesSet: MutableSet<Int> = mutableSetOf(
-        R.string._unassigned_,
-        R.string.flat, R.string.house, R.string.duplex, R.string.penthouse,
-        R.string.loft, R.string.manor, R.string.castle, R.string.hostel
-    )
 
-    val poiSet: MutableSet<Int> = mutableSetOf(
-        R.string.hospital, R.string.school, R.string.restaurant,
-        R.string.shop, R.string.railway_station, R.string.car_park,
-    )
-    /***/
-
-
-    //
-    /**
-     * FAKE PROPERTIES
-     */
-
+    /** FAKE PROPERTIES */
+    /*
     private val loremIpsum: String = LoremIpsum(300).values.first()
 
     @SuppressLint("NewApi")
@@ -366,6 +297,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
         ),
 
     )
-    //
+    */
+
+
 }
 

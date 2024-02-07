@@ -13,7 +13,7 @@ class PoiRepository(private val poiDao: PoiDao) {
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
 
-    /** Room: Database CRUD **/
+    /** Room: Database CRUD */
 
     suspend fun upsertPoiInRoom(poi: Poi) {
         withContext(Dispatchers.IO) {
@@ -27,37 +27,22 @@ class PoiRepository(private val poiDao: PoiDao) {
         }
     }
 
-    /*suspend*/ fun getPoiFromRoom(poiId: String): Flow<Poi> {
-        /*
-        return withContext(Dispatchers.IO) {
-            poiDao.getPoi(poiId)
-        }
-        */
+    fun getPoiFromRoom(poiId: String): Flow<Poi> {
         return poiDao.getPoi(poiId)
     }
 
-    /*suspend*/ fun getPoisFromRoom(): Flow<MutableList<Poi>> {
-        /*
-        return withContext(Dispatchers.IO) {
-            poiDao.getPois()
-        }
-        */
+    fun getPoisFromRoom(): Flow<MutableList<Poi>> {
         return poiDao.getPois()
     }
 
-    /*suspend*/ fun getPoisOrderedByIdFromRoom(): Flow<MutableList<Poi>> {
-        /*
-        return withContext(Dispatchers.IO) {
-            poiDao.getPoisOrderedById()
-        }
-        */
+    fun getPoisOrderedByIdFromRoom(): Flow<MutableList<Poi>> {
         return poiDao.getPoisOrderedById()
     }
 
     /***/
 
 
-    fun poiFromId(pois: MutableList<Poi>, poiId: String): Poi {
+    fun poiFromId(poiId: String, pois: MutableList<Poi>): Poi {
         return pois.first { it.poiId == poiId }
     }
 

@@ -15,7 +15,7 @@ class TypeRepository(private val typeDao: TypeDao) {
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
 
-    /** Room: Database CRUD **/
+    /** Room: Database CRUD */
 
     suspend fun upsertTypeInRoom(type: Type) {
         withContext(Dispatchers.IO) {
@@ -29,30 +29,15 @@ class TypeRepository(private val typeDao: TypeDao) {
         }
     }
 
-    /*suspend*/ fun getTypeFromRoom(typeId: String): Flow<Type> {
-        /*
-        return withContext(Dispatchers.IO) {
-            typeDao.getType(typeId)
-        }
-        */
+    fun getTypeFromRoom(typeId: String): Flow<Type> {
         return typeDao.getType(typeId)
     }
 
-    /*suspend*/ fun getTypesFromRoom(): Flow<MutableList<Type>> {
-        /*
-        return withContext(Dispatchers.IO) {
-            typeDao.getTypes()
-        }
-        */
+    fun getTypesFromRoom(): Flow<MutableList<Type>> {
         return typeDao.getTypes()
     }
 
-    /*suspend*/ fun getTypesOrderedByIdFromRoom(): Flow<MutableList<Type>> {
-        /*
-        return withContext(Dispatchers.IO) {
-            typeDao.getTypesOrderedById()
-        }
-        */
+    fun getTypesOrderedByIdFromRoom(): Flow<MutableList<Type>> {
         return typeDao.getTypesOrderedById()
     }
 
@@ -80,11 +65,12 @@ class TypeRepository(private val typeDao: TypeDao) {
 
     /***/
 
-    fun typeFromId(types: MutableList<Type>, typeId: String): Type {
+
+    fun typeFromId(typeId: String, types: MutableList<Type>): Type {
         return types.first {it.typeId == typeId}
     }
 
-    fun stringType(types: MutableList<Type>, stringTypes: MutableList<String>, typeId: String): String {
+    fun stringType(typeId: String, types: MutableList<Type>, stringTypes: MutableList<String>): String {
         val typeIndex = types.indexOf(types.find { it.typeId == typeId })
         return if (typeIndex != -1 && stringTypes.isNotEmpty()) stringTypes.elementAt(typeIndex) else typeId
     }

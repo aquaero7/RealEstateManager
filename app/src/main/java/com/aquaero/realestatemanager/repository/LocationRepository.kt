@@ -32,10 +32,8 @@ class LocationRepository {
     private val locationUpdatesFlow = MutableStateFlow<Location?>(null)
     private val locationCallback = object: LocationCallback() {
         override fun onLocationResult(p0: LocationResult) {
-            // super.onLocationResult(p0)
             p0.lastLocation?.let {
                 location -> locationUpdatesFlow.value = location
-
                 Log.w(
                     "Location Repository",
                     "Location update callback: Lat: ${location.latitude}, Lng: ${location.longitude}"
@@ -44,16 +42,15 @@ class LocationRepository {
         }
     }
 
-
     fun checkForPermissions(): Boolean {
-        locPermsGranted = !(ActivityCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED &&
+        locPermsGranted = !(
                 ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED)
+                    context, Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(
+                            context, Manifest.permission.ACCESS_COARSE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED
+                )
 
         return locPermsGranted
     }
@@ -102,10 +99,10 @@ fun getLocationFromAddress(strAddress: String?, internetAvailable: Boolean): Lat
                 override fun onGeocode(address: MutableList<Address>) {
                     val location: Address = address[0]
                     latLng = LatLng(location.latitude, location.longitude)
-                    Log.w("Geocoder.getFromLocName", latLng.toString())
-                    Log.w("Geocoder.getFromLocName", location.locality)
-                    Log.w("Geocoder.getFromLocName", location.latitude.toString())
-                    Log.w("Geocoder.getFromLocName", location.longitude.toString())
+                    Log.w("Geocoder.getFromLocName", "LatLng: ${latLng.toString()}")
+                    Log.w("Geocoder.getFromLocName", "Locality: ${location.locality}")
+                    Log.w("Geocoder.getFromLocName", "Latitude: ${location.latitude}")
+                    Log.w("Geocoder.getFromLocName", "Longitude: ${location.longitude}")
                 }
 
                 override fun onError(errorMessage: String?) {

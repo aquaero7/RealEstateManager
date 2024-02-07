@@ -11,7 +11,6 @@ import com.aquaero.realestatemanager.R
 class LoanViewModel(
 
 ): ViewModel() {
-
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
 

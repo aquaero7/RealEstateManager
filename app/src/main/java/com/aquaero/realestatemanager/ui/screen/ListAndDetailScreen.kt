@@ -15,6 +15,7 @@ import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.model.Type
 
 @SuppressLint("NewApi")
 @Composable
@@ -25,6 +26,8 @@ fun ListAndDetailScreen(
     // For list screen only
     contentType: AppContentType,
     items: List<Property>,
+    types: List<Type>,
+    stringTypes: List<String>,
     addresses: List<Address>,
     photos: List<Photo>,
     onPropertyClick: (Long) -> Unit,
@@ -50,6 +53,8 @@ fun ListAndDetailScreen(
                 currency = currency,
                 contentType = contentType,
                 items = items,
+                types = types,
+                stringTypes = stringTypes,
                 addresses = addresses,
                 photos = photos,
                 onPropertyClick = onPropertyClick,

@@ -20,6 +20,7 @@ import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -32,6 +33,7 @@ import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.ui.component.list_screen.PropertyCard
 import com.aquaero.realestatemanager.ui.theme.White
 
@@ -41,6 +43,8 @@ fun ListScreen(
     currency: String,
     contentType: AppContentType,
     items: List<Property>,
+    types: List<Type>,
+    stringTypes: List<String>,
     addresses: List<Address>,
     photos: List<Photo>,
     onPropertyClick: (Long) -> Unit,
@@ -75,19 +79,40 @@ fun ListScreen(
                 state = LazyListState(firstVisibleItemIndex = property?.let { items.indexOf(property) } ?: 0),
             ) {
                 items(items = items) { propertyItem ->
-                    val phId = photos.find { it.propertyId == propertyItem.propertyId }?.photoId ?: NO_PHOTO.photoId
+                    val photo = photos.find { it.propertyId == propertyItem.propertyId }
+                    val phId = photo?.photoId ?: NO_PHOTO.photoId
+                    val phUri = photo?.uri ?: NO_PHOTO.uri
+                    val pId = propertyItem.propertyId
+                    val type = types.find { it.typeId == propertyItem.typeId }
+                    val pType = type?.let {
+                        if (stringTypes.isNotEmpty()) stringTypes.elementAt(types.indexOf(it)) else ""
+                    } ?: ""
+                    val pCity = addresses.find { it.addressId == propertyItem.addressId }?.city ?: ""
+                    val pPriceFormatted = propertyItem.priceFormattedInCurrency(currency)
+                    val selected by remember(propertyItem, property) {
+                        mutableStateOf(
+                            selectedId == propertyItem.propertyId ||
+                                    property?.propertyId.toString() == propertyItem.propertyId.toString()
+                        )
+                    }
+                    val unselectedByDefaultDisplay by remember(propertyItem, property) {
+                        mutableStateOf(property?.propertyId.toString() != propertyItem.propertyId.toString())
+                    }
+                    val onSelection by remember(propertyItem) {
+                        mutableStateOf({ selectedId = propertyItem.propertyId } )
+                    }
+
                     PropertyCard(
                         contentType = contentType,
-                        pId = propertyItem.propertyId,
-                        pType = propertyItem.typeId,
-                        pCity = addresses.find { it.addressId == propertyItem.addressId }?.city ?: "",
+                        pId = pId,
+                        pType = pType,
+                        pCity = pCity,
                         phId = phId,
-                        pPriceFormatted = propertyItem.priceFormattedInCurrency(currency),
-                        selected = selectedId == propertyItem.propertyId ||
-                                property?.propertyId.toString() == propertyItem.propertyId.toString(), // For compatibility with ListAndDetailScreen
-                        unselectedByDefaultDisplay =
-                                property?.propertyId.toString() != propertyItem.propertyId.toString(), // For compatibility with ListAndDetailScreen
-                        onSelection = { selectedId = propertyItem.propertyId },                        // For compatibility with ListAndDetailScreen
+                        phUri = phUri,
+                        pPriceFormatted = pPriceFormatted,
+                        selected = selected,
+                        unselectedByDefaultDisplay = unselectedByDefaultDisplay,
+                        onSelection = onSelection,
                         onPropertyClick = onPropertyClick,
                     )
                 }

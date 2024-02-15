@@ -18,7 +18,7 @@ fun EditScreenColumn2(
     stringAgents: MutableList<String>,
     stringAgent: String?,
     property: Property?,
-    addresses: List<Address>,
+    address: Address?,
     onStreetNumberValueChange: (String) -> Unit,
     onStreetNameValueChange: (String) -> Unit,
     onAddInfoValueChange: (String) -> Unit,
@@ -49,7 +49,7 @@ fun EditScreenColumn2(
         onStateValueChange = onStateValueChange,
         onZipCodeValueChange = onZipCodeValueChange,
         onCountryValueChange = onCountryValueChange,
-        item = addresses.find { it.addressId == property?.addressId },
+        item = address,
     )
     // Agent
     EditScreenTextFieldItem(

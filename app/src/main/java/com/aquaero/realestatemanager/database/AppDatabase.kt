@@ -69,12 +69,12 @@ abstract class AppDatabase : RoomDatabase() {
 
                         // Executors.newSingleThreadExecutor().execute {
                         CoroutineScope(Dispatchers.IO).launch {
-                            getInstance().addressDao.prepopulateWithAddresses(ADDRESS_PREPOPULATION_DATA)
+//                            getInstance().addressDao.prepopulateWithAddresses(ADDRESS_PREPOPULATION_DATA)
                             getInstance().agentDao.prepopulateWithAgents(AGENT_PREPOPULATION_DATA)
                             getInstance().typeDao.prepopulateWithTypes(TYPE_PREPOPULATION_DATA)
                             getInstance().poiDao.prepopulateWithPois(POI_PREPOPULATION_DATA)
-                            getInstance().propertyDao.prepopulateWithProperties(PROPERTY_PREPOPULATION_DATA)
-                            getInstance().photoDao.prepopulateWithPhotos(PHOTO_PREPOPULATION_DATA)
+//                            getInstance().propertyDao.prepopulateWithProperties(PROPERTY_PREPOPULATION_DATA)
+//                            getInstance().photoDao.prepopulateWithPhotos(PHOTO_PREPOPULATION_DATA)
                             // getInstance().propertyPoiJoinDao.prepopulateWithPropertyPoiJoins(PROPERTY_POI_JOIN_PREPOPULATION_DATA)
                         }
                     }

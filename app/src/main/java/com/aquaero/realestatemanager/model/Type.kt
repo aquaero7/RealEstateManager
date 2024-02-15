@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.aquaero.realestatemanager.CACHE_TYPE_ID_VALUE
 
 @Entity
 data class Type(
@@ -33,3 +34,5 @@ val TYPE_PREPOPULATION_DATA = listOf(
     Type(TypeEnum.CASTLE.key),
     Type(TypeEnum.HOSTEL.key),
 ).sortedBy { it.typeId }
+
+val CACHE_TYPE = Type(CACHE_TYPE_ID_VALUE)

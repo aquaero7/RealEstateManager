@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.aquaero.realestatemanager.CACHE_EMPTY_STRING_VALUE
 
 @Entity
 data class Poi(
@@ -27,3 +28,5 @@ val POI_PREPOPULATION_DATA = listOf(
     Poi(PoiEnum.RAILWAY_STATION.key),
     Poi(PoiEnum.CAR_PARK.key),
 )
+
+val CACHE_POI = Poi(CACHE_EMPTY_STRING_VALUE)

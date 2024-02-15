@@ -66,12 +66,16 @@ class TypeRepository(private val typeDao: TypeDao) {
     /***/
 
 
-    fun typeFromId(typeId: String, types: MutableList<Type>): Type {
-        return types.first {it.typeId == typeId}
+    fun typeFromId(typeId: String, types: MutableList<Type>): Type? {
+        return types.find {it.typeId == typeId}
     }
 
     fun stringType(typeId: String, types: MutableList<Type>, stringTypes: MutableList<String>): String {
-        val typeIndex = types.indexOf(types.find { it.typeId == typeId })
+        /*
+        val typeIndex = types.indexOf(types.first { it.typeId == typeId })
+        return if (typeIndex != -1 && stringTypes.isNotEmpty()) stringTypes.elementAt(typeIndex) else typeId
+        */
+        val typeIndex = types.indexOf(types.find { it.typeId == typeId } ?: 0)
         return if (typeIndex != -1 && stringTypes.isNotEmpty()) stringTypes.elementAt(typeIndex) else typeId
     }
 

@@ -16,7 +16,7 @@ interface AddressDao {
     suspend fun prepopulateWithAddresses(addresses: List<Address>)
 
     @Upsert     // Insert ou update (if primary key already exists)
-    suspend fun upsertAddress(address: Address)
+    suspend fun upsertAddress(address: Address): Long
 
     @Delete
     suspend fun deleteAddress(address: Address)

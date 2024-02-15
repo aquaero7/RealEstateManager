@@ -30,7 +30,7 @@ fun convertDateMillisToString(millis: Long): String {
 fun convertDateStringToMillis(string: String): Long {
     val date = LocalDate.now()
     val formatter = DateTimeFormatter.ofPattern(DATE_PATTERN)
-    val localDate = if (string.isNotEmpty()) LocalDate.parse(string, formatter) else date
+    val localDate = if (string.isNotEmpty()/* && string != CACHE_STRING_VALUE*/) LocalDate.parse(string, formatter) else date
     val instant = localDate.atStartOfDay().toInstant(ZoneOffset.UTC)
     return instant.toEpochMilli()
 
@@ -58,6 +58,10 @@ fun ellipsis(): String {
     val ellipsisChar = hexVal.toChar()
     println("Result for unicode $hexCode is $ellipsisChar")
     return ellipsisChar.toString()
+}
+
+val randomProvisionalId: () -> Long = {
+    (-9999..-1000).random().toLong()
 }
 
 

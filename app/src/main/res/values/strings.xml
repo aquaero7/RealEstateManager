@@ -50,6 +50,7 @@
     <string name="latitude">Latitude:</string>
     <string name="longitude">Longitude:</string>
     <string name="recorded">Data recorded!</string>
+    <string name="not_recorded">Data not recorded!</string>
     <string name="perms_revoked">The map is unavailable because\nlocation permissions\nhave been revoked!</string>
     <string name="network_unavailable">Network unavailable!</string>
     <string name="address_incomplete">Address incomplete!</string>

@@ -24,6 +24,12 @@ interface PhotoDao {
     @Query("SELECT * FROM photo WHERE photoId = :phId")
     fun getPhoto(phId: Long): Flow<Photo>
 
+    @Upsert     // Insert ou update (if primary key already exists)
+    suspend fun upsertPhotos(photos: MutableList<Photo>)
+
+    @Delete
+    suspend fun deletePhotos(photos: MutableList<Photo>)
+
     @Query("SELECT * FROM photo")
     fun getPhotos(): Flow<MutableList<Photo>>
 

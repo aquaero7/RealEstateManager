@@ -52,6 +52,8 @@ import com.aquaero.realestatemanager.DP_CONTAINER_COLOR
 import com.aquaero.realestatemanager.DP_TEXT_COLOR
 import com.aquaero.realestatemanager.DropdownMenuCategory
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.model.CACHE_AGENT
+import com.aquaero.realestatemanager.model.CACHE_TYPE
 import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.ui.theme.Red
 import com.aquaero.realestatemanager.utils.convertDateMillisToString
@@ -76,7 +78,7 @@ fun EditScreenTextFieldItem(
     shouldBeDigitsOnly: Boolean = false,
     // For DropDownMenu
     stringItems: MutableList<String>? = null,           // Not null when the item is a DropdownMenu
-    stringItem: String? = null,                         // Not null when the item is a DropdownMenu
+    stringItem: String? = null,
     dropdownMenuCategory: DropdownMenuCategory? = null, // Not null when the item is a DropdownMenu
     // For DatePicker
     storedDate: String? = null,                         // Not null when the item is a DatePicker
@@ -89,7 +91,17 @@ fun EditScreenTextFieldItem(
     val isDropdownMenu = dropdownMenuCategory != null
     var expanded by remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableIntStateOf(stringItems?.indexOf(stringItem) ?: 0) }
-    var selectedItem by remember { mutableStateOf(stringItem ?: "") }
+    val unassigned = stringResource(id = R.string._unassigned_)
+    var selectedItem by remember { mutableStateOf(stringItem ?: unassigned) }
+    /*  // TODO: To be deleted
+    var selectedItem by remember {
+        if (stringItem != null && stringItem != CACHE_AGENT.toString() && stringItem != CACHE_TYPE.typeId) {
+            mutableStateOf(stringItem)
+        } else {
+            mutableStateOf(unassigned)
+        }
+    }
+    */
 
     // For DatePicker
     val isDatePicker = storedDate != null

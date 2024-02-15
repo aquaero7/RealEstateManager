@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager.repository
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.aquaero.realestatemanager.ApplicationRoot
@@ -9,8 +10,11 @@ import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.database.AppDatabase
 import com.aquaero.realestatemanager.database.dao.PropertyDao
 import com.aquaero.realestatemanager.model.Property
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class PropertyRepository(private val propertyDao: PropertyDao) {
@@ -20,8 +24,8 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
 
     /** Room: Database CRUD */
 
-    suspend fun upsertPropertyInRoom(property: Property) {
-        withContext(IO) {
+    suspend fun upsertPropertyInRoom(property: Property): Long {
+        return withContext(IO) {
             propertyDao.upsertProperty(property)
         }
     }
@@ -45,27 +49,9 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
     /***/
 
 
-    fun propertyFromId(propertyId: Long, properties: MutableList<Property>): Property {
-        return properties.first() { it.propertyId == propertyId }
+    fun propertyFromId(propertyId: Long, properties: MutableList<Property>): Property? {
+        return properties.find { it.propertyId == propertyId }
     }
-
-    // TODO: Add new property values to arguments
-    fun updateProperty(propertyId: Comparable<*>) {
-        // TODO: To be deleted
-        Toast
-            .makeText(context,"Click on ${context.getString(R.string.valid)}, for id $propertyId, from EditScreen", Toast.LENGTH_SHORT)
-            .show()
-
-        // TODO: Check if it is a creation or a modification of a property and update database
-
-        // After update
-        Toast
-            .makeText(context, context.getString(
-                    R.string.recorded
-                ), Toast.LENGTH_SHORT)
-            .show()
-    }
-
 
 
     /** FAKE PROPERTIES */

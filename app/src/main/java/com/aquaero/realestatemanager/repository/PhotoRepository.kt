@@ -42,6 +42,18 @@ class PhotoRepository(private val photoDao: PhotoDao) {
         }
     }
 
+    suspend fun upsertPhotosInRoom(photos: MutableList<Photo>) {
+        withContext(Dispatchers.IO) {
+            photoDao.upsertPhotos(photos)
+        }
+    }
+
+    suspend fun deletePhotosFromRoom(photos: MutableList<Photo>) {
+        withContext(Dispatchers.IO) {
+            photoDao.deletePhotos(photos)
+        }
+    }
+
     fun getPhotoFromRoom(phId: Long): Flow<Photo> {
         return photoDao.getPhoto(phId)
     }
@@ -61,8 +73,8 @@ class PhotoRepository(private val photoDao: PhotoDao) {
     /***/
 
 
-    fun photoFromId(photoId: Long, photos: MutableList<Photo>): Photo {
-        return photos.first { it.photoId == photoId }
+    fun photoFromId(photoId: Long, photos: MutableList<Photo>): Photo? {
+        return photos.find { it.photoId == photoId }
     }
 
     private fun Context.createImageFile(): File {
@@ -108,8 +120,9 @@ class PhotoRepository(private val photoDao: PhotoDao) {
     }
 
     fun itemPhotos(propertyId: Long, photos: MutableList<Photo>): MutableList<Photo> {
-        val itemPhotos = photos.filter { it.propertyId == propertyId }.toMutableList()
-        return itemPhotos.ifEmpty { mutableListOf(NO_PHOTO) }
+//        val itemPhotos = photos.filter { it.propertyId == propertyId }.toMutableList()
+//        return itemPhotos.ifEmpty { mutableListOf(NO_PHOTO) }
+        return photos.filter { it.propertyId == propertyId }.toMutableList()
     }
 
 

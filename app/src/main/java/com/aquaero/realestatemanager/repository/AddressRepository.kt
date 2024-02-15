@@ -22,8 +22,8 @@ class AddressRepository(private val addressDao: AddressDao) {
 
     /** Room: Database CRUD */
 
-    suspend fun upsertAddressInRoom(address: Address) {
-        withContext(Dispatchers.IO) {
+    suspend fun upsertAddressInRoom(address: Address): Long {
+        return withContext(Dispatchers.IO) {
             addressDao.upsertAddress(address)
         }
     }
@@ -53,12 +53,16 @@ class AddressRepository(private val addressDao: AddressDao) {
     /***/
 
 
-    private fun addressFromId(addressId: Long, addresses: MutableList<Address>): Address {
-        return addresses.first { it.addressId == addressId }
+    private fun addressFromId(addressId: Long, addresses: MutableList<Address>): Address? {
+        return addresses.find { it.addressId == addressId }
+    }
+
+    fun address(propertyId: Long?, addresses: MutableList<Address>): Address? {
+        return addresses.find { it.addressId == propertyId }
     }
 
     fun thumbnailUrlFromAddressId(addressId: Long, addresses: MutableList<Address>): String {
-        val smMarkerAddress = addressFromId(addressId = addressId, addresses = addresses).toUrl()
+        val smMarkerAddress = addressFromId(addressId = addressId, addresses = addresses)?.toUrl() ?: ""
         return SM_URL + SM_SIZE + SM_SCALE + SM_TYPE + SM_MARKER_COLOR + smMarkerAddress + SM_KEY
     }
 

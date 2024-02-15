@@ -156,7 +156,7 @@ fun RealEstateManagerApp(
         /**
          * Bottom bar
          */
-        val defaultPropertyId = if (properties.isNotEmpty()) properties[0].propertyId.toString() else NULL_ITEM_ID.toString()
+        val defaultPropertyId = if (properties.isNotEmpty()) properties[0].propertyId.toString() else NEW_ITEM_ID.toString()
 
 
         /**

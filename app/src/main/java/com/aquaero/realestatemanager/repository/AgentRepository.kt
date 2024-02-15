@@ -90,13 +90,18 @@ class AgentRepository(private val agentDao: AgentDao) {
     /***/
 
 
-    fun agentFromId(agentId: Long, agents: MutableList<Agent>): Agent {
-        return agents.first { it.agentId == agentId }
+    fun agentFromId(agentId: Long, agents: MutableList<Agent>): Agent? {
+        return agents.find { it.agentId == agentId }
     }
 
     fun stringAgent(agentId: Long, agents: MutableList<Agent>, stringAgents: MutableList<String>): String {
-        val agent = agents.find { it.agentId == agentId }
+        /*
+        val agent = agents.first { it.agentId == agentId }
         val agentIndex = agents.indexOf(agent)
+        return if (agentIndex != -1 && stringAgents.isNotEmpty()) stringAgents.elementAt(agentIndex) else agent.toString()
+        */
+        val agent = agents.find { it.agentId == agentId }
+        val agentIndex = agent?.let { agents.indexOf(agent) } ?: 0
         return if (agentIndex != -1 && stringAgents.isNotEmpty()) stringAgents.elementAt(agentIndex) else agent.toString()
     }
 

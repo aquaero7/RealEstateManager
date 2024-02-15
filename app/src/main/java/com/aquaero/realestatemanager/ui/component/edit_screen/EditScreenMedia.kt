@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddToPhotos
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -44,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.PHOTO_DELETION
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.ui.component.app.AppDialog
 import com.aquaero.realestatemanager.ui.component.app.BottomActionsSheet
@@ -56,6 +60,7 @@ fun EditScreenMedia(
     onShootPhotoMenuItemClick: () -> Unit,
     onSelectPhotoMenuItemClick: () -> Unit,
     buttonAddPhotoEnabled: Boolean,
+    onCancelPhotoEditionButtonClick: () -> Unit,
     onSavePhotoButtonClick: (String) -> Unit,
     onEditPhotoMenuItemClick: (Photo) -> Unit,
     onPhotoDeletionConfirmation: (Long) -> Unit,
@@ -119,18 +124,19 @@ fun EditScreenMedia(
         // Photos list
         PhotosLazyRow(
             titleFontSize = 14.sp,
-            photos = photos,
-            longClickPhotoEnabled = true,
+            photos = photos.ifEmpty { mutableListOf(NO_PHOTO) },
+            longClickPhotoEnabled = photos.isNotEmpty(),
             onEditPhotoMenuItemClickGetPhoto = onEditPhotoMenuItemClickGetPhoto,
             onDeletePhotoMenuItemClick = { photo -> showDeletionConfirmationDialog(photo = photo) },
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Photo to add
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Spacer(modifier = Modifier.width(4.dp))
 
             // Image
             Image(
@@ -150,7 +156,7 @@ fun EditScreenMedia(
                 colorFilter = if (!buttonAddPhotoEnabled) ColorFilter.tint(color = MaterialTheme.colorScheme.tertiary) else null
             )
 
-            Spacer(modifier = Modifier.width(20.dp))
+            Spacer(modifier = Modifier.width(8.dp))
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -165,39 +171,77 @@ fun EditScreenMedia(
                     itemText = photoLabel,
                 )
 
-                // Button to add the photo to property list
-                Button(
-                    modifier = Modifier.alpha(if (buttonAddPhotoEnabled) 1F else 0.5F),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurface,
-                    ),
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.onSurface
-                    ),
-                    enabled = buttonAddPhotoEnabled,
-                    onClick = {
-                        onSavePhotoButtonClick(photoLabel)
-                        photoLabel = ""
-                    },
+                Row(
+                    modifier = Modifier,
+                    horizontalArrangement = Arrangement.SpaceAround
                 ) {
-                    Icon(
-                        modifier = Modifier.size(28.dp),
-                        imageVector = Icons.Default.AddToPhotos,
-                        contentDescription = stringResource(id = R.string.cd_add_photo),
-                        tint = MaterialTheme.colorScheme.tertiary,
-                    )
-                    Text(
-                        modifier = Modifier.padding(horizontal = 4.dp),
-                        text = stringResource(id = R.string.save_photo),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.tertiary,
-                    )
+                    // Button to cancel photo creation or edition
+                    Button(
+                        modifier = Modifier.alpha(if (buttonAddPhotoEnabled) 1F else 0.5F),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                        ),
+                        border = BorderStroke(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.onSurface
+                        ),
+                        enabled = buttonAddPhotoEnabled,
+                        onClick = {
+                            onCancelPhotoEditionButtonClick()
+                            photoLabel = ""
+                        },
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(28.dp),
+                            imageVector = Icons.Default.Cancel,
+                            contentDescription = stringResource(id = R.string.cancel),
+                            tint = MaterialTheme.colorScheme.tertiary,
+                        )
+                        Text(
+                            modifier = Modifier.padding(horizontal = 4.dp),
+                            text = stringResource(id = R.string.cancel),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.tertiary,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    // Button to valid photo creation or edition
+                    Button(
+                        modifier = Modifier.alpha(if (buttonAddPhotoEnabled) 1F else 0.5F),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                        ),
+                        border = BorderStroke(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.onSurface
+                        ),
+                        enabled = buttonAddPhotoEnabled,
+                        onClick = {
+                            onSavePhotoButtonClick(photoLabel)
+                            photoLabel = ""
+                        },
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(28.dp),
+                            imageVector = Icons.Default.Check,
+                            contentDescription = stringResource(id = R.string.cd_add_photo),
+                            tint = MaterialTheme.colorScheme.tertiary,
+                        )
+                        Text(
+                            modifier = Modifier.padding(horizontal = 4.dp),
+                            text = stringResource(id = R.string.ok),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.tertiary,
+                        )
+                    }
                 }
             }
-
         }
         Spacer(modifier = Modifier.height(16.dp))
     }

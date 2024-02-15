@@ -7,7 +7,7 @@
     <string name="search_criteria">RECHERCHE</string>
     <string name="loan">EMPRUNT</string>
     <string name="detail">DETAIL</string>
-    <string name="edit_detail">EDITION</string>
+    <string name="edit_detail">EDIT_DETAIL</string>
     <string name="type">Type</string>
     <string name="agent">Agent</string>
     <string name="media">Media</string>
@@ -50,6 +50,7 @@
     <string name="latitude">Latitude:</string>
     <string name="longitude">Longitude:</string>
     <string name="recorded">Données enregistrées!</string>
+    <string name="not_recorded">Données non enregistrées !</string>
     <string name="perms_revoked">Carte indisponible car\nles permissions de localisation\nont été refusées !</string>
     <string name="network_unavailable">Réseau indisponible !</string>
     <string name="address_incomplete">Adresse incomplète !</string>

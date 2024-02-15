@@ -128,6 +128,9 @@ dependencies {
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
 
+    // Reflection API (used for function withoutId() in Photo data class)
+    implementation(kotlin("reflect"))
+
 
     // Tests
     testImplementation("junit:junit:4.13.2")
@@ -137,4 +140,5 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
 }

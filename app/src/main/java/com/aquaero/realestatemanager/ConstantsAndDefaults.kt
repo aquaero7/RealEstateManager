@@ -3,6 +3,7 @@ package com.aquaero.realestatemanager
 import android.Manifest
 import android.location.Location
 import androidx.compose.ui.unit.dp
+import com.aquaero.realestatemanager.model.TypeEnum
 import com.aquaero.realestatemanager.ui.theme.PurpleGrey40
 import com.aquaero.realestatemanager.ui.theme.PurpleGrey80
 import com.aquaero.realestatemanager.ui.theme.White
@@ -51,23 +52,24 @@ val DP_CONTENT_COLOR = PurpleGrey80
 val DP_CONTAINER_COLOR = PurpleGrey40
 
 // Miscellaneous
-const val NULL_ITEM_ID = -1L
-const val NO_ITEM_ID = 0L
+const val NEW_ITEM_ID = 0L
+const val UNASSIGNED_ID = 1L    // For unassigned Agent
+const val NO_ITEM_ID = -1L  // For empty photo
 const val PHOTO_DELETION = "photoDeletion"
 const val DATE_PATTERN = "yyyy-MM-dd"
 const val DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm"
 const val DATE_LENGTH = 10 // Equals to "####-##-##".count
 const val RATE_OF_DOLLAR_IN_EURO = 0.812
 
+// Cache values
+const val CACHE_LONG_ID_VALUE = 0L
+const val CACHE_EMPTY_STRING_VALUE = ""
+const val CACHE_AGENT_ID_VALUE = UNASSIGNED_ID
+val CACHE_TYPE_ID_VALUE = TypeEnum.UNASSIGNED.key
+val CACHE_NULLABLE_VALUE = null
+
 enum class DropdownMenuCategory {
     TYPE,
     AGENT,
 }
-
-/*
-enum class DropdownMenuCategory(val key: String) {
-    TYPE(key = "type"),
-    AGENT(key = "agent")
-}
-*/
 

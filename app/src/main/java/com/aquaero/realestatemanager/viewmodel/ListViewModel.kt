@@ -55,11 +55,11 @@ class ListViewModel(
         return connection === ConnectionState.Available
     }
 
-    fun propertyFromId(propertyId: Long, properties: MutableList<Property>): Property {
+    fun propertyFromId(propertyId: Long, properties: MutableList<Property>): Property? {
         return propertyRepository.propertyFromId(propertyId = propertyId, properties = properties)
     }
 
-    private fun poiFromId(poiId: String, pois: MutableList<Poi>): Poi {
+    private fun poiFromId(poiId: String, pois: MutableList<Poi>): Poi? {
         return poiRepository.poiFromId(poiId = poiId, pois =pois)
     }
 
@@ -93,9 +93,11 @@ class ListViewModel(
 
     fun itemPois(propertyId: Long, propertyPoiJoins: MutableList<PropertyPoiJoin>, pois: MutableList<Poi>): MutableList<Poi> {
         return mutableListOf<Poi>().apply {
-            propertyPoiJoins
-                .filter { join -> join.propertyId == propertyId }
-                .mapTo(this) { join -> poiFromId(poiId = join.poiId, pois = pois) }
+            if (pois.isNotEmpty()) {
+                propertyPoiJoins
+                    .filter { join -> join.propertyId == propertyId }
+                    .mapTo(this) { join -> poiFromId(poiId = join.poiId, pois = pois)!! }
+            }
         }
     }
 

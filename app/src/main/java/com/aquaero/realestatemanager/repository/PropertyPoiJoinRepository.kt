@@ -29,6 +29,18 @@ class PropertyPoiJoinRepository(private val propertyPoiJoinDao: PropertyPoiJoinD
         }
     }
 
+    suspend fun upsertPropertyPoiJoinsInRoom(propertyPoiJoins: MutableList<PropertyPoiJoin>) {
+        withContext(Dispatchers.IO) {
+            propertyPoiJoinDao.upsertPropertyPoiJoins(propertyPoiJoins)
+        }
+    }
+
+    suspend fun deletePropertyPoiJoinsFromRoom(propertyPoiJoins: MutableList<PropertyPoiJoin>) {
+        withContext(Dispatchers.IO) {
+            propertyPoiJoinDao.deletePropertyPoiJoins(propertyPoiJoins)
+        }
+    }
+
     fun getPoisForPropertyFromRoom(pId: Long): Flow<MutableList<Poi>> {
         return propertyPoiJoinDao.getPoisForProperty(pId)
     }

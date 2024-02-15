@@ -23,6 +23,12 @@ interface PropertyPoiJoinDao {
     @Delete
     suspend fun deletePropertyPoiJoin(propertyPoiJoin: PropertyPoiJoin)
 
+    @Upsert     // Insert ou update (if primary key already exists)
+    suspend fun upsertPropertyPoiJoins(propertyPoiJoins: MutableList<PropertyPoiJoin>)
+
+    @Delete
+    suspend fun deletePropertyPoiJoins(propertyPoiJoins: MutableList<PropertyPoiJoin>)
+
     @Query("SELECT * FROM poi INNER JOIN property_poi_join ON poi.poiId = property_poi_join.poiId WHERE property_poi_join.propertyId = :propertyId")
     fun getPoisForProperty(propertyId: Long): Flow<MutableList<Poi>>
 

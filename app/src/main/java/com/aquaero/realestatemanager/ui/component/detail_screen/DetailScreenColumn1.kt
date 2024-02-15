@@ -11,12 +11,10 @@ import androidx.compose.material.icons.filled.OtherHouses
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
-import com.aquaero.realestatemanager.NULL_ITEM_ID
+import com.aquaero.realestatemanager.NEW_ITEM_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.theme.Magenta
@@ -34,7 +32,7 @@ fun DetailScreenColumn1(
     val value by remember {
         mutableStateOf(
             property?.saleDate?.let { labelSold }
-                ?: property?.let { if (it.propertyId != NULL_ITEM_ID) labelForSale else "" }
+                ?: property?.let { if (it.propertyId != NEW_ITEM_ID) labelForSale else "" }
                 ?: ""
         )
     }
@@ -51,7 +49,7 @@ fun DetailScreenColumn1(
         image = Icons.Default.House,
         contentDesc = stringResource(id = R.string.cd_type),
         label = stringResource(id = R.string.type),
-        value = if (property != null && property.propertyId != NULL_ITEM_ID) stringType else "",
+        value = if (property != null && property.propertyId != NEW_ITEM_ID) stringType else "",
 //        value = if (property != null) stringType else "",   // TODO: For test only
     )
     // Info surface

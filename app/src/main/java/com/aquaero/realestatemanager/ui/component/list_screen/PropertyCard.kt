@@ -26,9 +26,11 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.aquaero.realestatemanager.AppContentType
-import com.aquaero.realestatemanager.NULL_ITEM_ID
+import com.aquaero.realestatemanager.NO_ITEM_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.Red
 import com.aquaero.realestatemanager.ui.theme.Yellow
@@ -40,6 +42,7 @@ fun PropertyCard(
     pType: String,
     pCity: String,
     phId: Long,
+    phUri: String,
     pPriceFormatted: String,
     selected: Boolean = false,
     unselectedByDefaultDisplay: Boolean = false,
@@ -69,16 +72,16 @@ fun PropertyCard(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val resourceId =
-                if (phId != NULL_ITEM_ID) phId.toInt() else R.drawable.baseline_photo_camera_black_24
+            val resourceUri =
+                if (phId != NO_ITEM_ID) phUri else R.drawable.baseline_photo_camera_black_24
             val colorFilter =
-                if (phId != NULL_ITEM_ID) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
-            val alpha = if (phId.toInt() > 0) 1F else 0.2F
+                if (phId != NO_ITEM_ID) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
+            val alpha = if (phId != NO_ITEM_ID) 1F else 0.2F
 
             Image(
-                painter = painterResource(id = resourceId),
+                painter = rememberAsyncImagePainter(resourceUri),
                 contentDescription = null,
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.FillBounds,
                 colorFilter = colorFilter,
                 modifier = Modifier
                     .size(120.dp)

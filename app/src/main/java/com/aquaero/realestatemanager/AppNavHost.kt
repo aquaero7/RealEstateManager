@@ -3,10 +3,13 @@ package com.aquaero.realestatemanager
 import android.annotation.SuppressLint
 import android.location.Location
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +25,7 @@ import androidx.navigation.compose.composable
 import coil.compose.rememberAsyncImagePainter
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
+import com.aquaero.realestatemanager.model.CACHE_PROPERTY
 import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
@@ -37,7 +41,6 @@ import com.aquaero.realestatemanager.ui.screen.LoanScreen
 import com.aquaero.realestatemanager.ui.screen.LocationPermissionsScreen
 import com.aquaero.realestatemanager.ui.screen.MapScreen
 import com.aquaero.realestatemanager.ui.screen.SearchScreen
-import com.aquaero.realestatemanager.utils.MyLocationSource
 import com.aquaero.realestatemanager.utils.connectivityState
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
 import com.aquaero.realestatemanager.viewmodel.DetailViewModel
@@ -46,9 +49,7 @@ import com.aquaero.realestatemanager.viewmodel.ListViewModel
 import com.aquaero.realestatemanager.viewmodel.LoanViewModel
 import com.aquaero.realestatemanager.viewmodel.MapViewModel
 import com.aquaero.realestatemanager.viewmodel.SearchViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.callbackFlow
 
 @SuppressLint("NewApi")
 @Composable
@@ -90,14 +91,20 @@ fun AppNavHost(
                     navBackStackEntry.arguments!!.getString(propertyKey)!!.toLong()
                 }
                 val property = it?.let {
-                    listViewModel.propertyFromId(propertyId = it.toLong(), properties = properties)
+                    if (it.toLong() != NEW_ITEM_ID && properties.isNotEmpty()) listViewModel.propertyFromId(
+                        propertyId = it.toLong(),
+                        properties = properties
+                    ) else null
                 }
 
                 /** For list screen only **/
                 val onPropertyClick: (Long) -> Unit = { propId ->
                     navController.navigateToDetail(propertyId = propId.toString(), contentType = contentType)
                 }
-                val onFabClick = { navController.navigateToDetailEdit(propertyId = NULL_ITEM_ID.toString()) }
+                val onFabClick = {
+                    Log.w("Click on FAB", "Screen ${ListAndDetail.label} / Property $NEW_ITEM_ID")
+                    navController.navigateToDetailEdit(propertyId = NEW_ITEM_ID.toString())
+                }
 
                 /** For detail screen only **/
                 val itemPhotos =
@@ -127,7 +134,7 @@ fun AppNavHost(
                     listViewModel.stringLongitude(addressId = addressId, addresses = addresses)
                 } ?: ""
                 val thumbnailUrl = property?.addressId?.let { addressId ->
-                    listViewModel.thumbnailUrl(addressId = addressId, addresses = addresses)
+                    if (addresses.isNotEmpty()) listViewModel.thumbnailUrl(addressId = addressId, addresses = addresses) else ""
                 } ?: ""
                 val connection by connectivityState()
                 val internetAvailable = listViewModel.checkForConnection(connection = connection)
@@ -141,6 +148,8 @@ fun AppNavHost(
                     // For list screen only
                     contentType = contentType,
                     items = properties,
+                    types = types,
+                    stringTypes = stringTypes,
                     addresses = addresses,
                     photos = photos,
                     onPropertyClick = onPropertyClick,
@@ -218,32 +227,54 @@ fun AppNavHost(
             arguments = Detail.arguments
         ) { navBackStackEntry ->
             val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)!!.toLong()
-            val property = detailViewModel.propertyFromId(propertyId = propertyId, properties = properties)
+
+//            val property = detailViewModel.propertyFromId(propertyId = propertyId, properties = properties)
+            val property = if (propertyId != NEW_ITEM_ID && properties.isNotEmpty()) {
+                detailViewModel.propertyFromId(propertyId = propertyId, properties = properties) ?: properties[0]
+            } else if (properties.isNotEmpty()) {
+                properties[0]
+            } else {
+                CACHE_PROPERTY
+            }
+
+
+
+
             val itemPhotos = detailViewModel.itemPhotos(propertyId = propertyId, photos = photos)
             val itemPois = detailViewModel.itemPois(
                 propertyId = propertyId, propertyPoiJoins = propertyPoiJoins, pois = pois,
             )
-            val stringType = property?.let {
+            /*  // TODO: To be deleted
+            val stringType = property.let {
                 detailViewModel.stringType(
                     typeId = it.typeId, types = types, stringTypes = stringTypes,
                 )
             } ?: ""
-            val stringAgent = property?.let {
+            */
+            val stringType = detailViewModel.stringType(
+                typeId = property.typeId, types = types, stringTypes = stringTypes,
+            )
+            /*  // TODO: To be deleted
+            val stringAgent = property.let {
                 detailViewModel.stringAgent(
                     agentId = it.agentId, agents = agents, stringAgents = stringAgents,
                 )
             } ?: ""
-            val stringAddress = property?.addressId?.let {
+            */
+            val stringAgent = detailViewModel.stringAgent(
+                agentId = property.agentId, agents = agents, stringAgents = stringAgents,
+            )
+            val stringAddress = property.addressId?.let {
                 detailViewModel.stringAddress(addressId = it, addresses = addresses)
             } ?: ""
-            val stringLatitude = property?.addressId?.let {
+            val stringLatitude = property.addressId?.let {
                 detailViewModel.stringLatitude(addressId = it, addresses = addresses)
             } ?: ""
-            val stringLongitude = property?.addressId?.let {
+            val stringLongitude = property.addressId?.let {
                 detailViewModel.stringLongitude(addressId = it, addresses = addresses)
             } ?: ""
-            val thumbnailUrl = property?.addressId?.let {
-                detailViewModel.thumbnailUrl(addressId = it, addresses = addresses)
+            val thumbnailUrl = property.addressId?.let {
+                if (addresses.isNotEmpty()) detailViewModel.thumbnailUrl(addressId = it, addresses = addresses) else ""
             } ?: ""
             val connection by connectivityState()
             val internetAvailable = detailViewModel.checkForConnection(connection = connection)
@@ -271,7 +302,7 @@ fun AppNavHost(
             arguments = EditDetail.arguments
         ) { navBackStackEntry ->
             val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)!!.toLong()
-            val property: Property? = if (propertyId != NULL_ITEM_ID) {
+            val property: Property? = if (propertyId != NEW_ITEM_ID && properties.isNotEmpty()) {
                 // Edition mode
                 editViewModel.propertyFromId(propertyId = propertyId, properties = properties)
             } else {
@@ -284,6 +315,12 @@ fun AppNavHost(
             val stringAgent = property?.let {
                 editViewModel.stringAgent(agentId = it.agentId, agents = agents, stringAgents = stringAgents)
             }
+
+//            val address = addresses.find { it.addressId == property?.addressId }
+            val address = property?.let {
+                editViewModel.address(property.addressId, addresses)
+            }
+
             val itemPhotos = editViewModel.itemPhotos(propertyId = propertyId, photos = photos)
             val itemPois = editViewModel.itemPois(
                 propertyId = propertyId, propertyPoiJoins = propertyPoiJoins, pois = pois
@@ -354,7 +391,8 @@ fun AppNavHost(
             var buttonSavePhotoEnabled by remember { mutableStateOf(false) }
             var photoToAddUri by remember { mutableStateOf(Uri.EMPTY) }
             val painterResource = painterResource(id = R.drawable.baseline_add_a_photo_black_24)
-            var painter by remember(photoToAddUri) { mutableStateOf(painterResource) }
+//            var painter by remember(photoToAddUri) { mutableStateOf(painterResource) }    // TODO: To be deleted
+            var painter by remember { mutableStateOf(painterResource) }
 
             /**
              * Photo shooting
@@ -413,7 +451,9 @@ fun AppNavHost(
                 painter = painterResource
                 buttonSavePhotoEnabled = false
             }
-
+            val onCancelPhotoEditionButtonClick: () -> Unit = {
+                photoToAddUri = Uri.EMPTY
+            }
             val onSavePhotoButtonClick: (String) -> Unit = {
                 editViewModel.onSavePhotoButtonClick(
                     propertyId = propertyId, uri = photoToAddUri, label = it, itemPhotos = itemPhotos,
@@ -430,17 +470,38 @@ fun AppNavHost(
                 )
             }
 
-            val onBackPressed: () -> Unit = { navController.popBackStack() }
+            val onBackPressed: () -> Unit = {
+                editViewModel.clearCache()
+                navController.popBackStack()
+            }
+
+            // Cache data
+//            editViewModel.initCache(property, stringType, stringAgent, address, itemPhotos, itemPois)
+            val (isCacheInitialized, setCacheInitialized) = remember { mutableStateOf(false) }
+            LaunchedEffect(key1 = Unit) {
+                if (!isCacheInitialized) {
+                    editViewModel.initCache(property, stringType, stringAgent, address, itemPhotos, itemPois)
+                    setCacheInitialized(true)
+                }
+            }
+
+            val cacheItemPhotos: MutableList<Photo> by editViewModel.cacheItemPhotosFlow.collectAsState(initial = mutableListOf())
+            DisposableEffect(key1 = Unit) {
+                onDispose {
+                    // cacheItemPhotos.clear()
+                    // editViewModel.clearCache()
+                }
+            }
 
             EditScreen(
                 stringTypes = stringTypes,
-                stringType = stringType,
+                stringType = editViewModel.cacheStringType,
                 stringAgents = stringAgents,
-                stringAgent = stringAgent,
-                itemPhotos = itemPhotos,
-                itemPois = itemPois,
-                property = property,
-                addresses = addresses,
+                stringAgent = editViewModel.cacheStringAgent,
+                itemPhotos = cacheItemPhotos,    // editViewModel.cacheItemPhotos,
+                itemPois = editViewModel.cacheItemPois,
+                property = editViewModel.cacheProperty,
+                address = editViewModel.cacheAddress,
                 currency = currency,
                 onDescriptionValueChange = onDescriptionValueChange,
                 onPriceValueChange = onPriceValueChange,
@@ -468,6 +529,7 @@ fun AppNavHost(
                 onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,
                 buttonAddPhotoEnabled = buttonSavePhotoEnabled,
                 painter = painter,
+                onCancelPhotoEditionButtonClick = onCancelPhotoEditionButtonClick,
                 onSavePhotoButtonClick = onSavePhotoButtonClick,
                 onEditPhotoMenuItemClick = onEditPhotoMenuItemClick,
                 onPhotoDeletionConfirmation = onPhotoDeletionConfirmation,

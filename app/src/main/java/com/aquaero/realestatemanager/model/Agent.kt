@@ -2,8 +2,11 @@ package com.aquaero.realestatemanager.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.aquaero.realestatemanager.NO_ITEM_ID
-import com.aquaero.realestatemanager.NULL_ITEM_ID
+import com.aquaero.realestatemanager.CACHE_EMPTY_STRING_VALUE
+import com.aquaero.realestatemanager.CACHE_LONG_ID_VALUE
+import com.aquaero.realestatemanager.CACHE_NULLABLE_VALUE
+import com.aquaero.realestatemanager.NEW_ITEM_ID
+import com.aquaero.realestatemanager.UNASSIGNED_ID
 
 @Entity
 data class Agent(
@@ -13,7 +16,6 @@ data class Agent(
     val lastName: String?,
 ) {
     override fun toString(): String {
-//        return "$firstName $lastName"
         return firstName + (lastName?.let { " $it" } ?: "")
     }
 }
@@ -25,14 +27,9 @@ enum class AgentEnum(val key: String) {
 
 val AGENT_PREPOPULATION_DATA = listOf(
     Agent(
-        agentId = NULL_ITEM_ID,
+        agentId = UNASSIGNED_ID,
         firstName = AgentEnum.UNASSIGNED.key,
         lastName = null,
-    ),
-    Agent(
-        agentId = 1,
-        firstName = "F1111111",
-        lastName = "N1111111",
     ),
     Agent(
         agentId = 2,
@@ -44,4 +41,15 @@ val AGENT_PREPOPULATION_DATA = listOf(
         firstName = "F3333333",
         lastName = "N3333333",
     ),
+    Agent(
+        agentId = 4,
+        firstName = "F4444444",
+        lastName = "N4444444",
+    ),
 ).sortedBy { it.lastName + it.firstName }
+
+val CACHE_AGENT = Agent(
+    agentId = CACHE_LONG_ID_VALUE,
+    firstName = CACHE_EMPTY_STRING_VALUE,
+    lastName = CACHE_NULLABLE_VALUE
+)

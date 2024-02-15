@@ -15,7 +15,7 @@ interface PropertyDao {
     suspend fun prepopulateWithProperties(properties: List<Property>)
 
     @Upsert     // Insert ou update (if primary key already exists)
-    suspend fun upsertProperty(property: Property)
+    suspend fun upsertProperty(property: Property): Long
 
     /* Commented because a property should not be deletable
     @Delete     // We use DAO annotations where SQL query is not required

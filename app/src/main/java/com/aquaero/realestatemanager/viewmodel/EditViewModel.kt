@@ -1,6 +1,5 @@
 package com.aquaero.realestatemanager.viewmodel
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -14,12 +13,12 @@ import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.DropdownMenuCategory
 import com.aquaero.realestatemanager.EditDetail
-import com.aquaero.realestatemanager.NO_ITEM_ID
-import com.aquaero.realestatemanager.NULL_ITEM_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
-import com.aquaero.realestatemanager.model.PoiEnum
+import com.aquaero.realestatemanager.model.CACHE_ADDRESS
+import com.aquaero.realestatemanager.model.CACHE_PHOTO
+import com.aquaero.realestatemanager.model.CACHE_PROPERTY
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
@@ -33,11 +32,13 @@ import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
+import com.aquaero.realestatemanager.utils.randomProvisionalId
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.properties.Delegates
 
 class EditViewModel(
     private val propertyRepository: PropertyRepository,
@@ -49,43 +50,36 @@ class EditViewModel(
     private val propertyPoiJoinRepository: PropertyPoiJoinRepository,
 ) : ViewModel() {
     private val context: Context by lazy { ApplicationRoot.getContext() }
+    private var newPropertyIdFromRoom by Delegates.notNull<Long>()
+    private var newAddressIdFromRoom by Delegates.notNull<Long>()
 
 
-    /** Temp data used as a cache for property creation or update */
+    /* Cache data */
 
-    private var descriptionValue = "-1"
-    private var priceValue = -1
-    private var surfaceValue = -1
-    private var nbOfRoomsValue = -1
-    private var nbOfBathroomsValue = -1
-    private var nbOfBedroomsValue = -1
-    private var typeValue = "-1"
-    private var agentValue = "-1"
-    private var addressValue: Address? = null
-    private var streetNumberValue = "-1"
-    private var streetNameValue = "-1"
-    private var addInfoValue = "-1"
-    private var cityValue = "-1"
-    private var stateValue = "-1"
-    private var zipCodeValue = "-1"
-    private var countryValue = "-1"
-    private var registrationDateValue = "-1"
-    private var saleDateValue = "-1"
-    private var itemPhotos = mutableListOf<Photo>()
+    private var alreadyInit = false // Flat to avoid data re-init when taking a picking a picture
 
-    private var poiHospitalSelected: Boolean? = null
-    private var poiSchoolSelected: Boolean? = null
-    private var poiRestaurantSelected: Boolean? = null
-    private var poiShopSelected: Boolean? = null
-    private var poiRailwayStationSelected: Boolean? = null
-    private var poiCarParkSelected: Boolean? = null
+    /*lateinit*/ var cacheProperty: Property = CACHE_PROPERTY.copy()
+    private var initialAddress: Address? = null
+    /*lateinit*/ var cacheAddress: Address = CACHE_ADDRESS.copy()
+    /*lateinit*/ var cacheStringType: String = context.getString(R.string._unassigned_)
+    /*lateinit*/ var cacheStringAgent: String = context.getString(R.string._unassigned_)
 
-    /***/
+    private var initialItemPhotos: MutableList<Photo>? = null
+    private var _cacheItemPhotos: MutableList<Photo> = mutableListOf()
+    private val _cacheItemPhotosFlow: MutableStateFlow<MutableList<Photo>> = MutableStateFlow(_cacheItemPhotos)
+    val cacheItemPhotosFlow: Flow<MutableList<Photo>> = _cacheItemPhotosFlow
+
+    private /*lateinit*/ var initialItemPois: MutableList<Poi> = mutableListOf()
+    /*lateinit*/ var cacheItemPois: MutableList<Poi> = mutableListOf()
+
+    /**/
 
 
-    /** Room */
-
-    /***/
+    init {
+        // Init of _cacheItemPhotos at this place is needed to display the first photo added
+        _cacheItemPhotos = mutableListOf()
+        // _cacheItemPhotosFlow.value = _cacheItemPhotos
+    }
 
 
     fun onClickMenu(
@@ -93,18 +87,17 @@ class EditViewModel(
         propertyId: Comparable<*>
     ) {
         Log.w("Click on menu valid", "Screen ${EditDetail.label} / Property $propertyId")
-        Log.w("Click on menu valid", "New values: ${tempPropertyModificationsValidated()}")
 
-        propertyRepository.updateProperty(propertyId = propertyId)   // TODO: Add temp property values to arguments
-        clearTempData()
-        navController.popBackStack()
+        updateRoomWithCacheData(navController)
+//        clearCache()
+//        navController.popBackStack()
     }
 
-    fun propertyFromId(propertyId: Long, properties: MutableList<Property>): Property {
+    fun propertyFromId(propertyId: Long, properties: MutableList<Property>): Property? {
         return propertyRepository.propertyFromId(propertyId = propertyId, properties = properties)
     }
 
-    private fun poiFromId(poiId: String, pois: MutableList<Poi>): Poi {
+    private fun poiFromId(poiId: String, pois: MutableList<Poi>): Poi? {
         return poiRepository.poiFromId(poiId = poiId, pois = pois)
     }
 
@@ -116,15 +109,21 @@ class EditViewModel(
         return agentRepository.stringAgent(agentId = agentId, agents = agents, stringAgents = stringAgents)
     }
 
+    fun address(propertyId: Long?, addresses: MutableList<Address>): Address? {
+        return addressRepository.address(propertyId, addresses)
+    }
+
     fun itemPhotos(propertyId: Long, photos: MutableList<Photo>): MutableList<Photo> {
         return photoRepository.itemPhotos(propertyId = propertyId, photos = photos)
     }
 
     fun itemPois(propertyId: Long, propertyPoiJoins: MutableList<PropertyPoiJoin>, pois: MutableList<Poi>): MutableList<Poi> {
         return mutableListOf<Poi>().apply {
-            propertyPoiJoins
-                .filter { join -> join.propertyId == propertyId }
-                .mapTo(this) { join -> poiFromId(poiId = join.poiId, pois = pois) }
+            if (pois.isNotEmpty()) {
+                propertyPoiJoins
+                    .filter { join -> join.propertyId == propertyId }
+                    .mapTo(this) { join -> poiFromId(poiId = join.poiId, pois = pois)!! }
+            }
         }
     }
 
@@ -149,43 +148,84 @@ class EditViewModel(
     }
 
 
-    /** Temp data used as a cache for property creation or update */
+    /* Cache management */
+
+    fun initCache(
+        property: Property?,
+        stringType: String?,
+        stringAgent: String?,
+        address: Address?,
+        itemPhotos: MutableList<Photo>,
+        itemPois: MutableList<Poi>
+    ) {
+        Log.w("EditViewModel", "Property Id: '${property?.propertyId}' / alreadyInit = $alreadyInit / initialItemPhotos = ${initialItemPhotos?.size}")
+
+//        if (!alreadyInit) {
+
+            cacheProperty = property?.copy() ?: CACHE_PROPERTY.copy()
+            initialAddress = address
+            cacheAddress = address?.copy() ?: CACHE_ADDRESS.copy()
+            cacheStringType =
+                stringType ?: context.getString(R.string._unassigned_) // CACHE_TYPE.typeId
+            cacheStringAgent =
+                stringAgent ?: context.getString(R.string._unassigned_) // CACHE_AGENT.toString()
+            initialItemPois = itemPois.toMutableList()  // .ifEmpty { mutableListOf(CACHE_POI) }
+            cacheItemPois = itemPois.toMutableList()
+
+
+//            initialItemPhotos = mutableListOf()
+//            if (_cacheItemPhotos.isEmpty() && itemPhotos.isNotEmpty()) {
+
+//            if (initialItemPhotos == null) {
+
+//            initialItemPhotos.addAll(itemPhotos)
+//            initialItemPhotos = itemPhotos.toMutableList()
+                initialItemPhotos = itemPhotos
+//            _cacheItemPhotos.addAll(itemPhotos)
+                _cacheItemPhotos = itemPhotos.toMutableList()
+                _cacheItemPhotosFlow.value = _cacheItemPhotos
+
+//            }
+
+//            alreadyInit = true
+//        }
+    }
 
     fun onDescriptionValueChange(propertyId: Long, value: String) {
-        descriptionValue = value
+        cacheProperty.description = value
         Log.w("EditViewModel", "New value for description of property Id '$propertyId' is: $value")
     }
 
     fun onPriceValueChange(propertyId: Long, value: String, currency: String) {
-        priceValue = if (value.isNotEmpty() && value.isDigitsOnly()) {
+        cacheProperty.price = if (value.isNotEmpty() && value.isDigitsOnly()) {
             when (currency) {
                 "€" -> convertEuroToDollar(euros = value.toInt())
                 else -> value.toInt()
             }!!
-        } else 0
+        } else null
         Log.w(
             "EditViewModel",
-            "New value for price of property Id '$propertyId' is: $priceValue dollars and input is $value $currency"
+            "New value for price of property Id '$propertyId' is: ${cacheProperty.price} dollars and input is $value $currency"
         )
     }
 
     fun onSurfaceValueChange(propertyId: Long, value: String) {
-        surfaceValue = if (value.isNotEmpty()) value.toInt() else 0
+        cacheProperty.surface = if (value.isNotEmpty()) value.toInt() else null
         Log.w("EditViewModel", "New value for surface of property Id '$propertyId' is: $value")
     }
 
     fun onNbOfRoomsValueChange(propertyId: Long, value: String) {
-        nbOfRoomsValue = if (value.isNotEmpty()) value.toInt() else 0
+        cacheProperty.nbOfRooms = if (value.isNotEmpty()) value.toInt() else null
         Log.w("EditViewModel", "New value for nb of rooms of property Id '$propertyId' is: $value")
     }
 
     fun onNbOfBathroomsValueChange(propertyId: Long, value: String) {
-        nbOfBathroomsValue = if (value.isNotEmpty()) value.toInt() else 0
+        cacheProperty.nbOfBathrooms = if (value.isNotEmpty()) value.toInt() else null
         Log.w("EditViewModel", "New value for nb of bathrooms of property Id '$propertyId' is: $value")
     }
 
     fun onNbOfBedroomsValueChange(propertyId: Long, value: String) {
-        nbOfBedroomsValue = if (value.isNotEmpty()) value.toInt() else 0
+        cacheProperty.nbOfBedrooms = if (value.isNotEmpty()) value.toInt() else null
         Log.w("EditViewModel", "New value for nb of bedrooms of property Id '$propertyId' is: $value")
     }
 
@@ -212,63 +252,62 @@ class EditViewModel(
     }
 
     private fun onTypeValueChange(propertyId: Long, index: Int, types: MutableList<Type>) {
-        typeValue = types.elementAt(index).typeId
-        Log.w("EditViewModel", "New value for type of property Id '$propertyId' is: $typeValue at index: $index")
+        cacheProperty.typeId = types.elementAt(index).typeId
+        Log.w("EditViewModel", "New value for type of property Id '$propertyId' is: ${cacheProperty.typeId} at index: $index")
     }
 
     private fun onAgentValueChange(propertyId: Long, index: Int, agents: MutableList<Agent>) {
-        agentValue = agents.elementAt(index).toString()
-        Log.w("EditViewModel", "New value for agent of property Id '$propertyId' is: $agentValue at index: $index" )
+        cacheProperty.agentId = agents.elementAt(index).agentId
+        Log.w("EditViewModel", "New value for agent of property Id '$propertyId' is: ${agents.elementAt(index)} at index: $index" )
     }
 
     fun onStreetNumberValueChange(propertyId: Long, value: String) {
-        streetNumberValue = value
+        cacheAddress.streetNumber = value
         Log.w("EditViewModel", "New value for street number of property Id '$propertyId' is: $value")
     }
 
     fun onStreetNameValueChange(propertyId: Long, value: String) {
-        streetNameValue = value
+        cacheAddress.streetName = value
         Log.w("EditViewModel", "New value for street name of property Id '$propertyId' is: $value")
     }
 
     fun onAddInfoValueChange(propertyId: Long, value: String) {
-        addInfoValue = value
+        cacheAddress.addInfo = value
         Log.w("EditViewModel", "New value for add info of property Id '$propertyId' is: $value")
     }
 
     fun onCityValueChange(propertyId: Long, value: String) {
-        cityValue = value
+        cacheAddress.city = value
         Log.w("EditViewModel", "New value for city of property Id '$propertyId' is: $value")
     }
 
     fun onStateValueChange(propertyId: Long, value: String) {
-        stateValue = value
+        cacheAddress.state = value
         Log.w("EditViewModel", "New value for state of property Id '$propertyId' is: $value")
     }
 
     fun onZipCodeValueChange(propertyId: Long, value: String) {
-        zipCodeValue = value
+        cacheAddress.zipCode = value
         Log.w("EditViewModel", "New value for ZIP code of property Id '$propertyId' is: $value")
     }
 
     fun onCountryValueChange(propertyId: Long, value: String) {
-        countryValue = value
+        cacheAddress.country = value
         Log.w("EditViewModel", "New value for country of property Id '$propertyId' is: $value")
     }
 
     fun onRegistrationDateValueChange(propertyId: Long, value: String) {
-//        registrationDateValue = value.ifEmpty { null }
-        registrationDateValue = value
-        Log.w("EditViewModel", "New value for registration date of property Id '$propertyId' is: $registrationDateValue")
+        cacheProperty.registrationDate = value
+        Log.w("EditViewModel", "New value for registration date of property Id '$propertyId' is: ${cacheProperty.registrationDate}")
     }
 
     fun onSaleDateValueChange(propertyId: Long, value: String) {
-//        saleDateValue = value.ifEmpty { null }
-        saleDateValue = value
-        Log.w("EditViewModel", "New value for sale date of property Id '$propertyId' is: $saleDateValue")
+        cacheProperty.saleDate = value
+        Log.w("EditViewModel", "New value for sale date of property Id '$propertyId' is: ${cacheProperty.saleDate}")
     }
 
     fun onPoiClick(propertyId: Long, poiItem: String, isSelected: Boolean) {
+        /*
         when (poiItem) {
             PoiEnum.HOSPITAL.key -> { poiHospitalSelected = isSelected }
             PoiEnum.SCHOOL.key -> { poiSchoolSelected = isSelected }
@@ -277,14 +316,16 @@ class EditViewModel(
             PoiEnum.RAILWAY_STATION.key -> { poiRailwayStationSelected = isSelected }
             PoiEnum.CAR_PARK.key -> { poiCarParkSelected = isSelected }
         }
+        */
+        if (isSelected) cacheItemPois.add(Poi(poiItem)) else cacheItemPois.remove(Poi(poiItem))
         Log.w("EditViewModel", "New value for POI $poiItem selection of property Id '$propertyId' is: $isSelected")
     }
 
     fun onSavePhotoButtonClick(propertyId: Long, uri: Uri, label: String, itemPhotos: MutableList<Photo>) {
         Log.w("EditViewModel", "Click on save button for photo: Label = $label, Uri = $uri")
-        Log.w("EditViewModel", "Before action, photos list size is: ${itemPhotos.size}")
+        Log.w("EditViewModel", "Before action, cache photos list size is: ${_cacheItemPhotos.size}")
         // Check if the photo already exists
-        val photo: Photo? = itemPhotos.find { it.uri == uri.toString() }
+        val photo: Photo? = _cacheItemPhotos.find { it.uri == uri.toString() }
         val alreadyExists: Boolean = (photo != null)
         if (alreadyExists) {
             // Save the label modification of an existing photo
@@ -292,127 +333,194 @@ class EditViewModel(
                 photoId = photo!!.photoId,
                 uri = photo.uri,
                 label = label,
-                propertyId = propertyId)
-            viewModelScope.launch(Dispatchers.IO) {
-                try {
-                    photoRepository.upsertPhotoInRoom(photo = photoToUpdate)
-                    Log.w("EditViewModel", "Photo updated: Label = $label, Uri = $uri")
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+//                propertyId = propertyId)
+                propertyId = cacheProperty.propertyId)
 
+            val photoIndex = _cacheItemPhotos.indexOf(photo)
+            _cacheItemPhotos[photoIndex] = photoToUpdate
+            _cacheItemPhotosFlow.value = _cacheItemPhotos
+            Log.w(
+                "EditViewModel",
+                "Photo updated in cache: Id = ${photoToUpdate.photoId}, Old label = ${photo.label}, New label = ${photoToUpdate.label}, PropertyId = ${photoToUpdate.propertyId}"
+            )
         } else {
-            // Save a new photo
-            // if (itemPhotos.size == 1 && itemPhotos.elementAt(0).photoId == 0L) itemPhotos.removeAt(0)
             val photoToAdd = Photo(
+                photoId = randomProvisionalId(),
                 uri = uri.toString(),
                 label = label,
-                propertyId = NULL_ITEM_ID)
-            viewModelScope.launch(Dispatchers.IO) {
-                try {
-                    photoRepository.upsertPhotoInRoom(photo = photoToAdd)
-                    Log.w("EditViewModel", "Photo saved: Label = $label, Uri = $uri")
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+                propertyId = cacheProperty.propertyId)
+
+            _cacheItemPhotos.add(photoToAdd)
+            _cacheItemPhotosFlow.value = _cacheItemPhotos
+            Log.w(
+                "EditViewModel",
+                "Photo added to cache: Id = ${photoToAdd.photoId}, Label = ${photoToAdd.label}, PropertyId = ${photoToAdd.propertyId}"
+            )
         }
-        Log.w("EditViewModel", "After action. photos list size is: ${itemPhotos.size}")
+        Log.w("EditViewModel", "After action, cache photos list size is: ${_cacheItemPhotos.size}")
     }
 
     fun onPhotoDeletionConfirmation(propertyId: Long, photoId: Long, itemPhotos: MutableList<Photo>) {
         Log.w("EditViewModel", "Click on delete photo menu for photo id: $photoId")
-        Log.w("EditViewModel", "Before action, photos list size is: ${itemPhotos.size}")
-        val photoToRemove = photoRepository.photoFromId(photoId = photoId, photos = itemPhotos)
+        Log.w("EditViewModel", "Before action, cache photos list size is: ${_cacheItemPhotos.size}")
+        val photoToRemove = photoRepository.photoFromId(photoId = photoId, photos = _cacheItemPhotos)
+        photoToRemove?.let {
+            _cacheItemPhotos.remove(photoToRemove)
+            _cacheItemPhotosFlow.value = _cacheItemPhotos
+            Log.w(
+                "EditViewModel",
+                "Photo removed from cache: Id = ${photoToRemove.photoId}, Label = ${photoToRemove.label}, PropertyId = ${photoToRemove.propertyId}"
+            )
+        } ?: Log.w(
+            "EditViewModel",
+            "Photo not found in cache: Id = $photoId, PropertyId = $propertyId"
+        )
+        Log.w("EditViewModel", "After action, cache photos list size is: ${_cacheItemPhotos.size}")
+    }
+
+    fun clearCache() {
+        cacheProperty = CACHE_PROPERTY.copy()
+        initialAddress = null
+        cacheAddress = CACHE_ADDRESS.copy()
+        cacheStringType = context.getString(R.string._unassigned_)
+        cacheStringAgent = context.getString(R.string._unassigned_)
+        initialItemPois = mutableListOf()
+        cacheItemPois = mutableListOf()
+        initialItemPhotos = null
+        _cacheItemPhotos = mutableListOf()
+        _cacheItemPhotosFlow.value = _cacheItemPhotos
+        alreadyInit = false
+    }
+
+    /**/
+
+
+    /* Room */
+
+    private fun updateRoomWithCacheData(navController: NavHostController) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                photoRepository.deletePhotoFromRoom(photo = photoToRemove)
-                Toast
-                    .makeText(context, context.getString(R.string.photo_deleted, photoToRemove.label),
-                        Toast.LENGTH_SHORT)
-                    .show()
-                Log.w("EditViewModel", "Photo deleted: Label = ${photoToRemove.label}")
+                Log.w("EditViewModel", "Starting address update in Room...")
+                upDateRoomWithAddress()
+                Log.w("EditViewModel", "Starting property update in Room...")
+                upDateRoomWithProperty()
+                Log.w("EditViewModel", "Starting photos update in Room...")
+                upDateRoomWithPhotos()
+                Log.w("EditViewModel", "Starting propertyPoiJoins update in Room...")
+                upDateRoomWithPropertyPoiJoins()
+                Log.w("EditViewModel", "Clearing cache...")
+                clearCache()
+                withContext(Dispatchers.Main) {
+                    Toast
+                        .makeText(ApplicationRoot.getContext(), context.getString(R.string.recorded), Toast.LENGTH_SHORT)
+                        .show()
+
+                    navController.popBackStack()
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    Toast
+                        .makeText(
+                            ApplicationRoot.getContext(),
+                            context.getString(R.string.general_error) + "\n" + context.getString(R.string.not_recorded),
+                            Toast.LENGTH_SHORT
+                        )
+                        .show()
+                }
             }
         }
-        Log.w("EditViewModel", "After action. photos list size is: ${itemPhotos.size}")
-        // if (itemPhotos.size == 0) itemPhotos.add(NO_PHOTO)
     }
 
+    private suspend fun upDateRoomWithAddress() {
+        val isAddressEmpty = cacheAddress.isNullOrBlank()
+        val isAddressUpdate = (initialAddress == null) == isAddressEmpty
 
-    /** Temp data management */
-
-    private fun tempPropertyModificationsValidated(): String {
-        var newValues = ""
-        if (descriptionValue != "-1") newValues += "/$descriptionValue"
-        if (priceValue != -1) newValues += "/$priceValue"
-        if (surfaceValue != -1) newValues += "/$surfaceValue"
-        if (nbOfRoomsValue != -1) newValues += "/$nbOfRoomsValue"
-        if (nbOfBathroomsValue != -1) newValues += "/$nbOfBathroomsValue"
-        if (nbOfBedroomsValue != -1) newValues += "/$nbOfBedroomsValue"
-        if (typeValue != "-1") newValues += "/$typeValue"
-        if (agentValue != "-1") newValues += "/$agentValue"
-        if (addressValue != null) newValues += "/${addressValue!!.addressId}"
-        if (streetNumberValue != "-1") newValues += "/$streetNumberValue"
-        if (streetNameValue != "-1") newValues += "/$streetNameValue"
-        if (addInfoValue != "-1") newValues += "/$addInfoValue"
-        if (cityValue != "-1") newValues += "/$cityValue"
-        if (stateValue != "-1") newValues += "/$stateValue"
-        if (zipCodeValue != "-1") newValues += "/$zipCodeValue"
-        if (countryValue != "-1") newValues += "/$countryValue"
-        if (registrationDateValue != "-1") newValues += "/$registrationDateValue"
-        if (saleDateValue != "-1") newValues += "/$saleDateValue"
-
-        if (poiHospitalSelected != null) newValues += "/$poiHospitalSelected"
-        if (poiSchoolSelected != null) newValues += "/$poiSchoolSelected"
-        if (poiRestaurantSelected != null) newValues += "/$poiRestaurantSelected"
-        if (poiShopSelected != null) newValues += "/$poiShopSelected"
-        if (poiRailwayStationSelected != null) newValues += "/$poiRailwayStationSelected"
-        if (poiCarParkSelected != null) newValues += "/$poiCarParkSelected"
-
-        if (itemPhotos.isNotEmpty()) {
-            var photoLabels = ""
-            itemPhotos.forEach {
-                photoLabels += "/${it.label}"
+        when {
+            // The address is empty and not known in the database, so we do nothing
+            isAddressEmpty && isAddressUpdate -> {}
+            // The address is empty and known in the database, so we delete it
+            isAddressEmpty -> { addressRepository.deleteAddressFromRoom(cacheAddress) }
+            // The address is not empty, so we create it or update it
+            else -> {
+                val addressToUpsert = when {
+                    // The address is not empty and known in the database, so we will update it.
+                    // We only set blank fields to null...
+                    isAddressUpdate -> { cacheAddress.replaceBlankValuesWithNull() }
+                    // The address is not empty and not known in the database, so we create it.
+                    // We set blank fields to null and we remove the default cache addressId...
+                    else -> { cacheAddress.replaceBlankValuesWithNull().withoutId() }
+                }
+                // ... then we upsert database and get the Room's address id
+                newAddressIdFromRoom = addressRepository.upsertAddressInRoom(addressToUpsert)
             }
-            newValues += "/$photoLabels"
         }
-        return newValues
     }
 
-    private fun clearTempData() {
-        descriptionValue ="-1"
-        priceValue = -1
-        surfaceValue = -1
-        nbOfRoomsValue = -1
-        nbOfBathroomsValue = -1
-        nbOfBedroomsValue = -1
-        typeValue = "-1"
-        agentValue = "-1"
-        addressValue = null
-        streetNumberValue = "-1"
-        streetNameValue = "-1"
-        addInfoValue = "-1"
-        cityValue = "-1"
-        stateValue = "-1"
-        zipCodeValue = "-1"
-        countryValue = "-1"
-        registrationDateValue = "-1"
-        saleDateValue = "-1"
+    private suspend fun upDateRoomWithProperty() {
+        val isAddressEmpty = cacheAddress.isNullOrBlank()
+        val isAddressUpdate = (initialAddress == null) == isAddressEmpty
+        if (!isAddressUpdate && !isAddressEmpty) {
+            // An address has been added
+            cacheProperty.addressId = newAddressIdFromRoom
+        } else if (!isAddressUpdate) {
+            // The address has been deleted
+            cacheProperty.addressId = null
+        }
 
-        poiHospitalSelected = null
-        poiSchoolSelected = null
-        poiRestaurantSelected = null
-        poiShopSelected = null
-        poiRailwayStationSelected = null
-        poiCarParkSelected = null
+        val propertyToUpsert = if (cacheProperty.propertyId == CACHE_PROPERTY.propertyId) {
+            // If the property is not known in the database,
+            // we set blank fields to null and removes the default cache propertyId
+            cacheProperty.replaceBlankValuesWithNull().withoutId()
+        } else {
+            // Otherwise, we only set blank fields to null
+            cacheProperty.replaceBlankValuesWithNull()
+        }
 
-        itemPhotos= mutableListOf()
+        newPropertyIdFromRoom = propertyRepository.upsertPropertyInRoom(propertyToUpsert)
     }
 
-    /***/
+    private suspend fun upDateRoomWithPhotos() {
+        // Deletes removed photos from Room
+        val cachePhotosIds: List<Long> = _cacheItemPhotos.map { it.photoId }
+        val photosToDelete = initialItemPhotos!!.filter { it.photoId !in cachePhotosIds }.toMutableList()
+        if (photosToDelete.isNotEmpty()) photoRepository.deletePhotosFromRoom(photosToDelete)
 
+        // Updates photos or creates new photos in Room
+        // If a new property has been created, for each photo to upsert,
+        // we replace the value of the propertyId with the new id generated by Room
+        if (cacheProperty.propertyId == CACHE_PROPERTY.propertyId) _cacheItemPhotos.forEach {
+            it.propertyId = newPropertyIdFromRoom
+        }
+        // Before updating Room, we replace any new photo random id created for cache
+        // with 0, in order to let Room autogenerate an id.
+        val photosToUpsert = _cacheItemPhotos.map {
+            if (it.photoId == CACHE_PHOTO.photoId || it.photoId < 0) it.withoutId() else it
+        }.toMutableList()
+        if (photosToUpsert.isNotEmpty()) photoRepository.upsertPhotosInRoom(photosToUpsert)
+    }
+
+    private suspend fun upDateRoomWithPropertyPoiJoins() {
+        val initialPoisIds: List<String> = initialItemPois.map { it.poiId }
+        val cachePoisIds: List<String> = cacheItemPois.map { it.poiId }
+
+        // Deletes unselected pois from PropertyPoiJoin in Room
+        val poisIdsToRemove = initialPoisIds.filter { it !in cachePoisIds }
+        if (poisIdsToRemove.isNotEmpty()) {
+            val propertyPoiJoinsToDelete =
+                poisIdsToRemove.map { PropertyPoiJoin(newPropertyIdFromRoom, it) }.toMutableList()
+            propertyPoiJoinRepository.deletePropertyPoiJoinsFromRoom(propertyPoiJoinsToDelete)
+        }
+
+        // Adds selected pois to PropertyPoiJoin in Room
+        val poisIdsToAdd = cachePoisIds.filter { it !in initialPoisIds }
+        if (poisIdsToAdd.isNotEmpty()) {
+            val propertyPoiJoinsToAdd =
+                poisIdsToAdd.map { PropertyPoiJoin(newPropertyIdFromRoom, it) }.toMutableList()
+            propertyPoiJoinRepository.upsertPropertyPoiJoinsInRoom(propertyPoiJoinsToAdd)
+        }
+    }
+
+    /**/
 
 }

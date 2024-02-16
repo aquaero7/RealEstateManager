@@ -59,6 +59,7 @@
     <string name="no_label">without label</string>
     <string name="photo_deleted">Photo \"%s\" deleted!</string>
     <string name="invalid_input">Error! Only digits are allowed!</string>
+    <string name="latlng_error">Failed to get latitude and longitude of the address!</string>
     <string name="general_error">An error has occurred!</string>
 
     <!-- AGENT OR TYPE OF PROPERTY -->

@@ -11,6 +11,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.aquaero.realestatemanager.ApplicationRoot
+import com.aquaero.realestatemanager.context
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -20,6 +21,8 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlin.properties.Delegates
 
 class LocationRepository {
@@ -84,33 +87,36 @@ class LocationRepository {
         return locationUpdatesFlow
     }
 
+    @SuppressLint("NewApi")
+    suspend fun getLocationFromAddress(strAddress: String?, internetAvailable: Boolean): LatLng? =
+        suspendCoroutine { continuation ->
+            val coder = Geocoder(com.aquaero.realestatemanager.context)
+            if (internetAvailable) {
+                coder.getFromLocationName(strAddress!!, 5,
+                    object : Geocoder.GeocodeListener {
+                        override fun onGeocode(address: MutableList<Address>) {
+                            val location: Address = address[0]
+                            val latLng = LatLng(location.latitude, location.longitude)
+                            continuation.resume(latLng)
+                            Log.w("Geocoder.getFromLocName", "LatLng: ${latLng.toString()}")
+                            Log.w("Geocoder.getFromLocName", "Locality: ${location.locality}")
+                            Log.w("Geocoder.getFromLocName", "Latitude: ${location.latitude}")
+                            Log.w("Geocoder.getFromLocName", "Longitude: ${location.longitude}")
+                        }
+
+                        override fun onError(errorMessage: String?) {
+                            super.onError(errorMessage)
+                            Log.w("Geocoder.getFromLocName", errorMessage.toString())
+                            continuation.resume(null)
+                        }
+                    })
+            } else {
+                continuation.resume(null)
+            }
+        }
+
 
 }
 
-// TODO: Move from TOP LEVEL to class ?
-@SuppressLint("NewApi")
-fun getLocationFromAddress(strAddress: String?, internetAvailable: Boolean): LatLng? {
-    val coder = Geocoder(ApplicationRoot.getContext())
-    var latLng: LatLng? = null
 
-    if (internetAvailable) {
-        coder.getFromLocationName(strAddress!!, 5,
-            object : Geocoder.GeocodeListener {
-                override fun onGeocode(address: MutableList<Address>) {
-                    val location: Address = address[0]
-                    latLng = LatLng(location.latitude, location.longitude)
-                    Log.w("Geocoder.getFromLocName", "LatLng: ${latLng.toString()}")
-                    Log.w("Geocoder.getFromLocName", "Locality: ${location.locality}")
-                    Log.w("Geocoder.getFromLocName", "Latitude: ${location.latitude}")
-                    Log.w("Geocoder.getFromLocName", "Longitude: ${location.longitude}")
-                }
-
-                override fun onError(errorMessage: String?) {
-                    super.onError(errorMessage)
-                    Log.w("Geocoder.getFromLocName", errorMessage.toString())
-                }
-            })
-    }
-    return latLng
-}
 

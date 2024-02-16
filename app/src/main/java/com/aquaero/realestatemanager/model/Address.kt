@@ -17,7 +17,7 @@ data class Address(
      * Because of the use of the function 'isBlank()', 'addressId' must always be the first property in the class
      */
     @PrimaryKey(autoGenerate = true)
-    val addressId: Long = 0,
+    var addressId: Long = 0,
     var streetNumber: String?,
     var streetName: String?,
     var addInfo: String?,
@@ -25,8 +25,8 @@ data class Address(
     var state: String?,
     var zipCode: String?,
     var country: String?,
-    val latitude: Double?,
-    val longitude: Double?,
+    var latitude: Double?,
+    var longitude: Double?,
 ) {
     override fun toString(): String {
         return buildString {

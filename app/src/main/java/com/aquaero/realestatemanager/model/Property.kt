@@ -36,7 +36,7 @@ import kotlin.reflect.jvm.javaField
 )
 data class Property(
     @PrimaryKey(autoGenerate = true)
-    val propertyId: Long = 0,
+    var propertyId: Long = 0,
     @ColumnInfo(index = true)
     var typeId: String = TypeEnum.UNASSIGNED.key,
     @ColumnInfo(index = true)

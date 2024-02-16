@@ -138,7 +138,7 @@ fun RealEstateManagerApp(
                 { detailViewModel.onClickMenu(navController = navController, propertyId = propertyId) }
             }
             EditDetail.routeWithArgs -> {
-                { editViewModel.onClickMenu(navController = navController, propertyId = propertyId) }
+                { editViewModel.onClickMenu(navController = navController) }
             }
             SearchCriteria.route -> {
                 { searchViewModel.onClickMenu() }

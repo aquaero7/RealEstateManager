@@ -55,7 +55,7 @@ object ViewModelFactory:  ViewModelProvider.Factory {
                 typeRepository, poiRepository, propertyPoiJoinRepository) as T
         } else if (modelClass.isAssignableFrom(EditViewModel::class.java)) {
             EditViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
-                typeRepository, poiRepository, propertyPoiJoinRepository) as T
+                typeRepository, poiRepository, propertyPoiJoinRepository, locationRepository) as T
         } else if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
             MapViewModel(locationRepository) as T
         } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {

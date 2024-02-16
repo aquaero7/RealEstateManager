@@ -327,62 +327,55 @@ fun AppNavHost(
             )
 
             val onDescriptionValueChange: (String) -> Unit = {
-                editViewModel.onDescriptionValueChange(propertyId = propertyId, value = it)
+                editViewModel.onDescriptionValueChange(value = it)
             }
             val onPriceValueChange: (String) -> Unit = {
-                editViewModel.onPriceValueChange(propertyId = propertyId, value = it, currency = currency)
+                editViewModel.onPriceValueChange(value = it, currency = currency)
             }
             val onSurfaceValueChange: (String) -> Unit = {
-                editViewModel.onSurfaceValueChange(propertyId = propertyId, value = it)
+                editViewModel.onSurfaceValueChange(value = it)
             }
             val onDropdownMenuValueChange: (String) -> Unit = {
-                editViewModel.onDropdownMenuValueChange(
-                    propertyId = propertyId,
-                    value = it,
-                    types = types,
-                    agents = agents,
-                )
+                editViewModel.onDropdownMenuValueChange(value = it, types = types, agents = agents)
             }
             val onNbOfRoomsValueChange: (String) -> Unit = {
-                editViewModel.onNbOfRoomsValueChange(propertyId = propertyId, value = it)
+                editViewModel.onNbOfRoomsValueChange(value = it)
             }
             val onNbOfBathroomsValueChange: (String) -> Unit = {
-                editViewModel.onNbOfBathroomsValueChange(propertyId = propertyId, value = it)
+                editViewModel.onNbOfBathroomsValueChange(value = it)
             }
             val onNbOfBedroomsValueChange: (String) -> Unit = {
-                editViewModel.onNbOfBedroomsValueChange(propertyId = propertyId, value = it)
+                editViewModel.onNbOfBedroomsValueChange(value = it)
             }
             val onStreetNumberValueChange: (String) -> Unit = {
-                editViewModel.onStreetNumberValueChange(propertyId = propertyId, value = it)
+                editViewModel.onStreetNumberValueChange(value = it)
             }
             val onStreetNameValueChange: (String) -> Unit = {
-                editViewModel.onStreetNameValueChange(propertyId = propertyId, value = it)
+                editViewModel.onStreetNameValueChange(value = it)
             }
             val onAddInfoValueChange: (String) -> Unit = {
-                editViewModel.onAddInfoValueChange(propertyId = propertyId, value = it)
+                editViewModel.onAddInfoValueChange(value = it)
             }
             val onCityValueChange: (String) -> Unit = {
-                editViewModel.onCityValueChange(propertyId = propertyId, value = it)
+                editViewModel.onCityValueChange(value = it)
             }
             val onStateValueChange: (String) -> Unit = {
-                editViewModel.onStateValueChange(propertyId = propertyId, value = it)
+                editViewModel.onStateValueChange(value = it)
             }
             val onZipCodeValueChange: (String) -> Unit = {
-                editViewModel.onZipCodeValueChange(propertyId = propertyId, value = it)
+                editViewModel.onZipCodeValueChange(value = it)
             }
             val onCountryValueChange: (String) -> Unit = {
-                editViewModel.onCountryValueChange(propertyId = propertyId, value = it)
+                editViewModel.onCountryValueChange(value = it)
             }
             val onRegistrationDateValueChange: (String) -> Unit = {
-                editViewModel.onRegistrationDateValueChange(propertyId = propertyId, value = it)
+                editViewModel.onRegistrationDateValueChange(value = it)
             }
             val onSaleDateValueChange: (String) -> Unit = {
-                editViewModel.onSaleDateValueChange(propertyId = propertyId, value = it)
+                editViewModel.onSaleDateValueChange(value = it)
             }
             val onPoiClick: (String, Boolean) -> Unit = { poiItem, isSelected ->
-                editViewModel.onPoiClick(
-                    propertyId = propertyId, poiItem = poiItem, isSelected = isSelected
-                )
+                editViewModel.onPoiClick(poiItem = poiItem, isSelected = isSelected)
             }
 
             /**
@@ -455,9 +448,7 @@ fun AppNavHost(
                 photoToAddUri = Uri.EMPTY
             }
             val onSavePhotoButtonClick: (String) -> Unit = {
-                editViewModel.onSavePhotoButtonClick(
-                    propertyId = propertyId, uri = photoToAddUri, label = it, itemPhotos = itemPhotos,
-                )
+                editViewModel.onSavePhotoButtonClick(uri = photoToAddUri, label = it)
                 photoToAddUri = Uri.EMPTY
             }
             val onEditPhotoMenuItemClick: (Photo) -> Unit = { photo ->
@@ -465,9 +456,7 @@ fun AppNavHost(
                 buttonSavePhotoEnabled = true
             }
             val onPhotoDeletionConfirmation: (Long) -> Unit = { photoId ->
-                editViewModel.onPhotoDeletionConfirmation(
-                    propertyId = propertyId, photoId = photoId, itemPhotos = itemPhotos
-                )
+                editViewModel.onPhotoDeletionConfirmation(propertyId = propertyId, photoId = photoId)
             }
 
             val onBackPressed: () -> Unit = {
@@ -476,7 +465,6 @@ fun AppNavHost(
             }
 
             // Cache data
-//            editViewModel.initCache(property, stringType, stringAgent, address, itemPhotos, itemPois)
             val (isCacheInitialized, setCacheInitialized) = remember { mutableStateOf(false) }
             LaunchedEffect(key1 = Unit) {
                 if (!isCacheInitialized) {
@@ -484,24 +472,24 @@ fun AppNavHost(
                     setCacheInitialized(true)
                 }
             }
-
             val cacheItemPhotos: MutableList<Photo> by editViewModel.cacheItemPhotosFlow.collectAsState(initial = mutableListOf())
-            DisposableEffect(key1 = Unit) {
-                onDispose {
-                    // cacheItemPhotos.clear()
-                    // editViewModel.clearCache()
-                }
-            }
+
+
+            // Connexion for address latLng update
+            val connection by connectivityState()
+            editViewModel.connexionStatus(connection = connection)
+
+
 
             EditScreen(
                 stringTypes = stringTypes,
-                stringType = editViewModel.cacheStringType,
+                stringType = stringType,
                 stringAgents = stringAgents,
-                stringAgent = editViewModel.cacheStringAgent,
-                itemPhotos = cacheItemPhotos,    // editViewModel.cacheItemPhotos,
-                itemPois = editViewModel.cacheItemPois,
-                property = editViewModel.cacheProperty,
-                address = editViewModel.cacheAddress,
+                stringAgent = stringAgent,
+                itemPhotos = cacheItemPhotos,
+                itemPois = itemPois,
+                property = property,
+                address = address,
                 currency = currency,
                 onDescriptionValueChange = onDescriptionValueChange,
                 onPriceValueChange = onPriceValueChange,

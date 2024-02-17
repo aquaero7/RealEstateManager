@@ -49,6 +49,7 @@
     <string name="current_location">Position actuelle</string>
     <string name="latitude">Latitude:</string>
     <string name="longitude">Longitude:</string>
+    <string name="unavailable">Indisponible</string>
     <string name="recorded">Données enregistrées !</string>
     <string name="not_recorded">Données non enregistrées !</string>
     <string name="perms_revoked">Carte indisponible car\nles permissions de localisation\nont été refusées !</string>

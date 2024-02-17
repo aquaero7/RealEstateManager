@@ -317,21 +317,18 @@ class EditViewModel(
     private fun updateRoomWithCacheData(navController: NavHostController) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                Log.w("EditViewModel", "Retrieving lat and lng from address update...")
+                Log.w("EditViewModel", "Starting latLng update for address...")
                 updateAddressWithLatLng()
-                Log.w("EditViewModel", "Address updated with lat and lng")
+                Log.w("EditViewModel", "Room's update jobs are starting...")
                 Log.w("EditViewModel", "Starting address update in Room...")
                 upDateRoomWithAddress()
-                Log.w("EditViewModel", "Address updated with success in Room")
                 Log.w("EditViewModel", "Starting property update in Room...")
                 upDateRoomWithProperty()
-                Log.w("EditViewModel", "Property updated with success in Room")
                 Log.w("EditViewModel", "Starting photos update in Room...")
                 upDateRoomWithPhotos()
-                Log.w("EditViewModel", "Photos updated with success in Room")
                 Log.w("EditViewModel", "Starting propertyPoiJoins update in Room...")
                 upDateRoomWithPropertyPoiJoins()
-                Log.w("EditViewModel", "PropertyPoiJoins updated with success in Room")
+                Log.w("EditViewModel", "Room's update jobs ended with success !")
                 clearCache()
                 withContext(Dispatchers.Main) {
                     Toast
@@ -343,39 +340,74 @@ class EditViewModel(
             } catch (e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    Toast
-                        .makeText(
-                            context,
-                            "${context.getString(R.string.general_error)} \n${context.getString(R.string.not_recorded)}",
-                            Toast.LENGTH_SHORT
-                        )
-                        .show()
+                    Toast.makeText(
+                        context,
+                        "${context.getString(R.string.general_error)} \n${context.getString(R.string.not_recorded)}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
     }
 
     private suspend fun updateAddressWithLatLng() {
-        try {
-            val latLng = if (!cacheAddress.isNullOrBlank()) {
-                locationRepository.getLocationFromAddress(
-                    cacheAddress.replaceBlankValuesWithNull().toString(),
-                    isInternetAvailable
-                )
-            } else null
-            cacheAddress.latitude = latLng?.latitude
-            cacheAddress.longitude = latLng?.longitude
-        } catch (e: Exception) {
-            e.printStackTrace()
-            withContext(Dispatchers.Main) {
-                Toast
-                    .makeText(
+        val hasNullLatLng = cacheAddress.latitude == null || cacheAddress.longitude == null
+        val isEmpty = cacheAddress.isNullOrBlank()
+        val isModified = (isEmpty == (initialAddress != null)) || initialAddress?.let {
+            cacheAddress.hasDifferencesWith(it)
+        } == true
+
+        if (isEmpty) {
+            cacheAddress.latitude = null
+            cacheAddress.longitude = null
+        } else if (isModified || hasNullLatLng) {
+            try {
+                val latLng =
+                    locationRepository.getLocationFromAddress(
+                        cacheAddress.replaceBlankValuesWithNull().toString(),
+                        isInternetAvailable
+                    )
+                cacheAddress.latitude = latLng?.latitude
+                cacheAddress.longitude = latLng?.longitude
+            } catch (e: Exception) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
                         context,
                         context.getString(R.string.latlng_error),
                         Toast.LENGTH_SHORT
-                    )
-                    .show()
+                    ).show()
+                }
             }
+        } else {
+            Log.w("EditViewModel", "No address change, so updating LatLng is not necessary")
+        }
+    }
+
+    private suspend fun updateAddressWithLatLngOld() {
+        if (cacheAddress.hasDifferencesWith(initialAddress!!)) {
+            try {
+                val latLng =
+                    if (!cacheAddress.isNullOrBlank()) {
+                        locationRepository.getLocationFromAddress(
+                            cacheAddress.replaceBlankValuesWithNull().toString(),
+                            isInternetAvailable
+                        )
+                    } else null
+                cacheAddress.latitude = latLng?.latitude
+                cacheAddress.longitude = latLng?.longitude
+            } catch (e: Exception) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.latlng_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        } else {
+            Log.w("EditViewModel", "No address change, so updating LatLng is not necessary")
         }
     }
 

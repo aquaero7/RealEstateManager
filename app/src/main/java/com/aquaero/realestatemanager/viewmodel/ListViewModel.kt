@@ -1,11 +1,9 @@
 package com.aquaero.realestatemanager.viewmodel
 
-import android.annotation.SuppressLint
 import android.content.Context
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.aquaero.realestatemanager.ApplicationRoot
+import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Photo
@@ -13,7 +11,6 @@ import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
 import com.aquaero.realestatemanager.model.Type
-import com.aquaero.realestatemanager.model.TypeEnum
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
@@ -22,17 +19,6 @@ import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.ConnectionState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ListViewModel(
     private val propertyRepository: PropertyRepository,
@@ -80,11 +66,13 @@ class ListViewModel(
     }
 
     fun stringLatitude(addressId: Long, addresses: MutableList<Address>): String {
-        return addressRepository.stringLatitude(addressId = addressId, addresses = addresses)
+        val result = addressRepository.stringLatitude(addressId = addressId, addresses = addresses)
+        return result.ifEmpty { context.getString(R.string.unavailable) }
     }
 
     fun stringLongitude(addressId: Long, addresses: MutableList<Address>): String {
-        return addressRepository.stringLongitude(addressId = addressId, addresses = addresses)
+        val result = addressRepository.stringLongitude(addressId = addressId, addresses = addresses)
+        return result.ifEmpty { context.getString(R.string.unavailable) }
     }
 
     fun itemPhotos(propertyId: Long, photos: MutableList<Photo>): MutableList<Photo> {

@@ -71,11 +71,13 @@ class AddressRepository(private val addressDao: AddressDao) {
     }
 
     fun stringLatitude(addressId: Long, addresses: MutableList<Address>): String {
-        return addresses.find { it.addressId == addressId }?.latitude?.toString() ?: ""
+        val result = addresses.find { it.addressId == addressId }?.latitude
+        return result?.let { String.format("%.7f", it) } ?: ""
     }
 
     fun stringLongitude(addressId: Long, addresses: MutableList<Address>): String {
-        return addresses.find { it.addressId == addressId }?.longitude?.toString() ?: ""
+        val result = addresses.find { it.addressId == addressId }?.longitude
+        return result?.let { String.format("%.7f", it) } ?: ""
     }
 
 

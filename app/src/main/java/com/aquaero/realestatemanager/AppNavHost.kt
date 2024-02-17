@@ -464,6 +464,10 @@ fun AppNavHost(
                 navController.popBackStack()
             }
 
+            // Connexion for address latLng update
+            val connection by connectivityState()
+            editViewModel.connexionStatus(connection = connection)
+
             // Cache data
             val (isCacheInitialized, setCacheInitialized) = remember { mutableStateOf(false) }
             LaunchedEffect(key1 = Unit) {
@@ -473,13 +477,6 @@ fun AppNavHost(
                 }
             }
             val cacheItemPhotos: MutableList<Photo> by editViewModel.cacheItemPhotosFlow.collectAsState(initial = mutableListOf())
-
-
-            // Connexion for address latLng update
-            val connection by connectivityState()
-            editViewModel.connexionStatus(connection = connection)
-
-
 
             EditScreen(
                 stringTypes = stringTypes,

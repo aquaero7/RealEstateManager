@@ -20,7 +20,10 @@ data class Agent(
     }
 }
 
-/** Theis Enum key should be set inside string resource file for formatted display and translation **/
+/**
+ * String Key for unassigned agent.
+ * For formatted display and translation, this key should be set in the string resources files.
+ */
 enum class AgentEnum(val key: String) {
     UNASSIGNED(key = "_unassigned_"),
 }
@@ -48,8 +51,3 @@ val AGENT_PREPOPULATION_DATA = listOf(
     ),
 ).sortedBy { it.lastName + it.firstName }
 
-val CACHE_AGENT = Agent(
-    agentId = CACHE_LONG_ID_VALUE,
-    firstName = CACHE_EMPTY_STRING_VALUE,
-    lastName = CACHE_NULLABLE_VALUE
-)

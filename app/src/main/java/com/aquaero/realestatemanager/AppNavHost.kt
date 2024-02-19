@@ -1,6 +1,7 @@
 package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.location.Location
 import android.net.Uri
 import android.util.Log
@@ -55,6 +56,7 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 fun AppNavHost(
     modifier: Modifier,
+    context: Context,
     contentType: AppContentType,
     navController: NavHostController,
     properties: MutableList<Property>,
@@ -98,11 +100,13 @@ fun AppNavHost(
                 }
 
                 /** For list screen only **/
+                val itemType: (String) -> String = { typeId ->
+                    listViewModel.itemType(typeId, types, stringTypes)
+                }
                 val onPropertyClick: (Long) -> Unit = { propId ->
                     navController.navigateToDetail(propertyId = propId.toString(), contentType = contentType)
                 }
                 val onFabClick = {
-                    Log.w("Click on FAB", "Screen ${ListAndDetail.label} / Property $NEW_ITEM_ID")
                     navController.navigateToDetailEdit(propertyId = NEW_ITEM_ID.toString())
                 }
 
@@ -128,10 +132,10 @@ fun AppNavHost(
                     listViewModel.stringAddress(addressId = addressId, addresses = addresses)
                 } ?: ""
                 val stringLatitude = property?.addressId?.let { addressId ->
-                    listViewModel.stringLatitude(addressId = addressId, addresses = addresses)
+                    listViewModel.stringLatitude(addressId = addressId, addresses = addresses, context = context)
                 } ?: ""
                 val stringLongitude = property?.addressId?.let { addressId ->
-                    listViewModel.stringLongitude(addressId = addressId, addresses = addresses)
+                    listViewModel.stringLongitude(addressId = addressId, addresses = addresses, context = context)
                 } ?: ""
                 val thumbnailUrl = property?.addressId?.let { addressId ->
                     if (addresses.isNotEmpty()) listViewModel.thumbnailUrl(addressId = addressId, addresses = addresses) else ""
@@ -148,10 +152,9 @@ fun AppNavHost(
                     // For list screen only
                     contentType = contentType,
                     items = properties,
-                    types = types,
-                    stringTypes = stringTypes,
                     addresses = addresses,
                     photos = photos,
+                    itemType = itemType,
                     onPropertyClick = onPropertyClick,
                     onFabClick = onFabClick,
                     // For detail screen only
@@ -193,7 +196,7 @@ fun AppNavHost(
                         getLocationUpdates = getLocationUpdates,
                     )
                 } else {
-                    val onOpenAppSettings = { mapViewModel.openAppSettings() }
+                    val onOpenAppSettings = { mapViewModel.openAppSettings(context = context) }
                     val onPermissionsGranted = { locationPermissionsGranted = true }
 
                     LocationPermissionsScreen(
@@ -268,10 +271,10 @@ fun AppNavHost(
                 detailViewModel.stringAddress(addressId = it, addresses = addresses)
             } ?: ""
             val stringLatitude = property.addressId?.let {
-                detailViewModel.stringLatitude(addressId = it, addresses = addresses)
+                detailViewModel.stringLatitude(addressId = it, addresses = addresses, context = context)
             } ?: ""
             val stringLongitude = property.addressId?.let {
-                detailViewModel.stringLongitude(addressId = it, addresses = addresses)
+                detailViewModel.stringLongitude(addressId = it, addresses = addresses, context = context)
             } ?: ""
             val thumbnailUrl = property.addressId?.let {
                 if (addresses.isNotEmpty()) detailViewModel.thumbnailUrl(addressId = it, addresses = addresses) else ""
@@ -390,7 +393,7 @@ fun AppNavHost(
             /**
              * Photo shooting
              */
-            val cameraUri: Uri = editViewModel.getPhotoUri()
+            val cameraUri: Uri = editViewModel.getPhotoUri(context = context)
             var capturedImageUri by remember { mutableStateOf(Uri.EMPTY) }
             val cameraLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.TakePicture()
@@ -406,7 +409,7 @@ fun AppNavHost(
             }
             val onShootPhotoMenuItemClick: () -> Unit = {
                 editViewModel.onShootPhotoMenuItemClick(
-                    uri = cameraUri, cameraLauncher = cameraLauncher, permissionLauncher = permissionLauncher,
+                    context = context, uri = cameraUri, cameraLauncher = cameraLauncher, permissionLauncher = permissionLauncher,
                 )
             }
 
@@ -472,7 +475,15 @@ fun AppNavHost(
             val (isCacheInitialized, setCacheInitialized) = remember { mutableStateOf(false) }
             LaunchedEffect(key1 = Unit) {
                 if (!isCacheInitialized) {
-                    editViewModel.initCache(property, stringType, stringAgent, address, itemPhotos, itemPois)
+                    editViewModel.initCache(
+                        context = context,
+                        property = property,
+                        stringType = stringType,
+                        stringAgent = stringAgent,
+                        address = address,
+                        itemPhotos = itemPhotos,
+                        itemPois = itemPois,
+                    )
                     setCacheInitialized(true)
                 }
             }

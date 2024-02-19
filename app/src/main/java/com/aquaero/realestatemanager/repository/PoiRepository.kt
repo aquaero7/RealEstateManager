@@ -10,10 +10,8 @@ import kotlinx.coroutines.withContext
 
 class PoiRepository(private val poiDao: PoiDao) {
 
-    private val context: Context by lazy { ApplicationRoot.getContext() }
 
-
-    /** Room: Database CRUD */
+    /* Room: Database CRUD */
 
     suspend fun upsertPoiInRoom(poi: Poi) {
         withContext(Dispatchers.IO) {
@@ -39,7 +37,7 @@ class PoiRepository(private val poiDao: PoiDao) {
         return poiDao.getPoisOrderedById()
     }
 
-    /***/
+    /**/
 
 
     fun poiFromId(poiId: String, pois: MutableList<Poi>): Poi? {

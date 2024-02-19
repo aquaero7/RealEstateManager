@@ -12,10 +12,8 @@ import kotlinx.coroutines.withContext
 
 class PropertyPoiJoinRepository(private val propertyPoiJoinDao: PropertyPoiJoinDao) {
 
-    private val context: Context by lazy { ApplicationRoot.getContext() }
 
-
-    /** Room: Database CRUD */
+    /* Room: Database CRUD */
 
     suspend fun upsertPropertyPoiJoinInRoom(propertyPoiJoin: PropertyPoiJoin) {
         withContext(Dispatchers.IO) {
@@ -53,7 +51,7 @@ class PropertyPoiJoinRepository(private val propertyPoiJoinDao: PropertyPoiJoinD
         return propertyPoiJoinDao.getPropertyPoiJoins()
     }
 
-    /***/
+    /**/
 
 
 }

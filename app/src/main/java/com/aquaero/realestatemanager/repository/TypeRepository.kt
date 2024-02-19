@@ -12,10 +12,8 @@ import kotlinx.coroutines.withContext
 
 class TypeRepository(private val typeDao: TypeDao) {
 
-    private val context: Context by lazy { ApplicationRoot.getContext() }
 
-
-    /** Room: Database CRUD */
+    /* Room: Database CRUD */
 
     suspend fun upsertTypeInRoom(type: Type) {
         withContext(Dispatchers.IO) {
@@ -63,7 +61,7 @@ class TypeRepository(private val typeDao: TypeDao) {
         }
     }
 
-    /***/
+    /**/
 
 
     fun typeFromId(typeId: String, types: MutableList<Type>): Type? {

@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -95,6 +96,7 @@ fun RealEstateManagerApp(
     loanViewModel: LoanViewModel,
 ) {
     RealEstateManagerTheme(dynamicColor = false) {
+        val context = LocalContext.current
 
         val properties: MutableList<Property> by appViewModel.properties.collectAsState(initial = mutableListOf())
         val addresses: MutableList<Address> by appViewModel.addresses.collectAsState(initial = mutableListOf())
@@ -138,13 +140,13 @@ fun RealEstateManagerApp(
                 { detailViewModel.onClickMenu(navController = navController, propertyId = propertyId) }
             }
             EditDetail.routeWithArgs -> {
-                { editViewModel.onClickMenu(navController = navController) }
+                { editViewModel.onClickMenu(navController = navController, context = context) }
             }
             SearchCriteria.route -> {
-                { searchViewModel.onClickMenu() }
+                { searchViewModel.onClickMenu(context = context) }
             }
             Loan.route -> {
-                { loanViewModel.onClickMenu() }
+                { loanViewModel.onClickMenu(context = context) }
             }
             else -> { {} }
         }
@@ -189,6 +191,7 @@ fun RealEstateManagerApp(
         ) { innerPadding ->
             AppNavHost(
                 modifier = Modifier.padding(innerPadding),
+                context = context,
                 contentType = contentType,
                 navController = navController,
                 properties = properties,

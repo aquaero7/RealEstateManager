@@ -11,7 +11,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.aquaero.realestatemanager.ApplicationRoot
-import com.aquaero.realestatemanager.context
+import com.aquaero.realestatemanager.utils.ConnectionState
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -43,6 +43,10 @@ class LocationRepository {
                 )
             }
         }
+    }
+
+    fun checkForConnection(connection: ConnectionState): Boolean {
+        return connection === ConnectionState.Available
     }
 
     fun checkForPermissions(): Boolean {
@@ -88,9 +92,9 @@ class LocationRepository {
     }
 
     @SuppressLint("NewApi")
-    suspend fun getLocationFromAddress(strAddress: String?, internetAvailable: Boolean): LatLng? =
+    suspend fun getLocationFromAddress(context: Context, strAddress: String?, internetAvailable: Boolean): LatLng? =
         suspendCoroutine { continuation ->
-            val coder = Geocoder(com.aquaero.realestatemanager.context)
+            val coder = Geocoder(context)
             if (internetAvailable) {
                 coder.getFromLocationName(strAddress!!, 5,
                     object : Geocoder.GeocodeListener {

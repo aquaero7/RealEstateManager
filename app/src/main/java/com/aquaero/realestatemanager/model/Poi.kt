@@ -10,7 +10,9 @@ data class Poi(
     val poiId: String,
 )
 
-/** These Enum keys should be set inside string resource file for formatted display and translation **/
+/**
+ * For formatted display and translation, these keys should be set in the string resources files.
+ */
 enum class PoiEnum(val key: String) {
     HOSPITAL(key = "hospital"),
     SCHOOL(key = "school"),
@@ -28,5 +30,3 @@ val POI_PREPOPULATION_DATA = listOf(
     Poi(PoiEnum.RAILWAY_STATION.key),
     Poi(PoiEnum.CAR_PARK.key),
 )
-
-val CACHE_POI = Poi(CACHE_EMPTY_STRING_VALUE)

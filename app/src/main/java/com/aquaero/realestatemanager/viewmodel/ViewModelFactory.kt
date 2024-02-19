@@ -2,9 +2,7 @@ package com.aquaero.realestatemanager.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.database.AppDatabase
-import com.aquaero.realestatemanager.database.DatabaseProvider
 import com.aquaero.realestatemanager.database.dao.AddressDao
 import com.aquaero.realestatemanager.database.dao.AgentDao
 import com.aquaero.realestatemanager.database.dao.PhotoDao
@@ -49,10 +47,10 @@ object ViewModelFactory:  ViewModelProvider.Factory {
                 typeRepository, poiRepository, propertyPoiJoinRepository) as T
         } else if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
             ListViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
-                typeRepository, poiRepository, propertyPoiJoinRepository) as T
+                typeRepository, poiRepository, propertyPoiJoinRepository, locationRepository) as T
         } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
             DetailViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
-                typeRepository, poiRepository, propertyPoiJoinRepository) as T
+                typeRepository, poiRepository, propertyPoiJoinRepository, locationRepository) as T
         } else if (modelClass.isAssignableFrom(EditViewModel::class.java)) {
             EditViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
                 typeRepository, poiRepository, propertyPoiJoinRepository, locationRepository) as T

@@ -43,10 +43,9 @@ fun ListScreen(
     currency: String,
     contentType: AppContentType,
     items: List<Property>,
-    types: List<Type>,
-    stringTypes: List<String>,
     addresses: List<Address>,
     photos: List<Photo>,
+    itemType: (String) -> String,
     onPropertyClick: (Long) -> Unit,
     onFabClick: () -> Unit,
 ) {
@@ -83,10 +82,7 @@ fun ListScreen(
                     val phId = photo?.photoId ?: NO_PHOTO.photoId
                     val phUri = photo?.uri ?: NO_PHOTO.uri
                     val pId = propertyItem.propertyId
-                    val type = types.find { it.typeId == propertyItem.typeId }
-                    val pType = type?.let {
-                        if (stringTypes.isNotEmpty()) stringTypes.elementAt(types.indexOf(it)) else ""
-                    } ?: ""
+                    val pType = itemType(propertyItem.typeId)
                     val pCity = addresses.find { it.addressId == propertyItem.addressId }?.city ?: ""
                     val pPriceFormatted = propertyItem.priceFormattedInCurrency(currency)
                     val selected by remember(propertyItem, property) {

@@ -10,7 +10,6 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.DropdownMenuCategory
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
@@ -34,15 +33,11 @@ import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.ConnectionState
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
 import com.aquaero.realestatemanager.utils.randomProvisionalId
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlin.properties.Delegates
 
 class EditViewModel(
@@ -55,19 +50,19 @@ class EditViewModel(
     private val propertyPoiJoinRepository: PropertyPoiJoinRepository,
     private val locationRepository: LocationRepository,
 ) : ViewModel() {
-    private val context: Context by lazy { ApplicationRoot.getContext() }
+    private val unassignedResId = R.string._unassigned_
+    private var unassigned = ""
     private var newPropertyIdFromRoom by Delegates.notNull<Long>()
     private var newAddressIdFromRoom by Delegates.notNull<Long>()
     private var isInternetAvailable = false
 
 
     /* Cache data */
-
     private var cacheProperty: Property = CACHE_PROPERTY.copy()
     private var initialAddress: Address? = null
     private var cacheAddress: Address = CACHE_ADDRESS.copy()
-    private var cacheStringType: String = context.getString(R.string._unassigned_)
-    private var cacheStringAgent: String = context.getString(R.string._unassigned_)
+    private var cacheStringType: String = unassigned
+    private var cacheStringAgent: String = unassigned
     private var initialItemPois: MutableList<Poi> = mutableListOf()
     private var cacheItemPois: MutableList<Poi> = mutableListOf()
 
@@ -75,9 +70,7 @@ class EditViewModel(
     private var _cacheItemPhotos: MutableList<Photo> = mutableListOf()
     private val _cacheItemPhotosFlow: MutableStateFlow<MutableList<Photo>> = MutableStateFlow(_cacheItemPhotos)
     val cacheItemPhotosFlow: Flow<MutableList<Photo>> = _cacheItemPhotosFlow
-
     /**/
-
 
     init {
         // Init of _cacheItemPhotos at this place is needed to display the first photo added
@@ -87,10 +80,10 @@ class EditViewModel(
 
 
     fun connexionStatus(connection: ConnectionState) {
-        isInternetAvailable = connection === ConnectionState.Available
+        isInternetAvailable = locationRepository.checkForConnection(connection)
     }
 
-    fun onClickMenu(navController: NavHostController) { updateRoomWithCacheData(navController) }
+    fun onClickMenu(navController: NavHostController, context: Context) { updateRoomWithCacheData(navController, context) }
 
     fun propertyFromId(propertyId: Long, properties: MutableList<Property>): Property? {
         return propertyRepository.propertyFromId(propertyId = propertyId, properties = properties)
@@ -126,15 +119,16 @@ class EditViewModel(
         }
     }
 
-    fun getPhotoUri(): Uri { return photoRepository.getPhotoUri() }
+    fun getPhotoUri(context: Context): Uri { return photoRepository.getPhotoUri(context) }
 
     fun onShootPhotoMenuItemClick(
+        context: Context,
         uri: Uri,
         cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
         permissionLauncher: ManagedActivityResultLauncher<String, Boolean>
     ) {
         photoRepository.onShootPhotoMenuItemClick(
-            uri = uri, cameraLauncher = cameraLauncher, permissionLauncher = permissionLauncher
+            context = context, uri = uri, cameraLauncher = cameraLauncher, permissionLauncher = permissionLauncher
         )
     }
 
@@ -144,10 +138,18 @@ class EditViewModel(
         photoRepository.onSelectPhotoMenuItemClick(pickerLauncher = pickerLauncher)
     }
 
+    private fun toastMessage(context: Context, msgResId1: Int, msgResId2: Int? = null) {
+        Toast.makeText(
+            context,
+            context.getString(msgResId1) + (msgResId2?.let { "\n${context.getString(it)}" } ?: ""),
+            Toast.LENGTH_SHORT).show()
+    }
+
 
     /* Cache management */
 
     fun initCache(
+        context: Context,
         property: Property?,
         stringType: String?,
         stringAgent: String?,
@@ -155,11 +157,13 @@ class EditViewModel(
         itemPhotos: MutableList<Photo>,
         itemPois: MutableList<Poi>
     ) {
+        unassigned = context.getString(unassignedResId)
+
         cacheProperty = property?.copy() ?: CACHE_PROPERTY.copy()
         initialAddress = address
         cacheAddress = address?.copy() ?: CACHE_ADDRESS.copy()
-        cacheStringType = stringType ?: context.getString(R.string._unassigned_)
-        cacheStringAgent = stringAgent ?: context.getString(R.string._unassigned_)
+        cacheStringType = stringType ?: unassigned
+        cacheStringAgent = stringAgent ?: unassigned
         initialItemPois = itemPois.toMutableList()
         cacheItemPois = itemPois.toMutableList()
 
@@ -300,8 +304,8 @@ class EditViewModel(
         cacheProperty = CACHE_PROPERTY.copy()
         initialAddress = null
         cacheAddress = CACHE_ADDRESS.copy()
-        cacheStringType = context.getString(R.string._unassigned_)
-        cacheStringAgent = context.getString(R.string._unassigned_)
+        cacheStringType = unassigned
+        cacheStringAgent = unassigned
         initialItemPois = mutableListOf()
         cacheItemPois = mutableListOf()
         initialItemPhotos = mutableListOf()
@@ -314,11 +318,11 @@ class EditViewModel(
 
     /* Room */
 
-    private fun updateRoomWithCacheData(navController: NavHostController) {
+    private fun updateRoomWithCacheData(navController: NavHostController, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Log.w("EditViewModel", "Starting latLng update for address...")
-                updateAddressWithLatLng()
+                updateAddressWithLatLng(context = context)
                 Log.w("EditViewModel", "Room's update jobs are starting...")
                 Log.w("EditViewModel", "Starting address update in Room...")
                 upDateRoomWithAddress()
@@ -331,26 +335,19 @@ class EditViewModel(
                 Log.w("EditViewModel", "Room's update jobs ended with success !")
                 clearCache()
                 withContext(Dispatchers.Main) {
-                    Toast
-                        .makeText(ApplicationRoot.getContext(), context.getString(R.string.recorded), Toast.LENGTH_SHORT)
-                        .show()
-
+                    toastMessage(context = context, msgResId1 = R.string.recorded, msgResId2 = R.string.property_added)
                     navController.popBackStack()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        context,
-                        "${context.getString(R.string.general_error)} \n${context.getString(R.string.not_recorded)}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    toastMessage(context = context, msgResId1 = R.string.general_error, msgResId2 = R.string.not_recorded)
                 }
             }
         }
     }
 
-    private suspend fun updateAddressWithLatLng() {
+    private suspend fun updateAddressWithLatLng(context: Context) {
         val hasNullLatLng = cacheAddress.latitude == null || cacheAddress.longitude == null
         val isEmpty = cacheAddress.isNullOrBlank()
         val isModified = (isEmpty == (initialAddress != null)) || initialAddress?.let {
@@ -364,46 +361,16 @@ class EditViewModel(
             try {
                 val latLng =
                     locationRepository.getLocationFromAddress(
+                        context,
                         cacheAddress.replaceBlankValuesWithNull().toString(),
-                        isInternetAvailable
+                        isInternetAvailable,
                     )
                 cacheAddress.latitude = latLng?.latitude
                 cacheAddress.longitude = latLng?.longitude
             } catch (e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.latlng_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        } else {
-            Log.w("EditViewModel", "No address change, so updating LatLng is not necessary")
-        }
-    }
-
-    private suspend fun updateAddressWithLatLngOld() {
-        if (cacheAddress.hasDifferencesWith(initialAddress!!)) {
-            try {
-                val latLng =
-                    if (!cacheAddress.isNullOrBlank()) {
-                        locationRepository.getLocationFromAddress(
-                            cacheAddress.replaceBlankValuesWithNull().toString(),
-                            isInternetAvailable
-                        )
-                    } else null
-                cacheAddress.latitude = latLng?.latitude
-                cacheAddress.longitude = latLng?.longitude
-            } catch (e: Exception) {
-                e.printStackTrace()
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.latlng_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    toastMessage(context = context, msgResId1 = R.string.latlng_error)
                 }
             }
         } else {
@@ -412,14 +379,14 @@ class EditViewModel(
     }
 
     private suspend fun upDateRoomWithAddress() {
-        val isAddressEmpty = cacheAddress.isNullOrBlank()
-        val isAddressUpdate = (initialAddress == null) == isAddressEmpty
+        val isEmpty = cacheAddress.isNullOrBlank()
+        val isUpdate = (initialAddress == null) == isEmpty
         when {
             // The address is empty and not known in the database, so we do nothing
-            isAddressEmpty && isAddressUpdate -> {}
+            isEmpty && isUpdate -> {}
             // The address is empty and known in the database, so we delete it
             // and we update the address id in cacheProperty
-            isAddressEmpty -> {
+            isEmpty -> {
                 addressRepository.deleteAddressFromRoom(cacheAddress)
                 cacheProperty.addressId = null
             }
@@ -428,7 +395,7 @@ class EditViewModel(
                 val addressToUpsert = when {
                     // The address is not empty and known in the database, so we will update it.
                     // We only set blank fields to null...
-                    isAddressUpdate -> { cacheAddress.replaceBlankValuesWithNull() }
+                    isUpdate -> { cacheAddress.replaceBlankValuesWithNull() }
                     // The address is not empty and not known in the database, so we create it.
                     // We set blank fields to null and we remove the default cache addressId...
                     else -> { cacheAddress.replaceBlankValuesWithNull().withoutId() }

@@ -26,10 +26,9 @@ fun ListAndDetailScreen(
     // For list screen only
     contentType: AppContentType,
     items: List<Property>,
-    types: List<Type>,
-    stringTypes: List<String>,
     addresses: List<Address>,
     photos: List<Photo>,
+    itemType: (String) -> String,
     onPropertyClick: (Long) -> Unit,
     onFabClick: () -> Unit,
     // For detail screen only
@@ -53,10 +52,9 @@ fun ListAndDetailScreen(
                 currency = currency,
                 contentType = contentType,
                 items = items,
-                types = types,
-                stringTypes = stringTypes,
                 addresses = addresses,
                 photos = photos,
+                itemType = itemType,
                 onPropertyClick = onPropertyClick,
                 onFabClick = onFabClick,
             )

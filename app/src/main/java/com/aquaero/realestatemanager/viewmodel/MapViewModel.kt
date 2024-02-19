@@ -14,10 +14,9 @@ import kotlinx.coroutines.flow.StateFlow
 class MapViewModel(
     private val locationRepository: LocationRepository
 ): ViewModel() {
-    private val context: Context by lazy { ApplicationRoot.getContext() }
 
     fun checkForConnection(connection: ConnectionState): Boolean {
-        return connection === ConnectionState.Available
+        return locationRepository.checkForConnection(connection)
     }
 
     fun checkForPermissions(): Boolean {
@@ -40,7 +39,7 @@ class MapViewModel(
         return locationRepository.getLocationUpdates()
     }
 
-    fun openAppSettings() {
+    fun openAppSettings(context: Context) {
         Intent(
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
             Uri.fromParts("package", context.packageName, null)

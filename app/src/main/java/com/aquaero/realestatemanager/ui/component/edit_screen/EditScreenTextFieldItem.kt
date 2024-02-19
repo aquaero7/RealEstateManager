@@ -52,9 +52,6 @@ import com.aquaero.realestatemanager.DP_CONTAINER_COLOR
 import com.aquaero.realestatemanager.DP_TEXT_COLOR
 import com.aquaero.realestatemanager.DropdownMenuCategory
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.model.CACHE_AGENT
-import com.aquaero.realestatemanager.model.CACHE_TYPE
-import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.ui.theme.Red
 import com.aquaero.realestatemanager.utils.convertDateMillisToString
 import com.aquaero.realestatemanager.utils.convertDateStringToMillis

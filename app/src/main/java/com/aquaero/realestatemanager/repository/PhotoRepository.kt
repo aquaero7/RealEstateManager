@@ -25,10 +25,8 @@ import java.util.Objects
 
 class PhotoRepository(private val photoDao: PhotoDao) {
 
-    private val context: Context by lazy { ApplicationRoot.getContext() }
 
-
-    /** Room: Database CRUD */
+    /* Room: Database CRUD */
 
     suspend fun upsertPhotoInRoom(photo: Photo) {
         withContext(Dispatchers.IO) {
@@ -70,7 +68,7 @@ class PhotoRepository(private val photoDao: PhotoDao) {
         return photoDao.getPhotosOrderedByLabel()
     }
 
-    /***/
+    /**/
 
 
     fun photoFromId(photoId: Long, photos: MutableList<Photo>): Photo? {
@@ -88,7 +86,7 @@ class PhotoRepository(private val photoDao: PhotoDao) {
         )
     }
 
-    fun getPhotoUri(): Uri {
+    fun getPhotoUri(context: Context): Uri {
         val file = context.createImageFile()
         return FileProvider.getUriForFile(
             Objects.requireNonNull(context),
@@ -97,6 +95,7 @@ class PhotoRepository(private val photoDao: PhotoDao) {
     }
 
     fun onShootPhotoMenuItemClick(
+        context: Context,
         uri: Uri,
         cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
         permissionLauncher: ManagedActivityResultLauncher<String, Boolean>
@@ -120,14 +119,12 @@ class PhotoRepository(private val photoDao: PhotoDao) {
     }
 
     fun itemPhotos(propertyId: Long, photos: MutableList<Photo>): MutableList<Photo> {
-//        val itemPhotos = photos.filter { it.propertyId == propertyId }.toMutableList()
-//        return itemPhotos.ifEmpty { mutableListOf(NO_PHOTO) }
         return photos.filter { it.propertyId == propertyId }.toMutableList()
     }
 
 
 
-    /** FAKE PHOTOS */
+    /* FAKE PHOTOS */
     /*
     val fakePhotos = listOf(
         Photo(

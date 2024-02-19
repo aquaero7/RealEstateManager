@@ -40,71 +40,19 @@ class AppViewModel(
     private val context: Context by lazy { ApplicationRoot.getContext() }
 
 
-    /** Room */
+    /* Room */
 
     val properties = propertyRepository.getPropertiesFromRoom()
     val addresses = addressRepository.getAddressesFromRoom()
     val photos = photoRepository.getPhotosFromRoom()
-//    val agents = agentRepository.getAgentsFromRoom()
     val agentsOrderedByName = agentRepository.getAgentsOrderedByNameFromRoom()
-//    val types = typeRepository.getTypesFromRoom()
     val typesOrderedById = typeRepository.getTypesOrderedByIdFromRoom()
     val pois = poiRepository.getPoisFromRoom()
     val propertyPoiJoins = propertyPoiJoinRepository.getPropertyPoiJoinsFromRoom()
-//    val stringTypes = typeRepository.getStringTypesFromRoom(context)
     val stringTypesOrderedById = typeRepository.getStringTypesOrderedByIdFromRoom(context)
-//    val stringAgents = agentRepository.getStringAgentsFromRoom()
-    val stringAgentsOrderedByName = agentRepository.getStringAgentsOrderedByNameFromRoom()
+    val stringAgentsOrderedByName = agentRepository.getStringAgentsOrderedByNameFromRoom(context)
 
-    /*
-    private val _propertiesStateFlow = MutableStateFlow(mutableListOf<Property>())
-    val propertiesStateFlow: StateFlow<MutableList<Property>> = _propertiesStateFlow.asStateFlow()
-
-    private val _addressesStateFlow = MutableStateFlow(mutableListOf<Address>())
-    val addressesStateFlow: StateFlow<MutableList<Address>> = _addressesStateFlow.asStateFlow()
-
-    private val _photosStateFlow = MutableStateFlow(mutableListOf<Photo>())
-    val photosStateFlow: StateFlow<MutableList<Photo>> = _photosStateFlow.asStateFlow()
-
-    private val _agentsStateFlow = MutableStateFlow(mutableListOf<Agent>())
-    val agentsStateFlow: StateFlow<MutableList<Agent>> = _agentsStateFlow.asStateFlow()
-
-    private val _typesStateFlow = MutableStateFlow(mutableListOf<Type>())
-    val typesStateFlow: StateFlow<MutableList<Type>> = _typesStateFlow.asStateFlow()
-
-    private val _poisStateFlow = MutableStateFlow(mutableListOf<Poi>())
-    val poisStateFlow: StateFlow<MutableList<Poi>> = _poisStateFlow.asStateFlow()
-
-    private val _propertyPoiJoinsStateFlow = MutableStateFlow(mutableListOf<PropertyPoiJoin>())
-    val propertyPoiJoinsStateFlow: StateFlow<MutableList<PropertyPoiJoin>> = _propertyPoiJoinsStateFlow.asStateFlow()
-
-    init {
-        viewModelScope.launch(IO) {
-            propertyRepository.getPropertiesFromRoom()
-                .collect { listOfProperties -> _propertiesStateFlow.value = listOfProperties }
-
-            addressRepository.getAddressesFromRoom()
-                .collect { listOfAddresses -> _addressesStateFlow.value = listOfAddresses }
-
-            photoRepository.getPhotosFromRoom()
-                .collect { listOfPhotos -> _photosStateFlow.value = listOfPhotos }
-
-            agentRepository.getAgentsFromRoom()
-                .collect { listOfAgents -> _agentsStateFlow.value = listOfAgents }
-
-            typeRepository.getTypesFromRoom()
-                .collect { listOfTypes -> _typesStateFlow.value = listOfTypes }
-
-            poiRepository.getPoisFromRoom()
-                .collect { listOfPois -> _poisStateFlow.value = listOfPois }
-
-            propertyPoiJoinRepository.getPropertyPoiJoinsFromRoom()
-                .collect { listOfPropertyPoiJoins -> _propertyPoiJoinsStateFlow.value = listOfPropertyPoiJoins }
-        }
-    }
-    */
-
-    /***/
+    /**/
 
 
     /**
@@ -123,7 +71,7 @@ class AppViewModel(
     /***/
 
 
-    /** TopBar */
+    /* TopBar */
 
     fun menuIcon(currentScreen: String?) = if (
         currentScreen == EditDetail.routeWithArgs ||
@@ -148,11 +96,7 @@ class AppViewModel(
         }
     }
 
-    /***/
-
-
-
-
+    /**/
 
 }
 

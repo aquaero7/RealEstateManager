@@ -10,7 +10,9 @@ data class Type(
     val typeId: String,
 )
 
-/** These Enum keys should be set inside string resource file for formatted display and translation **/
+/**
+ * For formatted display and translation, these keys should be set in the string resources files.
+ */
 enum class TypeEnum(val key: String) {
     UNASSIGNED(key = "_unassigned_"),
     FLAT(key = "flat"),
@@ -34,5 +36,3 @@ val TYPE_PREPOPULATION_DATA = listOf(
     Type(TypeEnum.CASTLE.key),
     Type(TypeEnum.HOSTEL.key),
 ).sortedBy { it.typeId }
-
-val CACHE_TYPE = Type(CACHE_TYPE_ID_VALUE)

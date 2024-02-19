@@ -19,10 +19,8 @@ import kotlinx.coroutines.withContext
 
 class PropertyRepository(private val propertyDao: PropertyDao) {
 
-    private val context: Context by lazy { ApplicationRoot.getContext() }
 
-
-    /** Room: Database CRUD */
+    /* Room: Database CRUD */
 
     suspend fun upsertPropertyInRoom(property: Property): Long {
         return withContext(IO) {
@@ -46,7 +44,7 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
         return propertyDao.getPropertiesOrderedByRegistrationDate()
     }
 
-    /***/
+    /**/
 
 
     fun propertyFromId(propertyId: Long, properties: MutableList<Property>): Property? {
@@ -54,7 +52,7 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
     }
 
 
-    /** FAKE PROPERTIES */
+    /* FAKE PROPERTIES */
     /*
     private val loremIpsum: String = LoremIpsum(300).values.first()
 

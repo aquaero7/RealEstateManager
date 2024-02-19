@@ -14,10 +14,8 @@ import kotlinx.coroutines.withContext
 
 class AgentRepository(private val agentDao: AgentDao) {
 
-    private val context: Context by lazy { ApplicationRoot.getContext() }
 
-
-    /** Room: Database CRUD */
+    /* Room: Database CRUD */
 
     suspend fun upsertAgentInRoom(agent: Agent) {
         withContext(Dispatchers.IO) {
@@ -48,7 +46,7 @@ class AgentRepository(private val agentDao: AgentDao) {
     }
 
     @SuppressLint("DiscouragedApi")
-    fun getStringAgentsFromRoom(): Flow<MutableList<String>> {
+    fun getStringAgentsFromRoom(context: Context): Flow<MutableList<String>> {
         return agentDao.getAgents()
             .map { agents ->
                 agents.map {
@@ -68,7 +66,7 @@ class AgentRepository(private val agentDao: AgentDao) {
     }
 
     @SuppressLint("DiscouragedApi")
-    fun getStringAgentsOrderedByNameFromRoom(): Flow<MutableList<String>> {
+    fun getStringAgentsOrderedByNameFromRoom(context: Context): Flow<MutableList<String>> {
         return agentDao.getAgentsOrderedByName()
             .map { agents ->
                 agents.map {
@@ -87,7 +85,7 @@ class AgentRepository(private val agentDao: AgentDao) {
             }
     }
 
-    /***/
+    /**/
 
 
     fun agentFromId(agentId: Long, agents: MutableList<Agent>): Agent? {
@@ -107,7 +105,7 @@ class AgentRepository(private val agentDao: AgentDao) {
 
 
 
-    /** FAKE AGENTS */
+    /* FAKE AGENTS */
     /*
     val fakeAgents = listOf(
         Agent(

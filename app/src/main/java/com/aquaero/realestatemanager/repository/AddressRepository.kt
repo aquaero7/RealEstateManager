@@ -17,10 +17,8 @@ import kotlinx.coroutines.withContext
 
 class AddressRepository(private val addressDao: AddressDao) {
 
-    private val context: Context by lazy { ApplicationRoot.getContext() }
 
-
-    /** Room: Database CRUD */
+    /* Room: Database CRUD */
 
     suspend fun upsertAddressInRoom(address: Address): Long {
         return withContext(Dispatchers.IO) {
@@ -50,7 +48,7 @@ class AddressRepository(private val addressDao: AddressDao) {
         return addressDao.getAddressesOrderedByCity()
     }
 
-    /***/
+    /**/
 
 
     private fun addressFromId(addressId: Long, addresses: MutableList<Address>): Address? {
@@ -82,7 +80,7 @@ class AddressRepository(private val addressDao: AddressDao) {
 
 
 
-    /** FAKE ADDRESSES */
+    /* FAKE ADDRESSES */
     /*
     val fakeAddresses = listOf(
         Address(

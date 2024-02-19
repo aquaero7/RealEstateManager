@@ -15,7 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
-val context by lazy { ApplicationRoot.getContext() }
 
 /**
  * Contract for information needed on every navigation destination
@@ -23,59 +22,56 @@ val context by lazy { ApplicationRoot.getContext() }
 interface AppDestination {
     val icon: ImageVector
     val route: String
-    val label: String
+    val labelResId: Int
 }
 
-/**
-* App navigation destinations
-*/
 
-const val propertyKey = "single_property"
+/* App navigation destinations */
 
 object ListAndDetail: AppDestination {
     override val icon = Icons.AutoMirrored.Filled.ViewList
-    override val route = "list"
-    override val label = context.getString(R.string.list)
+    override val route = AppRoutes.LIST.value
+    override val labelResId = R.string.list
     val routeWithArgs = "$route/{$propertyKey}"
     val arguments = listOf(navArgument(propertyKey) { type = NavType.StringType })
 }
 
 object GeolocMap: AppDestination {
     override val icon = Icons.Filled.Map
-    override val route = "map"
-    override val label = context.getString(R.string.map)
+    override val route = AppRoutes.MAP.value
+    override val labelResId = R.string.map
 }
 
 object SearchCriteria: AppDestination {
     override val icon = Icons.AutoMirrored.Filled.ManageSearch
-    override val route = "search_criteria"
-    override val label = context.getString(R.string.search_criteria)
+    override val route = AppRoutes.SEARCH.value
+    override val labelResId = R.string.search_criteria
 }
 
 object Loan: AppDestination {
     override val icon = Icons.Filled.AccountBalance
-    override val route = "loan"
-    override val label = context.getString(R.string.loan)
+    override val route = AppRoutes.LOAN.value
+    override val labelResId = R.string.loan
 }
 
-// Destination not displayed in the bottom TabRow
+/* Destination not displayed in the bottom TabRow */
 object Detail: AppDestination {
     override val icon = Icons.Filled.Details
-    override val route = "detail"
-    override val label = context.getString(R.string.detail)
+    override val route = AppRoutes.DETAIL.value
+    override val labelResId = R.string.detail
     val routeWithArgs = "$route/{$propertyKey}"
     val arguments = listOf(navArgument(propertyKey) { type = NavType.StringType })
 }
 
-// Destination not displayed in the bottom TabRow
+/* Destination not displayed in the bottom TabRow */
 object EditDetail: AppDestination {
     override val icon = Icons.Filled.EditNote
-    override val route ="edit_detail"
-    override val label = context.getString(R.string.edit_detail)
+    override val route = AppRoutes.EDIT.value
+    override val labelResId = R.string.edit_detail
     val routeWithArgs = "${route}/{$propertyKey}"
     val arguments = listOf(navArgument(propertyKey) { type = NavType.StringType })
 }
 
 
-// Screens displayed in the bottom TabRow
+/* Screens displayed in the bottom TabRow */
 val tabRowScreens = listOf(ListAndDetail, GeolocMap, SearchCriteria, Loan)

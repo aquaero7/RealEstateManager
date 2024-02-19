@@ -1,11 +1,14 @@
 package com.aquaero.realestatemanager.model
 
+import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.aquaero.realestatemanager.CACHE_LONG_ID_VALUE
 import com.aquaero.realestatemanager.CACHE_NULLABLE_VALUE
 import java.text.Normalizer
+import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KParameter
+import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.primaryConstructor
@@ -15,10 +18,9 @@ import kotlin.reflect.jvm.javaField
 data class Address(
     /*
      * Warning!
-     * Because of the use of functions belonging to this class,
-     * 'addressId' must always be the first property in the class (index 0),
-     * 'latitude' must be set at index 8, and 'longitude' must be set at index 9,
-     * otherwise, the code of these functions must be updated
+     * Due to the use of functions belonging to this class,
+     * be sure to update their code if the name of the properties
+     * 'addressId', 'latitude' or 'longitude' changes
      */
     @PrimaryKey(autoGenerate = true)
     var addressId: Long = 0,
@@ -73,10 +75,30 @@ data class Address(
 
     /**
      * Returns true if the value of all class properties in the instance,
-     * except the id, latitude and longitude (identified by their index) is null or blank.
+     * excluding the id, latitude and longitude (identified by their name), is null or blank.
      * Otherwise returns false.
      */
     fun isNullOrBlank(): Boolean {
+        /*
+         * Warning!
+         * If the name of the properties used in this function changes in the constructor,
+         * be sure to update it
+         */
+
+
+        // TODO: Log to delete after test
+        Log.w("Address-I", this::class.memberProperties
+            .filter { it.name !in listOf("addressId", "latitude", "longitude") }
+            .all { it.call(this) == null || it.call(this).toString().isBlank() }.toString())
+        //
+
+
+        return this::class.memberProperties
+            .filter { it.name !in listOf("addressId", "latitude", "longitude") }
+            .all { it.call(this) == null || it.call(this).toString().isBlank() }
+
+
+        /*  // TODO: To be deleted after test
         var areAllValuesNullOrBlank = true
         // Scan all properties of the class except id at index 0
         this::class.memberProperties.forEachIndexed { index, property ->
@@ -92,13 +114,34 @@ data class Address(
             }
         }
         return areAllValuesNullOrBlank
+        */
     }
 
     /**
-     * Checks if all class properties (excepted the id at index 0) of two instances of Address have the same values.
-     * Returns false if at least one class property have a different values. Otherwise, returns true.
+     * Checks if all class properties (excluding the id identified by its name)
+     * of two instances have the same value or not.
+     * Returns true if at least one class property has different values. Otherwise, returns false.
      */
     fun hasDifferencesWith(other: Address): Boolean {
+        /*
+         * Warning!
+         * If the name of the properties used in this function changes in the constructor,
+         * be sure to update it
+         */
+
+        // TODO: Log to delete after test
+        Log.w("Address-H", this::class.memberProperties
+            .filter { it.name != "addressId" }
+            .any { it.call(this) != it.call(other) }.toString())
+        //
+
+
+        return this::class.memberProperties
+            .filter { it.name != "addressId" }
+            .any { it.call(this) != it.call(other) }
+
+
+        /*  // TODO: To be deleted after test
         val properties = Address::class.members
             .filterIsInstance<KProperty1<Address, *>>()
             .filterIndexed { index, _ -> index != 0 }
@@ -106,13 +149,39 @@ data class Address(
             if (property.get(this) != property.get(other)) return true
         }
         return false
+        */
     }
 
     /**
-     * Set to null the blank value of all class properties in the instance,
-     * except the id (identified by its index).
+     * Set to null all blank values of the class properties in the instance,
+     * excluding the id (identified by its name).
      */
     fun replaceBlankValuesWithNull(): Address {
+        /*
+         * Warning!
+         * If the name of the properties used in this function changes in the constructor,
+         * be sure to update it
+         */
+
+        this::class.memberProperties
+            // Filter properties to exclude the id and those already null
+            .filter { it.name != "addressId" && it.call(this) != null }
+            .forEach { property ->
+                // Check for blank value and replace with null
+                if (property.call(this).toString().isBlank()) {
+                    property.javaField?.isAccessible = true
+                    property.javaField?.set(this, null)
+                }
+            }
+
+        // TODO: Log to delete after test
+        Log.w("Address-R", "${this} - ${this.latitude} - ${this.longitude}")
+        //
+
+        return this
+
+
+        /*  // TODO: To be deleted after test
         // Scan all properties of the class except id at index 0
         this::class.memberProperties.forEachIndexed { index, property ->
             if (index != 0) {
@@ -127,14 +196,37 @@ data class Address(
             }
         }
         return this
+        */
     }
 
     /**
-     * Creates a new instance of the object without its id
-     * (or with its id set to 0) so that it is autogenerated by Room.
-     * The id is identified by its index.
+     * Creates a new instance of the object without its id (or with its id set to 0),
+     * so that it will be autogenerated by Room. The id is identified by its name.
      */
     fun withoutId(): Address {
+        /*
+         * Warning!
+         * If the name of the properties used in this function changes in the constructor,
+         * be sure to update it
+         */
+
+        // Get the primary constructor
+        val constructor = this::class.primaryConstructor
+            ?: error("Primary constructor not found for ${this::class.simpleName}")
+        // Fill the map with parameter values, excluding "addressId"
+        val argsMap = constructor.parameters
+            .filter { it.name != "addressId" }
+            .associateWith { parameter -> this::class.memberProperties.first { it.name == parameter.name }.call(this) }
+
+        // TODO: Log to delete after test
+        Log.w("Address-W", "${constructor.callBy(argsMap)} - ${constructor.callBy(argsMap).latitude} - ${constructor.callBy(argsMap).longitude}")
+        //
+
+        // Create and return the new instance
+        return constructor.callBy(argsMap)
+
+
+        /*  // TODO: To be deleted after test
         // Get the primary constructor
         val constructor = this::class.primaryConstructor
             ?: error("Primary constructor not found for ${this::class.simpleName}")
@@ -145,27 +237,28 @@ data class Address(
         // Fills the map with the values of the parameters of the constructor, excepted the first one (addressId)
         constructor.parameters.forEachIndexed { index, kParameter ->
 
-            // TODO: Option 1   Choose one of them
+            // Option 1   Choose one of them
             // Exclude the addressId value and get the other values from the address instance
             if (index != 0) {
                 val value = this::class.members.first { it.name == kParameter.name }.call(this)
                 argsMap[kParameter] = value
             }
 
-            /*
-            // TODO: Option 2   Choose one of them
+            // Option 2   Choose one of them
             // Set the addressId value to 0 and get the other values from the address instance
-            val value = if (index == 0) 0 else this::class.members.first { it.name == kParameter.name }.call(this)
-            argsMap[kParameter] = value
-            */
+//            val value = if (index == 0) 0 else this::class.members.first { it.name == kParameter.name }.call(this)
+//            argsMap[kParameter] = value
 
         }
 
         // Creates and returns the new instance created with the constructor and the values from the map
         return constructor.callBy(argsMap)
+        */
+
     }
 
 }
+
 
 val ADDRESS_PREPOPULATION_DATA = listOf(
     Address(

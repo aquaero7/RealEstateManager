@@ -13,6 +13,7 @@ import com.aquaero.realestatemanager.model.PropertyPoiJoin
 import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.AgentRepository
+import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.PoiRepository
 import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
@@ -28,17 +29,11 @@ class ListViewModel(
     private val typeRepository : TypeRepository,
     private val poiRepository: PoiRepository,
     private val propertyPoiJoinRepository: PropertyPoiJoinRepository,
+    private val locationRepository: LocationRepository,
 ) : ViewModel() {
-    private val context: Context by lazy { ApplicationRoot.getContext() }
-
-
-    /** Room */
-
-    /***/
-
 
     fun checkForConnection(connection: ConnectionState): Boolean {
-        return connection === ConnectionState.Available
+        return locationRepository.checkForConnection(connection)
     }
 
     fun propertyFromId(propertyId: Long, properties: MutableList<Property>): Property? {
@@ -65,12 +60,12 @@ class ListViewModel(
         return addressRepository.stringAddress(addressId = addressId, addresses = addresses)
     }
 
-    fun stringLatitude(addressId: Long, addresses: MutableList<Address>): String {
+    fun stringLatitude(addressId: Long, addresses: MutableList<Address>, context: Context): String {
         val result = addressRepository.stringLatitude(addressId = addressId, addresses = addresses)
         return result.ifEmpty { context.getString(R.string.unavailable) }
     }
 
-    fun stringLongitude(addressId: Long, addresses: MutableList<Address>): String {
+    fun stringLongitude(addressId: Long, addresses: MutableList<Address>, context: Context): String {
         val result = addressRepository.stringLongitude(addressId = addressId, addresses = addresses)
         return result.ifEmpty { context.getString(R.string.unavailable) }
     }
@@ -87,6 +82,11 @@ class ListViewModel(
                     .mapTo(this) { join -> poiFromId(poiId = join.poiId, pois = pois)!! }
             }
         }
+    }
+
+    fun itemType(typeId: String, types: MutableList<Type>, stringTypes: MutableList<String>): String {
+        val type = types.find { it.typeId == typeId }
+        return type?.let { if (stringTypes.isNotEmpty()) stringTypes.elementAt(types.indexOf(it)) else "" } ?: ""
     }
 
 }

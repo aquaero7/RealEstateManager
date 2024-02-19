@@ -1,12 +1,29 @@
 package com.aquaero.realestatemanager
 
 import android.Manifest
+import android.content.Context
 import android.location.Location
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.model.TypeEnum
 import com.aquaero.realestatemanager.ui.theme.PurpleGrey40
 import com.aquaero.realestatemanager.ui.theme.PurpleGrey80
 import com.aquaero.realestatemanager.ui.theme.White
+
+// AppDestinations
+const val propertyKey = "single_property"
+
+/**
+ * Navigation routes.
+ */
+enum class AppRoutes(val value: String) {
+    LIST(value = "list"),
+    MAP(value = "map"),
+    SEARCH(value = "search_criteria"),
+    LOAN(value = "loan"),
+    DETAIL(value = "detail"),
+    EDIT(value = "edit_detail"),
+}
+
 
 // AppTabRow
 val TAB_HEIGHT = 64.dp
@@ -15,11 +32,15 @@ const val TAB_FADE_OUT_ANIMATION_DURATION = 100
 const val TAB_FADE_IN_ANIMATION_DELAY = 100
 const val INACTIVE_TAB_OPACITY = 0.60f
 
-// Content type (Content shown depending on size and windows state of device)
+// Content types
+/**
+ * Content shown depending on size and window state of device.
+ */
 enum class AppContentType {
     SCREEN_ONLY,
     SCREEN_WITH_DETAIL,
 }
+
 
 // Map
 const val MAPS_API_KEY = BuildConfig.MAPS_API_KEY
@@ -33,6 +54,7 @@ val LOCATION_PERMISSIONS = listOf(
 )
 val DEFAULT_LOCATION = Location("").apply { latitude = 0.0 ; longitude = 0.0 }
 
+
 // Static Map
 const val SM_URL = "https://maps.googleapis.com/maps/api/staticmap?"
 const val SM_SIZE = "size=400x400"
@@ -42,14 +64,13 @@ const val SM_MARKER_COLOR = "&markers=color:red%7C"
 const val SM_KEY = "&key=$MAPS_API_KEY"
 // const val SM_KEY = "&key=${BuildConfig.MAPS_API_KEY}"
 
-// Item for lazyList, lazyRow and EditScreen if the property has no photo
-// val NO_PHOTO = Photo(0, Uri.EMPTY, "")
 
 // DatePicker colors
 val DP_TEXT_COLOR = White
 val DP_HEADERS_COLOR = White
 val DP_CONTENT_COLOR = PurpleGrey80
 val DP_CONTAINER_COLOR = PurpleGrey40
+
 
 // Miscellaneous
 const val NEW_ITEM_ID = 0L
@@ -61,6 +82,7 @@ const val DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm"
 const val DATE_LENGTH = 10 // Equals to "####-##-##".count
 const val RATE_OF_DOLLAR_IN_EURO = 0.812
 
+
 // Cache values
 const val CACHE_LONG_ID_VALUE = 0L
 const val CACHE_EMPTY_STRING_VALUE = ""
@@ -68,8 +90,15 @@ const val CACHE_AGENT_ID_VALUE = UNASSIGNED_ID
 val CACHE_TYPE_ID_VALUE = TypeEnum.UNASSIGNED.key
 val CACHE_NULLABLE_VALUE = null
 
+
+// Dropdown menus
+/**
+ * Classes whose instances are displayed in dropdown menus.
+ */
 enum class DropdownMenuCategory {
     TYPE,
     AGENT,
 }
+
+
 

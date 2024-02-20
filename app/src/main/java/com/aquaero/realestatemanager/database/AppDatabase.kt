@@ -13,19 +13,16 @@ import com.aquaero.realestatemanager.database.dao.PoiDao
 import com.aquaero.realestatemanager.database.dao.PropertyDao
 import com.aquaero.realestatemanager.database.dao.PropertyPoiJoinDao
 import com.aquaero.realestatemanager.database.dao.TypeDao
-import com.aquaero.realestatemanager.model.ADDRESS_PREPOPULATION_DATA
 import com.aquaero.realestatemanager.model.AGENT_PREPOPULATION_DATA
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
-import com.aquaero.realestatemanager.model.PHOTO_PREPOPULATION_DATA
 import com.aquaero.realestatemanager.model.POI_PREPOPULATION_DATA
-import com.aquaero.realestatemanager.model.PROPERTY_PREPOPULATION_DATA
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
-import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.model.TYPE_PREPOPULATION_DATA
+import com.aquaero.realestatemanager.model.Type
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -66,16 +63,14 @@ abstract class AppDatabase : RoomDatabase() {
                 .addCallback(object : Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
-
-                        // Executors.newSingleThreadExecutor().execute {
                         CoroutineScope(Dispatchers.IO).launch {
-//                            getInstance().addressDao.prepopulateWithAddresses(ADDRESS_PREPOPULATION_DATA)
+//                            getInstance().addressDao.prepopulateWithAddresses(ADDRESS_PREPOPULATION_DATA)                           // For demo only
                             getInstance().agentDao.prepopulateWithAgents(AGENT_PREPOPULATION_DATA)
                             getInstance().typeDao.prepopulateWithTypes(TYPE_PREPOPULATION_DATA)
                             getInstance().poiDao.prepopulateWithPois(POI_PREPOPULATION_DATA)
-//                            getInstance().propertyDao.prepopulateWithProperties(PROPERTY_PREPOPULATION_DATA)
-//                            getInstance().photoDao.prepopulateWithPhotos(PHOTO_PREPOPULATION_DATA)
-                            // getInstance().propertyPoiJoinDao.prepopulateWithPropertyPoiJoins(PROPERTY_POI_JOIN_PREPOPULATION_DATA)
+//                            getInstance().propertyDao.prepopulateWithProperties(PROPERTY_PREPOPULATION_DATA)                        // For demo only
+//                            getInstance().photoDao.prepopulateWithPhotos(PHOTO_PREPOPULATION_DATA)                                  // For demo only
+//                            getInstance().propertyPoiJoinDao.prepopulateWithPropertyPoiJoins(PROPERTY_POI_JOIN_PREPOPULATION_DATA)  // For demo only
                         }
                     }
                 })

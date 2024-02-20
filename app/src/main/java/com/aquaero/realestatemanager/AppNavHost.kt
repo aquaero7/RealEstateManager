@@ -451,7 +451,7 @@ fun AppNavHost(
                 photoToAddUri = Uri.EMPTY
             }
             val onSavePhotoButtonClick: (String) -> Unit = {
-                editViewModel.onSavePhotoButtonClick(uri = photoToAddUri, label = it)
+                editViewModel.onSavePhotoButtonClick(uri = photoToAddUri, label = it.ifBlank { null })
                 photoToAddUri = Uri.EMPTY
             }
             val onEditPhotoMenuItemClick: (Photo) -> Unit = { photo ->

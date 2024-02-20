@@ -262,7 +262,7 @@ class EditViewModel(
         if (isSelected) cacheItemPois.add(Poi(poiItem)) else cacheItemPois.remove(Poi(poiItem))
     }
 
-    fun onSavePhotoButtonClick(uri: Uri, label: String) {
+    fun onSavePhotoButtonClick(uri: Uri, label: String?) {
         // Check if the photo already exists
         val photo: Photo? = _cacheItemPhotos.find { it.uri == uri.toString() }
         val alreadyExists: Boolean = (photo != null)
@@ -335,7 +335,11 @@ class EditViewModel(
                 Log.w("EditViewModel", "Room's update jobs ended with success !")
                 clearCache()
                 withContext(Dispatchers.Main) {
-                    toastMessage(context = context, msgResId1 = R.string.recorded, msgResId2 = R.string.property_added)
+                    toastMessage(
+                        context = context,
+                        msgResId1 = R.string.recorded,
+                        msgResId2 = if (newPropertyIdFromRoom > 0) R.string.property_added else null
+                    )
                     navController.popBackStack()
                 }
             } catch (e: Exception) {

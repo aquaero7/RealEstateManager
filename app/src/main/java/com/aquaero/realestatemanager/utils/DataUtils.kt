@@ -60,6 +60,9 @@ fun ellipsis(): String {
     return ellipsisChar.toString()
 }
 
+/**
+ * Creates a random and negative Long value between -9999 and -1000, as a provisional id.
+ */
 val randomProvisionalId: () -> Long = {
     (-9999..-1000).random().toLong()
 }

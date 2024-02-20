@@ -1,7 +1,5 @@
 package com.aquaero.realestatemanager.repository
 
-import android.content.Context
-import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.database.dao.PoiDao
 import com.aquaero.realestatemanager.model.Poi
 import kotlinx.coroutines.Dispatchers

@@ -9,10 +9,8 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.BuildConfig
 import com.aquaero.realestatemanager.database.dao.PhotoDao
-import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -87,10 +85,10 @@ class PhotoRepository(private val photoDao: PhotoDao) {
     }
 
     fun getPhotoUri(context: Context): Uri {
-        val file = context.createImageFile()
         return FileProvider.getUriForFile(
             Objects.requireNonNull(context),
-            BuildConfig.APPLICATION_ID + ".provider", file
+            BuildConfig.APPLICATION_ID + ".provider",
+            context.createImageFile()
         )
     }
 
@@ -121,70 +119,6 @@ class PhotoRepository(private val photoDao: PhotoDao) {
     fun itemPhotos(propertyId: Long, photos: MutableList<Photo>): MutableList<Photo> {
         return photos.filter { it.propertyId == propertyId }.toMutableList()
     }
-
-
-
-    /* FAKE PHOTOS */
-    /*
-    val fakePhotos = listOf(
-        Photo(
-            photoId = -1,
-            uri = "",  // "U1111111"
-            label = "L1111111",
-            propertyId = -1,
-        ),
-        Photo(
-            photoId = -2,
-            uri = "",  // "U2222222"
-            label = "L2222222",
-            propertyId = -2,
-        ),
-        Photo(
-            photoId = -3,
-            uri = "",  // "U3333333"
-            label = "L3333333",
-            propertyId = -3,
-        ),
-        Photo(
-            photoId = -4,
-            uri = "",  // "U4444444"
-            label = "L4444444",
-            propertyId = -4,
-        ),
-        Photo(
-            photoId = -5,
-            uri = "",  // "U5555555"
-            label = "L5555555",
-            propertyId = -5,
-        ),
-        Photo(
-            photoId = -6,
-            uri = "",  // "U6666666"
-            label = "L6666666",
-            propertyId = -6,
-        ),
-        Photo(
-            photoId = -7,
-            uri = "",  // "U7777777"
-            label = "L7777777",
-            propertyId = -7,
-        ),
-        Photo(
-            photoId = -8,
-            uri = "",  // "U8888888"
-            label = "L1888888",
-            propertyId = -1,
-        ),
-        Photo(
-            photoId = -9,
-            uri = "",  // "U9999999"
-            label = "L2999999",
-            propertyId = -2,
-        ),
-
-    )
-    */
-
 
 }
 

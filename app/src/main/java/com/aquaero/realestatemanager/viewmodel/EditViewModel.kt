@@ -52,6 +52,7 @@ class EditViewModel(
 ) : ViewModel() {
     private val unassignedResId = R.string._unassigned_
     private var unassigned = ""
+    private var isNewProperty = false
     private var newPropertyIdFromRoom by Delegates.notNull<Long>()
     private var newAddressIdFromRoom by Delegates.notNull<Long>()
     private var isInternetAvailable = false
@@ -338,7 +339,7 @@ class EditViewModel(
                     toastMessage(
                         context = context,
                         msgResId1 = R.string.recorded,
-                        msgResId2 = if (newPropertyIdFromRoom > 0) R.string.property_added else null
+                        msgResId2 = if (isNewProperty) R.string.property_added else null
                     )
                     navController.popBackStack()
                 }
@@ -406,8 +407,10 @@ class EditViewModel(
                 }
                 // ... then we update database and get the Room's new address id in case of creation...
                 newAddressIdFromRoom = addressRepository.upsertAddressInRoom(addressToUpsert)
+                Log.w("EditViewModel", "newAddressIdFromRoom: $newAddressIdFromRoom")
                 // ... and, if the address has been created, we set its id in cacheAddress and cacheProperty,
-                if (newAddressIdFromRoom > 0) {
+                if (cacheAddress.addressId == CACHE_ADDRESS.addressId && newAddressIdFromRoom > 0) {
+                    Log.w("EditViewModel", "The address is new")                                    // TODO: To be deleted
                     cacheAddress.addressId = newAddressIdFromRoom
                     cacheProperty.addressId = newAddressIdFromRoom
                 }
@@ -416,7 +419,8 @@ class EditViewModel(
     }
 
     private suspend fun upDateRoomWithProperty() {
-        val propertyToUpsert = if (cacheProperty.propertyId == CACHE_PROPERTY.propertyId) {
+        isNewProperty = cacheProperty.propertyId == CACHE_PROPERTY.propertyId
+        val propertyToUpsert = if (isNewProperty) {
             // If the property is not known in the database,
             // we set blank fields to null and removes the default cache propertyId
             cacheProperty.replaceBlankValuesWithNull().withoutId()
@@ -427,8 +431,10 @@ class EditViewModel(
 
         // We update database and get the Room's new property id in case of creation...
         newPropertyIdFromRoom = propertyRepository.upsertPropertyInRoom(propertyToUpsert)
+        Log.w("EditViewModel", "isNewProperty: $isNewProperty / newPropertyIdFromRoom: $newPropertyIdFromRoom")
+
         // If the property has been created, we set its id in cacheProperty and cacheItemPhotos
-        if (newPropertyIdFromRoom > 0) {
+        if (isNewProperty && newPropertyIdFromRoom > 0) {
             cacheProperty.propertyId = newPropertyIdFromRoom
             _cacheItemPhotos.forEach { it.propertyId = newPropertyIdFromRoom }
         }

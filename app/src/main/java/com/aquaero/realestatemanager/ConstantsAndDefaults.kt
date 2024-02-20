@@ -9,8 +9,19 @@ import com.aquaero.realestatemanager.ui.theme.PurpleGrey40
 import com.aquaero.realestatemanager.ui.theme.PurpleGrey80
 import com.aquaero.realestatemanager.ui.theme.White
 
+// Content types
+/**
+ * Content shown depending on size and window state of device.
+ */
+enum class AppContentType {
+    SCREEN_ONLY,
+    SCREEN_WITH_DETAIL,
+}
+
+
 // AppDestinations
 const val propertyKey = "single_property"
+
 
 /**
  * Navigation routes.
@@ -32,13 +43,14 @@ const val TAB_FADE_OUT_ANIMATION_DURATION = 100
 const val TAB_FADE_IN_ANIMATION_DELAY = 100
 const val INACTIVE_TAB_OPACITY = 0.60f
 
-// Content types
+
+// Dropdown menus
 /**
- * Content shown depending on size and window state of device.
+ * Classes whose instances are displayed in dropdown menus.
  */
-enum class AppContentType {
-    SCREEN_ONLY,
-    SCREEN_WITH_DETAIL,
+enum class DropdownMenuCategory {
+    TYPE,
+    AGENT,
 }
 
 
@@ -63,6 +75,16 @@ const val SM_TYPE = "&maptype=hybrid"
 const val SM_MARKER_COLOR = "&markers=color:red%7C"
 const val SM_KEY = "&key=$MAPS_API_KEY"
 // const val SM_KEY = "&key=${BuildConfig.MAPS_API_KEY}"
+
+
+// LatLng
+/**
+ * LatLng items.
+ */
+enum class LatLngItem {
+    LATITUDE,
+    LONGITUDE,
+}
 
 
 // DatePicker colors
@@ -91,14 +113,7 @@ val CACHE_TYPE_ID_VALUE = TypeEnum.UNASSIGNED.key
 val CACHE_NULLABLE_VALUE = null
 
 
-// Dropdown menus
-/**
- * Classes whose instances are displayed in dropdown menus.
- */
-enum class DropdownMenuCategory {
-    TYPE,
-    AGENT,
-}
+
 
 
 

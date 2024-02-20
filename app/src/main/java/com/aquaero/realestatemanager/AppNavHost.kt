@@ -4,12 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -131,12 +129,16 @@ fun AppNavHost(
                 val stringAddress = property?.addressId?.let { addressId ->
                     listViewModel.stringAddress(addressId = addressId, addresses = addresses)
                 } ?: ""
-                val stringLatitude = property?.addressId?.let { addressId ->
-                    listViewModel.stringLatitude(addressId = addressId, addresses = addresses, context = context)
-                } ?: ""
-                val stringLongitude = property?.addressId?.let { addressId ->
-                    listViewModel.stringLongitude(addressId = addressId, addresses = addresses, context = context)
-                } ?: ""
+                fun stringLatLngItem(latLngItem: String): String {
+                    return property?.addressId?.let { addressId ->
+                        listViewModel.stringLatLngItem(
+                            addressId = addressId,
+                            addresses = addresses,
+                            latLngItem = latLngItem,
+                            context = context
+                        )
+                    } ?: ""
+                }
                 val thumbnailUrl = property?.addressId?.let { addressId ->
                     if (addresses.isNotEmpty()) listViewModel.thumbnailUrl(addressId = addressId, addresses = addresses) else ""
                 } ?: ""
@@ -163,8 +165,8 @@ fun AppNavHost(
                     stringType = stringType,
                     stringAgent = stringAgent,
                     stringAddress = stringAddress,
-                    stringLatitude = stringLatitude,
-                    stringLongitude = stringLongitude,
+                    stringLatitude = stringLatLngItem(LatLngItem.LATITUDE.name),
+                    stringLongitude = stringLatLngItem(LatLngItem.LONGITUDE.name),
                     thumbnailUrl = thumbnailUrl,
                     networkAvailable = networkAvailable,
                     onBackPressed = onBackPressed,
@@ -230,8 +232,6 @@ fun AppNavHost(
             arguments = Detail.arguments
         ) { navBackStackEntry ->
             val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)!!.toLong()
-
-//            val property = detailViewModel.propertyFromId(propertyId = propertyId, properties = properties)
             val property = if (propertyId != NEW_ITEM_ID && properties.isNotEmpty()) {
                 detailViewModel.propertyFromId(propertyId = propertyId, properties = properties) ?: properties[0]
             } else if (properties.isNotEmpty()) {
@@ -239,43 +239,29 @@ fun AppNavHost(
             } else {
                 CACHE_PROPERTY
             }
-
-
-
-
             val itemPhotos = detailViewModel.itemPhotos(propertyId = propertyId, photos = photos)
             val itemPois = detailViewModel.itemPois(
                 propertyId = propertyId, propertyPoiJoins = propertyPoiJoins, pois = pois,
             )
-            /*  // TODO: To be deleted
-            val stringType = property.let {
-                detailViewModel.stringType(
-                    typeId = it.typeId, types = types, stringTypes = stringTypes,
-                )
-            } ?: ""
-            */
             val stringType = detailViewModel.stringType(
                 typeId = property.typeId, types = types, stringTypes = stringTypes,
             )
-            /*  // TODO: To be deleted
-            val stringAgent = property.let {
-                detailViewModel.stringAgent(
-                    agentId = it.agentId, agents = agents, stringAgents = stringAgents,
-                )
-            } ?: ""
-            */
             val stringAgent = detailViewModel.stringAgent(
                 agentId = property.agentId, agents = agents, stringAgents = stringAgents,
             )
             val stringAddress = property.addressId?.let {
                 detailViewModel.stringAddress(addressId = it, addresses = addresses)
             } ?: ""
-            val stringLatitude = property.addressId?.let {
-                detailViewModel.stringLatitude(addressId = it, addresses = addresses, context = context)
-            } ?: ""
-            val stringLongitude = property.addressId?.let {
-                detailViewModel.stringLongitude(addressId = it, addresses = addresses, context = context)
-            } ?: ""
+            fun stringLatLngItem(latLngItem: String): String {
+                return property.addressId?.let {
+                    detailViewModel.stringLatLngItem(
+                        addressId = it,
+                        addresses = addresses,
+                        latLngItem = latLngItem,
+                        context = context
+                    )
+                } ?: ""
+            }
             val thumbnailUrl = property.addressId?.let {
                 if (addresses.isNotEmpty()) detailViewModel.thumbnailUrl(addressId = it, addresses = addresses) else ""
             } ?: ""
@@ -292,8 +278,8 @@ fun AppNavHost(
                 stringType = stringType,
                 stringAgent = stringAgent,
                 stringAddress = stringAddress,
-                stringLatitude = stringLatitude,
-                stringLongitude = stringLongitude,
+                stringLatitude = stringLatLngItem(LatLngItem.LATITUDE.name),
+                stringLongitude = stringLatLngItem(LatLngItem.LONGITUDE.name),
                 thumbnailUrl = thumbnailUrl,
                 networkAvailable = networkAvailable,
                 onBackPressed = onBackPressed,
@@ -318,17 +304,13 @@ fun AppNavHost(
             val stringAgent = property?.let {
                 editViewModel.stringAgent(agentId = it.agentId, agents = agents, stringAgents = stringAgents)
             }
-
-//            val address = addresses.find { it.addressId == property?.addressId }
             val address = property?.let {
                 editViewModel.address(property.addressId, addresses)
             }
-
             val itemPhotos = editViewModel.itemPhotos(propertyId = propertyId, photos = photos)
             val itemPois = editViewModel.itemPois(
                 propertyId = propertyId, propertyPoiJoins = propertyPoiJoins, pois = pois
             )
-
             val onDescriptionValueChange: (String) -> Unit = {
                 editViewModel.onDescriptionValueChange(value = it)
             }
@@ -387,7 +369,6 @@ fun AppNavHost(
             var buttonSavePhotoEnabled by remember { mutableStateOf(false) }
             var photoToAddUri by remember { mutableStateOf(Uri.EMPTY) }
             val painterResource = painterResource(id = R.drawable.baseline_add_a_photo_black_24)
-//            var painter by remember(photoToAddUri) { mutableStateOf(painterResource) }    // TODO: To be deleted
             var painter by remember { mutableStateOf(painterResource) }
 
             /**

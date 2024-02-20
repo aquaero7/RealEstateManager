@@ -2,7 +2,6 @@ package com.aquaero.realestatemanager.repository
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.database.dao.TypeDao
 import com.aquaero.realestatemanager.model.Type
 import kotlinx.coroutines.Dispatchers
@@ -69,10 +68,6 @@ class TypeRepository(private val typeDao: TypeDao) {
     }
 
     fun stringType(typeId: String, types: MutableList<Type>, stringTypes: MutableList<String>): String {
-        /*
-        val typeIndex = types.indexOf(types.first { it.typeId == typeId })
-        return if (typeIndex != -1 && stringTypes.isNotEmpty()) stringTypes.elementAt(typeIndex) else typeId
-        */
         val typeIndex = types.indexOf(types.find { it.typeId == typeId } ?: 0)
         return if (typeIndex != -1 && stringTypes.isNotEmpty()) stringTypes.elementAt(typeIndex) else typeId
     }

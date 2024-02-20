@@ -58,7 +58,6 @@ class LocationRepository {
                             context, Manifest.permission.ACCESS_COARSE_LOCATION
                         ) != PackageManager.PERMISSION_GRANTED
                 )
-
         return locPermsGranted
     }
 
@@ -78,7 +77,6 @@ class LocationRepository {
             locationCallback,
             Looper.getMainLooper()
         )
-
         Log.w("LocationRepository", "Location updates started!")
     }
 
@@ -94,20 +92,18 @@ class LocationRepository {
     @SuppressLint("NewApi")
     suspend fun getLocationFromAddress(context: Context, strAddress: String?, internetAvailable: Boolean): LatLng? =
         suspendCoroutine { continuation ->
-            val coder = Geocoder(context)
             if (internetAvailable) {
-                coder.getFromLocationName(strAddress!!, 5,
+                Geocoder(context).getFromLocationName(strAddress!!, 5,
                     object : Geocoder.GeocodeListener {
                         override fun onGeocode(address: MutableList<Address>) {
                             val location: Address = address[0]
                             val latLng = LatLng(location.latitude, location.longitude)
                             continuation.resume(latLng)
-                            Log.w("Geocoder.getFromLocName", "LatLng: ${latLng.toString()}")
+                            Log.w("Geocoder.getFromLocName", "LatLng: $latLng")
                             Log.w("Geocoder.getFromLocName", "Locality: ${location.locality}")
                             Log.w("Geocoder.getFromLocName", "Latitude: ${location.latitude}")
                             Log.w("Geocoder.getFromLocName", "Longitude: ${location.longitude}")
                         }
-
                         override fun onError(errorMessage: String?) {
                             super.onError(errorMessage)
                             Log.w("Geocoder.getFromLocName", errorMessage.toString())

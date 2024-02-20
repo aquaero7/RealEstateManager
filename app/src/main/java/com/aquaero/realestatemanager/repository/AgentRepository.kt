@@ -2,8 +2,6 @@ package com.aquaero.realestatemanager.repository
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.aquaero.realestatemanager.ApplicationRoot
-import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.database.dao.AgentDao
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.AgentEnum
@@ -93,39 +91,10 @@ class AgentRepository(private val agentDao: AgentDao) {
     }
 
     fun stringAgent(agentId: Long, agents: MutableList<Agent>, stringAgents: MutableList<String>): String {
-        /*
-        val agent = agents.first { it.agentId == agentId }
-        val agentIndex = agents.indexOf(agent)
-        return if (agentIndex != -1 && stringAgents.isNotEmpty()) stringAgents.elementAt(agentIndex) else agent.toString()
-        */
         val agent = agents.find { it.agentId == agentId }
         val agentIndex = agent?.let { agents.indexOf(agent) } ?: 0
         return if (agentIndex != -1 && stringAgents.isNotEmpty()) stringAgents.elementAt(agentIndex) else agent.toString()
     }
-
-
-
-    /* FAKE AGENTS */
-    /*
-    val fakeAgents = listOf(
-        Agent(
-            agentId = -1,
-            firstName = "F1111111",
-            lastName = "N1111111",
-        ),
-        Agent(
-            agentId = -2,
-            firstName = "F2222222",
-            lastName = "N2222222",
-        ),
-        Agent(
-            agentId = -3,
-            firstName = "F3333333",
-            lastName = "N3333333",
-        ),
-    )
-    */
-
 
 }
 

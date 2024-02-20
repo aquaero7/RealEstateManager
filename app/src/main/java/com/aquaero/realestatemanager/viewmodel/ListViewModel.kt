@@ -2,7 +2,6 @@ package com.aquaero.realestatemanager.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
@@ -60,13 +59,17 @@ class ListViewModel(
         return addressRepository.stringAddress(addressId = addressId, addresses = addresses)
     }
 
-    fun stringLatitude(addressId: Long, addresses: MutableList<Address>, context: Context): String {
-        val result = addressRepository.stringLatitude(addressId = addressId, addresses = addresses)
-        return result.ifEmpty { context.getString(R.string.unavailable) }
-    }
-
-    fun stringLongitude(addressId: Long, addresses: MutableList<Address>, context: Context): String {
-        val result = addressRepository.stringLongitude(addressId = addressId, addresses = addresses)
+    fun stringLatLngItem(
+        addressId: Long,
+        addresses: MutableList<Address>,
+        latLngItem: String,
+        context: Context
+    ): String {
+        val result = addressRepository.stringLatLngItem(
+            addressId = addressId,
+            addresses = addresses,
+            latLngItem = latLngItem
+        )
         return result.ifEmpty { context.getString(R.string.unavailable) }
     }
 

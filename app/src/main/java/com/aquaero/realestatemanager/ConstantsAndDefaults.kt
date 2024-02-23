@@ -54,6 +54,29 @@ enum class DropdownMenuCategory {
 }
 
 
+// Edition fields
+/**
+ * Edition fields.
+ */
+enum class Field {
+    SURFACE,
+    ROOMS,
+    BATHROOMS,
+    BEDROOMS,
+    DESCRIPTION,
+    REGISTRATION_DATE,
+    SALE_DATE,
+    STREET_NUMBER,
+    STREET_NAME,
+    ADD_INFO,
+    CITY,
+    STATE,
+    ZIP_CODE,
+    COUNTRY,
+    PRICE,
+}
+
+
 // Map
 const val MAPS_API_KEY = BuildConfig.MAPS_API_KEY
 const val DEFAULT_ZOOM = 13F

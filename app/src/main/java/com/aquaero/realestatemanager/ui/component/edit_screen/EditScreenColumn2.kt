@@ -8,9 +8,9 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.aquaero.realestatemanager.DropdownMenuCategory
+import com.aquaero.realestatemanager.Field
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
-import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Property
 
 @Composable
@@ -19,16 +19,8 @@ fun EditScreenColumn2(
     stringAgent: String?,
     property: Property?,
     address: Address?,
-    onStreetNumberValueChange: (String) -> Unit,
-    onStreetNameValueChange: (String) -> Unit,
-    onAddInfoValueChange: (String) -> Unit,
-    onCityValueChange: (String) -> Unit,
-    onStateValueChange: (String) -> Unit,
-    onZipCodeValueChange: (String) -> Unit,
-    onCountryValueChange: (String) -> Unit,
+    onFieldValueChange: (String, String) -> Unit,
     onDropdownMenuValueChange: (String) -> Unit,
-    onRegistrationDateValueChange: (String) -> Unit,
-    onSaleDateValueChange: (String) -> Unit,
 ) {
     // Location
     EditScreenAddressItem(
@@ -42,13 +34,7 @@ fun EditScreenColumn2(
         countryPlaceHolderText = stringResource(id = R.string.country),
         icon = Icons.Default.LocationOn,
         iconCD = stringResource(id = R.string.cd_address),
-        onStreetNumberValueChange = onStreetNumberValueChange,
-        onStreetNameValueChange = onStreetNameValueChange,
-        onAddInfoValueChange = onAddInfoValueChange,
-        onCityValueChange = onCityValueChange,
-        onStateValueChange = onStateValueChange,
-        onZipCodeValueChange = onZipCodeValueChange,
-        onCountryValueChange = onCountryValueChange,
+        onFieldValueChange = onFieldValueChange,
         item = address,
     )
     // Agent
@@ -69,7 +55,7 @@ fun EditScreenColumn2(
         placeHolderText = stringResource(id = R.string.registration_date),
         icon = Icons.Default.ArrowCircleDown,
         iconCD = stringResource(id = R.string.cd_registration_date),
-        onValueChange = onRegistrationDateValueChange,
+        onValueChange = { onFieldValueChange(Field.REGISTRATION_DATE.name, it) },
         storedDate = property?.registrationDate ?: "",
         clearableDate = true,
     )
@@ -79,7 +65,7 @@ fun EditScreenColumn2(
         placeHolderText = stringResource(id = R.string.sale_date),
         icon = Icons.Default.ArrowCircleUp,
         iconCD = stringResource(id = R.string.cd_sale_date),
-        onValueChange = onSaleDateValueChange,
+        onValueChange = { onFieldValueChange(Field.SALE_DATE.name, it) },
         storedDate = property?.saleDate ?: "",
         clearableDate = true,
     )

@@ -1,11 +1,8 @@
 package com.aquaero.realestatemanager.utils
 
 import android.annotation.SuppressLint
-import android.util.Log
 import com.aquaero.realestatemanager.DATE_PATTERN
 import com.aquaero.realestatemanager.RATE_OF_DOLLAR_IN_EURO
-import okhttp3.internal.toHexString
-import java.math.BigInteger
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId

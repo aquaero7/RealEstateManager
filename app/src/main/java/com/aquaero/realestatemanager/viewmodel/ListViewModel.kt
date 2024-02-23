@@ -15,7 +15,6 @@ import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.PoiRepository
-import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.ConnectionState
@@ -27,7 +26,6 @@ class ListViewModel(
     private val agentRepository: AgentRepository,
     private val typeRepository : TypeRepository,
     private val poiRepository: PoiRepository,
-    private val propertyPoiJoinRepository: PropertyPoiJoinRepository,
     private val locationRepository: LocationRepository,
 ) : ViewModel() {
 

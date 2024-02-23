@@ -1,6 +1,5 @@
 package com.aquaero.realestatemanager.ui.component.edit_screen
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -27,6 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aquaero.realestatemanager.Field
 import com.aquaero.realestatemanager.model.Address
 
 @Composable
@@ -44,13 +44,7 @@ fun EditScreenAddressItem(
     countryPlaceHolderText: String,
     icon: ImageVector,
     iconCD: String,
-    onStreetNumberValueChange: (String) -> Unit,
-    onStreetNameValueChange: (String) -> Unit,
-    onAddInfoValueChange: (String) -> Unit,
-    onCityValueChange: (String) -> Unit,
-    onStateValueChange: (String) -> Unit,
-    onZipCodeValueChange: (String) -> Unit,
-    onCountryValueChange: (String) -> Unit,
+    onFieldValueChange: (String, String) -> Unit,
     item: Address?,
 ) {
     Surface(
@@ -102,49 +96,56 @@ fun EditScreenAddressItem(
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = streetNumberPlaceHolderText,
-                            onValueChange = onStreetNumberValueChange,
+                            field = Field.STREET_NUMBER.name,
+                            onValueChange = onFieldValueChange,
                             itemText = it?.streetNumber ?: "",
                         )
                         // Street name
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = streetNamePlaceHolderText,
-                            onValueChange = onStreetNameValueChange,
+                            field = Field.STREET_NAME.name,
+                            onValueChange = onFieldValueChange,
                             itemText = it?.streetName ?: "",
                         )
                         // Additional information
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = addInfoPlaceHolderText,
-                            onValueChange = onAddInfoValueChange,
+                            field = Field.ADD_INFO.name,
+                            onValueChange = onFieldValueChange,
                             itemText = it?.addInfo ?: "",
                         )
                         // City
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = cityPlaceHolderText,
-                            onValueChange = onCityValueChange,
+                            field = Field.CITY.name,
+                            onValueChange = onFieldValueChange,
                             itemText = it?.city ?: "",
                         )
                         // State
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = statePlaceHolderText,
-                            onValueChange = onStateValueChange,
+                            field = Field.STATE.name,
+                            onValueChange = onFieldValueChange,
                             itemText = it?.state ?: "",
                         )
                         // ZIP code
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = zipCodePlaceHolderText,
-                            onValueChange = onZipCodeValueChange,
+                            field = Field.ZIP_CODE.name,
+                            onValueChange = onFieldValueChange,
                             itemText = it?.zipCode ?: "",
                         )
                         // Country
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = countryPlaceHolderText,
-                            onValueChange = onCountryValueChange,
+                            field = Field.COUNTRY.name,
+                            onValueChange = onFieldValueChange,
                             itemText = it?.country ?: "",
                         )
                     }

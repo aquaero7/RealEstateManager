@@ -1,11 +1,8 @@
 package com.aquaero.realestatemanager.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import com.aquaero.realestatemanager.ApplicationRoot
-import com.aquaero.realestatemanager.Detail
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
@@ -20,7 +17,6 @@ import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.PoiRepository
-import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.ConnectionState
@@ -32,7 +28,6 @@ class DetailViewModel(
     private val agentRepository : AgentRepository,
     private val typeRepository : TypeRepository,
     private val poiRepository: PoiRepository,
-    private val propertyPoiJoinRepository: PropertyPoiJoinRepository,
     private val locationRepository: LocationRepository,
 ): ViewModel() {
 

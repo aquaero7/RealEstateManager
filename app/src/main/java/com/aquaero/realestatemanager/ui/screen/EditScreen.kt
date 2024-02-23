@@ -20,14 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.aquaero.realestatemanager.Field
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
-import com.aquaero.realestatemanager.model.Agent
-import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
-import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.ui.component.app.PointsOfInterest
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenColumn1
 import com.aquaero.realestatemanager.ui.component.edit_screen.EditScreenColumn2
@@ -45,28 +43,9 @@ fun EditScreen(
     property: Property?,
     address: Address?,
     currency: String,
-    onDescriptionValueChange: (String) -> Unit,
-    onPriceValueChange: (String) -> Unit,
-    onSurfaceValueChange: (String) -> Unit,
+    onFieldValueChange: (String, String) -> Unit,
     onDropdownMenuValueChange: (String) -> Unit,
-    onNbOfRoomsValueChange: (String) -> Unit,
-    onNbOfBathroomsValueChange: (String) -> Unit,
-    onNbOfBedroomsValueChange: (String) -> Unit,
-    onStreetNumberValueChange: (String) -> Unit,
-    onStreetNameValueChange: (String) -> Unit,
-    onAddInfoValueChange: (String) -> Unit,
-    onCityValueChange: (String) -> Unit,
-    onStateValueChange: (String) -> Unit,
-    onZipCodeValueChange: (String) -> Unit,
-    onCountryValueChange: (String) -> Unit,
-    onRegistrationDateValueChange: (String) -> Unit,
-    onSaleDateValueChange: (String) -> Unit,
-    onHospitalClick: (Boolean) -> Unit,
-    onSchoolClick: (Boolean) -> Unit,
-    onRestaurantClick: (Boolean) -> Unit,
-    onShopClick: (Boolean) -> Unit,
-    onRailwayStationClick: (Boolean) -> Unit,
-    onCarParkClick: (Boolean) -> Unit,
+    onPoiClick: (String, Boolean) -> Unit,
     onShootPhotoMenuItemClick: () -> Unit,
     onSelectPhotoMenuItemClick: () -> Unit,
     buttonAddPhotoEnabled: Boolean,
@@ -96,7 +75,7 @@ fun EditScreen(
             placeHolderText = stringResource(id = R.string.description),
             icon = Icons.Default.AccessTime,
             iconCD = stringResource(id = R.string.cd_description),
-            onValueChange = onDescriptionValueChange,
+            onValueChange = { onFieldValueChange(Field.DESCRIPTION.name, it) },
         )
 
         // Columns
@@ -116,12 +95,8 @@ fun EditScreen(
                     stringType = stringType,
                     property = property,
                     currency = currency,
-                    onPriceValueChange = onPriceValueChange,
-                    onSurfaceValueChange = onSurfaceValueChange,
+                    onFieldValueChange = onFieldValueChange,
                     onDropdownMenuValueChange = onDropdownMenuValueChange,
-                    onNbOfRoomsValueChange = onNbOfRoomsValueChange,
-                    onNbOfBathroomsValueChange = onNbOfBathroomsValueChange,
-                    onNbOfBedroomsValueChange = onNbOfBedroomsValueChange,
                 )
             }
             // Column 2
@@ -137,16 +112,8 @@ fun EditScreen(
                     stringAgent = stringAgent,
                     property = property,
                     address = address,
-                    onStreetNumberValueChange = onStreetNumberValueChange,
-                    onStreetNameValueChange = onStreetNameValueChange,
-                    onAddInfoValueChange = onAddInfoValueChange,
-                    onCityValueChange = onCityValueChange,
-                    onStateValueChange = onStateValueChange,
-                    onZipCodeValueChange = onZipCodeValueChange,
-                    onCountryValueChange = onCountryValueChange,
+                    onFieldValueChange = onFieldValueChange,
                     onDropdownMenuValueChange = onDropdownMenuValueChange,
-                    onRegistrationDateValueChange = onRegistrationDateValueChange,
-                    onSaleDateValueChange = onSaleDateValueChange,
                 )
             }
         }
@@ -155,12 +122,7 @@ fun EditScreen(
 
         // POIs
         PointsOfInterest(
-            onHospitalClick = onHospitalClick,
-            onSchoolClick = onSchoolClick,
-            onRestaurantClick = onRestaurantClick,
-            onShopClick = onShopClick,
-            onRailwayStationClick = onRailwayStationClick,
-            onCarParkClick = onCarParkClick,
+            onPoiClick = onPoiClick,
             itemPois = itemPois,
             clickable = true,
         )

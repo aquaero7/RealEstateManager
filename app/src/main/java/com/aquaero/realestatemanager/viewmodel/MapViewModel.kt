@@ -6,7 +6,6 @@ import android.location.Location
 import android.net.Uri
 import android.provider.Settings
 import androidx.lifecycle.ViewModel
-import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.utils.ConnectionState
 import kotlinx.coroutines.flow.StateFlow

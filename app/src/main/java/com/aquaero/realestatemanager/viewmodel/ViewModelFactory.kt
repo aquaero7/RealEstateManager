@@ -47,10 +47,10 @@ object ViewModelFactory:  ViewModelProvider.Factory {
                 typeRepository, poiRepository, propertyPoiJoinRepository) as T
         } else if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
             ListViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
-                typeRepository, poiRepository, propertyPoiJoinRepository, locationRepository) as T
+                typeRepository, poiRepository, locationRepository) as T
         } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
             DetailViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
-                typeRepository, poiRepository, propertyPoiJoinRepository, locationRepository) as T
+                typeRepository, poiRepository, locationRepository) as T
         } else if (modelClass.isAssignableFrom(EditViewModel::class.java)) {
             EditViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
                 typeRepository, poiRepository, propertyPoiJoinRepository, locationRepository) as T

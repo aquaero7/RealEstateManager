@@ -43,12 +43,7 @@ import com.aquaero.realestatemanager.model.Poi
 @SuppressLint("NewApi")
 @Composable
 fun PointsOfInterest(
-    onHospitalClick: (Boolean) -> Unit = {},
-    onSchoolClick: (Boolean) -> Unit = {},
-    onRestaurantClick: (Boolean) -> Unit = {},
-    onShopClick: (Boolean) -> Unit = {},
-    onRailwayStationClick: (Boolean) -> Unit = {},
-    onCarParkClick: (Boolean) -> Unit = {},
+    onPoiClick: (String, Boolean) -> Unit = { _, _ -> },
     itemPois: MutableList<Poi>,
     clickable: Boolean = false,
 ) {
@@ -77,7 +72,7 @@ fun PointsOfInterest(
             label = stringResource(id = R.string.hospital),
             selected = (itemPois.find { it.poiId == PoiEnum.HOSPITAL.key } != null),
             clickable = clickable,
-            onClick = onHospitalClick,
+            onClick = { onPoiClick(PoiEnum.HOSPITAL.key, it) },
         )
         // School
         PoiIcon(
@@ -86,7 +81,7 @@ fun PointsOfInterest(
             label = stringResource(id = R.string.school),
             selected = (itemPois.find { it.poiId == PoiEnum.SCHOOL.key } != null),
             clickable = clickable,
-            onClick = onSchoolClick,
+            onClick = { onPoiClick(PoiEnum.SCHOOL.key, it) },
         )
         // Restaurant
         PoiIcon(
@@ -95,7 +90,7 @@ fun PointsOfInterest(
             label = stringResource(id = R.string.restaurant),
             selected = (itemPois.find { it.poiId == PoiEnum.RESTAURANT.key } != null),
             clickable = clickable,
-            onClick = onRestaurantClick,
+            onClick = { onPoiClick(PoiEnum.RESTAURANT.key, it) },
         )
         // Shop
         PoiIcon(
@@ -104,7 +99,7 @@ fun PointsOfInterest(
             label = stringResource(id = R.string.shop),
             selected = (itemPois.find { it.poiId == PoiEnum.SHOP.key } != null),
             clickable = clickable,
-            onClick = onShopClick,
+            onClick = { onPoiClick(PoiEnum.SHOP.key, it) },
         )
         // Railway station
         PoiIcon(
@@ -113,7 +108,7 @@ fun PointsOfInterest(
             label = stringResource(id = R.string.railway_station),
             selected = (itemPois.find { it.poiId == PoiEnum.RAILWAY_STATION.key } != null),
             clickable = clickable,
-            onClick = onRailwayStationClick,
+            onClick = { onPoiClick(PoiEnum.RAILWAY_STATION.key, it) },
         )
         // Car park
         PoiIcon(
@@ -122,7 +117,7 @@ fun PointsOfInterest(
             label = stringResource(id = R.string.car_park),
             selected = (itemPois.find { it.poiId == PoiEnum.CAR_PARK.key } != null),
             clickable = clickable,
-            onClick = onCarParkClick,
+            onClick = { onPoiClick(PoiEnum.CAR_PARK.key, it) },
         )
     }
 }

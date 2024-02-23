@@ -311,53 +311,11 @@ fun AppNavHost(
             val itemPois = editViewModel.itemPois(
                 propertyId = propertyId, propertyPoiJoins = propertyPoiJoins, pois = pois
             )
-            val onDescriptionValueChange: (String) -> Unit = {
-                editViewModel.onDescriptionValueChange(value = it)
-            }
-            val onPriceValueChange: (String) -> Unit = {
-                editViewModel.onPriceValueChange(value = it, currency = currency)
-            }
-            val onSurfaceValueChange: (String) -> Unit = {
-                editViewModel.onSurfaceValueChange(value = it)
-            }
             val onDropdownMenuValueChange: (String) -> Unit = {
                 editViewModel.onDropdownMenuValueChange(value = it, types = types, agents = agents)
             }
-            val onNbOfRoomsValueChange: (String) -> Unit = {
-                editViewModel.onNbOfRoomsValueChange(value = it)
-            }
-            val onNbOfBathroomsValueChange: (String) -> Unit = {
-                editViewModel.onNbOfBathroomsValueChange(value = it)
-            }
-            val onNbOfBedroomsValueChange: (String) -> Unit = {
-                editViewModel.onNbOfBedroomsValueChange(value = it)
-            }
-            val onStreetNumberValueChange: (String) -> Unit = {
-                editViewModel.onStreetNumberValueChange(value = it)
-            }
-            val onStreetNameValueChange: (String) -> Unit = {
-                editViewModel.onStreetNameValueChange(value = it)
-            }
-            val onAddInfoValueChange: (String) -> Unit = {
-                editViewModel.onAddInfoValueChange(value = it)
-            }
-            val onCityValueChange: (String) -> Unit = {
-                editViewModel.onCityValueChange(value = it)
-            }
-            val onStateValueChange: (String) -> Unit = {
-                editViewModel.onStateValueChange(value = it)
-            }
-            val onZipCodeValueChange: (String) -> Unit = {
-                editViewModel.onZipCodeValueChange(value = it)
-            }
-            val onCountryValueChange: (String) -> Unit = {
-                editViewModel.onCountryValueChange(value = it)
-            }
-            val onRegistrationDateValueChange: (String) -> Unit = {
-                editViewModel.onRegistrationDateValueChange(value = it)
-            }
-            val onSaleDateValueChange: (String) -> Unit = {
-                editViewModel.onSaleDateValueChange(value = it)
+            val onFieldValueChange: (String, String) -> Unit = { field, value ->
+                editViewModel.onFieldValueChange(field = field, value = value, currency = currency)
             }
             val onPoiClick: (String, Boolean) -> Unit = { poiItem, isSelected ->
                 editViewModel.onPoiClick(poiItem = poiItem, isSelected = isSelected)
@@ -480,28 +438,9 @@ fun AppNavHost(
                 property = property,
                 address = address,
                 currency = currency,
-                onDescriptionValueChange = onDescriptionValueChange,
-                onPriceValueChange = onPriceValueChange,
-                onSurfaceValueChange = onSurfaceValueChange,
+                onFieldValueChange = onFieldValueChange,
                 onDropdownMenuValueChange = onDropdownMenuValueChange,
-                onNbOfRoomsValueChange = onNbOfRoomsValueChange,
-                onNbOfBathroomsValueChange = onNbOfBathroomsValueChange,
-                onNbOfBedroomsValueChange = onNbOfBedroomsValueChange,
-                onStreetNumberValueChange = onStreetNumberValueChange,
-                onStreetNameValueChange = onStreetNameValueChange,
-                onAddInfoValueChange = onAddInfoValueChange,
-                onCityValueChange = onCityValueChange,
-                onStateValueChange = onStateValueChange,
-                onZipCodeValueChange = onZipCodeValueChange,
-                onCountryValueChange = onCountryValueChange,
-                onRegistrationDateValueChange = onRegistrationDateValueChange,
-                onSaleDateValueChange = onSaleDateValueChange,
-                onHospitalClick = { onPoiClick(PoiEnum.HOSPITAL.key, it) },
-                onSchoolClick = { onPoiClick(PoiEnum.SCHOOL.key, it) },
-                onRestaurantClick = { onPoiClick(PoiEnum.RESTAURANT.key, it) },
-                onShopClick = { onPoiClick(PoiEnum.SHOP.key, it) },
-                onRailwayStationClick = { onPoiClick(PoiEnum.RAILWAY_STATION.key, it) },
-                onCarParkClick = { onPoiClick(PoiEnum.CAR_PARK.key, it) },
+                onPoiClick = onPoiClick,
                 onShootPhotoMenuItemClick = onShootPhotoMenuItemClick,
                 onSelectPhotoMenuItemClick = onSelectPhotoMenuItemClick,
                 buttonAddPhotoEnabled = buttonSavePhotoEnabled,

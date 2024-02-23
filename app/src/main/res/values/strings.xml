@@ -63,6 +63,7 @@
     <string name="invalid_input">Error! Only digits are allowed!</string>
     <string name="latlng_error">Failed to get latitude and longitude of the address!</string>
     <string name="general_error">An error has occurred!</string>
+    <string name="unknown">Unknown</string>
 
     <!-- AGENT OR TYPE OF PROPERTY -->
     <string name="_unassigned_">Unassigned</string>

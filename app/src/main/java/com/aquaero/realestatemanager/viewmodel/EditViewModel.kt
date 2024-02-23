@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.DropdownMenuCategory
+import com.aquaero.realestatemanager.Field
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
@@ -173,35 +174,6 @@ class EditViewModel(
         _cacheItemPhotosFlow.value = _cacheItemPhotos
     }
 
-    fun onDescriptionValueChange(value: String) {
-        cacheProperty.description = value
-    }
-
-    fun onPriceValueChange(value: String, currency: String) {
-        cacheProperty.price = if (value.isNotEmpty() && value.isDigitsOnly()) {
-            when (currency) {
-                "€" -> convertEuroToDollar(euros = value.toInt())
-                else -> value.toInt()
-            }!!
-        } else null
-    }
-
-    fun onSurfaceValueChange(value: String) {
-        cacheProperty.surface = if (value.isNotEmpty()) value.toInt() else null
-    }
-
-    fun onNbOfRoomsValueChange(value: String) {
-        cacheProperty.nbOfRooms = if (value.isNotEmpty()) value.toInt() else null
-    }
-
-    fun onNbOfBathroomsValueChange(value: String) {
-        cacheProperty.nbOfBathrooms = if (value.isNotEmpty()) value.toInt() else null
-    }
-
-    fun onNbOfBedroomsValueChange(value: String) {
-        cacheProperty.nbOfBedrooms = if (value.isNotEmpty()) value.toInt() else null
-    }
-
     fun onDropdownMenuValueChange(
         value: String,
         types: MutableList<Type>,
@@ -210,53 +182,39 @@ class EditViewModel(
         val category = value.substringBefore(delimiter = "#", missingDelimiterValue = "")
         val index = value.substringAfter(delimiter = "#", missingDelimiterValue = value).toInt()
         when (category) {
-            DropdownMenuCategory.TYPE.name -> onTypeValueChange(index = index, types = types)
-            DropdownMenuCategory.AGENT.name -> onAgentValueChange(index = index, agents = agents)
+            DropdownMenuCategory.TYPE.name -> cacheProperty.typeId = types.elementAt(index).typeId
+            DropdownMenuCategory.AGENT.name -> cacheProperty.agentId = agents.elementAt(index).agentId
+
         }
     }
 
-    private fun onTypeValueChange(index: Int, types: MutableList<Type>) {
-        cacheProperty.typeId = types.elementAt(index).typeId
-    }
+    fun onFieldValueChange(field: String, value: String, currency: String) {
+        val digitalValue = if (value.isNotEmpty() && value.isDigitsOnly()) value.toInt() else null
+        when (field) {
+            Field.SURFACE.name -> cacheProperty.surface = digitalValue
+            Field.ROOMS.name -> cacheProperty.nbOfRooms = digitalValue
+            Field.BATHROOMS.name -> cacheProperty.nbOfBathrooms = digitalValue
+            Field.BEDROOMS.name -> cacheProperty.nbOfBedrooms = digitalValue
+            Field.DESCRIPTION.name -> cacheProperty.description = value
+            Field.REGISTRATION_DATE.name -> cacheProperty.registrationDate = value
+            Field.SALE_DATE.name -> cacheProperty.saleDate = value
 
-    private fun onAgentValueChange(index: Int, agents: MutableList<Agent>) {
-        cacheProperty.agentId = agents.elementAt(index).agentId
-    }
+            Field.STREET_NUMBER.name -> cacheAddress.streetNumber = value
+            Field.STREET_NAME.name -> cacheAddress.streetName = value
+            Field.ADD_INFO.name -> cacheAddress.addInfo = value
+            Field.CITY.name -> cacheAddress.city = value
+            Field.STATE.name -> cacheAddress.state = value
+            Field.ZIP_CODE.name -> cacheAddress.zipCode = value
+            Field.COUNTRY.name -> cacheAddress.country = value
 
-    fun onStreetNumberValueChange(value: String) {
-        cacheAddress.streetNumber = value
-    }
-
-    fun onStreetNameValueChange(value: String) {
-        cacheAddress.streetName = value
-    }
-
-    fun onAddInfoValueChange(value: String) {
-        cacheAddress.addInfo = value
-    }
-
-    fun onCityValueChange(value: String) {
-        cacheAddress.city = value
-    }
-
-    fun onStateValueChange(value: String) {
-        cacheAddress.state = value
-    }
-
-    fun onZipCodeValueChange(value: String) {
-        cacheAddress.zipCode = value
-    }
-
-    fun onCountryValueChange(value: String) {
-        cacheAddress.country = value
-    }
-
-    fun onRegistrationDateValueChange(value: String) {
-        cacheProperty.registrationDate = value
-    }
-
-    fun onSaleDateValueChange(value: String) {
-        cacheProperty.saleDate = value
+            Field.PRICE.name -> cacheProperty.price =
+                if (value.isNotEmpty() && value.isDigitsOnly()) {
+                    when (currency) {
+                        "€" -> convertEuroToDollar(euros = value.toInt())
+                        else -> value.toInt()
+                    }!!
+                } else null
+        }
     }
 
     fun onPoiClick(poiItem: String, isSelected: Boolean) {

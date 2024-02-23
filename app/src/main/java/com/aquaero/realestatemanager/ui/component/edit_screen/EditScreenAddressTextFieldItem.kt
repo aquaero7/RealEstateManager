@@ -3,12 +3,9 @@ package com.aquaero.realestatemanager.ui.component.edit_screen
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -36,7 +33,8 @@ fun EditScreenAddressTextFieldItem(
     placeHolderText: String,
     itemText: String?,
     shouldBeDigitsOnly: Boolean = false,
-    onValueChange: (String) -> Unit,
+    field: String,
+    onValueChange: (String, String) -> Unit,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
@@ -55,7 +53,7 @@ fun EditScreenAddressTextFieldItem(
                 isValid = !shouldBeDigitsOnly || (it.isNotEmpty() && it.isDigitsOnly())
                 if (isValid) {
                     fieldText = it
-                    onValueChange(it)
+                    onValueChange(field, it)
                 }
             },
             textStyle = TextStyle(fontSize = fieldFontSize),

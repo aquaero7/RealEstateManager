@@ -32,7 +32,7 @@ import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.ConnectionState
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
-import com.aquaero.realestatemanager.utils.randomProvisionalId
+import com.aquaero.realestatemanager.utils.generateProvisionalId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -280,11 +280,12 @@ class EditViewModel(
             _cacheItemPhotosFlow.value = _cacheItemPhotos
         } else {
             val photoToAdd = Photo(
-                photoId = randomProvisionalId(),
+                photoId = generateProvisionalId(),
                 uri = uri.toString(),
                 label = label,
                 propertyId = cacheProperty.propertyId)
 
+            Log.w("EditViewModel", "Generated provisional photo id: ${photoToAdd.photoId}")
             _cacheItemPhotos.add(photoToAdd)
             _cacheItemPhotosFlow.value = _cacheItemPhotos
         }
@@ -410,7 +411,6 @@ class EditViewModel(
                 Log.w("EditViewModel", "newAddressIdFromRoom: $newAddressIdFromRoom")
                 // ... and, if the address has been created, we set its id in cacheAddress and cacheProperty,
                 if (cacheAddress.addressId == CACHE_ADDRESS.addressId && newAddressIdFromRoom > 0) {
-                    Log.w("EditViewModel", "The address is new")                                    // TODO: To be deleted
                     cacheAddress.addressId = newAddressIdFromRoom
                     cacheProperty.addressId = newAddressIdFromRoom
                 }

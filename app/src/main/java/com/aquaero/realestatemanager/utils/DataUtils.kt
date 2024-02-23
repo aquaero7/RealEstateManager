@@ -1,8 +1,11 @@
 package com.aquaero.realestatemanager.utils
 
 import android.annotation.SuppressLint
+import android.util.Log
 import com.aquaero.realestatemanager.DATE_PATTERN
 import com.aquaero.realestatemanager.RATE_OF_DOLLAR_IN_EURO
+import okhttp3.internal.toHexString
+import java.math.BigInteger
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -61,11 +64,23 @@ fun ellipsis(): String {
 }
 
 /**
- * Creates a random and negative Long value between -9999 and -1000, as a provisional id.
+ * Generates a negative five-digit number of type 'Long', based on epoch time.
+ * The absence of collision (uniqueness) for this value is guaranteed, on the same device
+ * and in a time slot greater than 24-hour (more precisely 99999s, i.e. 1d, 3h, 46min and 39s),
+ * under the following three conditions:
+ * - This function is not called more than once per second
+ * - This function is only called from one thread at a time
+ * - This function is only called for one instance object at a time
  */
-val randomProvisionalId: () -> Long = {
-    (-9999..-1000).random().toLong()
+val generateProvisionalId: () -> Long = {
+    /*
+     * The epoch time value is divided by 1000 to convert it to seconds.
+     * Then, modulo 100000 is applied to this value in order to keep only the last five digits,
+     * for better readability.
+     */
+    -( System.currentTimeMillis() / 1E3.toLong() ) % 1E5.toLong()
 }
+
 
 
 

@@ -28,7 +28,6 @@ import com.aquaero.realestatemanager.model.CACHE_PROPERTY
 import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
-import com.aquaero.realestatemanager.model.PoiEnum
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
 import com.aquaero.realestatemanager.model.Type
@@ -370,15 +369,14 @@ fun AppNavHost(
             /**
              * Photo shooting and picking
              */
-            if (capturedImageUri != Uri.EMPTY) {
-                photoToAddUri = capturedImageUri
-                capturedImageUri = Uri.EMPTY
-            }
-            if (pickerUri != Uri.EMPTY) {
-                photoToAddUri = pickerUri
-                pickerUri = Uri.EMPTY
-            }
-
+            val uris = editViewModel.checkUris(
+                capturedImageUri = capturedImageUri,
+                pickerUri = pickerUri,
+                photoToAddUri = photoToAddUri
+            )
+            capturedImageUri = uris.first
+            pickerUri = uris.second
+            photoToAddUri = uris.third
             if (photoToAddUri != Uri.EMPTY) {
                 painter = rememberAsyncImagePainter(model = photoToAddUri)
                 buttonSavePhotoEnabled = true
@@ -386,16 +384,16 @@ fun AppNavHost(
                 painter = painterResource
                 buttonSavePhotoEnabled = false
             }
-            val onCancelPhotoEditionButtonClick: () -> Unit = {
-                photoToAddUri = Uri.EMPTY
-            }
+            val onCancelPhotoEditionButtonClick: () -> Unit =
+                { photoToAddUri = editViewModel.onCancelPhotoEditionButtonClick() }
             val onSavePhotoButtonClick: (String) -> Unit = {
-                editViewModel.onSavePhotoButtonClick(uri = photoToAddUri, label = it.ifBlank { null })
-                photoToAddUri = Uri.EMPTY
+                photoToAddUri =
+                    editViewModel.onSavePhotoButtonClick(uri = photoToAddUri, label = it.ifBlank { null })
             }
-            val onEditPhotoMenuItemClick: (Photo) -> Unit = { photo ->
-                photoToAddUri = Uri.parse(photo.uri)
-                buttonSavePhotoEnabled = true
+            val onEditPhotoMenuItemClick: (Photo) -> Unit = {
+                val editResult = editViewModel.onEditPhotoMenuItemClick(photo = it)
+                photoToAddUri = editResult.first
+                buttonSavePhotoEnabled = editResult.second
             }
             val onPhotoDeletionConfirmation: (Long) -> Unit = { photoId ->
                 editViewModel.onPhotoDeletionConfirmation(propertyId = propertyId, photoId = photoId)

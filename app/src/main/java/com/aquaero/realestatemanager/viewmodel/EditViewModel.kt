@@ -221,7 +221,25 @@ class EditViewModel(
         if (isSelected) cacheItemPois.add(Poi(poiItem)) else cacheItemPois.remove(Poi(poiItem))
     }
 
-    fun onSavePhotoButtonClick(uri: Uri, label: String?) {
+    fun checkUris(capturedImageUri: Uri, pickerUri: Uri, photoToAddUri: Uri): Triple<Uri, Uri, Uri> {
+        var updatedCapturedImageUri = capturedImageUri
+        var updatedPickerUri = pickerUri
+        var updatedPhotoToAddUri = photoToAddUri
+
+        if (updatedCapturedImageUri != Uri.EMPTY) {
+            updatedPhotoToAddUri = updatedCapturedImageUri
+            updatedCapturedImageUri = Uri.EMPTY
+        }
+        if (updatedPickerUri != Uri.EMPTY) {
+            updatedPhotoToAddUri = updatedPickerUri
+            updatedPickerUri = Uri.EMPTY
+        }
+        return Triple(updatedCapturedImageUri, updatedPickerUri, updatedPhotoToAddUri)
+    }
+
+    fun onCancelPhotoEditionButtonClick(): Uri = Uri.EMPTY
+
+    fun onSavePhotoButtonClick(uri: Uri, label: String?): Uri {
         // Check if the photo already exists
         val photo: Photo? = _cacheItemPhotos.find { it.uri == uri.toString() }
         val alreadyExists: Boolean = (photo != null)
@@ -247,6 +265,11 @@ class EditViewModel(
             _cacheItemPhotos.add(photoToAdd)
             _cacheItemPhotosFlow.value = _cacheItemPhotos
         }
+        return Uri.EMPTY
+    }
+
+    fun onEditPhotoMenuItemClick(photo: Photo): Pair<Uri, Boolean> {
+        return Pair(Uri.parse(photo.uri), true)
     }
 
     fun onPhotoDeletionConfirmation(propertyId: Long, photoId: Long) {

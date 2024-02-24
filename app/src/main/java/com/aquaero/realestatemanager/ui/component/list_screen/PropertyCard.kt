@@ -25,8 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.aquaero.realestatemanager.AppContentType
@@ -91,7 +89,7 @@ fun PropertyCard(
             )
             Surface(
                 color = if (
-                    selected && contentType == AppContentType.SCREEN_WITH_DETAIL
+                    selected && contentType == AppContentType.LIST_AND_DETAIL
                     && !unselectedByDefaultDisplay
                 ) MaterialTheme.colorScheme.outlineVariant else MaterialTheme.colorScheme.surface,
                 modifier = Modifier.fillMaxSize(),

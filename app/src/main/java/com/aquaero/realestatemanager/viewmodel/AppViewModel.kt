@@ -1,6 +1,5 @@
 package com.aquaero.realestatemanager.viewmodel
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -26,7 +25,6 @@ import com.aquaero.realestatemanager.utils.CurrencyStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.properties.Delegates
 
 class AppViewModel(
     propertyRepository: PropertyRepository,
@@ -61,8 +59,8 @@ class AppViewModel(
      * just a list content, or both a list and detail content
      */
     fun contentType(windowSize: WindowWidthSizeClass): AppContentType = when (windowSize) {
-        WindowWidthSizeClass.Expanded -> { AppContentType.SCREEN_WITH_DETAIL }
-        else -> { AppContentType.SCREEN_ONLY }
+        WindowWidthSizeClass.Expanded -> { AppContentType.LIST_AND_DETAIL }
+        else -> { AppContentType.LIST_OR_DETAIL }
     }
 
     // Init CurrencyStore
@@ -87,7 +85,7 @@ class AppViewModel(
     fun menuEnabled(currentScreen: String?, windowSize: WindowWidthSizeClass) = (
             currentScreen != GeolocMap.route) &&
             (currentScreen != ListAndDetail.routeWithArgs ||
-                    contentType(windowSize) == AppContentType.SCREEN_WITH_DETAIL)
+                    contentType(windowSize) == AppContentType.LIST_AND_DETAIL)
 
     val onClickRadioButton: (String) -> Unit = { currency: String ->
         // Store selected currency with DataStore

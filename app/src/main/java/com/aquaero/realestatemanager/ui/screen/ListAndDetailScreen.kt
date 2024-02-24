@@ -15,14 +15,10 @@ import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
-import com.aquaero.realestatemanager.model.Type
 
 @SuppressLint("NewApi")
 @Composable
 fun ListAndDetailScreen(
-    // For both list and detail screens
-    property: Property?,
-    currency: String,
     // For list screen only
     contentType: AppContentType,
     items: List<Property>,
@@ -31,6 +27,9 @@ fun ListAndDetailScreen(
     itemType: (String) -> String,
     onPropertyClick: (Long) -> Unit,
     onFabClick: () -> Unit,
+    // For both list and detail screens
+    property: Property?,
+    currency: String,
     // For detail screen only
     itemPhotos: MutableList<Photo>,
     itemPois: MutableList<Poi>,
@@ -59,7 +58,7 @@ fun ListAndDetailScreen(
                 onFabClick = onFabClick,
             )
         }
-        if (contentType == AppContentType.SCREEN_WITH_DETAIL) {
+        if (contentType == AppContentType.LIST_AND_DETAIL) {
             HorizontalDivider(
                 modifier = Modifier
                     .width(2.dp)

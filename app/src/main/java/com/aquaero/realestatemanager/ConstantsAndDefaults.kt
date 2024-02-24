@@ -1,7 +1,6 @@
 package com.aquaero.realestatemanager
 
 import android.Manifest
-import android.content.Context
 import android.location.Location
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.model.TypeEnum
@@ -14,8 +13,8 @@ import com.aquaero.realestatemanager.ui.theme.White
  * Content shown depending on size and window state of device.
  */
 enum class AppContentType {
-    SCREEN_ONLY,
-    SCREEN_WITH_DETAIL,
+    LIST_OR_DETAIL,
+    LIST_AND_DETAIL,
 }
 
 

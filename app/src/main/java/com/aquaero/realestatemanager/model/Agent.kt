@@ -2,10 +2,6 @@ package com.aquaero.realestatemanager.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.aquaero.realestatemanager.CACHE_EMPTY_STRING_VALUE
-import com.aquaero.realestatemanager.CACHE_LONG_ID_VALUE
-import com.aquaero.realestatemanager.CACHE_NULLABLE_VALUE
-import com.aquaero.realestatemanager.NEW_ITEM_ID
 import com.aquaero.realestatemanager.UNASSIGNED_ID
 
 @Entity

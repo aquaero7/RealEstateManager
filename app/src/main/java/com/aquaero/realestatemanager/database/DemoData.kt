@@ -1,6 +1,8 @@
 package com.aquaero.realestatemanager.database
 
-import com.aquaero.realestatemanager.NEW_ITEM_ID
+import com.aquaero.realestatemanager.CACHE_LONG_ID_VALUE
+import com.aquaero.realestatemanager.NULL_PROPERTY_ID
+import com.aquaero.realestatemanager.UNASSIGNED_ID
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.PoiEnum
@@ -49,7 +51,7 @@ val ADDRESS_PREPOPULATION_DATA = listOf(
 
 val PROPERTY_PREPOPULATION_DATA = listOf(
     Property(
-        propertyId = NEW_ITEM_ID,
+        propertyId = 0L,   // NULL_PROPERTY_ID,
         typeId = TypeEnum.UNASSIGNED.key,
         addressId = null,
         price = null,
@@ -60,7 +62,7 @@ val PROPERTY_PREPOPULATION_DATA = listOf(
         nbOfBedrooms = null,
         registrationDate = null,
         saleDate = null,
-        agentId = NEW_ITEM_ID
+        agentId = UNASSIGNED_ID
     ),
 )
 

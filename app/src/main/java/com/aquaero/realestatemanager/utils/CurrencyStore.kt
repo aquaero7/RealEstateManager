@@ -1,15 +1,22 @@
 package com.aquaero.realestatemanager.utils
 
 import android.content.Context
+import androidx.compose.ui.text.intl.Locale
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.Region
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class CurrencyStore(private val context: Context) {
+
+    private val defaultCurrency =
+        if (Locale.current.region == Region.FR.name) context.getString(R.string.euro)
+        else context.getString(R.string.dollar)
 
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("currency")
@@ -17,7 +24,7 @@ class CurrencyStore(private val context: Context) {
     }
 
     val getCurrency: Flow<String> = context.dataStore.data.map { value ->
-        value[CURRENCY_KEY] ?: ""
+        value[CURRENCY_KEY] ?: defaultCurrency
     }
 
     suspend fun saveCurrency(currency: String) {

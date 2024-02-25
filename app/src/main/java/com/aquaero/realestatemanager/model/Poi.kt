@@ -2,7 +2,6 @@ package com.aquaero.realestatemanager.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.aquaero.realestatemanager.CACHE_EMPTY_STRING_VALUE
 
 @Entity
 data class Poi(

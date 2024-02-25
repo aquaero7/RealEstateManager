@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.aquaero.realestatemanager.NO_ITEM_ID
+import com.aquaero.realestatemanager.NO_PHOTO_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Photo
 
@@ -67,10 +67,10 @@ fun PhotosLazyRow(
     ) {
         items(items = photos) { photo ->
             val resourceUri =
-                if (photo.photoId != NO_ITEM_ID) photo.uri else R.drawable.baseline_photo_camera_black_24
+                if (photo.photoId != NO_PHOTO_ID) photo.uri else R.drawable.baseline_photo_camera_black_24
             val colorFilter =
-                if (photo.photoId != NO_ITEM_ID) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
-            val alpha = if (photo.photoId != NO_ITEM_ID) 1F else 0.2F
+                if (photo.photoId != NO_PHOTO_ID) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
+            val alpha = if (photo.photoId != NO_PHOTO_ID) 1F else 0.2F
 
             Box(
                 modifier = Modifier

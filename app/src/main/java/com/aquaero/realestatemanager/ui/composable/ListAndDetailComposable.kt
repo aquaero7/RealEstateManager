@@ -2,15 +2,13 @@ package com.aquaero.realestatemanager.ui.composable
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.AppContentType
 import com.aquaero.realestatemanager.LatLngItem
-import com.aquaero.realestatemanager.NEW_ITEM_ID
+import com.aquaero.realestatemanager.NULL_PROPERTY_ID
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.NO_PHOTO
@@ -20,7 +18,7 @@ import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
 import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.navigateToDetail
-import com.aquaero.realestatemanager.navigateToDetailEdit
+import com.aquaero.realestatemanager.navigateToEditDetail
 import com.aquaero.realestatemanager.ui.screen.ListAndDetailScreen
 import com.aquaero.realestatemanager.utils.connectivityState
 import com.aquaero.realestatemanager.viewmodel.ListViewModel
@@ -51,17 +49,17 @@ fun ListAndDetailComposable(
         listViewModel.itemType(typeId, types, stringTypes)
     }
     val onPropertyClick: (Long) -> Unit = { propId ->
-        if (contentType == AppContentType.LIST_AND_DETAIL) navController.popBackStack()
+//        if (contentType == AppContentType.LIST_AND_DETAIL) navController.popBackStack()   // TODO: To be deleted
         navController.navigateToDetail(propertyId = propId.toString(), contentType = contentType)
     }
     val onFabClick = {
-        navController.navigateToDetailEdit(propertyId = NEW_ITEM_ID.toString())
+        navController.navigateToEditDetail(propertyId = NULL_PROPERTY_ID.toString())
     }
 
 
     /* For both list and detail screens */
     val property = propertyId?.let {
-        if (it != NEW_ITEM_ID && properties.isNotEmpty()) listViewModel.propertyFromId(
+        if (it != NULL_PROPERTY_ID && properties.isNotEmpty()) listViewModel.propertyFromId(
             propertyId = it,
             properties = properties
         ) else null

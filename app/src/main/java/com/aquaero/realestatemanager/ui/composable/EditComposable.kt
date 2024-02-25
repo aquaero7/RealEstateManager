@@ -15,7 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.aquaero.realestatemanager.NEW_ITEM_ID
+import com.aquaero.realestatemanager.NULL_PROPERTY_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
@@ -45,7 +45,7 @@ fun EditComposable(
     pois: MutableList<Poi>,
     propertyPoiJoins: MutableList<PropertyPoiJoin>,
 ) {
-    val property: Property? = if (propertyId != NEW_ITEM_ID && properties.isNotEmpty()) {
+    val property: Property? = if (propertyId != NULL_PROPERTY_ID && properties.isNotEmpty()) {
         // Edition mode
         editViewModel.propertyFromId(propertyId = propertyId, properties = properties)
     } else {

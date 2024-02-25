@@ -131,7 +131,7 @@ fun PoiIcon(
     label: String,
     selected: Boolean,
 ) {
-    var isSelected by remember { mutableStateOf(selected) }
+    var isSelected by remember(selected) { mutableStateOf(selected) }
     val iconColor = MaterialTheme.colorScheme.tertiary
     val borderColor = MaterialTheme.colorScheme.secondary
 

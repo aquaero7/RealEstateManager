@@ -11,7 +11,7 @@ import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
 import com.aquaero.realestatemanager.model.Type
-import com.aquaero.realestatemanager.navigateToDetailEdit
+import com.aquaero.realestatemanager.navigateToEditDetail
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.LocationRepository
@@ -34,8 +34,9 @@ class DetailViewModel(
     fun onClickMenu(
         navController: NavHostController,
         propertyId: Comparable<*>
+//        propertyId: String?
     ) {
-        navController.navigateToDetailEdit(propertyId = propertyId.toString())
+        navController.navigateToEditDetail(propertyId = propertyId.toString())
     }
 
     fun checkForConnection(connection: ConnectionState): Boolean {

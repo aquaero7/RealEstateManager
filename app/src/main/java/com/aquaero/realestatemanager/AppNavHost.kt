@@ -172,12 +172,12 @@ fun NavHostController.navigateToDetail(propertyId: String, contentType: AppConte
     if (contentType == AppContentType.LIST_OR_DETAIL) {
         this.navigate(route = "${Detail.route}/$propertyId")
     } else {
-//        this.navigateSingleTopTo(destination = ListAndDetail, propertyId = propertyId)    // TODO: To be deleted
-        this.navigate(route = "${ListAndDetail.route}/${propertyId}")
+        this.navigateSingleTopTo(destination = ListAndDetail, propertyId = propertyId)
+//        this.navigate(route = "${ListAndDetail.route}/${propertyId}") // TODO: To be deleted
     }
 }
 
-fun NavHostController.navigateToDetailEdit(propertyId: String) {
+fun NavHostController.navigateToEditDetail(propertyId: String) {
     this.navigate(route = "${EditDetail.route}/$propertyId")
 }
 

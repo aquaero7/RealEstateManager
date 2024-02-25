@@ -30,13 +30,11 @@ class AppViewModel(
     propertyRepository: PropertyRepository,
     addressRepository: AddressRepository,
     photoRepository: PhotoRepository,
-    agentRepository : AgentRepository,
-    typeRepository : TypeRepository,
+    private val agentRepository : AgentRepository,
+    private val typeRepository : TypeRepository,
     poiRepository: PoiRepository,
     propertyPoiJoinRepository: PropertyPoiJoinRepository,
 ) : ViewModel() {
-    private val context: Context by lazy { ApplicationRoot.getContext() }
-
 
     /* Room */
 
@@ -47,8 +45,8 @@ class AppViewModel(
     val typesOrderedById = typeRepository.getTypesOrderedByIdFromRoom()
     val pois = poiRepository.getPoisFromRoom()
     val propertyPoiJoins = propertyPoiJoinRepository.getPropertyPoiJoinsFromRoom()
-    val stringTypesOrderedById = typeRepository.getStringTypesOrderedByIdFromRoom(context)
-    val stringAgentsOrderedByName = agentRepository.getStringAgentsOrderedByNameFromRoom(context)
+    fun stringTypesOrderedById(context: Context) = typeRepository.getStringTypesOrderedByIdFromRoom(context)
+    fun stringAgentsOrderedByName(context: Context) = agentRepository.getStringAgentsOrderedByNameFromRoom(context)
 
     /**/
 
@@ -64,7 +62,7 @@ class AppViewModel(
     }
 
     // Init CurrencyStore
-    val currencyStore = CurrencyStore(context)
+    fun currencyStore(context: Context): CurrencyStore = CurrencyStore(context)
 
     /***/
 
@@ -87,10 +85,10 @@ class AppViewModel(
             (currentScreen != ListAndDetail.routeWithArgs ||
                     contentType(windowSize) == AppContentType.LIST_AND_DETAIL)
 
-    val onClickRadioButton: (String) -> Unit = { currency: String ->
+    fun onClickRadioButton(context: Context, currency: String) {
         // Store selected currency with DataStore
         CoroutineScope(Dispatchers.IO).launch {
-            currencyStore.saveCurrency(currency)
+            currencyStore(context).saveCurrency(currency)
         }
     }
 

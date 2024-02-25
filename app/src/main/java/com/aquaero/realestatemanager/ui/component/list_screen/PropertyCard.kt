@@ -28,7 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.aquaero.realestatemanager.AppContentType
-import com.aquaero.realestatemanager.NO_ITEM_ID
+import com.aquaero.realestatemanager.NO_PHOTO_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.Red
 import com.aquaero.realestatemanager.ui.theme.Yellow
@@ -71,10 +71,10 @@ fun PropertyCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             val resourceUri =
-                if (phId != NO_ITEM_ID) phUri else R.drawable.baseline_photo_camera_black_24
+                if (phId != NO_PHOTO_ID) phUri else R.drawable.baseline_photo_camera_black_24
             val colorFilter =
-                if (phId != NO_ITEM_ID) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
-            val alpha = if (phId != NO_ITEM_ID) 1F else 0.2F
+                if (phId != NO_PHOTO_ID) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
+            val alpha = if (phId != NO_PHOTO_ID) 1F else 0.2F
 
             Image(
                 painter = rememberAsyncImagePainter(resourceUri),

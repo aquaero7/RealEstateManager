@@ -1,6 +1,8 @@
 package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.intl.Locale
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.aquaero.realestatemanager.model.Address
@@ -51,17 +54,11 @@ class RealEstateManagerActivity : ComponentActivity() {
     private val loanViewModel by viewModels<LoanViewModel> { ViewModelFactory }
 
     @SuppressLint("NewApi")
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
-            val windowSize = calculateWindowSizeClass(activity = this)
-            val currencyStore = appViewModel.currencyStore
-
             RealEstateManagerApp(
-                windowSize = windowSize.widthSizeClass,
-                currencyStore = currencyStore,
+                activity = this,
                 appViewModel = appViewModel,
                 listViewModel = listViewModel,
                 detailViewModel = detailViewModel,
@@ -82,11 +79,10 @@ class RealEstateManagerActivity : ComponentActivity() {
 }
 
 @SuppressLint("NewApi")
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun RealEstateManagerApp(
-    windowSize: WindowWidthSizeClass,
-    currencyStore: CurrencyStore,
+    activity: Activity,
     appViewModel: AppViewModel,
     listViewModel: ListViewModel,
     detailViewModel: DetailViewModel,
@@ -105,14 +101,15 @@ fun RealEstateManagerApp(
         val types: MutableList<Type> by appViewModel.typesOrderedById.collectAsState(initial = mutableListOf())
         val pois: MutableList<Poi> by appViewModel.pois.collectAsState(initial = mutableListOf())
         val propertyPoiJoins: MutableList<PropertyPoiJoin> by appViewModel.propertyPoiJoins.collectAsState(initial = mutableListOf())
-        val stringTypes: MutableList<String> by appViewModel.stringTypesOrderedById.collectAsState(initial = mutableListOf())
-        val stringAgents: MutableList<String> by appViewModel.stringAgentsOrderedByName.collectAsState(initial = mutableListOf())
+        val stringTypes: MutableList<String> by appViewModel.stringTypesOrderedById(context = context).collectAsState(initial = mutableListOf())
+        val stringAgents: MutableList<String> by appViewModel.stringAgentsOrderedByName(context = context).collectAsState(initial = mutableListOf())
 
         /**
          * Init content type, according to window's width,
          * to choose dynamically, on screen state changes, whether to show
          * just a list content, or both a list and detail content
          */
+        val windowSize = calculateWindowSizeClass(activity = activity).widthSizeClass
         val contentType: AppContentType = appViewModel.contentType(windowSize = windowSize)
 
         /**
@@ -122,7 +119,7 @@ fun RealEstateManagerApp(
         val navController = rememberNavController()
         // Fetch current destination
         val currentBackStack by navController.currentBackStackEntryAsState()
-        val propertyId = currentBackStack?.arguments?.getString(propertyKey) ?: 0
+        val propertyId = currentBackStack?.arguments?.getString(propertyKey) ?: NULL_PROPERTY_ID
         val currentDestination = currentBackStack?.destination
         val currentScreen = currentDestination?.route
         // Use 'ListAndDetail' as a backup screen if the returned value is null
@@ -150,15 +147,22 @@ fun RealEstateManagerApp(
             }
             else -> { {} }
         }
-        val onClickRadioButton: (String) -> Unit = appViewModel.onClickRadioButton
         // TopBar RadioButtons
+        val currencyStore = appViewModel.currencyStore(context = context)
+        val defaultCurrency =
+            if (Locale.current.region == Region.FR.name) context.getString(R.string.euro)
+            else context.getString(R.string.dollar)
         val currency =
-            currencyStore.getCurrency.collectAsState(initial = stringResource(id = R.string.dollar)).value
+            currencyStore.getCurrency.collectAsState(initial = defaultCurrency).value
+        val onClickRadioButton: (String) -> Unit = {
+            appViewModel.onClickRadioButton(context = context, currency = it)
+        }
 
         /**
          * Bottom bar
          */
-        val defaultPropertyId = if (properties.isNotEmpty()) properties[0].propertyId.toString() else NEW_ITEM_ID.toString()
+        val defaultPropertyId =
+            if (properties.isNotEmpty()) properties[0].propertyId.toString() else NULL_PROPERTY_ID.toString()
 
 
         /**

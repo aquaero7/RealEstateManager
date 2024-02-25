@@ -9,7 +9,7 @@ import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.aquaero.realestatemanager.NEW_ITEM_ID
+import com.aquaero.realestatemanager.NULL_PROPERTY_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 
@@ -42,7 +42,7 @@ fun DetailScreenColumn2(
         image = Icons.Default.Person,
         contentDesc = stringResource(id = R.string.cd_agent),
         label = stringResource(id = R.string.agent),
-        value = if (property != null && property.propertyId != NEW_ITEM_ID) stringAgent else "",
+        value = if (property != null && property.propertyId != NULL_PROPERTY_ID) stringAgent else "",
 //        value = if (property != null) stringAgent else "",   // TODO: For test only
     )
     // Info registration date

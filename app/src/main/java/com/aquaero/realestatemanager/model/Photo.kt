@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import com.aquaero.realestatemanager.CACHE_EMPTY_STRING_VALUE
 import com.aquaero.realestatemanager.CACHE_LONG_ID_VALUE
 import com.aquaero.realestatemanager.CACHE_NULLABLE_VALUE
-import com.aquaero.realestatemanager.NO_ITEM_ID
+import com.aquaero.realestatemanager.NO_PHOTO_ID
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.primaryConstructor
 
@@ -53,7 +53,7 @@ data class Photo(
 
 }
 
-val NO_PHOTO = Photo(photoId = NO_ITEM_ID, uri = "", label = "", propertyId = NO_ITEM_ID)
+val NO_PHOTO = Photo(photoId = NO_PHOTO_ID, uri = "", label = "", propertyId = NO_PHOTO_ID)
 
 val CACHE_PHOTO = Photo(
     photoId = CACHE_LONG_ID_VALUE,

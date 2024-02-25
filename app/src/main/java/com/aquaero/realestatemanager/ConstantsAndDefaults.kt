@@ -25,7 +25,7 @@ const val propertyKey = "single_property"
 /**
  * Navigation routes.
  */
-enum class AppRoutes(val value: String) {
+enum class AppRoute(val value: String) {
     LIST(value = "list"),
     MAP(value = "map"),
     SEARCH(value = "search_criteria"),
@@ -41,6 +41,14 @@ const val TAB_FADE_IN_ANIMATION_DURATION = 150
 const val TAB_FADE_OUT_ANIMATION_DURATION = 100
 const val TAB_FADE_IN_ANIMATION_DELAY = 100
 const val INACTIVE_TAB_OPACITY = 0.60f
+
+
+// Language
+enum class Region(val language: String) {
+    US(language = "en"),
+    UK(language = "en"),
+    FR(language = "fr")
+}
 
 
 // Dropdown menus
@@ -117,13 +125,12 @@ val DP_CONTAINER_COLOR = PurpleGrey40
 
 
 // Miscellaneous
-const val NEW_ITEM_ID = 0L
 const val UNASSIGNED_ID = 1L    // For unassigned Agent
-const val NO_ITEM_ID = -1L  // For empty photo
+const val NULL_PROPERTY_ID = 0L
+//val NULL_PROPERTY_ID = null // TODO: Test
+const val NO_PHOTO_ID = -1L
 const val PHOTO_DELETION = "photoDeletion"
 const val DATE_PATTERN = "yyyy-MM-dd"
-const val DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm"
-const val DATE_LENGTH = 10 // Equals to "####-##-##".count
 const val RATE_OF_DOLLAR_IN_EURO = 0.812
 
 

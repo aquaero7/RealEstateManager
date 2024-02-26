@@ -2,16 +2,13 @@ package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,11 +29,9 @@ import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.ui.component.app.AppTabRow
 import com.aquaero.realestatemanager.ui.component.app.AppTopBar
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
-import com.aquaero.realestatemanager.utils.CurrencyStore
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
-import com.aquaero.realestatemanager.viewmodel.DetailViewModel
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
-import com.aquaero.realestatemanager.viewmodel.ListViewModel
+import com.aquaero.realestatemanager.viewmodel.ListAndDetailViewModel
 import com.aquaero.realestatemanager.viewmodel.LoanViewModel
 import com.aquaero.realestatemanager.viewmodel.MapViewModel
 import com.aquaero.realestatemanager.viewmodel.SearchViewModel
@@ -46,8 +41,7 @@ class RealEstateManagerActivity : ComponentActivity() {
 
     // Init ViewModels
     private val appViewModel by viewModels<AppViewModel> { ViewModelFactory }
-    private val listViewModel by viewModels<ListViewModel> { ViewModelFactory }
-    private val detailViewModel by viewModels<DetailViewModel> { ViewModelFactory }
+    private val listAndDetailViewModel by viewModels<ListAndDetailViewModel> { ViewModelFactory }
     private val editViewModel by viewModels<EditViewModel> { ViewModelFactory }
     private val mapViewModel by viewModels<MapViewModel> { ViewModelFactory }
     private val searchViewModel by viewModels<SearchViewModel> { ViewModelFactory }
@@ -60,8 +54,7 @@ class RealEstateManagerActivity : ComponentActivity() {
             RealEstateManagerApp(
                 activity = this,
                 appViewModel = appViewModel,
-                listViewModel = listViewModel,
-                detailViewModel = detailViewModel,
+                listAndDetailViewModel = listAndDetailViewModel,
                 editViewModel = editViewModel,
                 mapViewModel = mapViewModel,
                 searchViewModel = searchViewModel,
@@ -84,8 +77,7 @@ class RealEstateManagerActivity : ComponentActivity() {
 fun RealEstateManagerApp(
     activity: Activity,
     appViewModel: AppViewModel,
-    listViewModel: ListViewModel,
-    detailViewModel: DetailViewModel,
+    listAndDetailViewModel: ListAndDetailViewModel,
     editViewModel: EditViewModel,
     mapViewModel: MapViewModel,
     searchViewModel: SearchViewModel,
@@ -104,7 +96,7 @@ fun RealEstateManagerApp(
         val stringTypes: MutableList<String> by appViewModel.stringTypesOrderedById(context = context).collectAsState(initial = mutableListOf())
         val stringAgents: MutableList<String> by appViewModel.stringAgentsOrderedByName(context = context).collectAsState(initial = mutableListOf())
 
-        /**
+        /*
          * Init content type, according to window's width,
          * to choose dynamically, on screen state changes, whether to show
          * just a list content, or both a list and detail content
@@ -112,29 +104,35 @@ fun RealEstateManagerApp(
         val windowSize = calculateWindowSizeClass(activity = activity).widthSizeClass
         val contentType: AppContentType = appViewModel.contentType(windowSize = windowSize)
 
-        /**
+        /*
          * Init navigation data
          */
         val tabRowScreens = tabRowScreens
         val navController = rememberNavController()
         // Fetch current destination
         val currentBackStack by navController.currentBackStackEntryAsState()
-        val propertyId = currentBackStack?.arguments?.getString(propertyKey) ?: NULL_PROPERTY_ID
+        val defaultPropertyId = if (properties.isNotEmpty()) properties[0].propertyId else NULL_PROPERTY_ID
+        val propertyId = currentBackStack?.arguments?.getString(propertyKey) ?: defaultPropertyId
         val currentDestination = currentBackStack?.destination
         val currentScreen = currentDestination?.route
         // Use 'ListAndDetail' as a backup screen if the returned value is null
         val currentTabScreen = tabRowScreens.find { it.route == currentScreen } ?: ListAndDetail
 
-        /**
+        /*
          * TopBar
          */
         // TopBar Menu
+        val propertySelected = currentBackStack?.arguments?.getBoolean(selectedKey) ?: false
         val menuIcon = appViewModel.menuIcon(currentScreen = currentScreen)
         val menuIconContentDesc = stringResource(appViewModel.menuIconContentDesc(currentScreen = currentScreen))
-        val menuEnabled = appViewModel.menuEnabled(currentScreen = currentScreen, windowSize = windowSize)
+        val menuEnabled = appViewModel.menuEnabled(
+            currentScreen = currentScreen,
+            windowSize = windowSize,
+            propertySelected = propertySelected
+        )
         val onClickMenu: () -> Unit = when (currentScreen) {
-            ListAndDetail.routeWithArgs, Detail.routeWithArgs -> {
-                { detailViewModel.onClickMenu(navController = navController, propertyId = propertyId) }
+            ListAndDetail.routeWithArgs -> {
+                { listAndDetailViewModel.onClickMenu(navController = navController, propertyId = propertyId) }
             }
             EditDetail.routeWithArgs -> {
                 { editViewModel.onClickMenu(navController = navController, context = context) }
@@ -158,14 +156,8 @@ fun RealEstateManagerApp(
             appViewModel.onClickRadioButton(context = context, currency = it)
         }
 
-        /**
-         * Bottom bar
-         */
-        val defaultPropertyId =
-            if (properties.isNotEmpty()) properties[0].propertyId.toString() else NULL_PROPERTY_ID.toString()
 
-
-        /**
+        /*
          * Composable
          */
         Scaffold(
@@ -185,7 +177,7 @@ fun RealEstateManagerApp(
                     onTabSelected = { newScreen ->
                         navController.navigateSingleTopTo(
                             destination = newScreen,
-                            propertyId = defaultPropertyId
+                            propertyId = propertyId.toString()
                         )
                     },
                     currentScreen = currentTabScreen,
@@ -208,8 +200,7 @@ fun RealEstateManagerApp(
                 stringTypes = stringTypes,
                 stringAgents = stringAgents,
                 appViewModel = appViewModel,
-                listViewModel = listViewModel,
-                detailViewModel = detailViewModel,
+                listAndDetailViewModel = listAndDetailViewModel,
                 editViewModel = editViewModel,
                 mapViewModel = mapViewModel,
                 searchViewModel = searchViewModel,

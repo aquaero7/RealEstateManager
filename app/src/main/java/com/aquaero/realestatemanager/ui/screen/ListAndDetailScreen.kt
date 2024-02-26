@@ -19,6 +19,7 @@ import com.aquaero.realestatemanager.model.Property
 @SuppressLint("NewApi")
 @Composable
 fun ListAndDetailScreen(
+    propertySelected: Boolean,
     // For list screen only
     contentType: AppContentType,
     items: List<Property>,
@@ -43,20 +44,22 @@ fun ListAndDetailScreen(
     onBackPressed: () -> Unit,
 ) {
     Row {
-        Column(
-            modifier = Modifier.weight(1F)
-        ) {
-            ListScreen(
-                property = property,
-                currency = currency,
-                contentType = contentType,
-                items = items,
-                addresses = addresses,
-                photos = photos,
-                itemType = itemType,
-                onPropertyClick = onPropertyClick,
-                onFabClick = onFabClick,
-            )
+        if (contentType == AppContentType.LIST_AND_DETAIL || !propertySelected) {
+            Column(
+                modifier = Modifier.weight(1F)
+            ) {
+                ListScreen(
+                    property = property,
+                    currency = currency,
+                    contentType = contentType,
+                    items = items,
+                    addresses = addresses,
+                    photos = photos,
+                    itemType = itemType,
+                    onPropertyClick = onPropertyClick,
+                    onFabClick = onFabClick,
+                )
+            }
         }
         if (contentType == AppContentType.LIST_AND_DETAIL) {
             HorizontalDivider(
@@ -65,6 +68,8 @@ fun ListAndDetailScreen(
                     .fillMaxHeight(),
                 color = Color.LightGray
             )
+        }
+        if (contentType == AppContentType.LIST_AND_DETAIL || propertySelected) {
             Column(
                 modifier = Modifier.weight(2F)
             ) {

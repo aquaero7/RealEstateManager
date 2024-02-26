@@ -28,8 +28,11 @@ object ListAndDetail: AppDestination {
     override val icon = Icons.AutoMirrored.Filled.ViewList
     override val route = AppRoute.LIST.value
     override val labelResId = R.string.list
-    val routeWithArgs = "$route/{$propertyKey}"
-    val arguments = listOf(navArgument(propertyKey) { type = NavType.StringType })
+    val routeWithArgs = "$route/{$propertyKey}/{$selectedKey}"
+    val arguments = listOf(
+        navArgument(propertyKey) { type = NavType.StringType },
+        navArgument(selectedKey) { type = NavType.BoolType }
+    )
 }
 
 object GeolocMap: AppDestination {
@@ -48,15 +51,6 @@ object Loan: AppDestination {
     override val icon = Icons.Filled.AccountBalance
     override val route = AppRoute.LOAN.value
     override val labelResId = R.string.loan
-}
-
-/* Destination not displayed in the bottom TabRow */
-object Detail: AppDestination {
-    override val icon = Icons.Filled.Details
-    override val route = AppRoute.DETAIL.value
-    override val labelResId = R.string.detail
-    val routeWithArgs = "$route/{$propertyKey}"
-    val arguments = listOf(navArgument(propertyKey) { type = NavType.StringType })
 }
 
 /* Destination not displayed in the bottom TabRow */

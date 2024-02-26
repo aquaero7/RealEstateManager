@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
@@ -10,6 +11,7 @@ import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
 import com.aquaero.realestatemanager.model.Type
+import com.aquaero.realestatemanager.navigateToEditDetail
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.LocationRepository
@@ -19,7 +21,7 @@ import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.ConnectionState
 
-class ListViewModel(
+class ListAndDetailViewModel(
     private val propertyRepository: PropertyRepository,
     private val addressRepository: AddressRepository,
     private val photoRepository: PhotoRepository,
@@ -28,6 +30,13 @@ class ListViewModel(
     private val poiRepository: PoiRepository,
     private val locationRepository: LocationRepository,
 ) : ViewModel() {
+
+    fun onClickMenu(
+        navController: NavHostController,
+        propertyId: Comparable<*>
+    ) {
+        navController.navigateToEditDetail(propertyId = propertyId.toString())
+    }
 
     fun checkForConnection(connection: ConnectionState): Boolean {
         return locationRepository.checkForConnection(connection)

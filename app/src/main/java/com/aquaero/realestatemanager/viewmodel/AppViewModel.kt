@@ -77,12 +77,13 @@ class AppViewModel(
 
     fun menuIconContentDesc(currentScreen: String?) = if (
         currentScreen == EditDetail.routeWithArgs ||
+        currentScreen == SearchCriteria.route ||
         currentScreen == Loan.route
     ) R.string.cd_check else R.string.cd_edit
 
-    fun menuEnabled(currentScreen: String?, windowSize: WindowWidthSizeClass) = (
-            currentScreen != GeolocMap.route) &&
-            (currentScreen != ListAndDetail.routeWithArgs ||
+    fun menuEnabled(currentScreen: String?, windowSize: WindowWidthSizeClass, propertySelected: Boolean) =
+        (currentScreen != GeolocMap.route) &&
+            (currentScreen != ListAndDetail.routeWithArgs || propertySelected ||
                     contentType(windowSize) == AppContentType.LIST_AND_DETAIL)
 
     fun onClickRadioButton(context: Context, currency: String) {

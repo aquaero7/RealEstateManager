@@ -21,15 +21,16 @@ import com.aquaero.realestatemanager.navigateToDetail
 import com.aquaero.realestatemanager.navigateToEditDetail
 import com.aquaero.realestatemanager.ui.screen.ListAndDetailScreen
 import com.aquaero.realestatemanager.utils.connectivityState
-import com.aquaero.realestatemanager.viewmodel.ListViewModel
+import com.aquaero.realestatemanager.viewmodel.ListAndDetailViewModel
 
 @Composable
 fun ListAndDetailComposable(
+    propertySelected: Boolean,
     // For list screen only
     contentType: AppContentType,
     // For both list and detail screens
     navController: NavHostController,
-    listViewModel: ListViewModel,
+    listAndDetailViewModel: ListAndDetailViewModel,
     currency: String,
     properties: MutableList<Property>,
     types: MutableList<Type>,
@@ -46,10 +47,9 @@ fun ListAndDetailComposable(
 ) {
     /* For list screen only */
     val itemType: (String) -> String = { typeId ->
-        listViewModel.itemType(typeId, types, stringTypes)
+        listAndDetailViewModel.itemType(typeId, types, stringTypes)
     }
     val onPropertyClick: (Long) -> Unit = { propId ->
-//        if (contentType == AppContentType.LIST_AND_DETAIL) navController.popBackStack()   // TODO: To be deleted
         navController.navigateToDetail(propertyId = propId.toString(), contentType = contentType)
     }
     val onFabClick = {
@@ -59,32 +59,32 @@ fun ListAndDetailComposable(
 
     /* For both list and detail screens */
     val property = propertyId?.let {
-        if (it != NULL_PROPERTY_ID && properties.isNotEmpty()) listViewModel.propertyFromId(
+        if (it != NULL_PROPERTY_ID && properties.isNotEmpty()) listAndDetailViewModel.propertyFromId(
             propertyId = it,
             properties = properties
-        ) else null
+        )else null
     }
 
 
     /* For detail screen only */
     val itemPhotos =
-        propertyId?.let { listViewModel.itemPhotos(propertyId = it, photos = photos)
+        propertyId?.let { listAndDetailViewModel.itemPhotos(propertyId = it, photos = photos)
         } ?: mutableListOf(NO_PHOTO)
     val itemPois = propertyId?.let {
-        listViewModel.itemPois(propertyId = it, propertyPoiJoins = propertyPoiJoins, pois = pois)
+        listAndDetailViewModel.itemPois(propertyId = it, propertyPoiJoins = propertyPoiJoins, pois = pois)
     } ?: mutableListOf()
     val stringType = property?.let {
-        listViewModel.stringType(typeId = property.typeId, types = types, stringTypes = stringTypes)
+        listAndDetailViewModel.stringType(typeId = property.typeId, types = types, stringTypes = stringTypes)
     } ?: ""
     val stringAgent = property?.let {
-        listViewModel.stringAgent(agentId = property.agentId, agents = agents, stringAgents = stringAgents)
+        listAndDetailViewModel.stringAgent(agentId = property.agentId, agents = agents, stringAgents = stringAgents)
     } ?: ""
     val stringAddress = property?.addressId?.let { addressId ->
-        listViewModel.stringAddress(addressId = addressId, addresses = addresses)
+        listAndDetailViewModel.stringAddress(addressId = addressId, addresses = addresses)
     } ?: ""
     fun stringLatLngItem(latLngItem: String): String {
         return property?.addressId?.let { addressId ->
-            listViewModel.stringLatLngItem(
+            listAndDetailViewModel.stringLatLngItem(
                 addressId = addressId,
                 addresses = addresses,
                 latLngItem = latLngItem,
@@ -93,14 +93,15 @@ fun ListAndDetailComposable(
         } ?: ""
     }
     val thumbnailUrl = property?.addressId?.let { addressId ->
-        if (addresses.isNotEmpty()) listViewModel.thumbnailUrl(addressId = addressId, addresses = addresses) else ""
+        if (addresses.isNotEmpty()) listAndDetailViewModel.thumbnailUrl(addressId = addressId, addresses = addresses) else ""
     } ?: ""
     val connection by connectivityState()
-    val internetAvailable = listViewModel.checkForConnection(connection = connection)
+    val internetAvailable = listAndDetailViewModel.checkForConnection(connection = connection)
     val networkAvailable by remember(internetAvailable) { mutableStateOf(internetAvailable) }
     val onBackPressed: () -> Unit = { navController.popBackStack() }
 
     ListAndDetailScreen(
+        propertySelected = propertySelected,
         // For list screen only
         contentType = contentType,
         items = properties,

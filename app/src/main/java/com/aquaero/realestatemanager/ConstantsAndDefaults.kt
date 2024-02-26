@@ -17,10 +17,15 @@ enum class AppContentType {
     LIST_AND_DETAIL,
 }
 
+enum class NavSelection {
+    LIST,
+    DETAIL,
+}
+
 
 // AppDestinations
 const val propertyKey = "single_property"
-
+const val selectedKey = "property_selected"
 
 /**
  * Navigation routes.
@@ -127,7 +132,6 @@ val DP_CONTAINER_COLOR = PurpleGrey40
 // Miscellaneous
 const val UNASSIGNED_ID = 1L    // For unassigned Agent
 const val NULL_PROPERTY_ID = 0L
-//val NULL_PROPERTY_ID = null // TODO: Test
 const val NO_PHOTO_ID = -1L
 const val PHOTO_DELETION = "photoDeletion"
 const val DATE_PATTERN = "yyyy-MM-dd"

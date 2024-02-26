@@ -45,11 +45,8 @@ object ViewModelFactory:  ViewModelProvider.Factory {
         return if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
             AppViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
                 typeRepository, poiRepository, propertyPoiJoinRepository) as T
-        } else if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
-            ListViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
-                typeRepository, poiRepository, locationRepository) as T
-        } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
-            DetailViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
+        } else if (modelClass.isAssignableFrom(ListAndDetailViewModel::class.java)) {
+            ListAndDetailViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
                 typeRepository, poiRepository, locationRepository) as T
         } else if (modelClass.isAssignableFrom(EditViewModel::class.java)) {
             EditViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,

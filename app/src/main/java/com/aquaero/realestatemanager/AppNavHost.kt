@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -15,16 +16,14 @@ import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
 import com.aquaero.realestatemanager.model.Type
-import com.aquaero.realestatemanager.ui.composable.DetailComposable
 import com.aquaero.realestatemanager.ui.composable.EditComposable
 import com.aquaero.realestatemanager.ui.composable.ListAndDetailComposable
 import com.aquaero.realestatemanager.ui.composable.LoanComposable
 import com.aquaero.realestatemanager.ui.composable.MapComposable
 import com.aquaero.realestatemanager.ui.composable.SearchComposable
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
-import com.aquaero.realestatemanager.viewmodel.DetailViewModel
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
-import com.aquaero.realestatemanager.viewmodel.ListViewModel
+import com.aquaero.realestatemanager.viewmodel.ListAndDetailViewModel
 import com.aquaero.realestatemanager.viewmodel.LoanViewModel
 import com.aquaero.realestatemanager.viewmodel.MapViewModel
 import com.aquaero.realestatemanager.viewmodel.SearchViewModel
@@ -46,8 +45,7 @@ fun AppNavHost(
     stringTypes: MutableList<String>,
     stringAgents: MutableList<String>,
     appViewModel: AppViewModel,
-    listViewModel: ListViewModel,
-    detailViewModel: DetailViewModel,
+    listAndDetailViewModel: ListAndDetailViewModel,
     editViewModel: EditViewModel,
     mapViewModel: MapViewModel,
     searchViewModel: SearchViewModel,
@@ -61,18 +59,19 @@ fun AppNavHost(
     ) {
 
         composable(
-            route = ListAndDetail.routeWithArgs, arguments = ListAndDetail.arguments
+            route = ListAndDetail.routeWithArgs,
+            arguments = ListAndDetail.arguments
         ) { navBackStackEntry ->
-            (navBackStackEntry.arguments?.getString(propertyKey)).also {
-                val propertyId = it?.let {
-                    navBackStackEntry.arguments!!.getString(propertyKey)!!.toLong()
-                }
+            navBackStackEntry.arguments?.let {
+                val propertyId = it.getString(propertyKey)?.toLong()
+                val propertySelected = it.getBoolean(selectedKey)
                 ListAndDetailComposable(
+                    propertySelected = propertySelected,
                     // For list screen only
                     contentType = contentType,
                     // For both list and detail screens
                     navController = navController,
-                    listViewModel = listViewModel,
+                    listAndDetailViewModel = listAndDetailViewModel,
                     currency = currency,
                     properties = properties,
                     types = types,
@@ -92,7 +91,7 @@ fun AppNavHost(
 
         composable(route = GeolocMap.route) {
             MapComposable(
-                context = context,
+                context = LocalContext.current,
                 mapViewModel = mapViewModel,
                 properties = properties,
                 addresses = addresses,
@@ -108,29 +107,6 @@ fun AppNavHost(
 
         composable(route = Loan.route) {
             LoanComposable()
-        }
-
-        composable(
-            route = Detail.routeWithArgs,
-            arguments = Detail.arguments
-        ) { navBackStackEntry ->
-            val propertyId = navBackStackEntry.arguments!!.getString(propertyKey)!!.toLong()
-            DetailComposable(
-                propertyId = propertyId,
-                context = context,
-                navController = navController,
-                detailViewModel = detailViewModel,
-                currency = currency,
-                properties = properties,
-                types = types,
-                stringTypes = stringTypes,
-                agents = agents,
-                stringAgents = stringAgents,
-                addresses = addresses,
-                photos = photos,
-                pois = pois,
-                propertyPoiJoins = propertyPoiJoins,
-            )
         }
 
         composable(
@@ -159,8 +135,9 @@ fun AppNavHost(
 }
 
 fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String?) {
+    val selected = false
     val route =
-        if (destination == ListAndDetail) "${destination.route}/${propertyId}" else destination.route
+        if (destination == ListAndDetail) "${destination.route}/${propertyId}/${selected}" else destination.route
     this.navigate(route = route) {
         popUpTo(id = this@navigateSingleTopTo.graph.findStartDestination().id) { saveState = false }
         launchSingleTop = true
@@ -170,10 +147,10 @@ fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyI
 
 fun NavHostController.navigateToDetail(propertyId: String, contentType: AppContentType) {
     if (contentType == AppContentType.LIST_OR_DETAIL) {
-        this.navigate(route = "${Detail.route}/$propertyId")
+        val selected = true
+        this.navigate(route = "${ListAndDetail.route}/$propertyId/$selected")
     } else {
         this.navigateSingleTopTo(destination = ListAndDetail, propertyId = propertyId)
-//        this.navigate(route = "${ListAndDetail.route}/${propertyId}") // TODO: To be deleted
     }
 }
 

@@ -1,5 +1,7 @@
 package com.aquaero.realestatemanager.ui.screen
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -33,7 +35,6 @@ import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Property
-import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.ui.component.list_screen.PropertyCard
 import com.aquaero.realestatemanager.ui.theme.White
 
@@ -48,7 +49,11 @@ fun ListScreen(
     itemType: (String) -> String,
     onPropertyClick: (Long) -> Unit,
     onFabClick: () -> Unit,
+    onBackPressed: () -> Unit,
 ) {
+
+
+
     Scaffold (
         floatingActionButton = {
             SmallFloatingActionButton(
@@ -115,4 +120,11 @@ fun ListScreen(
             }
         }
     }
+
+    // To manage back nav
+    BackHandler(true) {
+        Log.w("OnBackPressed", "ListScreen OnBackPressed")
+        onBackPressed()
+    }
+
 }

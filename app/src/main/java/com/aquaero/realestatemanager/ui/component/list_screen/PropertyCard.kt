@@ -56,7 +56,8 @@ fun PropertyCard(
             .fillMaxWidth()
             .wrapContentHeight()
             .border(
-                if (selected) BorderStroke(width = 2.dp, color = Yellow)
+                if (selected && contentType == AppContentType.LIST_AND_DETAIL
+                    && !unselectedByDefaultDisplay) BorderStroke(width = 2.dp, color = Yellow)
                 else BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSurface)
             )
             .clickable {

@@ -108,11 +108,12 @@ fun DetailScreen(
             stringLatitude = stringLatitude,
             stringLongitude = stringLongitude,
         )
-
-        // To manage back nav
-        BackHandler(true) {
-            Log.w("TAG", "OnBackPressed")
-            run(onBackPressed)
-        }
     }
+
+    // To manage back nav
+    BackHandler(true) {
+        Log.w("OnBackPressed", "DetailScreen OnBackPressed")
+        onBackPressed()
+    }
+
 }

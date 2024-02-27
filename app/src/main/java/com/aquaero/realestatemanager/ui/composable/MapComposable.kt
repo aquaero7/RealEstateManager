@@ -24,6 +24,7 @@ fun MapComposable(
     mapViewModel: MapViewModel,
     properties: MutableList<Property>,
     addresses: MutableList<Address>,
+    popBackStack: () -> Unit,
 ) {
     // Get network connection availability
     val connection by connectivityState()
@@ -46,6 +47,7 @@ fun MapComposable(
                 startLocationUpdates = startLocationUpdates,
                 stopLocationUpdates = stopLocationUpdates,
                 getLocationUpdates = getLocationUpdates,
+                popBackStack = popBackStack,
             )
         } else {
             val onOpenAppSettings = { mapViewModel.openAppSettings(context = context) }
@@ -54,10 +56,15 @@ fun MapComposable(
             LocationPermissionsScreen(
                 onOpenAppSettings = onOpenAppSettings,
                 onPermissionsGranted = onPermissionsGranted,
+                popBackStack = popBackStack,
             )
         }
     } else {
         // No network
-        MapScreenNoMap(stringResource(id = R.string.network_unavailable))
+        MapScreenNoMap(
+            infoText = stringResource(id = R.string.network_unavailable),
+            popBackStack = popBackStack,
+        )
     }
+
 }

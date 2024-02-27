@@ -35,6 +35,7 @@ fun ListAndDetailComposable(
     properties: MutableList<Property>,
     types: MutableList<Type>,
     stringTypes: MutableList<String>,
+    closeApp: () -> Unit,
     // For detail screen only
     propertyId: Long?,
     context: Context,
@@ -43,14 +44,25 @@ fun ListAndDetailComposable(
     addresses: MutableList<Address>,
     photos: MutableList<Photo>,
     pois: MutableList<Poi>,
-    propertyPoiJoins: MutableList<PropertyPoiJoin>
+    propertyPoiJoins: MutableList<PropertyPoiJoin>,
+    popBackStack: () -> Unit,
 ) {
+    /*
+     * In 'list and detail' mode, displays the details of the first property in the list if
+     * the latter is not empty and no other property is selected (for example when launching the app).
+     */
+    // This lambda is also for the use of list screen
+    val onPropertyClick: (Long) -> Unit = { propId ->
+        navController.navigateToDetail(propertyId = propId.toString(), contentType = contentType)
+    }
+    if (propertyId == null && contentType == AppContentType.LIST_AND_DETAIL && properties.isNotEmpty()) {
+        onPropertyClick(properties[0].propertyId)
+    }
+
+
     /* For list screen only */
     val itemType: (String) -> String = { typeId ->
         listAndDetailViewModel.itemType(typeId, types, stringTypes)
-    }
-    val onPropertyClick: (Long) -> Unit = { propId ->
-        navController.navigateToDetail(propertyId = propId.toString(), contentType = contentType)
     }
     val onFabClick = {
         navController.navigateToEditDetail(propertyId = NULL_PROPERTY_ID.toString())
@@ -98,7 +110,6 @@ fun ListAndDetailComposable(
     val connection by connectivityState()
     val internetAvailable = listAndDetailViewModel.checkForConnection(connection = connection)
     val networkAvailable by remember(internetAvailable) { mutableStateOf(internetAvailable) }
-    val onBackPressed: () -> Unit = { navController.popBackStack() }
 
     ListAndDetailScreen(
         propertySelected = propertySelected,
@@ -113,6 +124,7 @@ fun ListAndDetailComposable(
         // For both list and detail screens
         property = property,
         currency = currency,
+        closeApp = closeApp,
         // For detail screen only
         itemPhotos = itemPhotos,
         itemPois = itemPois,
@@ -123,6 +135,7 @@ fun ListAndDetailComposable(
         stringLongitude = stringLatLngItem(LatLngItem.LONGITUDE.name),
         thumbnailUrl = thumbnailUrl,
         networkAvailable = networkAvailable,
-        onBackPressed = onBackPressed,
+        popBackStack = popBackStack,
     )
+
 }

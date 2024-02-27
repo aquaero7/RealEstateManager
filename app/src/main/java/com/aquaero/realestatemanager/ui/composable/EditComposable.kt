@@ -13,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
-import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.aquaero.realestatemanager.NULL_PROPERTY_ID
 import com.aquaero.realestatemanager.R
@@ -32,7 +31,6 @@ import com.aquaero.realestatemanager.viewmodel.EditViewModel
 fun EditComposable(
     propertyId: Long,
     context: Context,
-    navController: NavHostController,
     editViewModel: EditViewModel,
     currency: String,
     properties: MutableList<Property>,
@@ -44,6 +42,7 @@ fun EditComposable(
     photos: MutableList<Photo>,
     pois: MutableList<Poi>,
     propertyPoiJoins: MutableList<PropertyPoiJoin>,
+    popBackStack: () -> Unit,
 ) {
     val property: Property? = if (propertyId != NULL_PROPERTY_ID && properties.isNotEmpty()) {
         // Edition mode
@@ -156,7 +155,7 @@ fun EditComposable(
 
     val onBackPressed: () -> Unit = {
         editViewModel.clearCache()
-        navController.popBackStack()
+        popBackStack()
     }
 
     // Connexion for address latLng update
@@ -204,4 +203,5 @@ fun EditComposable(
         onPhotoDeletionConfirmation = onPhotoDeletionConfirmation,
         onBackPressed = onBackPressed,
     )
+
 }

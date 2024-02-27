@@ -1,5 +1,7 @@
 package com.aquaero.realestatemanager.ui.component.map_screen
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,17 +17,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.Gray
 import com.aquaero.realestatemanager.ui.theme.Red
 
 @Composable
 fun MapScreenNoMap(
-    infoText: String
+    infoText: String,
+    popBackStack: () -> Unit,
 ) {
 
     Column(
@@ -52,6 +53,12 @@ fun MapScreenNoMap(
             color = Red,
         )
         Spacer(modifier = Modifier.height(40.dp))
+    }
+
+    // To manage back nav
+    BackHandler(true) {
+        Log.w("OnBackPressed", "MapScreenNoMap OnBackPressed")
+        popBackStack()
     }
 
 }

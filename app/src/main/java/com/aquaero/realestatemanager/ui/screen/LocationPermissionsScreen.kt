@@ -21,6 +21,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 fun LocationPermissionsScreen(
     onOpenAppSettings: () -> Unit,
     onPermissionsGranted: () -> Unit,
+    popBackStack: () -> Unit,
 ) {
     // Set the list of requested permissions
     val locationPermissionsState = rememberMultiplePermissionsState(LOCATION_PERMISSIONS)
@@ -80,7 +81,10 @@ fun LocationPermissionsScreen(
             // Both location permissions have been revoked and
             // the user denied to grant permissions in the app settings.
             // So the map isn't available.
-            MapScreenNoMap(infoText = stringResource(id = R.string.perms_revoked))
+            MapScreenNoMap(
+                infoText = stringResource(id = R.string.perms_revoked),
+                popBackStack = popBackStack,
+            )
         }
     }
 

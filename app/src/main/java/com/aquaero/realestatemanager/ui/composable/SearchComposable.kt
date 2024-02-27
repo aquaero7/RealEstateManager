@@ -10,13 +10,15 @@ import com.aquaero.realestatemanager.ui.screen.SearchScreen
 fun SearchComposable(
     navController: NavHostController,
     contentType: AppContentType,
+    popBackStack: () -> Unit,
 ) {
     val onButton1Click = { navController.navigateToDetail("1", contentType) }
     val onButton2Click = { navController.navigateToDetail("2", contentType) }
 
     SearchScreen(
         onButton1Click = onButton1Click,
-        onButton2Click = onButton2Click
+        onButton2Click = onButton2Click,
+        popBackStack = popBackStack,
     )
 
 }

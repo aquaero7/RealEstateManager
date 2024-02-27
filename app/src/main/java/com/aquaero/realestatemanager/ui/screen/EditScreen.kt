@@ -143,9 +143,11 @@ fun EditScreen(
         )
     }
 
+    // To manage back nav
     BackHandler(enabled = true) {
-        Log.w("TAG", "OnBackPressed")
-        run(onBackPressed)
+        Log.w("OnBackPressed", "EditScreen OnBackPressed")
+        onBackPressed()
     }
+
 }
 

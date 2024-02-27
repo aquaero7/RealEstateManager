@@ -51,6 +51,8 @@ fun AppNavHost(
     searchViewModel: SearchViewModel,
     loanViewModel: LoanViewModel,
     currency: String,
+    popBackStack: () -> Unit,
+    closeApp: () -> Unit,
 ) {
     NavHost(
         modifier = modifier,
@@ -76,6 +78,7 @@ fun AppNavHost(
                     properties = properties,
                     types = types,
                     stringTypes = stringTypes,
+                    closeApp = closeApp,
                     // For detail screen only
                     propertyId = propertyId,
                     context = context,
@@ -85,6 +88,7 @@ fun AppNavHost(
                     photos = photos,
                     pois = pois,
                     propertyPoiJoins = propertyPoiJoins,
+                    popBackStack = popBackStack,
                 )
             }
         }
@@ -95,18 +99,22 @@ fun AppNavHost(
                 mapViewModel = mapViewModel,
                 properties = properties,
                 addresses = addresses,
+                popBackStack = popBackStack,
             )
         }
 
         composable(route = SearchCriteria.route) {
             SearchComposable(
                 navController = navController,
-                contentType = contentType
+                contentType = contentType,
+                popBackStack = popBackStack,
             )
         }
 
         composable(route = Loan.route) {
-            LoanComposable()
+            LoanComposable(
+                popBackStack = popBackStack,
+            )
         }
 
         composable(
@@ -117,7 +125,6 @@ fun AppNavHost(
             EditComposable(
                 propertyId = propertyId,
                 context = context,
-                navController = navController,
                 editViewModel = editViewModel,
                 currency = currency,
                 properties = properties,
@@ -129,6 +136,7 @@ fun AppNavHost(
                 photos = photos,
                 pois = pois,
                 propertyPoiJoins = propertyPoiJoins,
+                popBackStack = popBackStack,
             )
         }
     }

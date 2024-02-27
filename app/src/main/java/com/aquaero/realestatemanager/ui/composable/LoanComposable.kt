@@ -5,7 +5,10 @@ import com.aquaero.realestatemanager.ui.screen.LoanScreen
 
 @Composable
 fun LoanComposable(
-
+    popBackStack: () -> Unit,
 ) {
-    LoanScreen()
+    LoanScreen(
+        popBackStack = popBackStack,
+    )
+
 }

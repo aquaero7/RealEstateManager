@@ -111,17 +111,28 @@ fun RealEstateManagerApp(
         val navController = rememberNavController()
         // Fetch current destination
         val currentBackStack by navController.currentBackStackEntryAsState()
+
+        /*  // TODO: To be deleted
         val defaultPropertyId = if (properties.isNotEmpty()) properties[0].propertyId else NULL_PROPERTY_ID
         val propertyId = currentBackStack?.arguments?.getString(propertyKey) ?: defaultPropertyId
         val currentDestination = currentBackStack?.destination
         val currentScreen = currentDestination?.route
         // Use 'ListAndDetail' as a backup screen if the returned value is null
         val currentTabScreen = tabRowScreens.find { it.route == currentScreen } ?: ListAndDetail
+        */
+        val (propertyId, currentScreen, currentTabScreen) =
+            appViewModel.fetchCurrentDestination(
+                currentBackStack = currentBackStack,
+                properties = properties,
+                tabRowScreens = tabRowScreens
+            )
+
 
         /*
          * TopBar
          */
         // TopBar Menu
+        /*  // TODO: To be deleted
         val propertySelected = currentBackStack?.arguments?.getBoolean(selectedKey) ?: false
         val menuIcon = appViewModel.menuIcon(currentScreen = currentScreen)
         val menuIconContentDesc = stringResource(appViewModel.menuIconContentDesc(currentScreen = currentScreen))
@@ -130,6 +141,14 @@ fun RealEstateManagerApp(
             windowSize = windowSize,
             propertySelected = propertySelected
         )
+        */
+        val (menuIcon, menuIconContentDesc, menuEnabled) = appViewModel.initTopBarMenu(
+            context = context,
+            currentBackStack = currentBackStack,
+            currentScreen = currentScreen,
+            windowSize = windowSize
+        )
+
         val onClickMenu: () -> Unit = when (currentScreen) {
             ListAndDetail.routeWithArgs -> {
                 { listAndDetailViewModel.onClickMenu(navController = navController, propertyId = propertyId) }
@@ -146,15 +165,24 @@ fun RealEstateManagerApp(
             else -> { {} }
         }
         // TopBar RadioButtons
+        /*  // TODO: To be deleted
         val currencyStore = appViewModel.currencyStore(context = context)
         val defaultCurrency =
             if (Locale.current.region == Region.FR.name) context.getString(R.string.euro)
             else context.getString(R.string.dollar)
         val currency =
             currencyStore.getCurrency.collectAsState(initial = defaultCurrency).value
+        */
+        val (currencyStore, defaultCurrency) = appViewModel.currencyElements(context)
+        val currency = currencyStore.getCurrency.collectAsState(initial = defaultCurrency).value
+
         val onClickRadioButton: (String) -> Unit = {
             appViewModel.onClickRadioButton(context = context, currency = it)
         }
+
+        // Back nav management
+        val popBackStack: () -> Unit = { navController.popBackStack() }
+        val closeApp: () -> Unit = { activity.finish() }
 
 
         /*
@@ -206,6 +234,8 @@ fun RealEstateManagerApp(
                 searchViewModel = searchViewModel,
                 loanViewModel = loanViewModel,
                 currency = currency,
+                popBackStack = popBackStack,
+                closeApp = closeApp,
             )
         }
 

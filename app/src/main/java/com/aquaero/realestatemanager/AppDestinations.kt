@@ -4,7 +4,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ManageSearch
 import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.AccountBalance
-import androidx.compose.material.icons.filled.Details
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.ui.graphics.vector.ImageVector

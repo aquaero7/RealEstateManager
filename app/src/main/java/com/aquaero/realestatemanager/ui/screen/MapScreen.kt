@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager.ui.screen
 
 import android.location.Location
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeOut
@@ -52,6 +53,7 @@ fun MapScreen(
     startLocationUpdates: () -> Unit,
     stopLocationUpdates: () -> Unit,
     getLocationUpdates: () -> StateFlow<Location?>,
+    popBackStack: () -> Unit,
 ) {
     DisposableEffect(key1 = Unit) {
         startLocationUpdates()
@@ -153,6 +155,12 @@ fun MapScreen(
                 }
             }
         }
+    }
+
+    // To manage back nav
+    BackHandler(true) {
+        Log.w("OnBackPressed", "MapScreen OnBackPressed")
+        popBackStack()
     }
 
 }

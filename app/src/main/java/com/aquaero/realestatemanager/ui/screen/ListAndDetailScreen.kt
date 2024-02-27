@@ -31,6 +31,7 @@ fun ListAndDetailScreen(
     // For both list and detail screens
     property: Property?,
     currency: String,
+    closeApp: () -> Unit,
     // For detail screen only
     itemPhotos: MutableList<Photo>,
     itemPois: MutableList<Poi>,
@@ -41,7 +42,7 @@ fun ListAndDetailScreen(
     stringLongitude: String,
     thumbnailUrl: String,
     networkAvailable: Boolean,
-    onBackPressed: () -> Unit,
+    popBackStack: () -> Unit,
 ) {
     Row {
         if (contentType == AppContentType.LIST_AND_DETAIL || !propertySelected) {
@@ -58,6 +59,7 @@ fun ListAndDetailScreen(
                     itemType = itemType,
                     onPropertyClick = onPropertyClick,
                     onFabClick = onFabClick,
+                    onBackPressed = closeApp,
                 )
             }
         }
@@ -73,6 +75,9 @@ fun ListAndDetailScreen(
             Column(
                 modifier = Modifier.weight(2F)
             ) {
+                val onBackPressed =
+                    if (contentType == AppContentType.LIST_OR_DETAIL) popBackStack else closeApp
+
                 DetailScreen(
                     property = property,
                     currency = currency,
@@ -90,5 +95,6 @@ fun ListAndDetailScreen(
             }
         }
     }
+
 }
 

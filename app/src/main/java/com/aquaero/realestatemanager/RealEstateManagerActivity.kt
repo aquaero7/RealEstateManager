@@ -16,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.intl.Locale
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.aquaero.realestatemanager.model.Address
@@ -105,50 +104,29 @@ fun RealEstateManagerApp(
         val contentType: AppContentType = appViewModel.contentType(windowSize = windowSize)
 
         /*
-         * Init navigation data
+         * Navigation data
          */
         val tabRowScreens = tabRowScreens
         val navController = rememberNavController()
-        // Fetch current destination
+        // Fetch current screen
         val currentBackStack by navController.currentBackStackEntryAsState()
-
-        /*  // TODO: To be deleted
-        val defaultPropertyId = if (properties.isNotEmpty()) properties[0].propertyId else NULL_PROPERTY_ID
-        val propertyId = currentBackStack?.arguments?.getString(propertyKey) ?: defaultPropertyId
-        val currentDestination = currentBackStack?.destination
-        val currentScreen = currentDestination?.route
-        // Use 'ListAndDetail' as a backup screen if the returned value is null
-        val currentTabScreen = tabRowScreens.find { it.route == currentScreen } ?: ListAndDetail
-        */
         val (propertyId, currentScreen, currentTabScreen) =
-            appViewModel.fetchCurrentDestination(
+            appViewModel.navigationData(
                 currentBackStack = currentBackStack,
                 properties = properties,
                 tabRowScreens = tabRowScreens
             )
 
-
         /*
          * TopBar
          */
         // TopBar Menu
-        /*  // TODO: To be deleted
-        val propertySelected = currentBackStack?.arguments?.getBoolean(selectedKey) ?: false
-        val menuIcon = appViewModel.menuIcon(currentScreen = currentScreen)
-        val menuIconContentDesc = stringResource(appViewModel.menuIconContentDesc(currentScreen = currentScreen))
-        val menuEnabled = appViewModel.menuEnabled(
-            currentScreen = currentScreen,
-            windowSize = windowSize,
-            propertySelected = propertySelected
-        )
-        */
-        val (menuIcon, menuIconContentDesc, menuEnabled) = appViewModel.initTopBarMenu(
+        val (menuIcon, menuIconContentDesc, menuEnabled) = appViewModel.topBarMenu(
             context = context,
             currentBackStack = currentBackStack,
             currentScreen = currentScreen,
             windowSize = windowSize
         )
-
         val onClickMenu: () -> Unit = when (currentScreen) {
             ListAndDetail.routeWithArgs -> {
                 { listAndDetailViewModel.onClickMenu(navController = navController, propertyId = propertyId) }
@@ -165,22 +143,15 @@ fun RealEstateManagerApp(
             else -> { {} }
         }
         // TopBar RadioButtons
-        /*  // TODO: To be deleted
-        val currencyStore = appViewModel.currencyStore(context = context)
-        val defaultCurrency =
-            if (Locale.current.region == Region.FR.name) context.getString(R.string.euro)
-            else context.getString(R.string.dollar)
-        val currency =
-            currencyStore.getCurrency.collectAsState(initial = defaultCurrency).value
-        */
-        val (currencyStore, defaultCurrency) = appViewModel.currencyElements(context)
+        val (currencyStore, defaultCurrency) = appViewModel.currencyHelper(context)
         val currency = currencyStore.getCurrency.collectAsState(initial = defaultCurrency).value
-
         val onClickRadioButton: (String) -> Unit = {
             appViewModel.onClickRadioButton(context = context, currency = it)
         }
 
-        // Back nav management
+        /*
+         * Back navigation management
+         */
         val popBackStack: () -> Unit = { navController.popBackStack() }
         val closeApp: () -> Unit = { activity.finish() }
 
@@ -238,7 +209,6 @@ fun RealEstateManagerApp(
                 closeApp = closeApp,
             )
         }
-
     }
 
 }

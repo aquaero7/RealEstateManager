@@ -5,15 +5,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavDestination
 import com.aquaero.realestatemanager.AppContentType
 import com.aquaero.realestatemanager.AppDestination
-import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.EditDetail
 import com.aquaero.realestatemanager.GeolocMap
 import com.aquaero.realestatemanager.ListAndDetail
@@ -73,9 +70,9 @@ class AppViewModel(
     }
 
     /* Currency */
-    fun currencyStore(context: Context): CurrencyStore = CurrencyStore(context)
+    private fun currencyStore(context: Context): CurrencyStore = CurrencyStore(context)
 
-    fun currencyElements(context: Context): Pair<CurrencyStore, String> {
+    fun currencyHelper(context: Context): Pair<CurrencyStore, String> {
         val currencyStore = currencyStore(context = context)
         val defaultCurrency =
             if (Locale.current.region == Region.FR.name) context.getString(R.string.euro)
@@ -101,7 +98,7 @@ class AppViewModel(
         tabRowScreens: List<AppDestination>
     ): AppDestination = tabRowScreens.find { it.route == currentScreen } ?: ListAndDetail
 
-    fun fetchCurrentDestination(
+    fun navigationData(
         currentBackStack: NavBackStackEntry?,
         properties: MutableList<Property>,
         tabRowScreens: List<AppDestination>,
@@ -109,31 +106,30 @@ class AppViewModel(
         val propertyId = propertyId(currentBackStack, properties)
         val currentScreen = currentScreen(currentBackStack)
         val currentTabScreen = currentTabScreen(currentScreen, tabRowScreens)
-
         return Triple(propertyId, currentScreen, currentTabScreen)
     }
 
 
     /* TopBar */
 
-    fun menuIcon(currentScreen: String?) = if (
+    private fun menuIcon(currentScreen: String?) = if (
         currentScreen == EditDetail.routeWithArgs ||
         currentScreen == SearchCriteria.route ||
         currentScreen == Loan.route
     ) Icons.Default.Check else Icons.Default.Edit
 
-    fun menuIconContentDesc(currentScreen: String?) = if (
+    private fun menuIconContentDesc(currentScreen: String?) = if (
         currentScreen == EditDetail.routeWithArgs ||
         currentScreen == SearchCriteria.route ||
         currentScreen == Loan.route
     ) R.string.cd_check else R.string.cd_edit
 
-    fun menuEnabled(currentScreen: String?, windowSize: WindowWidthSizeClass, propertySelected: Boolean) =
+    private fun menuEnabled(currentScreen: String?, windowSize: WindowWidthSizeClass, propertySelected: Boolean) =
         (currentScreen != GeolocMap.route) &&
             (currentScreen != ListAndDetail.routeWithArgs || propertySelected ||
                     contentType(windowSize) == AppContentType.LIST_AND_DETAIL)
 
-    fun initTopBarMenu(
+    fun topBarMenu(
         context: Context,
         currentBackStack: NavBackStackEntry?,
         currentScreen: String?,
@@ -147,7 +143,6 @@ class AppViewModel(
             windowSize = windowSize,
             propertySelected = propertySelected
         )
-
         return Triple(menuIcon, menuIconContentDesc, menuEnabled)
     }
 

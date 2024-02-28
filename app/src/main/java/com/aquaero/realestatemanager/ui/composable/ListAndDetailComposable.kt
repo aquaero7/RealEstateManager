@@ -52,61 +52,38 @@ fun ListAndDetailComposable(
      * the latter is not empty and no other property is selected (for example when launching the app).
      */
     // This lambda is also for the use of list screen
-    val onPropertyClick: (Long) -> Unit = { propId ->
-        navController.navigateToDetail(propertyId = propId.toString(), contentType = contentType)
-    }
+    val onPropertyClick: (Long) -> Unit =
+        { listAndDetailViewModel.onPropertyClick(navController, it, contentType) }
     if (propertyId == null && contentType == AppContentType.LIST_AND_DETAIL && properties.isNotEmpty()) {
         onPropertyClick(properties[0].propertyId)
     }
 
 
     /* For list screen only */
-    val itemType: (String) -> String = { typeId ->
-        listAndDetailViewModel.itemType(typeId, types, stringTypes)
-    }
-    val onFabClick = {
-        navController.navigateToEditDetail(propertyId = NULL_PROPERTY_ID.toString())
-    }
+    val itemType: (String) -> String = { listAndDetailViewModel.itemType(it, types, stringTypes) }
+    val onFabClick = { listAndDetailViewModel.onFabClick(navController) }
 
 
-    /* For both list and detail screens */
-    val property = propertyId?.let {
-        if (it != NULL_PROPERTY_ID && properties.isNotEmpty()) listAndDetailViewModel.propertyFromId(
-            propertyId = it,
-            properties = properties
-        )else null
-    }
-
-
-    /* For detail screen only */
-    val itemPhotos =
-        propertyId?.let { listAndDetailViewModel.itemPhotos(propertyId = it, photos = photos)
-        } ?: mutableListOf(NO_PHOTO)
-    val itemPois = propertyId?.let {
-        listAndDetailViewModel.itemPois(propertyId = it, propertyPoiJoins = propertyPoiJoins, pois = pois)
-    } ?: mutableListOf()
-    val stringType = property?.let {
-        listAndDetailViewModel.stringType(typeId = property.typeId, types = types, stringTypes = stringTypes)
-    } ?: ""
-    val stringAgent = property?.let {
-        listAndDetailViewModel.stringAgent(agentId = property.agentId, agents = agents, stringAgents = stringAgents)
-    } ?: ""
-    val stringAddress = property?.addressId?.let { addressId ->
-        listAndDetailViewModel.stringAddress(addressId = addressId, addresses = addresses)
-    } ?: ""
-    fun stringLatLngItem(latLngItem: String): String {
-        return property?.addressId?.let { addressId ->
-            listAndDetailViewModel.stringLatLngItem(
-                addressId = addressId,
-                addresses = addresses,
-                latLngItem = latLngItem,
-                context = context
-            )
-        } ?: ""
-    }
-    val thumbnailUrl = property?.addressId?.let { addressId ->
-        if (addresses.isNotEmpty()) listAndDetailViewModel.thumbnailUrl(addressId = addressId, addresses = addresses) else ""
-    } ?: ""
+    /* For detail screen only, excepted 'property' for both list and detail screens */
+    val (itemData1, itemData2, itemData3) =
+        listAndDetailViewModel.itemData(
+            propertyId = propertyId,
+            properties = properties,
+            photos = photos,
+            propertyPoiJoins = propertyPoiJoins,
+            pois = pois,
+            types = types,
+            stringTypes = stringTypes,
+            agents = agents,
+            stringAgents = stringAgents,
+            addresses = addresses
+        )
+    val (property, itemPhotos, itemPois) = itemData1
+    val (stringType, stringAgent) = itemData2
+    val (stringAddress, thumbnailUrl) = itemData3
+    fun stringLatLngItem(latLngItem: String): String = listAndDetailViewModel.stringLatLngItem(
+        property = property, addresses = addresses, latLngItem = latLngItem, context = context
+    )
     val connection by connectivityState()
     val internetAvailable = listAndDetailViewModel.checkForConnection(connection = connection)
     val networkAvailable by remember(internetAvailable) { mutableStateOf(internetAvailable) }

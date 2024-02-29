@@ -52,7 +52,6 @@ fun MapComposable(
         } else {
             val onOpenAppSettings = { mapViewModel.openAppSettings(context = context) }
             val onPermissionsGranted = { locationPermissionsGranted = true }
-
             LocationPermissionsScreen(
                 onOpenAppSettings = onOpenAppSettings,
                 onPermissionsGranted = onPermissionsGranted,
@@ -61,8 +60,9 @@ fun MapComposable(
         }
     } else {
         // No network
+        val infoText = stringResource(id = R.string.network_unavailable)
         MapScreenNoMap(
-            infoText = stringResource(id = R.string.network_unavailable),
+            infoText = infoText,
             popBackStack = popBackStack,
         )
     }

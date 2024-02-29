@@ -90,9 +90,9 @@ class LocationRepository {
     }
 
     @SuppressLint("NewApi")
-    suspend fun getLocationFromAddress(context: Context, strAddress: String?, internetAvailable: Boolean): LatLng? =
+    suspend fun getLocationFromAddress(context: Context, strAddress: String?, isInternetAvailable: Boolean): LatLng? =
         suspendCoroutine { continuation ->
-            if (internetAvailable) {
+            if (isInternetAvailable) {
                 Geocoder(context).getFromLocationName(strAddress!!, 5,
                     object : Geocoder.GeocodeListener {
                         override fun onGeocode(address: MutableList<Address>) {

@@ -53,9 +53,10 @@
     <string name="recorded">Données enregistrées !</string>
     <string name="property_added">Propriété ajoutée à la liste !</string>
     <string name="not_recorded">Données non enregistrées !</string>
-    <string name="perms_revoked">Carte indisponible car\nles permissions de localisation\nont été refusées !</string>
+    <string name="loc_perms_revoked">Carte indisponible car\nles permissions de localisation\nont été refusées !</string>
     <string name="network_unavailable">Réseau indisponible !</string>
     <string name="address_incomplete">Adresse incomplète !</string>
+    <string name="camera_perm_revoked">Permission de l\'appareil photo refusée !</string>
     <string name="photo_deletion_dialog_title">Confirmation de suppression de photo</string>
     <string name="photo_deletion_dialog_text">Supprimer la photo %s ?</string>
     <string name="no_label">sans étiquette</string>

@@ -2,7 +2,6 @@ package com.aquaero.realestatemanager.ui.composable
 
 import android.content.Context
 import android.net.Uri
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -14,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import coil.compose.rememberAsyncImagePainter
-import com.aquaero.realestatemanager.NULL_PROPERTY_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
@@ -44,22 +42,15 @@ fun EditComposable(
     propertyPoiJoins: MutableList<PropertyPoiJoin>,
     popBackStack: () -> Unit,
 ) {
-    val property: Property? = if (propertyId != NULL_PROPERTY_ID && properties.isNotEmpty()) {
-        // Edition mode
-        editViewModel.propertyFromId(propertyId = propertyId, properties = properties)
-    } else {
-        // Creation mode
-        null
-    }
-    val stringType = property?.let {
-        editViewModel.stringType(typeId = it.typeId, types = types, stringTypes = stringTypes)
-    }
-    val stringAgent = property?.let {
-        editViewModel.stringAgent(agentId = it.agentId, agents = agents, stringAgents = stringAgents)
-    }
-    val address = property?.let {
-        editViewModel.address(property.addressId, addresses)
-    }
+    val property: Property? = editViewModel.property(propertyId = propertyId, properties = properties)
+    val (stringType, stringAgent, address) = editViewModel.itemData(
+        property = property,
+        types = types,
+        stringTypes = stringTypes,
+        agents = agents,
+        stringAgents = stringAgents,
+        addresses = addresses
+    )
     val itemPhotos = editViewModel.itemPhotos(propertyId = propertyId, photos = photos)
     val itemPois = editViewModel.itemPois(
         propertyId = propertyId, propertyPoiJoins = propertyPoiJoins, pois = pois
@@ -74,7 +65,7 @@ fun EditComposable(
         editViewModel.onPoiClick(poiItem = poiItem, isSelected = isSelected)
     }
 
-    /**
+    /*
      * Photo shooting and picking
      */
     var buttonSavePhotoEnabled by remember { mutableStateOf(false) }
@@ -82,7 +73,7 @@ fun EditComposable(
     val painterResource = painterResource(id = R.drawable.baseline_add_a_photo_black_24)
     var painter by remember { mutableStateOf(painterResource) }
 
-    /**
+    /*
      * Photo shooting
      */
     val cameraUri: Uri = editViewModel.getPhotoUri(context = context)
@@ -90,37 +81,36 @@ fun EditComposable(
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { capturedImageUri = cameraUri }
-    val permissionLauncher = rememberLauncherForActivityResult(
+    val camPermLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) {
-        if (it) {
-            cameraLauncher.launch(cameraUri)
-        } else {
-            Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
-        }
+        editViewModel.onResponseToCamPermRequest(
+            isGranted = it, cameraLauncher = cameraLauncher, cameraUri = cameraUri, context = context
+        )
     }
     val onShootPhotoMenuItemClick: () -> Unit = {
         editViewModel.onShootPhotoMenuItemClick(
-            context = context, uri = cameraUri, cameraLauncher = cameraLauncher, permissionLauncher = permissionLauncher,
+            context = context,
+            uri = cameraUri,
+            cameraLauncher = cameraLauncher,
+            camPermLauncher = camPermLauncher,
         )
     }
 
-    /**
+    /*
      * Photo picking
      */
     var pickerUri by remember { mutableStateOf(Uri.EMPTY) }
     val pickerLauncher =
-        rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.PickVisualMedia()
-        ) {
-            //When the user selects a photo, its URI is returned here
-                uri -> if (uri != null) { pickerUri = uri }
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
+            // When the user selects a photo, its URI is returned here
+            uri -> if (uri != null) { pickerUri = uri }
         }
     val onSelectPhotoMenuItemClick: () -> Unit = {
         editViewModel.onSelectPhotoMenuItemClick(pickerLauncher = pickerLauncher)
     }
 
-    /**
+    /*
      * Photo shooting and picking
      */
     val uris = editViewModel.checkUris(
@@ -149,8 +139,8 @@ fun EditComposable(
         photoToAddUri = editResult.first
         buttonSavePhotoEnabled = editResult.second
     }
-    val onPhotoDeletionConfirmation: (Long) -> Unit = { photoId ->
-        editViewModel.onPhotoDeletionConfirmation(propertyId = propertyId, photoId = photoId)
+    val onPhotoDeletionConfirmation: (Long) -> Unit = {
+        editViewModel.onPhotoDeletionConfirmation(propertyId = propertyId, photoId = it)
     }
 
     val onBackPressed: () -> Unit = {

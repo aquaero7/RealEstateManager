@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.DropdownMenuCategory
 import com.aquaero.realestatemanager.Field
+import com.aquaero.realestatemanager.NULL_PROPERTY_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
@@ -87,24 +88,64 @@ class EditViewModel(
 
     fun onClickMenu(navController: NavHostController, context: Context) { updateRoomWithCacheData(navController, context) }
 
-    fun propertyFromId(propertyId: Long, properties: MutableList<Property>): Property? {
+    private fun propertyFromId(propertyId: Long, properties: MutableList<Property>): Property? {
         return propertyRepository.propertyFromId(propertyId = propertyId, properties = properties)
+    }
+
+    fun property(propertyId: Long, properties: MutableList<Property>) =
+        if (propertyId != NULL_PROPERTY_ID && properties.isNotEmpty()) {
+            // Edition mode
+            propertyFromId(propertyId = propertyId, properties = properties)
+        } else {
+            // Creation mode
+            null
+        }
+
+    private fun <T> dataFromNullableProperty(property: Property?, function: T, default: T? = null): T? {
+        return property?.let { function } ?: default
+    }
+
+    fun itemData(
+        property: Property?,
+        types: MutableList<Type>,
+        stringTypes: MutableList<String>,
+        agents: MutableList<Agent>,
+        stringAgents: MutableList<String>,
+        addresses: MutableList<Address>,
+    ): Triple<String?, String?, Address?> {
+        val stringType = dataFromNullableProperty(
+            property = property,
+            function = property?.let {
+                stringType(typeId = it.typeId, types = types, stringTypes = stringTypes)
+            }
+        )
+        val stringAgent = dataFromNullableProperty(
+            property = property,
+            function = property?.let {
+                stringAgent(agentId = it.agentId, agents = agents, stringAgents = stringAgents)
+            }
+        )
+        val address = dataFromNullableProperty(
+            property = property,
+            function = address(propertyId = property?.addressId, addresses = addresses)
+        )
+        return Triple(stringType, stringAgent, address)
     }
 
     private fun poiFromId(poiId: String, pois: MutableList<Poi>): Poi? {
         return poiRepository.poiFromId(poiId = poiId, pois = pois)
     }
 
-    fun stringType(typeId: String, types: MutableList<Type>, stringTypes: MutableList<String>): String {
+    private fun stringType(typeId: String, types: MutableList<Type>, stringTypes: MutableList<String>): String {
         return typeRepository.stringType(typeId = typeId, types = types, stringTypes = stringTypes)
     }
 
-    fun stringAgent(agentId: Long, agents: MutableList<Agent>, stringAgents: MutableList<String>): String {
+    private fun stringAgent(agentId: Long, agents: MutableList<Agent>, stringAgents: MutableList<String>): String {
         return agentRepository.stringAgent(agentId = agentId, agents = agents, stringAgents = stringAgents)
     }
 
-    fun address(propertyId: Long?, addresses: MutableList<Address>): Address? {
-        return addressRepository.address(propertyId, addresses)
+    private fun address(propertyId: Long?, addresses: MutableList<Address>): Address? {
+        return addressRepository.address(propertyId = propertyId, addresses = addresses)
     }
 
     fun itemPhotos(propertyId: Long, photos: MutableList<Photo>): MutableList<Photo> {
@@ -121,16 +162,29 @@ class EditViewModel(
         }
     }
 
-    fun getPhotoUri(context: Context): Uri { return photoRepository.getPhotoUri(context) }
+    fun getPhotoUri(context: Context): Uri { return photoRepository.getPhotoUri(context = context) }
+
+    fun onResponseToCamPermRequest(
+        isGranted: Boolean,
+        cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
+        cameraUri: Uri,
+        context: Context
+    ) {
+        if (isGranted) {
+            cameraLauncher.launch(cameraUri)
+        } else {
+            toastMessage(context, R.string.camera_perm_revoked)
+        }
+    }
 
     fun onShootPhotoMenuItemClick(
         context: Context,
         uri: Uri,
         cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
-        permissionLauncher: ManagedActivityResultLauncher<String, Boolean>
+        camPermLauncher: ManagedActivityResultLauncher<String, Boolean>
     ) {
         photoRepository.onShootPhotoMenuItemClick(
-            context = context, uri = uri, cameraLauncher = cameraLauncher, permissionLauncher = permissionLauncher
+            context = context, uri = uri, cameraLauncher = cameraLauncher, camPermLauncher = camPermLauncher
         )
     }
 
@@ -160,7 +214,6 @@ class EditViewModel(
         itemPois: MutableList<Poi>
     ) {
         unassigned = context.getString(unassignedResId)
-
         cacheProperty = property?.copy() ?: CACHE_PROPERTY.copy()
         initialAddress = address
         cacheAddress = address?.copy() ?: CACHE_ADDRESS.copy()
@@ -168,7 +221,6 @@ class EditViewModel(
         cacheStringAgent = stringAgent ?: unassigned
         initialItemPois = itemPois.toMutableList()
         cacheItemPois = itemPois.toMutableList()
-
         initialItemPhotos = itemPhotos
         _cacheItemPhotos = itemPhotos.toMutableList()
         _cacheItemPhotosFlow.value = _cacheItemPhotos
@@ -218,7 +270,7 @@ class EditViewModel(
     }
 
     fun onPoiClick(poiItem: String, isSelected: Boolean) {
-        if (isSelected) cacheItemPois.add(Poi(poiItem)) else cacheItemPois.remove(Poi(poiItem))
+        if (isSelected) cacheItemPois.add(Poi(poiId = poiItem)) else cacheItemPois.remove(Poi(poiId = poiItem))
     }
 
     fun checkUris(capturedImageUri: Uri, pickerUri: Uri, photoToAddUri: Uri): Triple<Uri, Uri, Uri> {
@@ -304,18 +356,18 @@ class EditViewModel(
     private fun updateRoomWithCacheData(navController: NavHostController, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                Log.w("EditViewModel", "Starting latLng update for address...")
+                    Log.w("EditViewModel", "Starting latLng update for address...")
                 updateAddressWithLatLng(context = context)
-                Log.w("EditViewModel", "Room's update jobs are starting...")
-                Log.w("EditViewModel", "Starting address update in Room...")
+                    Log.w("EditViewModel", "Room's update jobs are starting...")
+                    Log.w("EditViewModel", "Starting address update in Room...")
                 upDateRoomWithAddress()
-                Log.w("EditViewModel", "Starting property update in Room...")
+                    Log.w("EditViewModel", "Starting property update in Room...")
                 upDateRoomWithProperty()
-                Log.w("EditViewModel", "Starting photos update in Room...")
+                    Log.w("EditViewModel", "Starting photos update in Room...")
                 upDateRoomWithPhotos()
-                Log.w("EditViewModel", "Starting propertyPoiJoins update in Room...")
+                    Log.w("EditViewModel", "Starting propertyPoiJoins update in Room...")
                 upDateRoomWithPropertyPoiJoins()
-                Log.w("EditViewModel", "Room's update jobs ended with success !")
+                    Log.w("EditViewModel", "Room's update jobs ended with success !")
                 clearCache()
                 withContext(Dispatchers.Main) {
                     toastMessage(
@@ -338,7 +390,7 @@ class EditViewModel(
         val hasNullLatLng = cacheAddress.latitude == null || cacheAddress.longitude == null
         val isEmpty = cacheAddress.isNullOrBlank()
         val isModified = (isEmpty == (initialAddress != null)) || initialAddress?.let {
-            cacheAddress.hasDifferencesWith(it)
+            cacheAddress.hasDifferencesWith(other = it)
         } == true
 
         if (isEmpty) {
@@ -348,9 +400,9 @@ class EditViewModel(
             try {
                 val latLng =
                     locationRepository.getLocationFromAddress(
-                        context,
-                        cacheAddress.replaceBlankValuesWithNull().toString(),
-                        isInternetAvailable,
+                        context = context,
+                        strAddress =  cacheAddress.replaceBlankValuesWithNull().toString(),
+                        isInternetAvailable = isInternetAvailable,
                     )
                 cacheAddress.latitude = latLng?.latitude
                 cacheAddress.longitude = latLng?.longitude
@@ -374,7 +426,7 @@ class EditViewModel(
             // The address is empty and known in the database, so we delete it
             // and we update the address id in cacheProperty
             isEmpty -> {
-                addressRepository.deleteAddressFromRoom(cacheAddress)
+                addressRepository.deleteAddressFromRoom(address = cacheAddress)
                 cacheProperty.addressId = null
             }
             // The address is not empty, so we update it or create it
@@ -388,7 +440,7 @@ class EditViewModel(
                     else -> { cacheAddress.replaceBlankValuesWithNull().withoutId() }
                 }
                 // ... then we update database and get the Room's new address id in case of creation...
-                newAddressIdFromRoom = addressRepository.upsertAddressInRoom(addressToUpsert)
+                newAddressIdFromRoom = addressRepository.upsertAddressInRoom(address = addressToUpsert)
                 Log.w("EditViewModel", "newAddressIdFromRoom: $newAddressIdFromRoom")
                 // ... and, if the address has been created, we set its id in cacheAddress and cacheProperty,
                 if (cacheAddress.addressId == CACHE_ADDRESS.addressId && newAddressIdFromRoom > 0) {
@@ -411,7 +463,7 @@ class EditViewModel(
         }
 
         // We update database and get the Room's new property id in case of creation...
-        newPropertyIdFromRoom = propertyRepository.upsertPropertyInRoom(propertyToUpsert)
+        newPropertyIdFromRoom = propertyRepository.upsertPropertyInRoom(property = propertyToUpsert)
         Log.w("EditViewModel", "isNewProperty: $isNewProperty / newPropertyIdFromRoom: $newPropertyIdFromRoom")
 
         // If the property has been created, we set its id in cacheProperty and cacheItemPhotos
@@ -425,7 +477,7 @@ class EditViewModel(
         // Deletes removed photos from Room
         val cachePhotosIds: List<Long> = _cacheItemPhotos.map { it.photoId }
         val photosToDelete = initialItemPhotos.filter { it.photoId !in cachePhotosIds }.toMutableList()
-        if (photosToDelete.isNotEmpty()) photoRepository.deletePhotosFromRoom(photosToDelete)
+        if (photosToDelete.isNotEmpty()) photoRepository.deletePhotosFromRoom(photos = photosToDelete)
 
         // Updates photos or creates new photos in Room
         // Before updating Room, we replace any new photo random id created for cache
@@ -434,7 +486,7 @@ class EditViewModel(
             if (it.photoId == CACHE_PHOTO.photoId || it.photoId < 0) it.withoutId() else it
         }.toMutableList()
         // Then, we update database
-        if (photosToUpsert.isNotEmpty()) photoRepository.upsertPhotosInRoom(photosToUpsert)
+        if (photosToUpsert.isNotEmpty()) photoRepository.upsertPhotosInRoom(photos = photosToUpsert)
     }
 
     private suspend fun upDateRoomWithPropertyPoiJoins() {
@@ -445,16 +497,16 @@ class EditViewModel(
         val poisIdsToRemove = initialPoisIds.filter { it !in cachePoisIds }
         if (poisIdsToRemove.isNotEmpty()) {
             val propertyPoiJoinsToDelete =
-                poisIdsToRemove.map { PropertyPoiJoin(cacheProperty.propertyId, it) }.toMutableList()
-            propertyPoiJoinRepository.deletePropertyPoiJoinsFromRoom(propertyPoiJoinsToDelete)
+                poisIdsToRemove.map { PropertyPoiJoin(propertyId = cacheProperty.propertyId, poiId = it) }.toMutableList()
+            propertyPoiJoinRepository.deletePropertyPoiJoinsFromRoom(propertyPoiJoins = propertyPoiJoinsToDelete)
         }
 
         // Adds selected pois to PropertyPoiJoin in Room
         val poisIdsToAdd = cachePoisIds.filter { it !in initialPoisIds }
         if (poisIdsToAdd.isNotEmpty()) {
             val propertyPoiJoinsToAdd =
-                poisIdsToAdd.map { PropertyPoiJoin(cacheProperty.propertyId, it) }.toMutableList()
-            propertyPoiJoinRepository.upsertPropertyPoiJoinsInRoom(propertyPoiJoinsToAdd)
+                poisIdsToAdd.map { PropertyPoiJoin(propertyId = cacheProperty.propertyId, poiId = it) }.toMutableList()
+            propertyPoiJoinRepository.upsertPropertyPoiJoinsInRoom(propertyPoiJoins =  propertyPoiJoinsToAdd)
         }
     }
 

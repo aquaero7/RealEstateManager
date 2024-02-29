@@ -57,13 +57,10 @@ class ListAndDetailViewModel(
         return propertyRepository.propertyFromId(propertyId = propertyId, properties = properties)
     }
 
-    private fun property(propertyId: Long?, properties: MutableList<Property>) =
-        propertyId?.let {
-            if (it != NULL_PROPERTY_ID && properties.isNotEmpty()) propertyFromId(
-                propertyId = it,
-                properties = properties
-            ) else null
-        }
+    private fun property(propertyId: Long?, properties: MutableList<Property>) = propertyId?.let {
+        if (it != NULL_PROPERTY_ID && properties.isNotEmpty())
+            propertyFromId(propertyId = it, properties = properties) else null
+    }
 
     private fun <T> dataFromNullableLongId(longId: Long?, function: T, default: T): T {
         return longId?.let { function } ?: default
@@ -86,14 +83,47 @@ class ListAndDetailViewModel(
         stringAgents: MutableList<String>,
         addresses: MutableList<Address>,
     ): Triple<Triple<Property?, MutableList<Photo>, MutableList<Poi>>, Pair<String, String>, Pair<String, String>> {
-        val itemPhotos = dataFromNullableLongId(propertyId, propertyId?.let { itemPhotos(it, photos) } ?: mutableListOf(NO_PHOTO), mutableListOf(NO_PHOTO))
-        val itemPois = dataFromNullableLongId(propertyId, propertyId?.let { itemPois(it, propertyPoiJoins, pois) } ?: mutableListOf(), mutableListOf())
-        val property = dataFromNullableLongId(propertyId, property(propertyId, properties), null)
-        val stringType = dataFromNullableProperty(property, property?.typeId?.let { stringType(it, types, stringTypes) } ?: "", "")
-        val stringAgent = dataFromNullableProperty(property, property?.agentId?.let { stringAgent(it, agents, stringAgents) } ?: "", "")
-        val stringAddress = dataFromNullableProperty(property, property?.addressId?.let { stringAddress(it, addresses) } ?: "", "")
-        val thumbnailUrl = dataFromNullableProperty(property, property?.addressId?.let { thumbnailUrl(it, addresses) } ?: "", "")
-
+        val itemPhotos = dataFromNullableLongId(
+            longId = propertyId,
+            function = propertyId?.let { itemPhotos(propertyId = it, photos = photos) } ?: mutableListOf(NO_PHOTO),
+            default = mutableListOf(NO_PHOTO)
+        )
+        val itemPois = dataFromNullableLongId(
+            longId = propertyId,
+            function = propertyId?.let {
+                itemPois(propertyId = it, propertyPoiJoins = propertyPoiJoins, pois = pois)
+            } ?: mutableListOf(),
+            default = mutableListOf()
+        )
+        val property = dataFromNullableLongId(
+            longId = propertyId,
+            function = property(propertyId = propertyId, properties = properties),
+            default = null
+        )
+        val stringType = dataFromNullableProperty(
+            property = property,
+            function = property?.typeId?.let {
+                stringType(typeId = it, types = types, stringTypes = stringTypes)
+            } ?: "",
+            default = ""
+        )
+        val stringAgent = dataFromNullableProperty(
+            property = property,
+            function = property?.agentId?.let {
+                stringAgent(agentId = it, agents = agents, stringAgents = stringAgents)
+            } ?: "",
+            default = ""
+        )
+        val stringAddress = dataFromNullableProperty(
+            property = property,
+            function = property?.addressId?.let { stringAddress(addressId = it, addresses = addresses) } ?: "",
+            default = ""
+        )
+        val thumbnailUrl = dataFromNullableProperty(
+            property = property,
+            function = property?.addressId?.let { thumbnailUrl(addressId = it, addresses = addresses) } ?: "",
+            default = ""
+        )
         return Triple(Triple(property, itemPhotos, itemPois), Pair(stringType, stringAgent), Pair(stringAddress, thumbnailUrl))
     }
 

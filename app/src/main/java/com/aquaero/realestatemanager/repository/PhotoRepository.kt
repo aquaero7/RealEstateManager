@@ -96,7 +96,7 @@ class PhotoRepository(private val photoDao: PhotoDao) {
         context: Context,
         uri: Uri,
         cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
-        permissionLauncher: ManagedActivityResultLauncher<String, Boolean>
+        camPermLauncher: ManagedActivityResultLauncher<String, Boolean>
     ) {
         val permissionCheckResult = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
         if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
@@ -104,7 +104,7 @@ class PhotoRepository(private val photoDao: PhotoDao) {
             cameraLauncher.launch(uri)
         } else {
             // Request a permission
-            permissionLauncher.launch(Manifest.permission.CAMERA)
+            camPermLauncher.launch(Manifest.permission.CAMERA)
         }
     }
 

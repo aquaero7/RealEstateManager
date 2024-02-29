@@ -82,7 +82,7 @@ fun LocationPermissionsScreen(
             // the user denied to grant permissions in the app settings.
             // So the map isn't available.
             MapScreenNoMap(
-                infoText = stringResource(id = R.string.perms_revoked),
+                infoText = stringResource(id = R.string.loc_perms_revoked),
                 popBackStack = popBackStack,
             )
         }

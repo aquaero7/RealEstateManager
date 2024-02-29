@@ -60,8 +60,9 @@ fun ListAndDetailComposable(
 
 
     /* For list screen only */
-    val itemType: (String) -> String = { listAndDetailViewModel.itemType(it, types, stringTypes) }
-    val onFabClick = { listAndDetailViewModel.onFabClick(navController) }
+    val itemType: (String) -> String =
+        { listAndDetailViewModel.itemType(typeId = it, types = types, stringTypes = stringTypes) }
+    val onFabClick = { listAndDetailViewModel.onFabClick(navController = navController) }
 
 
     /* For detail screen only, excepted 'property' for both list and detail screens */

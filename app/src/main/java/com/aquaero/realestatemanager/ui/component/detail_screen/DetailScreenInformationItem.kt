@@ -55,6 +55,7 @@ fun DetailScreenInformationItem(
     label: String,
     value: String,
     suffix: String? = null,
+    fontWeight: FontWeight = FontWeight.Normal,
     iconColor: Color = MaterialTheme.colorScheme.tertiary,
     valueColor: Color = MaterialTheme.colorScheme.onSurface,
     valueBackgroundColor: Color = MaterialTheme.colorScheme.surface
@@ -106,12 +107,13 @@ fun DetailScreenInformationItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .wrapContentWidth()     // .fillMaxWidth()
                     .wrapContentHeight()
                     .background(valueBackgroundColor)
             ) {
                 Text(
                     text = value,
+                    fontWeight = fontWeight,
                     fontSize = fieldFontSize,
                     maxLines = maxLines,
                     overflow = TextOverflow.Ellipsis,

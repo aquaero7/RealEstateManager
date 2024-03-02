@@ -6,13 +6,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -25,13 +33,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.aquaero.realestatemanager.AppContentType
 import com.aquaero.realestatemanager.NO_PHOTO_ID
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.model.TypeEnum
+import com.aquaero.realestatemanager.ui.theme.Black
+import com.aquaero.realestatemanager.ui.theme.Magenta
 import com.aquaero.realestatemanager.ui.theme.Red
 import com.aquaero.realestatemanager.ui.theme.Yellow
+import java.util.Locale
 
 @Composable
 fun PropertyCard(
@@ -42,6 +60,7 @@ fun PropertyCard(
     phId: Long,
     phUri: String,
     pPriceFormatted: String,
+    isSold: Boolean,
     selected: Boolean = false,
     unselectedByDefaultDisplay: Boolean = false,
     onSelection: () -> Unit,
@@ -57,7 +76,8 @@ fun PropertyCard(
             .wrapContentHeight()
             .border(
                 if (selected && contentType == AppContentType.LIST_AND_DETAIL
-                    && !unselectedByDefaultDisplay) BorderStroke(width = 2.dp, color = Yellow)
+                    && !unselectedByDefaultDisplay
+                ) BorderStroke(width = 2.dp, color = Yellow)
                 else BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSurface)
             )
             .clickable {
@@ -68,62 +88,114 @@ fun PropertyCard(
         elevation = CardDefaults.cardElevation(),
         colors = CardDefaults.cardColors()
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            val resourceUri =
-                if (phId != NO_PHOTO_ID) phUri else R.drawable.baseline_photo_camera_black_24
-            val colorFilter =
-                if (phId != NO_PHOTO_ID) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
-            val alpha = if (phId != NO_PHOTO_ID) 1F else 0.2F
+        Box {
 
-            Image(
-                painter = rememberAsyncImagePainter(resourceUri),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                colorFilter = colorFilter,
-                modifier = Modifier
-                    .size(120.dp)
-                    .padding(0.dp)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .alpha(alpha),
-            )
-            Surface(
-                color = if (
-                    selected && contentType == AppContentType.LIST_AND_DETAIL
-                    && !unselectedByDefaultDisplay
-                ) MaterialTheme.colorScheme.outlineVariant else MaterialTheme.colorScheme.surface,
-                modifier = Modifier.fillMaxSize(),
-                ) {
-                Column(
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val resourceUri =
+                    if (phId != NO_PHOTO_ID) phUri else R.drawable.baseline_photo_camera_black_24
+                val colorFilter =
+                    if (phId != NO_PHOTO_ID) null else ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
+                val alpha = if (phId != NO_PHOTO_ID) 1F else 0.2F
+
+                Image(
+                    painter = rememberAsyncImagePainter(resourceUri),
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds,
+                    colorFilter = colorFilter,
                     modifier = Modifier
                         .size(120.dp)
-                        .padding(horizontal = 0.dp)
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.Center,
+                        .padding(0.dp)
+                        .background(MaterialTheme.colorScheme.surface)
+                        .alpha(alpha),
+                )
+                Surface(
+                    color = if (
+                        selected && contentType == AppContentType.LIST_AND_DETAIL
+                        && !unselectedByDefaultDisplay
+                    ) MaterialTheme.colorScheme.outlineVariant else MaterialTheme.colorScheme.surface,
+                    modifier = Modifier.fillMaxSize(),
                 ) {
-                    Column {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                            text = pType,
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                            text = pCity,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
-                            text = pPriceFormatted,
-                            style = MaterialTheme.typography.titleLarge,
-                            color = Red,
-                        )
+                    Column(
+                        modifier = Modifier
+                            .size(120.dp)
+                            .padding(horizontal = 0.dp)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Column {
+                            Text(
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                text = pType,
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                text = pCity,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                                text = pPriceFormatted,
+                                style = MaterialTheme.typography.titleLarge,
+                                color = Red,
+                            )
+                        }
                     }
                 }
             }
+
+            if (isSold) {
+                Row(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .align(Alignment.CenterEnd),
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(84.dp)
+                            .alpha(0.7F)
+                            .border(
+                                width = 2.dp,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                shape = CircleShape
+                            )
+                            .background(color = Magenta, shape = CircleShape)
+                            .padding(vertical = 4.dp, horizontal = 8.dp),
+                    ) {
+                        Text(
+                            color = Yellow,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            text = "* * *\n${stringResource(id = R.string.sold).uppercase()}\n* * *",
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+                }
+            }
+
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PropertyCardPreview() {
+    PropertyCard(
+        contentType = AppContentType.LIST_OR_DETAIL,
+        pId = 1,
+        pType = TypeEnum.UNASSIGNED.key,
+        pCity = "City",
+        phId = 1,
+        phUri = "",
+        pPriceFormatted = "000 000 €",
+        isSold = true,
+        onSelection = { /*TODO*/ },
+        onPropertyClick = { /*TODO*/ },
+    )
 }

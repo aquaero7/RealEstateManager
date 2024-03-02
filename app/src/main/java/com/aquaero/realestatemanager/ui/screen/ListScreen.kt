@@ -90,6 +90,7 @@ fun ListScreen(
                     val pType = itemType(propertyItem.typeId)
                     val pCity = addresses.find { it.addressId == propertyItem.addressId }?.city ?: ""
                     val pPriceFormatted = propertyItem.priceFormattedInCurrency(currency)
+                    val isSold = propertyItem.saleDate != null
                     val selected by remember(propertyItem, property) {
                         mutableStateOf(
                             selectedId == propertyItem.propertyId ||
@@ -111,6 +112,7 @@ fun ListScreen(
                         phId = phId,
                         phUri = phUri,
                         pPriceFormatted = pPriceFormatted,
+                        isSold = isSold,
                         selected = selected,
                         unselectedByDefaultDisplay = unselectedByDefaultDisplay,
                         onSelection = onSelection,

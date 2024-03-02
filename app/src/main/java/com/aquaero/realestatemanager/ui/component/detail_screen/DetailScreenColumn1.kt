@@ -14,11 +14,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import com.aquaero.realestatemanager.NULL_PROPERTY_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.theme.Magenta
 import com.aquaero.realestatemanager.ui.theme.White
+import com.aquaero.realestatemanager.ui.theme.Yellow
 
 @SuppressLint("NewApi")
 @Composable
@@ -29,7 +31,7 @@ fun DetailScreenColumn1(
     // Info status
     val labelSold = stringResource(id = R.string.sold)
     val labelForSale = stringResource(id = R.string.for_sale)
-    val value by remember {
+    val value by remember(property) {
         mutableStateOf(
             property?.saleDate?.let { labelSold }
                 ?: property?.let { if (it.propertyId != NULL_PROPERTY_ID) labelForSale else "" }
@@ -41,7 +43,8 @@ fun DetailScreenColumn1(
         contentDesc = stringResource(id = R.string.cd_status),
         label = stringResource(id = R.string.status),
         value = value,
-        valueColor = property?.saleDate?.let { White } ?: MaterialTheme.colorScheme.onSurface,
+        fontWeight = property?.saleDate?.let { FontWeight.Bold } ?: FontWeight.Normal,
+        valueColor = property?.saleDate?.let { Yellow } ?: MaterialTheme.colorScheme.onSurface,
         valueBackgroundColor = property?.saleDate?.let { Magenta } ?: MaterialTheme.colorScheme.surface,
     )
     // Info type

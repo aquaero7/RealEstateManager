@@ -47,7 +47,7 @@ fun ListAndDetailScreen(
     Row {
         if (contentType == AppContentType.LIST_AND_DETAIL || !propertySelected) {
             Column(
-                modifier = Modifier.weight(1F)
+                modifier = Modifier.weight(6F)
             ) {
                 ListScreen(
                     property = property,
@@ -73,7 +73,7 @@ fun ListAndDetailScreen(
         }
         if (contentType == AppContentType.LIST_AND_DETAIL || propertySelected) {
             Column(
-                modifier = Modifier.weight(2F)
+                modifier = Modifier.weight(10F)
             ) {
                 val onBackPressed =
                     if (contentType == AppContentType.LIST_OR_DETAIL) popBackStack else closeApp

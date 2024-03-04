@@ -58,6 +58,7 @@ class EditViewModel(
     private var newPropertyIdFromRoom by Delegates.notNull<Long>()
     private var newAddressIdFromRoom by Delegates.notNull<Long>()
     private var isInternetAvailable = false
+    var firstCompositionFlag = true // Flag to avoid _cacheItemPhotos erasure after screen rotation
 
 
     /* Cache data */
@@ -68,7 +69,6 @@ class EditViewModel(
     private var cacheStringAgent: String = unassigned
     private var initialItemPois: MutableList<Poi> = mutableListOf()
     private var cacheItemPois: MutableList<Poi> = mutableListOf()
-
     private var initialItemPhotos: MutableList<Photo> = mutableListOf()
     private var _cacheItemPhotos: MutableList<Photo> = mutableListOf()
     private val _cacheItemPhotosFlow: MutableStateFlow<MutableList<Photo>> = MutableStateFlow(_cacheItemPhotos)
@@ -86,7 +86,9 @@ class EditViewModel(
         isInternetAvailable = locationRepository.checkForConnection(connection)
     }
 
-    fun onClickMenu(navController: NavHostController, context: Context) { updateRoomWithCacheData(navController, context) }
+    fun onClickMenu(navController: NavHostController, context: Context) {
+        updateRoomWithCacheData(navController, context)
+    }
 
     private fun propertyFromId(propertyId: Long, properties: MutableList<Property>): Property? {
         return propertyRepository.propertyFromId(propertyId = propertyId, properties = properties)
@@ -111,7 +113,7 @@ class EditViewModel(
         stringTypes: MutableList<String>,
         agents: MutableList<Agent>,
         stringAgents: MutableList<String>,
-        addresses: MutableList<Address>,
+        addresses: MutableList<Address>? = null,    // Made optional for cache usage
     ): Triple<String?, String?, Address?> {
         val stringType = dataFromNullableProperty(
             property = property,
@@ -125,10 +127,12 @@ class EditViewModel(
                 stringAgent(agentId = it.agentId, agents = agents, stringAgents = stringAgents)
             }
         )
-        val address = dataFromNullableProperty(
-            property = property,
-            function = address(propertyId = property?.addressId, addresses = addresses)
-        )
+        val address = addresses?.let {
+            dataFromNullableProperty(
+                property = property,
+                function = address(propertyId = property?.addressId, addresses = addresses)
+            )
+        }
         return Triple(stringType, stringAgent, address)
     }
 
@@ -170,11 +174,7 @@ class EditViewModel(
         cameraUri: Uri,
         context: Context
     ) {
-        if (isGranted) {
-            cameraLauncher.launch(cameraUri)
-        } else {
-            toastMessage(context, R.string.camera_perm_revoked)
-        }
+        if (isGranted) cameraLauncher.launch(cameraUri) else toastMessage(context, R.string.camera_perm_revoked)
     }
 
     fun onShootPhotoMenuItemClick(
@@ -214,6 +214,7 @@ class EditViewModel(
         itemPois: MutableList<Poi>
     ) {
         unassigned = context.getString(unassignedResId)
+
         cacheProperty = property?.copy() ?: CACHE_PROPERTY.copy()
         initialAddress = address
         cacheAddress = address?.copy() ?: CACHE_ADDRESS.copy()
@@ -224,6 +225,12 @@ class EditViewModel(
         initialItemPhotos = itemPhotos
         _cacheItemPhotos = itemPhotos.toMutableList()
         _cacheItemPhotosFlow.value = _cacheItemPhotos
+
+        firstCompositionFlag = false
+    }
+
+    fun cacheData(): Triple<Property, Address, MutableList<Poi>> {
+        return Triple(cacheProperty, cacheAddress, cacheItemPois)
     }
 
     fun onDropdownMenuValueChange(
@@ -236,7 +243,6 @@ class EditViewModel(
         when (category) {
             DropdownMenuCategory.TYPE.name -> cacheProperty.typeId = types.elementAt(index).typeId
             DropdownMenuCategory.AGENT.name -> cacheProperty.agentId = agents.elementAt(index).agentId
-
         }
     }
 
@@ -302,7 +308,6 @@ class EditViewModel(
                 uri = photo.uri,
                 label = label,
                 propertyId = cacheProperty.propertyId)
-
             val photoIndex = _cacheItemPhotos.indexOf(photo)
             _cacheItemPhotos[photoIndex] = photoToUpdate
             _cacheItemPhotosFlow.value = _cacheItemPhotos
@@ -312,7 +317,6 @@ class EditViewModel(
                 uri = uri.toString(),
                 label = label,
                 propertyId = cacheProperty.propertyId)
-
             Log.w("EditViewModel", "Generated provisional photo id: ${photoToAdd.photoId}")
             _cacheItemPhotos.add(photoToAdd)
             _cacheItemPhotosFlow.value = _cacheItemPhotos
@@ -346,9 +350,9 @@ class EditViewModel(
         initialItemPhotos = mutableListOf()
         _cacheItemPhotos = mutableListOf()
         _cacheItemPhotosFlow.value = _cacheItemPhotos
-    }
 
-    /**/
+        firstCompositionFlag = true
+    }
 
 
     /* Room */
@@ -389,21 +393,18 @@ class EditViewModel(
     private suspend fun updateAddressWithLatLng(context: Context) {
         val hasNullLatLng = cacheAddress.latitude == null || cacheAddress.longitude == null
         val isEmpty = cacheAddress.isNullOrBlank()
-        val isModified = (isEmpty == (initialAddress != null)) || initialAddress?.let {
-            cacheAddress.hasDifferencesWith(other = it)
-        } == true
-
+        val isModified = (isEmpty == (initialAddress != null))
+                || initialAddress?.let { cacheAddress.hasDifferencesWith(other = it) } == true
         if (isEmpty) {
             cacheAddress.latitude = null
             cacheAddress.longitude = null
         } else if (isModified || hasNullLatLng) {
             try {
-                val latLng =
-                    locationRepository.getLocationFromAddress(
-                        context = context,
-                        strAddress =  cacheAddress.replaceBlankValuesWithNull().toString(),
-                        isInternetAvailable = isInternetAvailable,
-                    )
+                val latLng = locationRepository.getLocationFromAddress(
+                    context = context,
+                    strAddress = cacheAddress.replaceBlankValuesWithNull().toString(),
+                    isInternetAvailable = isInternetAvailable,
+                )
                 cacheAddress.latitude = latLng?.latitude
                 cacheAddress.longitude = latLng?.longitude
             } catch (e: Exception) {

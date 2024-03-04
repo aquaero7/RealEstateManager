@@ -94,7 +94,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     // Using icons extension, make sure to use R8 / ProGuard to remove unused icons from this application
     implementation("androidx.compose.material:material-icons-extended:1.6.2")
-    implementation("androidx.compose.material3:material3")
+//    implementation("androidx.compose.material3:material3")    // Redundant with implementation for DatePickerColors ?
     implementation("androidx.compose.material3:material3-window-size-class:1.2.0")
     // DatePickerColors with complete customized colors
     implementation("androidx.compose.material3:material3:1.2.0")

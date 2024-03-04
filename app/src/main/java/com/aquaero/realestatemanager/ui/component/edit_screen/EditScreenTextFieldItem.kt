@@ -87,9 +87,9 @@ fun EditScreenTextFieldItem(
     // For DropdownMenu
     val isDropdownMenu = dropdownMenuCategory != null
     var expanded by remember { mutableStateOf(false) }
-    var selectedIndex by remember { mutableIntStateOf(stringItems?.indexOf(stringItem) ?: 0) }
+    var selectedIndex by remember(stringItem) { mutableIntStateOf(stringItems?.indexOf(stringItem) ?: 0) }
     val unassigned = stringResource(id = R.string._unassigned_)
-    var selectedItem by remember { mutableStateOf(stringItem ?: unassigned) }
+    var selectedItem by remember(stringItem) { mutableStateOf(stringItem ?: unassigned) }
     /*  // TODO: To be deleted
     var selectedItem by remember {
         if (stringItem != null && stringItem != CACHE_AGENT.toString() && stringItem != CACHE_TYPE.typeId) {

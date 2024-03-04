@@ -153,9 +153,11 @@ fun EditComposable(
     editViewModel.connexionStatus(connection = connection)
 
     // Cache data
-    val (isCacheInitialized, setCacheInitialized) = remember { mutableStateOf(false) }
+    val firstCompositionFlag = editViewModel.firstCompositionFlag
     LaunchedEffect(key1 = Unit) {
-        if (!isCacheInitialized) {
+        // Embedded into LaunchedEffect to avoid recompositions after screen exit
+        // (validation or back press), that reruns initCache and resets firstCompositionFlag to false.
+        if (firstCompositionFlag) {
             editViewModel.initCache(
                 context = context,
                 property = property,
@@ -165,20 +167,23 @@ fun EditComposable(
                 itemPhotos = itemPhotos,
                 itemPois = itemPois,
             )
-            setCacheInitialized(true)
         }
     }
     val cacheItemPhotos: MutableList<Photo> by editViewModel.cacheItemPhotosFlow.collectAsState(initial = mutableListOf())
+    val (cacheProperty, cacheAddress, cacheItemPois) = editViewModel.cacheData()
+    val (cacheStringType, cacheStringAgent) = editViewModel.itemData(
+        property = cacheProperty, types = types, stringTypes = stringTypes, agents = agents, stringAgents = stringAgents
+    )
 
     EditScreen(
         stringTypes = stringTypes,
-        stringType = stringType,
+        stringType = cacheStringType,
         stringAgents = stringAgents,
-        stringAgent = stringAgent,
+        stringAgent = cacheStringAgent,
         itemPhotos = cacheItemPhotos,
-        itemPois = itemPois,
-        property = property,
-        address = address,
+        itemPois = cacheItemPois,
+        property = cacheProperty,
+        address = cacheAddress,
         currency = currency,
         onFieldValueChange = onFieldValueChange,
         onDropdownMenuValueChange = onDropdownMenuValueChange,

@@ -279,6 +279,10 @@ class EditViewModel(
         if (isSelected) cacheItemPois.add(Poi(poiId = poiItem)) else cacheItemPois.remove(Poi(poiId = poiItem))
     }
 
+    fun saveToInternalStorage(context: Context, uri: Uri): Uri {
+        return photoRepository.saveToInternalStorage(context, uri)
+    }
+
     fun checkUris(capturedImageUri: Uri, pickerUri: Uri, photoToAddUri: Uri): Triple<Uri, Uri, Uri> {
         var updatedCapturedImageUri = capturedImageUri
         var updatedPickerUri = pickerUri
@@ -399,6 +403,7 @@ class EditViewModel(
             cacheAddress.latitude = null
             cacheAddress.longitude = null
         } else if (isModified || hasNullLatLng) {
+            // TODO : Condition on android version before using Geocoder
             try {
                 val latLng = locationRepository.getLocationFromAddress(
                     context = context,

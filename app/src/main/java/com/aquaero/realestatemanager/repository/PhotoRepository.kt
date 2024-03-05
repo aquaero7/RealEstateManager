@@ -4,11 +4,13 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import com.aquaero.realestatemanager.BuildConfig
 import com.aquaero.realestatemanager.database.dao.PhotoDao
 import com.aquaero.realestatemanager.model.Photo
@@ -114,6 +116,38 @@ class PhotoRepository(private val photoDao: PhotoDao) {
         pickerLauncher.launch(
             PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
         )
+    }
+
+    fun saveToInternalStorage(context: Context, uri: Uri): Uri {
+        // Creates photo name from that provided by Picker uri
+        val stringUri = uri.toString()
+        val fileNameIndex = stringUri.lastIndexOf("/")
+        val fullFileName = if (fileNameIndex != -1) stringUri.substring(fileNameIndex) else stringUri
+        val extensionIndex = fullFileName.lastIndexOf(".")
+        val fileName = if (extensionIndex != -1) {
+            "${fullFileName.substring(0, extensionIndex)}.jpg"
+        } else {
+            "${fullFileName}.jpg"
+        }
+
+        // Creates subfolder 'Pictures' in internal storage folder
+        val picturesDir = File(context.filesDir, "Pictures")
+        if (!picturesDir.exists()) picturesDir.mkdir()
+
+        // Creates full path to the photo
+        val outputFile = File(picturesDir, fileName)    // To target the subfolder
+//        val outputFile = context.filesDir.resolve(fileName) // To target main internal storage folder
+
+        // Makes copy to the target
+        val inputStream = context.contentResolver.openInputStream(uri)
+        inputStream.use { input ->
+            outputFile.outputStream().use { output ->
+                input?.copyTo(output)
+            }
+        }
+        Log.w("PhotoRepository", "uri = $uri")
+        Log.w("PhotoRepository", "pickerUri = ${outputFile.toUri()}")
+        return outputFile.toUri()
     }
 
     fun itemPhotos(propertyId: Long, photos: MutableList<Photo>): MutableList<Photo> {

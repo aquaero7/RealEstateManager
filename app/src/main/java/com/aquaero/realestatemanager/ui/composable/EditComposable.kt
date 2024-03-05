@@ -2,6 +2,8 @@ package com.aquaero.realestatemanager.ui.composable
 
 import android.content.Context
 import android.net.Uri
+import android.os.Environment
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -13,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import coil.compose.rememberAsyncImagePainter
+import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
@@ -104,7 +107,7 @@ fun EditComposable(
     val pickerLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
             // When the user selects a photo, its URI is returned here
-            uri -> if (uri != null) { pickerUri = uri }
+            uri -> if (uri != null) { pickerUri = editViewModel.saveToInternalStorage(context, uri) }
         }
     val onSelectPhotoMenuItemClick: () -> Unit = {
         editViewModel.onSelectPhotoMenuItemClick(pickerLauncher = pickerLauncher)

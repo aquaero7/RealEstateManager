@@ -65,7 +65,7 @@ class RealEstateManagerActivity : ComponentActivity() {
     @SuppressLint("NewApi")
     override fun onResume() {
         super.onResume()
-        mapViewModel.checkForPermissions()
+        mapViewModel.checkForPermissions(context = ApplicationRoot.getContext())
     }
 
 }

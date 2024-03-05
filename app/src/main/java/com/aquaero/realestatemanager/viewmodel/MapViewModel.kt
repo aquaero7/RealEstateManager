@@ -18,20 +18,20 @@ class MapViewModel(
         return locationRepository.checkForConnection(connection)
     }
 
-    fun checkForPermissions(): Boolean {
-        return locationRepository.checkForPermissions()
+    fun checkForPermissions(context: Context): Boolean {
+        return locationRepository.checkForPermissions(context = context)
     }
 
     fun areLocPermsGranted(): Boolean {
         return locationRepository.areLocPermsGranted()
     }
 
-    fun startLocationUpdates() {
-        locationRepository.startLocationUpdates()
+    fun startLocationUpdates(context: Context) {
+        locationRepository.startLocationUpdates(context = context)
     }
 
-    fun stopLocationUpdates() {
-        locationRepository.stopLocationUpdates()
+    fun stopLocationUpdates(context: Context) {
+        locationRepository.stopLocationUpdates(context = context)
     }
 
     fun getLocationUpdates(): StateFlow<Location?> {

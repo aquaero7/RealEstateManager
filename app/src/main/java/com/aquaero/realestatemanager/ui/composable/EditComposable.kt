@@ -107,7 +107,9 @@ fun EditComposable(
     val pickerLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
             // When the user selects a photo, its URI is returned here
-            uri -> if (uri != null) { pickerUri = editViewModel.saveToInternalStorage(context, uri) }
+            uri -> if (uri != null) {
+                pickerUri = editViewModel.saveToInternalStorage(context = context, uri = uri)
+            }
         }
     val onSelectPhotoMenuItemClick: () -> Unit = {
         editViewModel.onSelectPhotoMenuItemClick(pickerLauncher = pickerLauncher)

@@ -35,8 +35,8 @@ fun MapComposable(
     // Get permission grants
     var locationPermissionsGranted by remember { mutableStateOf(mapViewModel.areLocPermsGranted()) }
 
-    val startLocationUpdates: () -> Unit = { mapViewModel.startLocationUpdates() }
-    val stopLocationUpdates: () -> Unit = { mapViewModel.stopLocationUpdates() }
+    val startLocationUpdates: () -> Unit = { mapViewModel.startLocationUpdates(context = context) }
+    val stopLocationUpdates: () -> Unit = { mapViewModel.stopLocationUpdates(context = context) }
     val getLocationUpdates: () -> StateFlow<Location?> = { mapViewModel.getLocationUpdates() }
 
     if (networkAvailable) {

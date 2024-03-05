@@ -122,10 +122,10 @@ class PhotoRepository(private val photoDao: PhotoDao) {
         // Creates photo name from that provided by Picker uri
         val stringUri = uri.toString()
         val fileNameIndex = stringUri.lastIndexOf("/")
-        val fullFileName = if (fileNameIndex != -1) stringUri.substring(fileNameIndex) else stringUri
-        val extensionIndex = fullFileName.lastIndexOf(".")
+        val fullFileName = if (fileNameIndex != -1) stringUri.substring(startIndex = fileNameIndex) else stringUri
+        val extensionIndex = fullFileName.lastIndexOf(string = ".")
         val fileName = if (extensionIndex != -1) {
-            "${fullFileName.substring(0, extensionIndex)}.jpg"
+            "${fullFileName.substring(startIndex = 0, endIndex = extensionIndex)}.jpg"
         } else {
             "${fullFileName}.jpg"
         }
@@ -136,7 +136,7 @@ class PhotoRepository(private val photoDao: PhotoDao) {
 
         // Creates full path to the photo
         val outputFile = File(picturesDir, fileName)    // To target the subfolder
-//        val outputFile = context.filesDir.resolve(fileName) // To target main internal storage folder
+//        val outputFile = context.filesDir.resolve(relative = fileName) // To target main internal storage folder
 
         // Makes copy to the target
         val inputStream = context.contentResolver.openInputStream(uri)

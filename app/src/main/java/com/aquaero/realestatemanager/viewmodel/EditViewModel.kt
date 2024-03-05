@@ -280,7 +280,7 @@ class EditViewModel(
     }
 
     fun saveToInternalStorage(context: Context, uri: Uri): Uri {
-        return photoRepository.saveToInternalStorage(context, uri)
+        return photoRepository.saveToInternalStorage(context = context, uri = uri)
     }
 
     fun checkUris(capturedImageUri: Uri, pickerUri: Uri, photoToAddUri: Uri): Triple<Uri, Uri, Uri> {

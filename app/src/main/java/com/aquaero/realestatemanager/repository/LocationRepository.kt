@@ -10,7 +10,6 @@ import android.location.Location
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.utils.ConnectionState
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -27,11 +26,7 @@ import kotlin.properties.Delegates
 
 class LocationRepository {
 
-    private val context: Context by lazy { ApplicationRoot.getContext() }
     private var locPermsGranted by Delegates.notNull<Boolean>()
-    private val fusedLocationClient: FusedLocationProviderClient by lazy {
-        LocationServices.getFusedLocationProviderClient(context)
-    }
     private val locationUpdatesFlow = MutableStateFlow<Location?>(null)
     private val locationCallback = object: LocationCallback() {
         override fun onLocationResult(p0: LocationResult) {
@@ -45,11 +40,15 @@ class LocationRepository {
         }
     }
 
+    private fun fusedLocationClient(context: Context): FusedLocationProviderClient {
+        return LocationServices.getFusedLocationProviderClient(context)
+    }
+
     fun checkForConnection(connection: ConnectionState): Boolean {
         return connection === ConnectionState.Available
     }
 
-    fun checkForPermissions(): Boolean {
+    fun checkForPermissions(context: Context): Boolean {
         locPermsGranted = !(
                 ActivityCompat.checkSelfPermission(
                     context, Manifest.permission.ACCESS_FINE_LOCATION
@@ -66,13 +65,13 @@ class LocationRepository {
     }
 
     @SuppressLint("MissingPermission")
-    fun startLocationUpdates() {
+    fun startLocationUpdates(context: Context) {
         val locationRequest = LocationRequest.Builder(10000)
             .setIntervalMillis(10000)
             .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
             .build()
 
-        fusedLocationClient.requestLocationUpdates(
+        fusedLocationClient(context = context).requestLocationUpdates(
             locationRequest,
             locationCallback,
             Looper.getMainLooper()
@@ -80,8 +79,8 @@ class LocationRepository {
         Log.w("LocationRepository", "Location updates started!")
     }
 
-    fun stopLocationUpdates() {
-        fusedLocationClient.removeLocationUpdates(locationCallback)
+    fun stopLocationUpdates(context: Context) {
+        fusedLocationClient(context = context).removeLocationUpdates(locationCallback)
         Log.w("LocationRepository", "Location updates stopped!")
     }
 
@@ -114,7 +113,6 @@ class LocationRepository {
                 continuation.resume(null)
             }
         }
-
 
 }
 

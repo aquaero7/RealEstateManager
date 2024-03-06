@@ -8,15 +8,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddToPhotos
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Description
@@ -130,35 +134,44 @@ fun EditScreenMedia(
             onDeletePhotoMenuItemClick = { photo -> showDeletionConfirmationDialog(photo = photo) },
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         // Photo to add
+        val photoSize = 120.dp
+        val rowHeight = photoSize + 20.dp
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.height(rowHeight),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Spacer(modifier = Modifier.width(4.dp))
 
             // Image
-            Image(
+            Box(
+                contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier
-                    .border(width = 1.dp, color = MaterialTheme.colorScheme.onSurface)
-                    .size(120.dp)
-                    .padding(4.dp)
-                    .background(color = MaterialTheme.colorScheme.surfaceVariant)
-                    .alpha(1F)
-                    .combinedClickable(enabled = true, onClick = {
-                        haptics.performHapticFeedback(hapticFeedbackType = HapticFeedbackType.LongPress)
-                        addPhoto = true
-                    }),
-                painter = painter,
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                colorFilter = if (!buttonAddPhotoEnabled) ColorFilter.tint(color = MaterialTheme.colorScheme.tertiary) else null
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
+                    .fillMaxHeight()
+                    .wrapContentWidth(),
+            ) {
+                Image(
+                    modifier = Modifier
+                        .border(width = 1.dp, color = MaterialTheme.colorScheme.onSurface)
+                        .size(photoSize)
+                        .padding(4.dp)
+                        .background(color = MaterialTheme.colorScheme.surfaceVariant)
+                        .alpha(1F)
+                        .combinedClickable(enabled = true, onClick = {
+                            haptics.performHapticFeedback(hapticFeedbackType = HapticFeedbackType.LongPress)
+                            addPhoto = true
+                        }),
+                    painter = painter,
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds,
+                    colorFilter = if (!buttonAddPhotoEnabled) ColorFilter.tint(color = MaterialTheme.colorScheme.tertiary) else null
+                )
+            }
 
             Column(
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Description field
@@ -172,12 +185,15 @@ fun EditScreenMedia(
                 )
 
                 Row(
-                    modifier = Modifier,
-                    horizontalArrangement = Arrangement.SpaceAround
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     // Button to cancel photo creation or edition
                     Button(
-                        modifier = Modifier.alpha(if (buttonAddPhotoEnabled) 1F else 0.5F),
+                        modifier = Modifier
+                            .width(112.dp)
+                            .alpha(if (buttonAddPhotoEnabled) 1F else 0.5F),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.surfaceVariant,
                             contentColor = MaterialTheme.colorScheme.onSurface,
@@ -207,11 +223,12 @@ fun EditScreenMedia(
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(4.dp))
-
                     // Button to valid photo creation or edition
                     Button(
-                        modifier = Modifier.alpha(if (buttonAddPhotoEnabled) 1F else 0.5F),
+                        modifier = Modifier
+                            .width(112.dp)
+                            .alpha(if (buttonAddPhotoEnabled) 1F else 0.5F),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.surfaceVariant,
                             contentColor = MaterialTheme.colorScheme.onSurface,
@@ -234,7 +251,7 @@ fun EditScreenMedia(
                         )
                         Text(
                             modifier = Modifier.padding(horizontal = 4.dp),
-                            text = stringResource(id = R.string.ok),
+                            text = stringResource(id = R.string.save),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.tertiary,

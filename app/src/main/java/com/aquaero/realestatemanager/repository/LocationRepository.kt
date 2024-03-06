@@ -10,7 +10,6 @@ import android.location.Location
 import android.os.Build
 import android.os.Looper
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.aquaero.realestatemanager.utils.ConnectionState
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -90,6 +89,7 @@ class LocationRepository {
         return locationUpdatesFlow
     }
 
+    @Suppress("DEPRECATION")
     suspend fun getLocationFromAddress(context: Context, strAddress: String?, isInternetAvailable: Boolean): LatLng? =
         suspendCoroutine { continuation ->
             if (isInternetAvailable) {

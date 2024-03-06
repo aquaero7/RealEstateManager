@@ -90,10 +90,11 @@
     <!-- ACTION -->
     <string name="create">Create property</string>
     <string name="edit">Edit property</string>
-    <string name="valid">Valid input</string>
+    <string name="valid_input">Valid input</string>
     <string name="rq_loc_perms">Grant location permissions</string>
     <string name="rq_fine_loc">Grant precise location</string>
     <string name="ok">OK</string>
+    <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="grant">Grant</string>
     <string name="allow">Allow</string>

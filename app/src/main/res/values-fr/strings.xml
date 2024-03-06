@@ -90,10 +90,11 @@
     <!-- ACTION -->
     <string name="create">Créer une propriété</string>
     <string name="edit">Editer la propriété</string>
-    <string name="valid">Valider la saisie</string>
+    <string name="valid_input">Valider la saisie</string>
     <string name="rq_loc_perms">Autoriser la localisation</string>
     <string name="rq_fine_loc">Autoriser la localisation précise</string>
     <string name="ok">OK</string>
+    <string name="save">Sauver</string>
     <string name="cancel">Annuler</string>
     <string name="grant">Accorder</string>
     <string name="allow">Autoriser</string>

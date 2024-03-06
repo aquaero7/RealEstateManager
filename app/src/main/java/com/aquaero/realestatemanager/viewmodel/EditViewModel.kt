@@ -403,7 +403,6 @@ class EditViewModel(
             cacheAddress.latitude = null
             cacheAddress.longitude = null
         } else if (isModified || hasNullLatLng) {
-            // TODO : Condition on android version before using Geocoder
             try {
                 val latLng = locationRepository.getLocationFromAddress(
                     context = context,

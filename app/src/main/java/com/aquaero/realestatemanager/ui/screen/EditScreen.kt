@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager.ui.screen
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -18,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.Field
@@ -56,8 +58,11 @@ fun EditScreen(
     onPhotoDeletionConfirmation: (Long) -> Unit,
     onBackPressed: () -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = Modifier
+            .clickable { focusManager.clearFocus() } // To clear text field focus when clicking outside it.
             .fillMaxSize()
             .verticalScroll(
                 state = rememberScrollState(),

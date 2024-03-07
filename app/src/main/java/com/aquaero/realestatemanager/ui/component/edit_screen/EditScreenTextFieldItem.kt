@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
@@ -38,9 +39,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
@@ -83,6 +86,7 @@ fun EditScreenTextFieldItem(
 ) {
     // For keyboard input
     var isValid by remember { mutableStateOf(true) }
+    val focusManager = LocalFocusManager.current
 
     // For DropdownMenu
     val isDropdownMenu = dropdownMenuCategory != null
@@ -90,15 +94,6 @@ fun EditScreenTextFieldItem(
     var selectedIndex by remember(stringItem) { mutableIntStateOf(stringItems?.indexOf(stringItem) ?: 0) }
     val unassigned = stringResource(id = R.string._unassigned_)
     var selectedItem by remember(stringItem) { mutableStateOf(stringItem ?: unassigned) }
-    /*  // TODO: To be deleted
-    var selectedItem by remember {
-        if (stringItem != null && stringItem != CACHE_AGENT.toString() && stringItem != CACHE_TYPE.typeId) {
-            mutableStateOf(stringItem)
-        } else {
-            mutableStateOf(unassigned)
-        }
-    }
-    */
 
     // For DatePicker
     val isDatePicker = storedDate != null
@@ -200,12 +195,16 @@ fun EditScreenTextFieldItem(
                     )
                 },
                 trailingIcon = trailingIcon,
+                isError = !isValid,
                 keyboardOptions = if (shouldBeDigitsOnly) {
-                    KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                    KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    )
                 } else {
                     KeyboardOptions.Default
                 },
-                isError = !isValid,
+                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() } ),
             )
         }
 

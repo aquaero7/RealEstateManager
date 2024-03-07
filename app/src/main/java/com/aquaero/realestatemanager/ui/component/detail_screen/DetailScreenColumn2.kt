@@ -43,7 +43,6 @@ fun DetailScreenColumn2(
         contentDesc = stringResource(id = R.string.cd_agent),
         label = stringResource(id = R.string.agent),
         value = if (property != null && property.propertyId != NULL_PROPERTY_ID) stringAgent else "",
-//        value = if (property != null) stringAgent else "",   // TODO: For test only
     )
     // Info registration date
     DetailScreenInformationItem(

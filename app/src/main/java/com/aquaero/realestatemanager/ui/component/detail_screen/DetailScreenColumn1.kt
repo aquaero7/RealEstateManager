@@ -53,7 +53,6 @@ fun DetailScreenColumn1(
         contentDesc = stringResource(id = R.string.cd_type),
         label = stringResource(id = R.string.type),
         value = if (property != null && property.propertyId != NULL_PROPERTY_ID) stringType else "",
-//        value = if (property != null) stringType else "",   // TODO: For test only
     )
     // Info surface
     DetailScreenInformationItem(

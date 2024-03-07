@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -134,6 +135,7 @@ fun PoiIcon(
     var isSelected by remember(selected) { mutableStateOf(selected) }
     val iconColor = MaterialTheme.colorScheme.tertiary
     val borderColor = MaterialTheme.colorScheme.secondary
+    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier.wrapContentWidth(),
@@ -155,6 +157,7 @@ fun PoiIcon(
                     onClick = {
                         isSelected = !isSelected
                         onClick(isSelected)
+                        focusManager.clearFocus() // To clear text field focus when clicking outside it.
                     },
                 ),
         )

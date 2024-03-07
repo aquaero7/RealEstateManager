@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -90,6 +91,7 @@ fun EditScreenMedia(
         photoToDelete = photo
         displayPhotoDeletionDialog = true
     }
+    val focusManager = LocalFocusManager.current
 
 
     if (displayPhotoDeletionDialog) {
@@ -159,6 +161,7 @@ fun EditScreenMedia(
                         .background(color = MaterialTheme.colorScheme.surfaceVariant)
                         .alpha(1F)
                         .combinedClickable(enabled = true, onClick = {
+                            focusManager.clearFocus() // To clear text field focus when clicking outside it.
                             haptics.performHapticFeedback(hapticFeedbackType = HapticFeedbackType.LongPress)
                             addPhoto = true
                         }),
@@ -223,7 +226,7 @@ fun EditScreenMedia(
                         )
                     }
 
-                    // Button to valid photo creation or edition
+                    // Button to validate photo creation or edition
                     Button(
                         modifier = Modifier
                             .width(112.dp)

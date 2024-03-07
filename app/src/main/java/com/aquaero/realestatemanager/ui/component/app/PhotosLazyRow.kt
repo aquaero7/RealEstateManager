@@ -1,6 +1,5 @@
 package com.aquaero.realestatemanager.ui.component.app
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
@@ -26,6 +25,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +50,7 @@ fun PhotosLazyRow(
 ) {
     var contextMenuPhotoId by rememberSaveable { mutableStateOf<Long?>(null) }
     val haptics = LocalHapticFeedback.current
+    val focusManager = LocalFocusManager.current
 
     Text(
         text = stringResource(R.string.media),
@@ -93,10 +94,11 @@ fun PhotosLazyRow(
                         .combinedClickable(
                             enabled = (longClickPhotoEnabled && photo.photoId != 0L),
                             onLongClick = {
+                                focusManager.clearFocus() // To clear text field focus when clicking outside it.
                                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                 contextMenuPhotoId = photo.photoId
                             },
-                            onClick = {}
+                            onClick = { focusManager.clearFocus() } // To clear text field focus when clicking outside it.
                         )
                 )
                 Surface(

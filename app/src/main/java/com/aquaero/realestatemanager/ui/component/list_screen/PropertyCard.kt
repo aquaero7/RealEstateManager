@@ -188,7 +188,7 @@ fun PropertyCardPreview() {
         phUri = "",
         pPriceFormatted = "000 000 €",
         isSold = true,
-        onSelection = { /*TODO*/ },
-        onPropertyClick = { /*TODO*/ },
+        onSelection = {  },
+        onPropertyClick = {  },
     )
 }

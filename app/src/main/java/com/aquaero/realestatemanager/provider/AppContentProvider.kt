@@ -60,7 +60,7 @@ class AppContentProvider(): ContentProvider() {
     override fun onCreate(): Boolean {
         val context = context ?: return false
         contentResolver = context.contentResolver
-        database = AppDatabase.getInstance(context)
+        database = AppDatabase.getInstance(context = context)
         propertyDao = database.propertyDao
         return true
     }

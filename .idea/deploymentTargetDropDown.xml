@@ -5,16 +5,10 @@
       <entry key="AppContentProviderDaoTest">
         <State />
       </entry>
-      <entry key="AppContentProviderTest">
-        <State />
-      </entry>
       <entry key="app">
         <State />
       </entry>
-      <entry key="getItemsWhenNoItemInserted()">
-        <State />
-      </entry>
-      <entry key="getItemsWhenOneItemInserted()">
+      <entry key="getAllPropertiesWhenSomeAreInserted()">
         <State />
       </entry>
     </value>

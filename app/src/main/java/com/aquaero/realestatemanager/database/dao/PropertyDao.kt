@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.database.dao
 
+import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -33,5 +34,19 @@ interface PropertyDao {
 
     @Query("SELECT * FROM property ORDER BY registrationDate DESC")
     fun getPropertiesOrderedByRegistrationDate(): Flow<MutableList<Property>>
+
+
+    /*
+     * ContentProvider
+     */
+
+    @Query("SELECT * FROM property")
+    fun getAllPropertiesWithCursor(): Cursor
+
+    @Query("SELECT * FROM property WHERE saleDate IS NULL")
+    fun getPropertiesForSaleWithCursor(): Cursor
+
+    @Query("SELECT * FROM property WHERE saleDate IS NOT NULL")
+    fun getSoldPropertiesWithCursor(): Cursor
 
 }

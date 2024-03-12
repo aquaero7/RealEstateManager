@@ -5,7 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.database.dao.AddressDao
 import com.aquaero.realestatemanager.database.dao.AgentDao
 import com.aquaero.realestatemanager.database.dao.PhotoDao
@@ -47,35 +46,52 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
 
-        private val context: Context by lazy { ApplicationRoot.getContext() }
-
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        fun getInstance(): AppDatabase =
+        /*
+        fun getInstanceForTest(context: Context): AppDatabase {
+            return Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()//.also { INSTANCE = it }
+//            return Room.databaseBuilder(context, AppDatabase::class.java, "testdatabase").build()
+        }
+        */
+
+        fun getInstance(context: Context): AppDatabase =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: buildDatabase().also { INSTANCE = it }
+                INSTANCE ?: buildDatabase(context = context).also { INSTANCE = it }
             }
 
-        private fun buildDatabase() =
-            Room.databaseBuilder(context, AppDatabase::class.java, "database")
-                // Prepopulate database
-                .addCallback(object : Callback() {
+        private fun buildDatabase(context: Context) =
+            Room.databaseBuilder(context = context, klass = AppDatabase::class.java, name = "database")
+                // (Pre)populate database
+                .addCallback(callback = object : Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
                         CoroutineScope(Dispatchers.IO).launch {
-//                            getInstance().addressDao.prepopulateWithAddresses(ADDRESS_PREPOPULATION_DATA)                           // For demo only
-                            getInstance().agentDao.prepopulateWithAgents(AGENT_PREPOPULATION_DATA)
-                            getInstance().typeDao.prepopulateWithTypes(TYPE_PREPOPULATION_DATA)
-                            getInstance().poiDao.prepopulateWithPois(POI_PREPOPULATION_DATA)
-//                            getInstance().propertyDao.prepopulateWithProperties(PROPERTY_PREPOPULATION_DATA)                        // For demo only
-//                            getInstance().photoDao.prepopulateWithPhotos(PHOTO_PREPOPULATION_DATA)                                  // For demo only
-//                            getInstance().propertyPoiJoinDao.prepopulateWithPropertyPoiJoins(PROPERTY_POI_JOIN_PREPOPULATION_DATA)  // For demo only
+                            prepopulateDatabase(context = context)
+                            // populateDatabase(context = context)   // For demo only
                         }
                     }
                 })
                 // Built database
                 .build()
+
+        private suspend fun prepopulateDatabase(context: Context) {
+            getInstance(context = context).agentDao.prepopulateWithAgents(agents = AGENT_PREPOPULATION_DATA)
+            getInstance(context = context).typeDao.prepopulateWithTypes(types = TYPE_PREPOPULATION_DATA)
+            getInstance(context = context).poiDao.prepopulateWithPois(pois = POI_PREPOPULATION_DATA)
+        }
+
+        /**
+         * For demo only
+         */
+        private suspend fun populateDatabase(context: Context) {
+            getInstance(context = context).addressDao.prepopulateWithAddresses(addresses = ADDRESS_PREPOPULATION_DATA)
+            getInstance(context = context).propertyDao.prepopulateWithProperties(properties = PROPERTY_PREPOPULATION_DATA)
+            getInstance(context = context).photoDao.prepopulateWithPhotos(photos = PHOTO_PREPOPULATION_DATA)
+            getInstance(context = context).propertyPoiJoinDao.prepopulateWithPropertyPoiJoins(propertyPoiJoins = PROPERTY_POI_JOIN_PREPOPULATION_DATA)
+        }
+
     }
 
 }

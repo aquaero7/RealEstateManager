@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import com.aquaero.realestatemanager.BuildConfig
+import com.aquaero.realestatemanager.Path
 import com.aquaero.realestatemanager.database.dao.PhotoDao
 import com.aquaero.realestatemanager.model.Photo
 import kotlinx.coroutines.Dispatchers
@@ -89,7 +90,9 @@ class PhotoRepository(private val photoDao: PhotoDao) {
     fun getPhotoUri(context: Context): Uri {
         return FileProvider.getUriForFile(
             Objects.requireNonNull(context),
-            BuildConfig.APPLICATION_ID + ".provider",
+//            BuildConfig.APPLICATION_ID + ".provider",         // TODO: To be deleted
+//            BuildConfig.APPLICATION_ID + ".fileprovider",     // TODO: To be deleted
+            "${BuildConfig.APPLICATION_ID}.${Path.FILE_PROVIDER}",
             context.createImageFile()
         )
     }

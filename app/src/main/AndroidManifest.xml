@@ -36,13 +36,22 @@
         <!-- FOR PHOTO FEATURES -->
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/path_provider" />
         </provider>
+
+        <!-- CONTENT PROVIDER -->
+        <provider
+            android:name=".provider.AppContentProvider"
+            android:authorities="${applicationId}.contentprovider"
+            android:exported="true"
+            tools:ignore="ExportedContentProvider">
+        </provider>
+
 
 
     </application>

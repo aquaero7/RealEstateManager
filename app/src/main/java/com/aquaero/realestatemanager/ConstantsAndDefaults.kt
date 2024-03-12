@@ -146,6 +146,34 @@ val CACHE_TYPE_ID_VALUE = TypeEnum.UNASSIGNED.key
 val CACHE_NULLABLE_VALUE = null
 
 
+// ContentProvider
+
+// Path for FileProvider and  ContentProvider
+object Path {
+    const val FILE_PROVIDER = "fileprovider"
+    const val CONTENT_PROVIDER = "contentprovider"
+    const val CONTENT = "content"
+    const val FOR_SALE = "forsale"
+    const val SOLD = "sold"
+}
+
+object PropertyKey {
+    const val PROPERTY_ID = "propertyId"
+    const val TYPE_ID = "typeId"
+    const val ADDRESS_ID = "addressId"
+    const val PRICE = "price"
+    const val DESCRIPTION = "description"
+    const val SURFACE = "surface"
+    const val ROOMS = "rooms"
+    const val BATHROOMS = "bathrooms"
+    const val BEDROOMS = "bedrooms"
+    const val REG_DATE = "registrationDate"
+    const val SALE_DATE = "saleDate"
+    const val AGENT_ID = "agentId"
+}
+
+
+
 
 
 

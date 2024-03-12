@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.model
 
+import android.content.ContentValues
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -8,6 +9,7 @@ import com.aquaero.realestatemanager.CACHE_AGENT_ID_VALUE
 import com.aquaero.realestatemanager.CACHE_LONG_ID_VALUE
 import com.aquaero.realestatemanager.CACHE_NULLABLE_VALUE
 import com.aquaero.realestatemanager.CACHE_TYPE_ID_VALUE
+import com.aquaero.realestatemanager.PropertyKey
 import com.aquaero.realestatemanager.utils.convertDollarToEuro
 import java.text.NumberFormat
 import java.util.Locale
@@ -128,6 +130,30 @@ data class Property(
             .associateWith { parameter -> this::class.memberProperties.first { it.name == parameter.name }.call(this) }
         // Create and return the new instance
         return constructor.callBy(argsMap)
+    }
+
+    /*
+     * ContentProvider
+     */
+    companion object {
+        fun fromContentValues(values: ContentValues): Property {
+            val property = CACHE_PROPERTY
+            val k = PropertyKey
+            if (values.containsKey(k.PROPERTY_ID)) property.propertyId = values.getAsLong(k.PROPERTY_ID)
+            if (values.containsKey(k.TYPE_ID)) property.typeId = values.getAsString(k.TYPE_ID)
+            if (values.containsKey(k.ADDRESS_ID)) property.addressId = values.getAsLong(k.ADDRESS_ID)
+            if (values.containsKey(k.PRICE)) property.price = values.getAsInteger(k.PRICE)
+            if (values.containsKey(k.DESCRIPTION)) property.description = values.getAsString(k.DESCRIPTION)
+            if (values.containsKey(k.SURFACE)) property.surface = values.getAsInteger(k.SURFACE)
+            if (values.containsKey(k.ROOMS)) property.nbOfRooms = values.getAsInteger(k.ROOMS)
+            if (values.containsKey(k.BATHROOMS)) property.nbOfBathrooms = values.getAsInteger(k.BATHROOMS)
+            if (values.containsKey(k.BEDROOMS)) property.nbOfBedrooms = values.getAsInteger(k.BEDROOMS)
+            if (values.containsKey(k.REG_DATE)) property.registrationDate = values.getAsString(k.REG_DATE)
+            if (values.containsKey(k.SALE_DATE)) property.saleDate = values.getAsString(k.SALE_DATE)
+            if (values.containsKey(k.AGENT_ID)) property.agentId = values.getAsLong(k.AGENT_ID)
+            return property
+        }
+
     }
 
 }

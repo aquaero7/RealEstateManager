@@ -2,7 +2,9 @@ package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -38,6 +40,7 @@ import com.aquaero.realestatemanager.viewmodel.ViewModelFactory
 
 class RealEstateManagerActivity : ComponentActivity() {
 
+    /*  // TODO: To be deleted
     // Init ViewModels
     private val appViewModel by viewModels<AppViewModel> { ViewModelFactory }
     private val listAndDetailViewModel by viewModels<ListAndDetailViewModel> { ViewModelFactory }
@@ -45,10 +48,19 @@ class RealEstateManagerActivity : ComponentActivity() {
     private val mapViewModel by viewModels<MapViewModel> { ViewModelFactory }
     private val searchViewModel by viewModels<SearchViewModel> { ViewModelFactory }
     private val loanViewModel by viewModels<LoanViewModel> { ViewModelFactory }
+    */
+    // Declare ViewModels
+    private lateinit var appViewModel: AppViewModel
+    private lateinit var listAndDetailViewModel: ListAndDetailViewModel
+    private lateinit var editViewModel: EditViewModel
+    private lateinit var mapViewModel: MapViewModel
+    private lateinit var searchViewModel: SearchViewModel
+    private lateinit var loanViewModel: LoanViewModel
 
-    @SuppressLint("NewApi")
+//    @SuppressLint("NewApi")   // TODO: To be deleted
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initViewModels(this.applicationContext)
         setContent {
             RealEstateManagerApp(
                 activity = this,
@@ -62,15 +74,25 @@ class RealEstateManagerActivity : ComponentActivity() {
         }
     }
 
-    @SuppressLint("NewApi")
+//    @SuppressLint("NewApi")       // TODO: To be deleted
     override fun onResume() {
         super.onResume()
-        mapViewModel.checkForPermissions(context = ApplicationRoot.getContext())
+        mapViewModel.checkForPermissions(context = this.applicationContext)
+    }
+
+    private fun initViewModels(context: Context) {
+        val viewModelFactory = ViewModelFactory(context = context)
+        appViewModel = viewModels<AppViewModel> { viewModelFactory }.value
+        listAndDetailViewModel = viewModels<ListAndDetailViewModel> { viewModelFactory }.value
+        editViewModel = viewModels<EditViewModel> { viewModelFactory }.value
+        mapViewModel = viewModels<MapViewModel> { viewModelFactory }.value
+        searchViewModel = viewModels<SearchViewModel> { viewModelFactory }.value
+        loanViewModel = viewModels<LoanViewModel> { viewModelFactory }.value
     }
 
 }
 
-@SuppressLint("NewApi")
+//@SuppressLint("NewApi")       // TODO: To be deleted
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun RealEstateManagerApp(

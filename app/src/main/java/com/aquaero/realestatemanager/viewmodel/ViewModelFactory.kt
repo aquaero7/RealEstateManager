@@ -1,7 +1,9 @@
 package com.aquaero.realestatemanager.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.database.AppDatabase
 import com.aquaero.realestatemanager.database.dao.AddressDao
 import com.aquaero.realestatemanager.database.dao.AgentDao
@@ -20,9 +22,10 @@ import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 
 @Suppress("UNCHECKED_CAST")
-object ViewModelFactory:  ViewModelProvider.Factory {
+class ViewModelFactory(context: Context):  ViewModelProvider.Factory {
+
     // DAO
-    private val appDatabase: AppDatabase = AppDatabase.getInstance()
+    private val appDatabase: AppDatabase = AppDatabase.getInstance(context = context)
     private val propertyDao: PropertyDao = appDatabase.propertyDao
     private val addressDao: AddressDao = appDatabase.addressDao
     private val photoDao: PhotoDao = appDatabase.photoDao
@@ -30,14 +33,16 @@ object ViewModelFactory:  ViewModelProvider.Factory {
     private val typeDao: TypeDao = appDatabase.typeDao
     private val poiDao: PoiDao = appDatabase.poiDao
     private val propertyPoiJoinDao: PropertyPoiJoinDao = appDatabase.propertyPoiJoinDao
+
     // Repositories
-    private val propertyRepository: PropertyRepository = PropertyRepository(propertyDao)
-    private val addressRepository: AddressRepository = AddressRepository(addressDao)
-    private val photoRepository: PhotoRepository = PhotoRepository(photoDao)
-    private val agentRepository: AgentRepository = AgentRepository(agentDao)
-    private val typeRepository: TypeRepository = TypeRepository(typeDao)
-    private val poiRepository: PoiRepository = PoiRepository(poiDao)
-    private val propertyPoiJoinRepository: PropertyPoiJoinRepository = PropertyPoiJoinRepository(propertyPoiJoinDao)
+    private val propertyRepository: PropertyRepository = PropertyRepository(propertyDao = propertyDao)
+    private val addressRepository: AddressRepository = AddressRepository(addressDao = addressDao)
+    private val photoRepository: PhotoRepository = PhotoRepository(photoDao = photoDao)
+    private val agentRepository: AgentRepository = AgentRepository(agentDao = agentDao)
+    private val typeRepository: TypeRepository = TypeRepository(typeDao = typeDao)
+    private val poiRepository: PoiRepository = PoiRepository(poiDao = poiDao)
+    private val propertyPoiJoinRepository: PropertyPoiJoinRepository =
+        PropertyPoiJoinRepository(propertyPoiJoinDao = propertyPoiJoinDao)
     private val locationRepository: LocationRepository = LocationRepository()
 
 
@@ -46,8 +51,8 @@ object ViewModelFactory:  ViewModelProvider.Factory {
             AppViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
                 typeRepository, poiRepository, propertyPoiJoinRepository) as T
         } else if (modelClass.isAssignableFrom(ListAndDetailViewModel::class.java)) {
-            ListAndDetailViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
-                typeRepository, poiRepository, locationRepository) as T
+            ListAndDetailViewModel(propertyRepository, addressRepository, photoRepository,
+                agentRepository, typeRepository, poiRepository, locationRepository) as T
         } else if (modelClass.isAssignableFrom(EditViewModel::class.java)) {
             EditViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
                 typeRepository, poiRepository, propertyPoiJoinRepository, locationRepository) as T
@@ -61,4 +66,5 @@ object ViewModelFactory:  ViewModelProvider.Factory {
             throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
     }
+
 }

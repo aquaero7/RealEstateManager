@@ -19,7 +19,6 @@ import com.aquaero.realestatemanager.NULL_PROPERTY_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.ui.theme.Magenta
-import com.aquaero.realestatemanager.ui.theme.White
 import com.aquaero.realestatemanager.ui.theme.Yellow
 
 @SuppressLint("NewApi")

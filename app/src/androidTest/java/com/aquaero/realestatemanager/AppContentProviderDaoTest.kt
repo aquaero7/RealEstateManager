@@ -13,7 +13,9 @@ import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.model.TypeEnum
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -45,22 +47,30 @@ class AppContentProviderDaoTest {
 
     @After
     fun tearDown() {
-        testDatabase.clearAllTables()
-        testDatabase.close()
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                testDatabase.clearAllTables()
+                testDatabase.close()
+            }
+        }
     }
 
     @Test
     fun getAllPropertiesWhenNoneIsInserted() {
+        runBlocking {
 
-        // Initialize cursor
-        val cursor: Cursor = propertyDao.getAllPropertiesWithCursor()
+            // Initialize cursor and make asynchronous DAO query
+            val cursor: Cursor = withContext(Dispatchers.IO) {
+                propertyDao.getAllPropertiesWithCursor()
+            }
 
-        // Test assertions
-        assertNotNull(cursor)
-        assertEquals(0, cursor.count)
+            // Test assertions
+            assertNotNull(cursor)
+            assertEquals(0, cursor.count)
 
-        // Close cursor
-        cursor.close()
+            // Close cursor
+            cursor.close()
+        }
     }
 
     @Test
@@ -76,52 +86,157 @@ class AppContentProviderDaoTest {
 
         // Populate database
         runBlocking {
+
+            // Populate database
             populateDatabase(type = type1, agent = agent1, property = property1)
             populateDatabase(type = type2, agent = agent2, property = property2)
             populateDatabase(type = type3, agent = agent3, property = property3)
+
+            // // Initialize cursor and make asynchronous DAO query
+            val cursor: Cursor = withContext(Dispatchers.IO) {
+                propertyDao.getAllPropertiesWithCursor()
+            }
+
+            // Test assertions
+
+            assertNotNull(cursor)
+            assertEquals(3, cursor.count)
+
+            if (cursor.moveToFirst()) {
+                do {
+                    // First row
+                    var cursorPropId = cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
+                    var cursorSaleDate = cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
+
+                    assertEquals(1, cursorPropId)
+                    assertEquals(saleDate1, cursorSaleDate)     // assertNull(cursorSaleDate)
+
+                    // Second row
+                    cursor.moveToNext()
+                    cursorPropId = cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
+                    cursorSaleDate = cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
+
+                    assertEquals(2, cursorPropId)
+                    assertEquals(saleDate2, cursorSaleDate)
+
+                    // Third row
+                    cursor.moveToNext()
+                    cursorPropId = cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
+                    cursorSaleDate = cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
+
+                    assertEquals(3, cursorPropId)
+                    assertEquals(saleDate3, cursorSaleDate)     // assertNull(cursorSaleDate)
+                } while (cursor.moveToNext())
+            } else {
+                fail("Cursor is empty")
+            }
+
+            // Close cursor
+            cursor.close()
         }
-
-        // Initialize cursor and query DAO
-        val cursor: Cursor = propertyDao.getAllPropertiesWithCursor()
-
-        // Test assertions
-
-        assertNotNull(cursor)
-        assertEquals(3, cursor.count)
-
-        if (cursor.moveToFirst()) {
-            do {
-                // First row
-                var cursorPropId = cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
-                var cursorSaleDate = cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
-
-                assertEquals(1, cursorPropId)
-                assertEquals(saleDate1, cursorSaleDate)     // assertNull(cursorSaleDate)
-
-                // Second row
-                cursor.moveToNext()
-                cursorPropId = cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
-                cursorSaleDate = cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
-
-                assertEquals(2, cursorPropId)
-                assertEquals(saleDate2, cursorSaleDate)
-
-                // Third row
-                cursor.moveToNext()
-                cursorPropId = cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
-                cursorSaleDate = cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
-
-                assertEquals(3, cursorPropId)
-                assertEquals(saleDate3, cursorSaleDate)     // assertNull(cursorSaleDate)
-            } while (cursor.moveToNext())
-        } else {
-            fail("Cursor is empty")
-        }
-
-        // Close cursor
-        cursor.close()
     }
 
+    @Test
+    fun getForSaleProperties() {
+
+        // Initialize entities
+        val (type1, agent1, property1) = initEntities()
+        val (type2, agent2, property2) = initEntities(propertyId = 2)
+        val (type3, agent3, property3) = initEntities(propertyId = 3)
+        val saleDate1 = property1.saleDate
+        val saleDate2 = property2.saleDate
+        val saleDate3 = property3.saleDate
+
+        // Populate database
+        runBlocking {
+
+            // Populate database
+            populateDatabase(type = type1, agent = agent1, property = property1)
+            populateDatabase(type = type2, agent = agent2, property = property2)
+            populateDatabase(type = type3, agent = agent3, property = property3)
+
+            // // Initialize cursor and make asynchronous DAO query
+            val cursor: Cursor = withContext(Dispatchers.IO) {
+                propertyDao.getPropertiesForSaleWithCursor()
+            }
+
+            // Test assertions
+
+            assertNotNull(cursor)
+            assertEquals(2, cursor.count)
+
+            if (cursor.moveToFirst()) {
+                do {
+                    // First row
+                    var cursorPropId = cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
+                    var cursorSaleDate = cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
+
+                    assertEquals(1, cursorPropId)
+                    assertEquals(saleDate1, cursorSaleDate)     // assertNull(cursorSaleDate)
+
+                    // Second row
+                    cursor.moveToNext()
+                    cursorPropId = cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
+                    cursorSaleDate = cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
+
+                    assertEquals(3, cursorPropId)
+                    assertEquals(saleDate3, cursorSaleDate)     // assertNull(cursorSaleDate)
+                } while (cursor.moveToNext())
+            } else {
+                fail("Cursor is empty")
+            }
+
+            // Close cursor
+            cursor.close()
+        }
+    }
+
+    @Test
+    fun getSoldProperties() {
+
+        // Initialize entities
+        val (type1, agent1, property1) = initEntities()
+        val (type2, agent2, property2) = initEntities(propertyId = 2)
+        val (type3, agent3, property3) = initEntities(propertyId = 3)
+        val saleDate1 = property1.saleDate
+        val saleDate2 = property2.saleDate
+        val saleDate3 = property3.saleDate
+
+        // Populate database
+        runBlocking {
+
+            // Populate database
+            populateDatabase(type = type1, agent = agent1, property = property1)
+            populateDatabase(type = type2, agent = agent2, property = property2)
+            populateDatabase(type = type3, agent = agent3, property = property3)
+
+            // // Initialize cursor and make asynchronous DAO query
+            val cursor: Cursor = withContext(Dispatchers.IO) {
+                propertyDao.getSoldPropertiesWithCursor()
+            }
+
+            // Test assertions
+
+            assertNotNull(cursor)
+            assertEquals(1, cursor.count)
+
+            if (cursor.moveToFirst()) {
+                do {
+                    // First row
+                    var cursorPropId = cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
+                    var cursorSaleDate = cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
+
+                    assertEquals(2, cursorPropId)
+                    assertEquals(saleDate2, cursorSaleDate)
+                } while (cursor.moveToNext())
+            } else {
+                fail("Cursor is empty")
+            }
+
+            // Close cursor
+            cursor.close()
+        }
+    }
 
 
     /**/
@@ -175,9 +290,11 @@ class AppContentProviderDaoTest {
     }
 
     private suspend fun populateDatabase(type: Type, agent: Agent, property: Property) {
-        typeDao.upsertType(type = type)
-        agentDao.upsertAgent(agent = agent)
-        propertyDao.upsertProperty(property = property)
+        withContext(Dispatchers.IO) {
+            typeDao.upsertType(type = type)
+            agentDao.upsertAgent(agent = agent)
+            propertyDao.upsertProperty(property = property)
+        }
     }
 
 }

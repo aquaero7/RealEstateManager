@@ -8,7 +8,7 @@
       <entry key="app">
         <State />
       </entry>
-      <entry key="getAllPropertiesWhenSomeAreInserted()">
+      <entry key="getAllPropertiesWhenNoneIsInserted()">
         <State />
       </entry>
     </value>

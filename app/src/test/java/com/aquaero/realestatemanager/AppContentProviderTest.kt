@@ -44,7 +44,7 @@ class AppContentProviderTest {
         testContext = ApplicationProvider.getApplicationContext()
         Robolectric.setupContentProvider(AppContentProvider::class.java)
         contentResolver = testContext.contentResolver
-        testDatabase = AppDatabase.getInstance(context = testContext)
+        initDatabase()
     }
 
     @After
@@ -53,7 +53,7 @@ class AppContentProviderTest {
             withContext(Dispatchers.IO) {
                 testDatabase?.clearAllTables()
             }
-            testDatabase?.close()
+//            testDatabase?.close()
         }
     }
 
@@ -64,6 +64,7 @@ class AppContentProviderTest {
         val (uri, projection) = initUriForQuery()
 
         runBlocking {
+
             // Initialize cursor and make asynchronous query
             val cursor: Cursor? = cursorAndQuery(uri = uri, projection = projection)
 
@@ -79,8 +80,7 @@ class AppContentProviderTest {
     @Test
     fun getAllPropertiesWhenSomeAreInserted() {
 
-        // Initialize database and entities
-        initDatabase()
+        // Initialize entities
         val (type1, agent1, property1) = initEntities()
         val (type2, agent2, property2) = initEntities(propertyId = 2)
         val (type3, agent3, property3) = initEntities(propertyId = 3)
@@ -102,6 +102,7 @@ class AppContentProviderTest {
             val cursor: Cursor? = cursorAndQuery(uri = uri, projection = projection)
 
             // Test assertions
+
             assertNotNull(cursor)
             assertEquals(3, cursor?.count)
 
@@ -139,6 +140,113 @@ class AppContentProviderTest {
         }
     }
 
+    @Test
+    fun getForSaleProperties() {
+
+        // Initialize entities
+        val (type1, agent1, property1) = initEntities()
+        val (type2, agent2, property2) = initEntities(propertyId = 2)
+        val (type3, agent3, property3) = initEntities(propertyId = 3)
+        val saleDate1 = property1.saleDate
+        val saleDate2 = property2.saleDate
+        val saleDate3 = property3.saleDate
+
+        // Initialize uri for query
+        val (uri, projection) = initUriForQueryForSale()
+
+        runBlocking {
+
+            // Populate database
+            populateDatabase(type = type1, agent = agent1, property = property1)
+            populateDatabase(type = type2, agent = agent2, property = property2)
+            populateDatabase(type = type3, agent = agent3, property = property3)
+
+            // Initialize cursor and make asynchronous query
+            val cursor: Cursor? = cursorAndQuery(uri = uri, projection = projection)
+
+            // Test assertions
+            assertNotNull(cursor)
+            assertEquals(2, cursor?.count)
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    // First row
+                    var cursorPropId =
+                        cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
+                    var cursorSaleDate =
+                        cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
+
+                    assertEquals(1, cursorPropId)
+                    assertEquals(saleDate1, cursorSaleDate)     // assertNull(saleDate)
+
+                    // Second row
+                    cursor.moveToNext()
+                    cursorPropId =
+                        cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
+                    cursorSaleDate =
+                        cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
+
+                    assertEquals(3, cursorPropId)
+                    assertEquals(saleDate3, cursorSaleDate)     // assertNull(saleDate)
+                } while (cursor.moveToNext())
+            } else {
+                fail("Cursor is empty")
+            }
+
+            // Close cursor
+            cursor?.close()
+        }
+
+    }
+
+    @Test
+    fun getSoldProperties() {
+
+        // Initialize entities
+        val (type1, agent1, property1) = initEntities()
+        val (type2, agent2, property2) = initEntities(propertyId = 2)
+        val (type3, agent3, property3) = initEntities(propertyId = 3)
+        val saleDate1 = property1.saleDate
+        val saleDate2 = property2.saleDate
+        val saleDate3 = property3.saleDate
+
+        // Initialize uri for query
+        val (uri, projection) = initUriForQuerySold()
+
+        runBlocking {
+
+            // Populate database
+            populateDatabase(type = type1, agent = agent1, property = property1)
+            populateDatabase(type = type2, agent = agent2, property = property2)
+            populateDatabase(type = type3, agent = agent3, property = property3)
+
+            // Initialize cursor and make asynchronous query
+            val cursor: Cursor? = cursorAndQuery(uri = uri, projection = projection)
+
+            // Test assertions
+            assertNotNull(cursor)
+            assertEquals(1, cursor?.count)
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    // First row
+                    var cursorPropId =
+                        cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
+                    var cursorSaleDate =
+                        cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
+
+                    assertEquals(2, cursorPropId)
+                    assertEquals(saleDate2, cursorSaleDate)
+                } while (cursor.moveToNext())
+            } else {
+                fail("Cursor is empty")
+            }
+
+            // Close cursor
+            cursor?.close()
+        }
+
+    }
 
 
     /**/
@@ -152,14 +260,31 @@ class AppContentProviderTest {
         return Pair(first = uri, second = projection)
     }
 
+    private fun initUriForQueryForSale(): Pair<Uri, Array<String>> {
+        val uri = Uri.parse(
+            "${Path.CONTENT}://${BuildConfig.APPLICATION_ID}.${Path.CONTENT_PROVIDER}/${AppContentProvider.TABLE_NAME}/${AppContentProvider.PATH_FOR_SALE}"
+        )
+        val projection = arrayOf(PropertyKey.PROPERTY_ID, PropertyKey.SALE_DATE)
+
+        return Pair(first = uri, second = projection)
+    }
+
+    private fun initUriForQuerySold(): Pair<Uri, Array<String>> {
+        val uri = Uri.parse(
+            "${Path.CONTENT}://${BuildConfig.APPLICATION_ID}.${Path.CONTENT_PROVIDER}/${AppContentProvider.TABLE_NAME}/${AppContentProvider.PATH_SOLD}"
+        )
+        val projection = arrayOf(PropertyKey.PROPERTY_ID, PropertyKey.SALE_DATE)
+
+        return Pair(first = uri, second = projection)
+    }
+
     private suspend fun cursorAndQuery(uri: Uri, projection: Array<String>): Cursor? =
         withContext(context = Dispatchers.IO) {
             contentResolver.query(uri, projection, null, null, null)
         }
 
-
     private fun initDatabase() {
-//        testDatabase = AppDatabase.getInstance(context = testContext)
+        testDatabase = AppDatabase.getInstance(context = testContext)
         typeDao = testDatabase!!.typeDao
         agentDao = testDatabase!!.agentDao
         propertyDao = testDatabase!!.propertyDao
@@ -195,8 +320,6 @@ class AppContentProviderTest {
                 nbOfBedrooms = null, registrationDate = null, saleDate3, agentId = agent3.agentId
             )
 
-//        return Triple(type1, agent1, property1)
-
         return when (propertyId) {
             1L -> Triple(first = type1, second = agent1, third = property1)
             2L -> Triple(first = type2, second = agent2, third = property2)
@@ -206,9 +329,11 @@ class AppContentProviderTest {
     }
 
     private suspend fun populateDatabase(type: Type, agent: Agent, property: Property) {
-        typeDao.upsertType(type = type)
-        agentDao.upsertAgent(agent = agent)
-        propertyDao.upsertProperty(property = property)
+            withContext(Dispatchers.IO) {
+                typeDao.upsertType(type = type)
+                agentDao.upsertAgent(agent = agent)
+                propertyDao.upsertProperty(property = property)
+            }
     }
 
 }

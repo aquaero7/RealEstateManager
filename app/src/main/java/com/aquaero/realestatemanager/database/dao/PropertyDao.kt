@@ -41,7 +41,7 @@ interface PropertyDao {
      */
 
     @Query("SELECT * FROM property")
-    fun getAllPropertiesWithCursor(): Cursor
+    fun getPropertiesWithCursor(): Cursor
 
     @Query("SELECT * FROM property WHERE saleDate IS NULL")
     fun getPropertiesForSaleWithCursor(): Cursor

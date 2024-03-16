@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.database.dao
 
+import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -29,5 +30,13 @@ interface PoiDao {
 
     @Query("SELECT * FROM poi ORDER BY poiId ASC")
     fun getPoisOrderedById(): Flow<MutableList<Poi>>
+
+
+    /*
+     * ContentProvider
+     */
+
+    @Query("SELECT * FROM poi")
+    fun getPoisWithCursor(): Cursor
 
 }

@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.database.dao
 
+import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -37,5 +38,13 @@ interface PropertyPoiJoinDao {
 
     @Query("SELECT * FROM property_poi_join")
     fun getPropertyPoiJoins(): Flow<MutableList<PropertyPoiJoin>>
+
+
+    /*
+     * ContentProvider
+     */
+
+    @Query("SELECT * FROM property_poi_join")
+    fun getPropertyPoiJoinsWithCursor(): Cursor
 
 }

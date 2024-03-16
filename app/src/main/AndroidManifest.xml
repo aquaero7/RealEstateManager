@@ -52,8 +52,6 @@
             tools:ignore="ExportedContentProvider">
         </provider>
 
-
-
     </application>
 
 </manifest>

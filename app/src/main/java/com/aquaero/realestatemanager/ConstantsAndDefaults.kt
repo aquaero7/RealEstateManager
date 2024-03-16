@@ -172,6 +172,26 @@ object PropertyKey {
     const val AGENT_ID = "agentId"
 }
 
+object AddressKey {
+    const val ADDRESS_ID = "addressId"
+}
+
+object PhotoKey {
+    const val PHOTO_ID = "photoId"
+}
+
+object AgentKey {
+    const val AGENT_ID = "agentId"
+}
+
+object TypeKey {
+    const val TYPE_ID = "typeId"
+}
+
+object PoiKey {
+    const val POI_ID = "poiId"
+}
+
 
 
 

@@ -6,11 +6,22 @@ import android.database.Cursor
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.aquaero.realestatemanager.database.AppDatabase
+import com.aquaero.realestatemanager.database.dao.AddressDao
 import com.aquaero.realestatemanager.database.dao.AgentDao
+import com.aquaero.realestatemanager.database.dao.PhotoDao
+import com.aquaero.realestatemanager.database.dao.PoiDao
 import com.aquaero.realestatemanager.database.dao.PropertyDao
+import com.aquaero.realestatemanager.database.dao.PropertyPoiJoinDao
 import com.aquaero.realestatemanager.database.dao.TypeDao
+import com.aquaero.realestatemanager.model.AGENT_PREPOPULATION_DATA
+import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
+import com.aquaero.realestatemanager.model.POI_PREPOPULATION_DATA
+import com.aquaero.realestatemanager.model.Photo
+import com.aquaero.realestatemanager.model.PoiEnum
 import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.model.PropertyPoiJoin
+import com.aquaero.realestatemanager.model.TYPE_PREPOPULATION_DATA
 import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.model.TypeEnum
 import com.aquaero.realestatemanager.provider.AppContentProvider
@@ -37,6 +48,27 @@ class AppContentProviderTest {
     private lateinit var typeDao: TypeDao
     private lateinit var agentDao: AgentDao
     private lateinit var propertyDao: PropertyDao
+    private lateinit var addressDao: AddressDao
+    private lateinit var photoDao: PhotoDao
+    private lateinit var poiDao: PoiDao
+    private lateinit var propertyPoiJoinDao: PropertyPoiJoinDao
+
+    private val uriProperties = AppContentProvider.URI_PROPERTIES
+    private val uriPropertiesForSale = AppContentProvider.URI_PROPERTIES_FOR_SALE
+    private val uriSoldProperties = AppContentProvider.URI_SOLD_PROPERTIES
+    private val projectionProperty = arrayOf(PropertyKey.PROPERTY_ID, PropertyKey.SALE_DATE)
+    private val uriAddresses = AppContentProvider.URI_ADDRESSES
+    private val projectionAddress = arrayOf(AddressKey.ADDRESS_ID)
+    private val uriPhotos = AppContentProvider.URI_PHOTOS
+    private val projectionPhoto = arrayOf(PhotoKey.PHOTO_ID)
+    private val uriAgents = AppContentProvider.URI_AGENTS
+    private val projectionAgent = arrayOf(AgentKey.AGENT_ID)
+    private val uriTypes = AppContentProvider.URI_TYPES
+    private val projectionType = arrayOf(TypeKey.TYPE_ID)
+    private val uriPois = AppContentProvider.URI_POIS
+    private val projectionPoi = arrayOf(PoiKey.POI_ID)
+    private val uriPropertyPoiJoins = AppContentProvider.URI_PROPERTY_POI_JOINS
+    private val projectionPropertyPoiJoin = arrayOf(PropertyKey.PROPERTY_ID, PoiKey.POI_ID)
 
 
     @Before
@@ -53,232 +85,628 @@ class AppContentProviderTest {
             withContext(Dispatchers.IO) {
                 testDatabase?.clearAllTables()
             }
-//            testDatabase?.close()
         }
     }
 
     @Test
-    fun getAllPropertiesWhenNoneIsInserted() {
+    fun getPropertiesWhenNoneIsInserted() {
+        val cursor: Cursor?
 
-        // Initialize uri for query
-        val (uri, projection) = initUriForQuery()
-
+        // Initialize cursor and make asynchronous query
         runBlocking {
-
-            // Initialize cursor and make asynchronous query
-            val cursor: Cursor? = cursorAndQuery(uri = uri, projection = projection)
-
-            // Test assertions
-            assertNotNull(cursor)
-            assertEquals(0, cursor?.count)
-
-            // Close cursor
-            cursor?.close()
+            cursor = cursorAndQuery(uri = uriProperties, projection = projectionProperty)
         }
+
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(0, cursor?.count)
+
+        // Close cursor
+        cursor?.close()
     }
 
     @Test
-    fun getAllPropertiesWhenSomeAreInserted() {
+    fun getPropertiesWhenSomeAreInserted() {
+        val (cursor, saleDates) = initTest(uri = uriProperties)
+        val (saleDate1, saleDate2, saleDate3) = saleDates
 
-        // Initialize entities
-        val (type1, agent1, property1) = initEntities()
-        val (type2, agent2, property2) = initEntities(propertyId = 2)
-        val (type3, agent3, property3) = initEntities(propertyId = 3)
-        val saleDate1 = property1.saleDate
-        val saleDate2 = property2.saleDate
-        val saleDate3 = property3.saleDate
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(3, cursor?.count)
 
-        // Initialize uri for query
-        val (uri, projection) = initUriForQuery()
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                // First row
+                var cursorFields = cursorFields(uri = uriProperties, cursor = cursor)
 
-        runBlocking {
+                assertEquals(1L, cursorFields.first)
+                assertEquals(saleDate1, cursorFields.second)     // assertNull(saleDate)
 
-            // Populate database
-            populateDatabase(type = type1, agent = agent1, property = property1)
-            populateDatabase(type = type2, agent = agent2, property = property2)
-            populateDatabase(type = type3, agent = agent3, property = property3)
+                // Second row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriProperties, cursor = cursor)
 
-            // Initialize cursor and make asynchronous query
-            val cursor: Cursor? = cursorAndQuery(uri = uri, projection = projection)
+                assertEquals(2L, cursorFields.first)
+                assertEquals(saleDate2, cursorFields.second)
 
-            // Test assertions
+                // Third row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriProperties, cursor = cursor)
 
-            assertNotNull(cursor)
-            assertEquals(3, cursor?.count)
-
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    // First row
-                    var cursorPropId = cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
-                    var cursorSaleDate = cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
-
-                    assertEquals(1, cursorPropId)
-                    assertEquals(saleDate1, cursorSaleDate)     // assertNull(saleDate)
-
-                    // Second row
-                    cursor.moveToNext()
-                    cursorPropId = cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
-                    cursorSaleDate = cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
-
-                    assertEquals(2, cursorPropId)
-                    assertEquals(saleDate2, cursorSaleDate)
-
-                    // Third row
-                    cursor.moveToNext()
-                    cursorPropId = cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
-                    cursorSaleDate = cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
-
-                    assertEquals(3, cursorPropId)
-                    assertEquals(saleDate3, cursorSaleDate)     // assertNull(saleDate)
-                } while (cursor.moveToNext())
-            } else {
-                fail("Cursor is empty")
-            }
-
-            // Close cursor
-            cursor?.close()
+                assertEquals(3L, cursorFields.first)
+                assertEquals(saleDate3, cursorFields.second)     // assertNull(saleDate)
+            } while (cursor.moveToNext())
+        } else {
+            fail("Cursor is empty")
         }
+
+        // Close cursor
+        cursor?.close()
     }
 
     @Test
-    fun getForSaleProperties() {
+    fun getPropertiesForSale() {
+        val (cursor, saleDates) = initTest(uri = uriPropertiesForSale)
+        val saleDate1 = saleDates.first
+        val saleDate3 = saleDates.third
 
-        // Initialize entities
-        val (type1, agent1, property1) = initEntities()
-        val (type2, agent2, property2) = initEntities(propertyId = 2)
-        val (type3, agent3, property3) = initEntities(propertyId = 3)
-        val saleDate1 = property1.saleDate
-        val saleDate2 = property2.saleDate
-        val saleDate3 = property3.saleDate
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(2, cursor?.count)
 
-        // Initialize uri for query
-        val (uri, projection) = initUriForQueryForSale()
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                // First row
+                var cursorFields = cursorFields(uri = uriPropertiesForSale, cursor = cursor)
 
-        runBlocking {
+                assertEquals(1L, cursorFields.first)
+                assertEquals(saleDate1, cursorFields.second)     // assertNull(saleDate)
 
-            // Populate database
-            populateDatabase(type = type1, agent = agent1, property = property1)
-            populateDatabase(type = type2, agent = agent2, property = property2)
-            populateDatabase(type = type3, agent = agent3, property = property3)
+                // Second row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriPropertiesForSale, cursor = cursor)
 
-            // Initialize cursor and make asynchronous query
-            val cursor: Cursor? = cursorAndQuery(uri = uri, projection = projection)
-
-            // Test assertions
-            assertNotNull(cursor)
-            assertEquals(2, cursor?.count)
-
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    // First row
-                    var cursorPropId =
-                        cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
-                    var cursorSaleDate =
-                        cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
-
-                    assertEquals(1, cursorPropId)
-                    assertEquals(saleDate1, cursorSaleDate)     // assertNull(saleDate)
-
-                    // Second row
-                    cursor.moveToNext()
-                    cursorPropId =
-                        cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
-                    cursorSaleDate =
-                        cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
-
-                    assertEquals(3, cursorPropId)
-                    assertEquals(saleDate3, cursorSaleDate)     // assertNull(saleDate)
-                } while (cursor.moveToNext())
-            } else {
-                fail("Cursor is empty")
-            }
-
-            // Close cursor
-            cursor?.close()
+                assertEquals(3L, cursorFields.first)
+                assertEquals(saleDate3, cursorFields.second)     // assertNull(saleDate)
+            } while (cursor.moveToNext())
+        } else {
+            fail("Cursor is empty")
         }
 
+        // Close cursor
+        cursor?.close()
     }
 
     @Test
     fun getSoldProperties() {
+        val (cursor, saleDates) = initTest(uri = uriSoldProperties)
+        val saleDate2 = saleDates.second
 
-        // Initialize entities
-        val (type1, agent1, property1) = initEntities()
-        val (type2, agent2, property2) = initEntities(propertyId = 2)
-        val (type3, agent3, property3) = initEntities(propertyId = 3)
-        val saleDate1 = property1.saleDate
-        val saleDate2 = property2.saleDate
-        val saleDate3 = property3.saleDate
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(1, cursor?.count)
 
-        // Initialize uri for query
-        val (uri, projection) = initUriForQuerySold()
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                // First and only row
+                val cursorFields = cursorFields(uri = uriSoldProperties, cursor = cursor)
 
-        runBlocking {
-
-            // Populate database
-            populateDatabase(type = type1, agent = agent1, property = property1)
-            populateDatabase(type = type2, agent = agent2, property = property2)
-            populateDatabase(type = type3, agent = agent3, property = property3)
-
-            // Initialize cursor and make asynchronous query
-            val cursor: Cursor? = cursorAndQuery(uri = uri, projection = projection)
-
-            // Test assertions
-            assertNotNull(cursor)
-            assertEquals(1, cursor?.count)
-
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    // First row
-                    var cursorPropId =
-                        cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
-                    var cursorSaleDate =
-                        cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
-
-                    assertEquals(2, cursorPropId)
-                    assertEquals(saleDate2, cursorSaleDate)
-                } while (cursor.moveToNext())
-            } else {
-                fail("Cursor is empty")
-            }
-
-            // Close cursor
-            cursor?.close()
+                assertEquals(2L, cursorFields.first)
+                assertEquals(saleDate2, cursorFields.second)
+            } while (cursor.moveToNext())
+        } else {
+            fail("Cursor is empty")
         }
 
+        // Close cursor
+        cursor?.close()
+    }
+
+    @Test
+    fun getAddressesWhenNoneIsInserted() {
+        val cursor: Cursor?
+
+        // Initialize cursor and make asynchronous query
+        runBlocking {
+            cursor = cursorAndQuery(uri = uriAddresses, projection = projectionAddress)
+        }
+
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(0, cursor?.count)
+
+        // Close cursor
+        cursor?.close()
+    }
+
+    @Test
+    fun getAddressesWhenSomeAreInserted() {
+        val cursor = initTest(uri = uriAddresses).first
+
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(3, cursor?.count)
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                // First row
+                var cursorFields = cursorFields(uri = uriAddresses, cursor = cursor)
+
+                assertEquals(1L, cursorFields.first)
+
+                // Second row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriAddresses, cursor = cursor)
+
+                assertEquals(2L, cursorFields.first)
+
+                // Third row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriAddresses, cursor = cursor)
+
+                assertEquals(3L, cursorFields.first)
+            } while (cursor.moveToNext())
+        } else {
+            fail("Cursor is empty")
+        }
+
+        // Close cursor
+        cursor?.close()
+    }
+
+    @Test
+    fun getPhotosWhenNoneIsInserted() {
+        val cursor: Cursor?
+
+        // Initialize cursor and make asynchronous query
+        runBlocking {
+            cursor = cursorAndQuery(uri = uriPhotos, projection = projectionPhoto)
+        }
+
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(0, cursor?.count)
+
+        // Close cursor
+        cursor?.close()
+    }
+
+    @Test
+    fun getPhotosWhenSomeAreInserted() {
+        val cursor = initTest(uri = uriPhotos).first
+
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(3, cursor?.count)
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                // First row
+                var cursorFields = cursorFields(uri = uriPhotos, cursor = cursor)
+
+                assertEquals(1L, cursorFields.first)
+
+                // Second row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriPhotos, cursor = cursor)
+
+                assertEquals(2L, cursorFields.first)
+
+                // Third row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriPhotos, cursor = cursor)
+
+                assertEquals(3L, cursorFields.first)
+            } while (cursor.moveToNext())
+        } else {
+            fail("Cursor is empty")
+        }
+
+        // Close cursor
+        cursor?.close()
+    }
+
+    @Test
+    fun getAgentsWhenNoneIsInserted() {
+        val cursor: Cursor?
+
+        // Initialize cursor and make asynchronous query
+        runBlocking {
+            cursor = cursorAndQuery(uri = uriAgents, projection = projectionAgent)
+        }
+
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(0, cursor?.count)
+
+        // Close cursor
+        cursor?.close()
+    }
+
+    @Test
+    fun getAgentsWhenSomeAreInserted() {
+        /*
+         * In the application, the database is pre-populated with 4 agents, using AGENT_PREPOPULATION_DATA
+         * The test also populates the 4 agents, sorted by lastName then firstName, using AGENT_PREPOPULATION_DATA
+         */
+
+        val cursor = initTest(uri = uriAgents).first
+
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(4, cursor?.count)
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                // First row
+                var cursorFields = cursorFields(uri = uriAgents, cursor = cursor)
+
+                assertEquals(1L, cursorFields.first)
+
+                // Second row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriAgents, cursor = cursor)
+
+                assertEquals(2L, cursorFields.first)
+
+                // Third row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriAgents, cursor = cursor)
+
+                assertEquals(3L, cursorFields.first)
+
+                // Fourth row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriAgents, cursor = cursor)
+
+                assertEquals(4L, cursorFields.first)
+            } while (cursor.moveToNext())
+        } else {
+            fail("Cursor is empty")
+        }
+
+        // Close cursor
+        cursor?.close()
+    }
+
+    @Test
+    fun getTypesWhenNoneIsInserted() {
+        val cursor: Cursor?
+
+        // Initialize cursor and make asynchronous query
+        runBlocking {
+            cursor = cursorAndQuery(uri = uriTypes, projection = projectionType)
+        }
+
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(0, cursor?.count)
+
+        // Close cursor
+        cursor?.close()
+    }
+
+    @Test
+    fun getTypesWhenSomeAreInserted() {
+        /*
+         * In the application, the database is pre-populated with 9 types, using TYPE_PREPOPULATION_DATA
+         * The test also populates the 9 types, sorted by typeId, using TYPE_PREPOPULATION_DATA
+         */
+
+        val cursor = initTest(uri = uriTypes).first
+
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(9, cursor?.count)
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                // First row
+                var cursorFields = cursorFields(uri = uriTypes, cursor = cursor)
+
+                assertEquals(TypeEnum.UNASSIGNED.key, cursorFields.first)
+
+                // Second row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriTypes, cursor = cursor)
+
+                assertEquals(TypeEnum.CASTLE.key, cursorFields.first)
+
+                // Third row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriTypes, cursor = cursor)
+
+                assertEquals(TypeEnum.DUPLEX.key, cursorFields.first)
+
+                // Fourth row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriTypes, cursor = cursor)
+
+                assertEquals(TypeEnum.FLAT.key, cursorFields.first)
+
+                // Fifth row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriTypes, cursor = cursor)
+
+                assertEquals(TypeEnum.HOSTEL.key, cursorFields.first)
+
+                // Sixth row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriTypes, cursor = cursor)
+
+                assertEquals(TypeEnum.HOUSE.key, cursorFields.first)
+
+                // Seventh row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriTypes, cursor = cursor)
+
+                assertEquals(TypeEnum.LOFT.key, cursorFields.first)
+
+                // Eighth row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriTypes, cursor = cursor)
+
+                assertEquals(TypeEnum.MANOR.key, cursorFields.first)
+
+                // Ninth row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriTypes, cursor = cursor)
+
+                assertEquals(TypeEnum.PENTHOUSE.key, cursorFields.first)
+            } while (cursor.moveToNext())
+        } else {
+            fail("Cursor is empty")
+        }
+
+        // Close cursor
+        cursor?.close()
+    }
+
+    @Test
+    fun getPoisWhenNoneIsInserted() {
+        val cursor: Cursor?
+
+        // Initialize cursor and make asynchronous query
+        runBlocking {
+            cursor = cursorAndQuery(uri = uriPois, projection = projectionPoi)
+        }
+
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(0, cursor?.count)
+
+        // Close cursor
+        cursor?.close()
+    }
+
+    @Test
+    fun getPoisWhenSomeAreInserted() {
+        /*
+         * In the application, the database is pre-populated with 6 pois, using POI_PREPOPULATION_DATA
+         * The test also populates the 6 pois, unsorted, using POI_PREPOPULATION_DATA
+         */
+
+        val cursor = initTest(uri = uriPois).first
+
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(6, cursor?.count)
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                // First row
+                var cursorFields = cursorFields(uri = uriPois, cursor = cursor)
+
+                assertEquals(PoiEnum.HOSPITAL.key, cursorFields.first)
+
+                // Second row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriPois, cursor = cursor)
+
+                assertEquals(PoiEnum.SCHOOL.key, cursorFields.first)
+
+                // Third row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriPois, cursor = cursor)
+
+                assertEquals(PoiEnum.RESTAURANT.key, cursorFields.first)
+
+                // Fourth row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriPois, cursor = cursor)
+
+                assertEquals(PoiEnum.SHOP.key, cursorFields.first)
+
+                // Fifth row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriPois, cursor = cursor)
+
+                assertEquals(PoiEnum.RAILWAY_STATION.key, cursorFields.first)
+
+                // Sixth row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriPois, cursor = cursor)
+
+                assertEquals(PoiEnum.CAR_PARK.key, cursorFields.first)
+            } while (cursor.moveToNext())
+        } else {
+            fail("Cursor is empty")
+        }
+
+        // Close cursor
+        cursor?.close()
+    }
+
+    @Test
+    fun getPropertyPoiJoinsWhenNoneIsInserted() {
+        val cursor: Cursor?
+
+        // Initialize cursor and make asynchronous query
+        runBlocking {
+            cursor = cursorAndQuery(uri = uriPropertyPoiJoins, projection = projectionPropertyPoiJoin)
+        }
+
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(0, cursor?.count)
+
+        // Close cursor
+        cursor?.close()
+    }
+
+    @Test
+    fun getPropertyPoiJoinsWhenSomeAreInserted() {
+        val cursor = initTest(uri = uriPropertyPoiJoins).first
+
+        // Test assertions
+        assertNotNull(cursor)
+        assertEquals(4, cursor?.count)
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                // First row
+                var cursorFields = cursorFields(uri = uriPropertyPoiJoins, cursor = cursor)
+
+                assertEquals(1L, cursorFields.first)
+                assertEquals(PoiEnum.HOSPITAL.key, cursorFields.second)
+
+                // Second row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriPropertyPoiJoins, cursor = cursor)
+
+                assertEquals(1L, cursorFields.first)
+                assertEquals(PoiEnum.RESTAURANT.key, cursorFields.second)
+
+                // Third row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriPropertyPoiJoins, cursor = cursor)
+
+                assertEquals(2L, cursorFields.first)
+                assertEquals(PoiEnum.HOSPITAL.key, cursorFields.second)
+
+                // Fourth row
+                cursor.moveToNext()
+                cursorFields = cursorFields(uri = uriPropertyPoiJoins, cursor = cursor)
+
+                assertEquals(3L, cursorFields.first)
+                assertEquals(PoiEnum.SCHOOL.key, cursorFields.second)
+            } while (cursor.moveToNext())
+        } else {
+            fail("Cursor is empty")
+        }
+
+        // Close cursor
+        cursor?.close()
     }
 
 
     /**/
 
-    private fun initUriForQuery(): Pair<Uri, Array<String>> {
-        val uri = Uri.parse(
-            "${Path.CONTENT}://${BuildConfig.APPLICATION_ID}.${Path.CONTENT_PROVIDER}/${AppContentProvider.TABLE_NAME}"
-        )
-        val projection = arrayOf(PropertyKey.PROPERTY_ID, PropertyKey.SALE_DATE)
 
-        return Pair(first = uri, second = projection)
+    private fun cursorFields(uri: Uri, cursor: Cursor): Pair<Any?, String?> {
+        var first: Any? = null
+        var second: String? = null
+        when (uri) {
+            uriProperties, uriPropertiesForSale, uriSoldProperties -> {
+                first = cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
+                second = cursor.getString(cursor.getColumnIndex(PropertyKey.SALE_DATE))
+            }
+            uriAddresses -> { first = cursor.getLong(cursor.getColumnIndex(AddressKey.ADDRESS_ID)) }
+            uriPhotos -> { first = cursor.getLong(cursor.getColumnIndex(PhotoKey.PHOTO_ID)) }
+            uriAgents -> { first = cursor.getLong(cursor.getColumnIndex(AgentKey.AGENT_ID)) }
+            uriTypes -> { first = cursor.getString(cursor.getColumnIndex(TypeKey.TYPE_ID)) }
+            uriPois -> { first = cursor.getString(cursor.getColumnIndex(PoiKey.POI_ID)) }
+            uriPropertyPoiJoins -> {
+                first = cursor.getLong(cursor.getColumnIndex(PropertyKey.PROPERTY_ID))
+                second = cursor.getString(cursor.getColumnIndex(PoiKey.POI_ID))
+            }
+        }
+        return Pair(first = first, second = second)
     }
 
-    private fun initUriForQueryForSale(): Pair<Uri, Array<String>> {
-        val uri = Uri.parse(
-            "${Path.CONTENT}://${BuildConfig.APPLICATION_ID}.${Path.CONTENT_PROVIDER}/${AppContentProvider.TABLE_NAME}/${AppContentProvider.PATH_FOR_SALE}"
-        )
-        val projection = arrayOf(PropertyKey.PROPERTY_ID, PropertyKey.SALE_DATE)
+    private fun initTest(uri: Uri): Pair<Cursor?, Triple<String?, String?, String?>> {
 
-        return Pair(first = uri, second = projection)
+        // Initialize properties
+        val (typePr1, agentPr1, property1) = initProperties()
+        val (typePr2, agentPr2, property2) = initProperties(propertyId = 2L)
+        val (typePr3, agentPr3, property3) = initProperties(propertyId = 3L)
+        val saleDate1 = property1.saleDate
+        val saleDate2 = property2.saleDate
+        val saleDate3 = property3.saleDate
+        // Initialize addresses
+        val address1 = initAddresses()
+        val address2 = initAddresses(addressId = 2L)
+        val address3 = initAddresses(addressId = 3L)
+        // Initialize photos
+        val photo1 = initPhotos().second
+        val photo2 = initPhotos(photoId = 2L).second
+        val (propertiesPh, photo3) = initPhotos(photoId = 3L)
+        // Initialize propertyPoiJoins
+        val ppj1 = initPropertyPoiJoin().second
+        val ppj2 = initPropertyPoiJoin(ppj = 2).second
+        val ppj3 = initPropertyPoiJoin(ppj = 3).second
+        val (propertiesPPJ, ppj4) = initPropertyPoiJoin(ppj = 4)
+
+        val cursor: Cursor?
+        var projection: Array<String>? = null
+        var strings: Triple<String?, String?, String?> = Triple(first = null, second = null, third = null)
+
+        runBlocking {
+            // Initialize cursor and make asynchronous query
+            when (uri) {
+                uriProperties, uriPropertiesForSale, uriSoldProperties -> {
+                    // Populate database with properties
+                    populateDatabaseWithProperty(type = typePr1, agent = agentPr1, property = property1)
+                    populateDatabaseWithProperty(type = typePr2, agent = agentPr2, property = property2)
+                    populateDatabaseWithProperty(type = typePr3, agent = agentPr3, property = property3)
+                    projection = projectionProperty
+                    strings = Triple(first = saleDate1, second = saleDate2, third = saleDate3)
+                }
+                uriAddresses -> {
+                    // Populate database with addresses
+                    populateDatabaseWithAddress(address = address1)
+                    populateDatabaseWithAddress(address = address2)
+                    populateDatabaseWithAddress(address = address3)
+                    projection = projectionAddress
+                }
+                uriPhotos -> {
+                    // Populate database with photos
+                    populateDatabaseWithPhoto(properties = propertiesPh, photo = photo1)
+                    populateDatabaseWithPhoto(properties = propertiesPh, photo = photo2)
+                    populateDatabaseWithPhoto(properties = propertiesPh, photo = photo3)
+                    projection = projectionPhoto
+                }
+                uriAgents -> {
+                    // Populate database with agents
+                    populateDatabaseWithAgents()
+                    projection = projectionAgent
+                }
+                uriTypes -> {
+                    // Populate database with types
+                    populateDatabaseWithTypes()
+                    projection = projectionType
+                }
+                uriPois -> {
+                    // Populate database with POIs
+                    populateDatabaseWithPois()
+                    projection = projectionPoi
+                }
+                uriPropertyPoiJoins -> {
+                    // Populate database with propertyPoiJoins
+                    populateDatabaseWithPropertyPoiJoin(properties = propertiesPPJ, propertyPoiJoin = ppj1)
+                    populateDatabaseWithPropertyPoiJoin(properties = propertiesPPJ, propertyPoiJoin = ppj2)
+                    populateDatabaseWithPropertyPoiJoin(properties = propertiesPPJ, propertyPoiJoin = ppj3)
+                    populateDatabaseWithPropertyPoiJoin(properties = propertiesPPJ, propertyPoiJoin = ppj4)
+                    projection = projectionPropertyPoiJoin
+                }
+            }
+            cursor = cursorAndQuery(uri = uri, projection = projection)
+        }
+
+        return Pair(first = cursor, second = strings)
     }
 
-    private fun initUriForQuerySold(): Pair<Uri, Array<String>> {
-        val uri = Uri.parse(
-            "${Path.CONTENT}://${BuildConfig.APPLICATION_ID}.${Path.CONTENT_PROVIDER}/${AppContentProvider.TABLE_NAME}/${AppContentProvider.PATH_SOLD}"
-        )
-        val projection = arrayOf(PropertyKey.PROPERTY_ID, PropertyKey.SALE_DATE)
-
-        return Pair(first = uri, second = projection)
-    }
-
-    private suspend fun cursorAndQuery(uri: Uri, projection: Array<String>): Cursor? =
+    private suspend fun cursorAndQuery(uri: Uri, projection: Array<String>?): Cursor? =
         withContext(context = Dispatchers.IO) {
             contentResolver.query(uri, projection, null, null, null)
         }
@@ -288,36 +716,40 @@ class AppContentProviderTest {
         typeDao = testDatabase!!.typeDao
         agentDao = testDatabase!!.agentDao
         propertyDao = testDatabase!!.propertyDao
+        addressDao = testDatabase!!.addressDao
+        photoDao = testDatabase!!.photoDao
+        poiDao = testDatabase!!.poiDao
+        propertyPoiJoinDao = testDatabase!!.propertyPoiJoinDao
     }
 
-    private fun initEntities(propertyId: Long = 1): Triple<Type, Agent, Property> {
+    private fun initProperties(propertyId: Long = 1L): Triple<Type, Agent, Property> {
         val saleDate1 = null
         val saleDate2 = "2024-03-01"
         val saleDate3 = null
         val type1 = Type(typeId = TypeEnum.FLAT.key)
         val type2 = Type(typeId = TypeEnum.DUPLEX.key)
         val type3 = Type(typeId = TypeEnum.HOUSE.key)
-        val agent1 = Agent(agentId = 1, firstName = "firstName1", lastName = "name1")
-        val agent2 = Agent(agentId = 2, firstName = "firstName2", lastName = "name2")
-        val agent3 = Agent(agentId = 3, firstName = "firstName3", lastName = "name3")
+        val agent1 = Agent(agentId = 1L, firstName = "firstName1", lastName = "lastName1")
+        val agent2 = Agent(agentId = 2L, firstName = "firstName2", lastName = "lastName2")
+        val agent3 = Agent(agentId = 3L, firstName = "firstName3", lastName = "lastName3")
 
         val property1 =
             Property(
-                propertyId = 1, typeId = type1.typeId, addressId = null, price = null,
+                propertyId = 1L, typeId = type1.typeId, addressId = null, price = null,
                 description = null, surface = null, nbOfRooms = null, nbOfBathrooms = null,
-                nbOfBedrooms = null, registrationDate = null, saleDate1, agentId = agent1.agentId
+                nbOfBedrooms = null, registrationDate = null, saleDate = saleDate1, agentId = agent1.agentId
             )
         val property2 =
             Property(
-                propertyId = 2, typeId = type2.typeId, addressId = null, price = null,
+                propertyId = 2L, typeId = type2.typeId, addressId = null, price = null,
                 description = null, surface = null, nbOfRooms = null, nbOfBathrooms = null,
-                nbOfBedrooms = null, registrationDate = null, saleDate2, agentId = agent2.agentId
+                nbOfBedrooms = null, registrationDate = null, saleDate = saleDate2, agentId = agent2.agentId
             )
         val property3 =
             Property(
-                propertyId = 3, typeId = type3.typeId, addressId = null, price = null,
+                propertyId = 3L, typeId = type3.typeId, addressId = null, price = null,
                 description = null, surface = null, nbOfRooms = null, nbOfBathrooms = null,
-                nbOfBedrooms = null, registrationDate = null, saleDate3, agentId = agent3.agentId
+                nbOfBedrooms = null, registrationDate = null, saleDate = saleDate3, agentId = agent3.agentId
             )
 
         return when (propertyId) {
@@ -328,12 +760,139 @@ class AppContentProviderTest {
         }
     }
 
-    private suspend fun populateDatabase(type: Type, agent: Agent, property: Property) {
+    private fun initAddresses(addressId: Long = 1L): Address {
+        val address1 = Address(1L, null, null, null,
+            null, null, null, null, null, null)
+
+        val address2 = Address(2L, null, null, null,
+            null, null, null, null, null, null)
+
+        val address3 = Address(3L, null, null, null,
+            null, null, null, null, null, null)
+
+        return when (addressId) {
+            1L -> address1
+            2L -> address2
+            3L -> address3
+            else -> address1
+        }
+    }
+
+    private fun initPhotos(photoId: Long = 1L): Pair<List<Property>, Photo> {
+        val type = Type(typeId = TypeEnum.HOUSE.key)
+        val agent = Agent(agentId = 1L, firstName = "firstName1", lastName = "lastName1")
+        val property1 =
+            Property(
+                propertyId = 1L, typeId = type.typeId, addressId = null, price = null,
+                description = null, surface = null, nbOfRooms = null, nbOfBathrooms = null,
+                nbOfBedrooms = null, registrationDate = null, saleDate = null, agentId = agent.agentId
+            )
+        val property2 =
+            Property(
+                propertyId = 2L, typeId = type.typeId, addressId = null, price = null,
+                description = null, surface = null, nbOfRooms = null, nbOfBathrooms = null,
+                nbOfBedrooms = null, registrationDate = null, saleDate = null, agentId = agent.agentId
+            )
+
+        val photo1 = Photo(1L, "", "photo1", 1L)
+        val photo2 = Photo(2L, "", "photo2", 2L)
+        val photo3 = Photo(3L, "", "photo3", 1L)
+
+        return when (photoId) {
+            1L -> Pair(listOf(property1, property2), photo1)
+            2L -> Pair(listOf(property1, property2), photo2)
+            3L -> Pair(listOf(property1, property2), photo3)
+            else -> Pair(listOf(property1, property2), photo1)
+        }
+    }
+
+    private fun initPropertyPoiJoin(ppj: Int = 1): Pair<List<Property>, PropertyPoiJoin> {
+        val type = Type(typeId = TypeEnum.HOUSE.key)
+        val agent = Agent(agentId = 1L, firstName = "firstName1", lastName = "lastName1")
+        val property1 =
+            Property(
+                propertyId = 1L, typeId = type.typeId, addressId = null, price = null,
+                description = null, surface = null, nbOfRooms = null, nbOfBathrooms = null,
+                nbOfBedrooms = null, registrationDate = null, saleDate = null, agentId = agent.agentId
+            )
+        val property2 =
+            Property(
+                propertyId = 2L, typeId = type.typeId, addressId = null, price = null,
+                description = null, surface = null, nbOfRooms = null, nbOfBathrooms = null,
+                nbOfBedrooms = null, registrationDate = null, saleDate = null, agentId = agent.agentId
+            )
+        val property3 =
+            Property(
+                propertyId = 3L, typeId = type.typeId, addressId = null, price = null,
+                description = null, surface = null, nbOfRooms = null, nbOfBathrooms = null,
+                nbOfBedrooms = null, registrationDate = null, saleDate = null, agentId = agent.agentId
+            )
+
+        val ppj1 = PropertyPoiJoin(propertyId = 1L, poiId = PoiEnum.HOSPITAL.key)
+        val ppj2 = PropertyPoiJoin(propertyId = 1L, poiId = PoiEnum.RESTAURANT.key)
+        val ppj3 = PropertyPoiJoin(propertyId = 2L, poiId = PoiEnum.HOSPITAL.key)
+        val ppj4 = PropertyPoiJoin(propertyId = 3L, poiId = PoiEnum.SCHOOL.key)
+
+        return when (ppj) {
+            1 -> Pair(listOf(property1, property2, property3), ppj1)
+            2 -> Pair(listOf(property1, property2, property3), ppj2)
+            3 -> Pair(listOf(property1, property2, property3), ppj3)
+            4 -> Pair(listOf(property1, property2, property3), ppj4)
+            else -> Pair(listOf(property1, property2, property3), ppj1)
+        }
+    }
+
+    private suspend fun populateDatabaseWithProperty(type: Type, agent: Agent, property: Property) {
             withContext(Dispatchers.IO) {
                 typeDao.upsertType(type = type)
                 agentDao.upsertAgent(agent = agent)
                 propertyDao.upsertProperty(property = property)
             }
+    }
+
+    private suspend fun populateDatabaseWithAddress(address: Address) {
+        withContext(Dispatchers.IO) {
+            addressDao.upsertAddress(address = address)
+        }
+    }
+
+    private suspend fun populateDatabaseWithPhoto(properties: List<Property>, photo: Photo) {
+        withContext(Dispatchers.IO) {
+            typeDao.prepopulateWithTypes(types = TYPE_PREPOPULATION_DATA)
+            agentDao.prepopulateWithAgents(agents = AGENT_PREPOPULATION_DATA)
+            properties.forEach { propertyDao.upsertProperty(it) }
+            photoDao.upsertPhoto(photo = photo)
+        }
+    }
+
+    private suspend fun populateDatabaseWithAgents() {
+        withContext(Dispatchers.IO) {
+            agentDao.prepopulateWithAgents(agents = AGENT_PREPOPULATION_DATA)
+        }
+    }
+
+    private suspend fun populateDatabaseWithTypes() {
+        withContext(Dispatchers.IO) {
+            typeDao.prepopulateWithTypes(types = TYPE_PREPOPULATION_DATA)
+        }
+    }
+
+    private suspend fun populateDatabaseWithPois() {
+        withContext(Dispatchers.IO) {
+            poiDao.prepopulateWithPois(pois = POI_PREPOPULATION_DATA)
+        }
+    }
+
+    private suspend fun populateDatabaseWithPropertyPoiJoin(
+        properties: List<Property>, propertyPoiJoin: PropertyPoiJoin
+    ) {
+        withContext(Dispatchers.IO) {
+            typeDao.prepopulateWithTypes(types = TYPE_PREPOPULATION_DATA)
+            agentDao.prepopulateWithAgents(agents = AGENT_PREPOPULATION_DATA)
+            poiDao.prepopulateWithPois(pois = POI_PREPOPULATION_DATA)
+            properties.forEach { propertyDao.upsertProperty(it) }
+            propertyPoiJoinDao.upsertPropertyPoiJoin(propertyPoiJoin = propertyPoiJoin)
+        }
     }
 
 }

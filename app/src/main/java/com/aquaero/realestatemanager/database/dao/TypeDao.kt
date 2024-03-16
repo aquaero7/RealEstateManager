@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.database.dao
 
+import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -29,5 +30,13 @@ interface TypeDao {
 
     @Query("SELECT * FROM type ORDER BY typeId ASC")
     fun getTypesOrderedById(): Flow<MutableList<Type>>
+
+
+    /*
+     * ContentProvider
+     */
+
+    @Query("SELECT * FROM type")
+    fun getTypesWithCursor(): Cursor
 
 }

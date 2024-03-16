@@ -163,8 +163,6 @@ dependencies {
 //    androidTestImplementation("androidx.test.ext:junit:1.1.5")        // Redundant
 //    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
 
-
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-
 }

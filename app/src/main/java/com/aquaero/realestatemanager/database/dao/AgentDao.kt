@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.database.dao
 
+import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -32,5 +33,13 @@ interface AgentDao {
 
     @Query("SELECT * FROM agent ORDER BY lastName + firstName ASC")
     fun getAgentsOrderedByName(): Flow<MutableList<Agent>>
+
+
+    /*
+     * ContentProvider
+     */
+
+    @Query("SELECT * FROM agent")
+    fun getAgentsWithCursor(): Cursor
 
 }

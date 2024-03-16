@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.database.dao
 
+import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -32,5 +33,13 @@ interface AddressDao {
 
     @Query("SELECT * FROM address ORDER BY city ASC")
     fun getAddressesOrderedByCity(): Flow<MutableList<Address>>
+
+
+    /*
+     * ContentProvider
+     */
+
+    @Query("SELECT * FROM address")
+    fun getAddressesWithCursor(): Cursor
 
 }

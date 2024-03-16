@@ -31,17 +31,17 @@ val AGENT_PREPOPULATION_DATA = listOf(
         lastName = null,
     ),
     Agent(
-        agentId = 2,
+        agentId = 2L,
         firstName = "F2222222",
         lastName = "N2222222",
     ),
     Agent(
-        agentId = 3,
+        agentId = 3L,
         firstName = "F3333333",
         lastName = "N3333333",
     ),
     Agent(
-        agentId = 4,
+        agentId = 4L,
         firstName = "F4444444",
         lastName = "N4444444",
     ),

@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.database.dao
 
+import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -38,5 +39,13 @@ interface PhotoDao {
 
     @Query("SELECT * FROM photo ORDER BY label ASC")
     fun getPhotosOrderedByLabel(): Flow<MutableList<Photo>>
+
+
+    /*
+     * ContentProvider
+     */
+
+    @Query("SELECT * FROM photo")
+    fun getPhotosWithCursor(): Cursor
 
 }

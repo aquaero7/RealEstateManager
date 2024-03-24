@@ -156,7 +156,7 @@ fun EditScreenTextFieldItem(
                     .clickable(onClick = onClick),
                 enabled = (dropdownMenuCategory == null && storedDate == null),
                 // Field must be !enabled to allow a click to launch a specific action.
-                // In that case, text color must be restored from disabled to normal when filed is !enabled.
+                // In that case, text color must be restored from disabled to normal when field is !enabled.
                 colors = TextFieldDefaults.colors(disabledTextColor = MaterialTheme.colorScheme.onSurface),
                 singleLine = (maxLines == 1),
                 minLines = minLines,

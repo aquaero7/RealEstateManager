@@ -65,6 +65,8 @@
     <string name="latlng_error">Impossible de récupérer la latitude et la longitude de l\'adresse!</string>
     <string name="general_error">Une erreur est survenue !</string>
     <string name="unknown">Inconnu</string>
+    <string name="min">Min:</string>
+    <string name="max">Max:</string>
 
     <!-- AGENT OR TYPE OF PROPERTY -->
     <string name="_unassigned_">Non attribué</string>

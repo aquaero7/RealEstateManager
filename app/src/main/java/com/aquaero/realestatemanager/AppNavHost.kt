@@ -107,6 +107,8 @@ fun AppNavHost(
             SearchComposable(
                 navController = navController,
                 contentType = contentType,
+                searchViewModel = searchViewModel,
+                currency = currency,
                 popBackStack = popBackStack,
             )
         }

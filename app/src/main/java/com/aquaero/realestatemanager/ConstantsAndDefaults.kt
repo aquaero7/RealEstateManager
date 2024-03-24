@@ -130,6 +130,8 @@ val DP_CONTAINER_COLOR = PurpleGrey40
 
 
 // Miscellaneous
+const val MIN = "MIN"
+const val MAX = "MAX"
 const val UNASSIGNED_ID = 1L    // For unassigned Agent
 const val NULL_PROPERTY_ID = 0L
 const val NO_PHOTO_ID = -1L

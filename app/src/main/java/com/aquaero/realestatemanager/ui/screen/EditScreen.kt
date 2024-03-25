@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,7 +79,7 @@ fun EditScreen(
             itemText = property?.description ?: "",
             labelText = stringResource(id = R.string.description),
             placeHolderText = stringResource(id = R.string.description),
-            icon = Icons.Default.AccessTime,
+            icon = Icons.Default.NoteAlt,
             iconCD = stringResource(id = R.string.cd_description),
             onValueChange = { onFieldValueChange(Field.DESCRIPTION.name, it) },
         )

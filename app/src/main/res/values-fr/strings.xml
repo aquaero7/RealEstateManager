@@ -67,6 +67,8 @@
     <string name="unknown">Inconnu</string>
     <string name="min">Min:</string>
     <string name="max">Max:</string>
+    <string name="with_photo">Avec\nphotos</string>
+    <string name="without_photo">Sans\nphoto</string>
 
     <!-- AGENT OR TYPE OF PROPERTY -->
     <string name="_unassigned_">Non attribué</string>

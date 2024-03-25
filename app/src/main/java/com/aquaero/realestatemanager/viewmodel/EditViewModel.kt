@@ -247,7 +247,8 @@ class EditViewModel(
     }
 
     fun onFieldValueChange(field: String, value: String, currency: String) {
-        val digitalValue = if (value.isNotEmpty() && value.isDigitsOnly()) value.toInt() else null
+        val digitalValue =
+            if (field != Field.DESCRIPTION.name && value.isNotEmpty() && value.isDigitsOnly()) value.toInt() else null
         when (field) {
             Field.SURFACE.name -> cacheProperty.surface = digitalValue
             Field.ROOMS.name -> cacheProperty.nbOfRooms = digitalValue

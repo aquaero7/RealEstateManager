@@ -139,7 +139,7 @@ fun SearchScreenTextFieldMinMax(
                     .background(color = MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.CenterStart
             ) {
-                BasicTextFieldItem(
+                BasicTextFieldMinMaxItem(
                     fieldsAreDates = fieldsAreDates,
                     fieldFontSize = fieldFontSize,
                     shouldBeDigitsOnly = shouldBeDigitsOnly,
@@ -169,7 +169,7 @@ fun SearchScreenTextFieldMinMax(
                     .background(color = MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.CenterStart
             ) {
-                BasicTextFieldItem(
+                BasicTextFieldMinMaxItem(
                     fieldsAreDates = fieldsAreDates,
                     fieldFontSize = fieldFontSize,
                     shouldBeDigitsOnly = shouldBeDigitsOnly,
@@ -182,12 +182,11 @@ fun SearchScreenTextFieldMinMax(
             Spacer(modifier = Modifier.width(4.dp))
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BasicTextFieldItem(
+fun BasicTextFieldMinMaxItem(
     fieldsAreDates: Boolean,
     fieldFontSize: TextUnit,
     shouldBeDigitsOnly: Boolean,
@@ -229,10 +228,12 @@ fun BasicTextFieldItem(
     }
 
     BasicTextField(
-        modifier = Modifier.clickable {
-            focusManager.clearFocus()
-            onClick()
-        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                focusManager.clearFocus()
+                onClick()
+            },
         enabled = (!fieldsAreDates),
         textStyle = TextStyle(
             fontSize = fieldFontSize,
@@ -309,7 +310,6 @@ fun BasicTextFieldItem(
             }
         }
     }
-
 }
 
 

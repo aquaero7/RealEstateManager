@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -59,7 +57,7 @@ fun SearchScreenDropdownMenu(
     agentIcon: ImageVector,
     agentIconCD: String,
     onValueChange: (String) -> Unit,
-    ) {
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -72,6 +70,7 @@ fun SearchScreenDropdownMenu(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .weight(1F)
+                .wrapContentHeight()
                 .border(width = 1.dp, color = MaterialTheme.colorScheme.tertiary),
         ) {
             // Type icon
@@ -124,6 +123,7 @@ fun SearchScreenDropdownMenu(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .weight(1F)
+                .wrapContentHeight()
                 .border(width = 1.dp, color = MaterialTheme.colorScheme.tertiary),
         ) {
             // Agent icon
@@ -189,10 +189,12 @@ fun BasicDropdownMenuItem(
     val onClick: () -> Unit = { expanded = true }
 
     BasicTextField(
-        modifier = Modifier.clickable {
-            focusManager.clearFocus()
-            onClick()
-        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                focusManager.clearFocus()
+                onClick()
+            },
         enabled = false,
         textStyle = TextStyle(
             fontSize = fieldFontSize,

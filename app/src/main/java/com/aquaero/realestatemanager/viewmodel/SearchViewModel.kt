@@ -12,6 +12,7 @@ import com.aquaero.realestatemanager.Field
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.SearchCriteria
 import com.aquaero.realestatemanager.model.Agent
+import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
 
@@ -19,13 +20,16 @@ class SearchViewModel(
 
 ): ViewModel() {
 
+    val itemPois: MutableList<Poi> = mutableListOf()
+
     fun onClickMenu(context: Context) {
         // TODO
 
     }
 
-    fun onFieldValueChange(field: String, fieldType: String, value: String, currency: String) {
-        val digitalValue = if (value.isNotEmpty() && value.isDigitsOnly()) value.toInt() else null
+    fun onFieldValueChange(field: String, fieldType: String?, value: String, currency: String) {
+        val digitalValue =
+            if (field != Field.DESCRIPTION.name && value.isNotEmpty() && value.isDigitsOnly()) value.toLong() else null
         val price: Int?
         when (field) {
             Field.SURFACE.name -> { Log.w("SearchViewModel", "$field: $fieldType = $value") }
@@ -74,5 +78,21 @@ class SearchViewModel(
             }
         }
     }
+
+    fun onPoiClick(poiItem: String, isSelected: Boolean) {
+        if (isSelected) itemPois.add(Poi(poiId = poiItem)) else itemPois.remove(Poi(poiId = poiItem))
+        Log.w("SearchViewModel", "itemPois contains ${itemPois.size} items")
+
+        itemPois.forEach() { Log.w("SearchViewModel", it.poiId) }
+    }
+
+    fun onSalesRadioButtonClick(button: String) {
+        Log.w("SearchViewModel", "Sales selection is: $button")
+    }
+
+    fun onPhotosRadioButtonClick(button: String) {
+        Log.w("SearchViewModel", "Photos selection is: $button")
+    }
+
 
 }

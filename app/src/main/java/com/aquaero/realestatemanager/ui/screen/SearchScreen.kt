@@ -15,8 +15,10 @@ import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.AspectRatio
 import androidx.compose.material.icons.filled.Bathtub
 import androidx.compose.material.icons.filled.Bed
+import androidx.compose.material.icons.filled.House
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.OtherHouses
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,10 +27,13 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import com.aquaero.realestatemanager.Field
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.ui.component.search_screen.SearchScreenDropdownMenu
 import com.aquaero.realestatemanager.ui.component.search_screen.SearchScreenTextFieldMinMax
 
 @Composable
 fun SearchScreen(
+    stringTypes: MutableList<String>,
+    stringAgents: MutableList<String>,
     currency: String,
     onFieldValueChange: (String, String, String) -> Unit,
     popBackStack: () -> Unit,
@@ -96,8 +101,17 @@ fun SearchScreen(
                 Log.w("SearchScreen", "Bedrooms: $fieldType value = $value")
             },
         )
-        // Type
+        // Type and agent
+        SearchScreenDropdownMenu(
+            stringTypes = stringTypes,
+            stringAgents = stringAgents,
+            typeIcon = Icons.Default.House,
+            typeIconCD = stringResource(id = R.string.cd_type),
+            agentIcon = Icons.Default.Person,
+            agentIconCD = stringResource(id = R.string.cd_agent),
+        ) {
 
+        }
 
 
 

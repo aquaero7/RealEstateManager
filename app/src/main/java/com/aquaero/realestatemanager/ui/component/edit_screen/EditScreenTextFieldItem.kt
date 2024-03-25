@@ -153,7 +153,10 @@ fun EditScreenTextFieldItem(
                     .wrapContentHeight()
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp, vertical = 4.dp)
-                    .clickable(onClick = onClick),
+                    .clickable {
+                        focusManager.clearFocus()
+                        onClick()
+                    },
                 enabled = (dropdownMenuCategory == null && storedDate == null),
                 // Field must be !enabled to allow a click to launch a specific action.
                 // In that case, text color must be restored from disabled to normal when field is !enabled.

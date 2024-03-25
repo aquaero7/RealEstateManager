@@ -229,7 +229,10 @@ fun BasicTextFieldItem(
     }
 
     BasicTextField(
-        modifier = Modifier.clickable(onClick = onClick),
+        modifier = Modifier.clickable {
+            focusManager.clearFocus()
+            onClick()
+        },
         enabled = (!fieldsAreDates),
         textStyle = TextStyle(
             fontSize = fieldFontSize,

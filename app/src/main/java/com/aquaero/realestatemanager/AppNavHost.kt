@@ -108,6 +108,8 @@ fun AppNavHost(
                 navController = navController,
                 contentType = contentType,
                 searchViewModel = searchViewModel,
+                stringTypes = stringTypes,
+                stringAgents = stringAgents,
                 currency = currency,
                 popBackStack = popBackStack,
             )

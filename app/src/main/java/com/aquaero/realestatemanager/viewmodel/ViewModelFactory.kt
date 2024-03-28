@@ -59,7 +59,7 @@ class ViewModelFactory(context: Context):  ViewModelProvider.Factory {
         } else if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
             MapViewModel(locationRepository) as T
         } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
-            SearchViewModel() as T
+            SearchViewModel(addressRepository, photoRepository) as T
         } else if (modelClass.isAssignableFrom(LoanViewModel::class.java)) {
             LoanViewModel() as T
         } else {

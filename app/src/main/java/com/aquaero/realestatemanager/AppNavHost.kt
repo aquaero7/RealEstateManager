@@ -104,6 +104,7 @@ fun AppNavHost(
         }
 
         composable(route = SearchCriteria.route) {
+            searchViewModel.resetData()
             SearchComposable(
 //                navController = navController,
 //                contentType = contentType,
@@ -112,8 +113,10 @@ fun AppNavHost(
                 stringTypes = stringTypes,
                 agents = agents,
                 stringAgents = stringAgents,
-                pois = pois,
+//                pois = pois,
                 currency = currency,
+                addresses = addresses,
+                photos = photos,
                 popBackStack = popBackStack,
             )
         }

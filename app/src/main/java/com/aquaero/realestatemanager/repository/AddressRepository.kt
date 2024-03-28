@@ -49,7 +49,7 @@ class AddressRepository(private val addressDao: AddressDao) {
     /**/
 
 
-    private fun addressFromId(addressId: Long, addresses: MutableList<Address>): Address? {
+    fun addressFromId(addressId: Long, addresses: MutableList<Address>): Address? {
         return addresses.find { it.addressId == addressId }
     }
 

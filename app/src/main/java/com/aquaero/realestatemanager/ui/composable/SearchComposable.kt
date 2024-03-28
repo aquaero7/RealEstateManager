@@ -1,12 +1,15 @@
 package com.aquaero.realestatemanager.ui.composable
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
-import com.aquaero.realestatemanager.AppContentType
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
+import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
+import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
+import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.Type
-import com.aquaero.realestatemanager.navigateToDetail
 import com.aquaero.realestatemanager.ui.screen.SearchScreen
 import com.aquaero.realestatemanager.viewmodel.SearchViewModel
 
@@ -19,12 +22,15 @@ fun SearchComposable(
     stringTypes: MutableList<String>,
     agents: MutableList<Agent>,
     stringAgents:MutableList<String>,
-    pois: MutableList<Poi>,
+//    pois: MutableList<Poi>,
     currency: String,
+    addresses: List<Address>,
+    photos: List<Photo>,
     popBackStack: () -> Unit,
 ) {
+    val context = LocalContext.current
     val onFieldValueChange: (String, String?, String) -> Unit = { field, fieldType, value ->
-        searchViewModel.onFieldValueChange(field = field, fieldType = fieldType, value = value, currency = currency)
+        searchViewModel.onFieldValueChange(field = field, fieldType = fieldType, fieldValue = value, currency = currency)
     }
     val onDropdownMenuValueChange: (String) -> Unit = {
         searchViewModel.onDropdownMenuValueChange(value = it, types = types, agents = agents)
@@ -33,16 +39,24 @@ fun SearchComposable(
         searchViewModel.onPoiClick(poiItem = poiItem, isSelected = isSelected)
     }
     val onSalesRadioButtonClick: (String) -> Unit = {
-        searchViewModel.onSalesRadioButtonClick(it)
+        searchViewModel.onSalesRadioButtonClick(context = context , button = it)
     }
     val onPhotosRadioButtonClick: (String) -> Unit = {
-        searchViewModel.onPhotosRadioButtonClick(it)
+        searchViewModel.onPhotosRadioButtonClick(context = context , button = it)
     }
+    val itemType: (String) -> String =
+        { searchViewModel.itemType(typeId = it, types = types, stringTypes = stringTypes) }
+
+    val searchResults: MutableList<Property> by searchViewModel.searchResultsFlow.collectAsState(initial = mutableListOf())
 
     SearchScreen(
         stringTypes = stringTypes,
         stringAgents = stringAgents,
         currency = currency,
+        searchResults = searchResults,
+        addresses = addresses,
+        photos = photos,
+        itemType = itemType,
         onFieldValueChange = onFieldValueChange,
         onDropdownMenuValueChange = onDropdownMenuValueChange,
         onPoiClick = onPoiClick,

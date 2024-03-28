@@ -67,8 +67,12 @@
     <string name="unknown">Unknown</string>
     <string name="min">Min:</string>
     <string name="max">Max:</string>
-    <string name="with_photo">With\nphoto</string>
-    <string name="without_photo">Without\nphoto</string>
+    <string name="with_photo">With photo</string>
+    <string name="without_photo">Without photo</string>
+    <string name="both">Both</string>
+    <string name="search_title">MULTI-CRITERIA SEARCH</string>
+    <string name="search_info">See the results at the bottom of the screen after validation of the criteria in the menu at the top right</string>
+    <string name="search_results">SEARCH RESULTS</string>
 
     <!-- AGENT OR TYPE OF PROPERTY -->
     <string name="_unassigned_">Unassigned</string>

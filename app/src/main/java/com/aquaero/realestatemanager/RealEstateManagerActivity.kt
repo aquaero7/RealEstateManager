@@ -149,6 +149,14 @@ fun RealEstateManagerApp(
             currentScreen = currentScreen,
             windowSize = windowSize
         )
+
+        // TopBar RadioButtons
+        val (currencyStore, defaultCurrency) = appViewModel.currencyHelper(context)
+        val currency = currencyStore.getCurrency.collectAsState(initial = defaultCurrency).value
+        val onClickRadioButton: (String) -> Unit = {
+            appViewModel.onClickRadioButton(context = context, currency = it)
+        }
+
         val onClickMenu: () -> Unit = when (currentScreen) {
             ListAndDetail.routeWithArgs -> {
                 { listAndDetailViewModel.onClickMenu(navController = navController, propertyId = propertyId) }
@@ -157,18 +165,20 @@ fun RealEstateManagerApp(
                 { editViewModel.onClickMenu(navController = navController, context = context) }
             }
             SearchCriteria.route -> {
-                { searchViewModel.onClickMenu(context = context) }
+                {
+                    searchViewModel.onClickMenu(
+                        context = context,
+                        properties = properties,
+                        addresses = addresses,
+                        photos = photos,
+                        propertyPoiJoins = propertyPoiJoins
+                    )
+                }
             }
             Loan.route -> {
                 { loanViewModel.onClickMenu(context = context) }
             }
             else -> { {} }
-        }
-        // TopBar RadioButtons
-        val (currencyStore, defaultCurrency) = appViewModel.currencyHelper(context)
-        val currency = currencyStore.getCurrency.collectAsState(initial = defaultCurrency).value
-        val onClickRadioButton: (String) -> Unit = {
-            appViewModel.onClickRadioButton(context = context, currency = it)
         }
 
         /*

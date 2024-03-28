@@ -269,8 +269,10 @@ class EditViewModel(
             Field.PRICE.name -> cacheProperty.price =
                 if (value.isNotEmpty() && value.isDigitsOnly()) {
                     when (currency) {
-                        "€" -> convertEuroToDollar(euros = value.toInt())
-                        else -> value.toInt()
+//                        "€" -> convertEuroToDollar(euros = value.toInt())
+                        "€" -> convertEuroToDollar(euros = digitalValue)
+//                        else -> value.toInt()
+                        else -> digitalValue
                     }!!
                 } else null
         }

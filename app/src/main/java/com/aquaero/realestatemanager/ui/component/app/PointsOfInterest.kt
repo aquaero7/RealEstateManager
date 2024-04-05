@@ -25,11 +25,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -133,6 +135,7 @@ fun PoiIcon(
     selected: Boolean,
 ) {
     var isSelected by remember(selected) { mutableStateOf(selected) }
+    val alpha by remember(isSelected) { mutableFloatStateOf(if (isSelected) 1F else 0.3F) }
     val iconColor = MaterialTheme.colorScheme.tertiary
     val borderColor = MaterialTheme.colorScheme.secondary
     val focusManager = LocalFocusManager.current
@@ -144,13 +147,13 @@ fun PoiIcon(
         Icon(
             imageVector = imageVector,
             contentDescription = contentDesc,
-            tint = if (isSelected) iconColor else iconColor.copy(alpha = 0.3F),
+            tint = iconColor.copy(alpha = alpha),
             modifier = Modifier
                 .size(52.dp)
                 .padding(4.dp)
                 .border(
                     width = 1.dp,
-                    color = if (isSelected) borderColor else borderColor.copy(alpha = 0.3F)
+                    color = borderColor.copy(alpha = alpha)
                 )
                 .clickable(
                     enabled = clickable,
@@ -162,7 +165,9 @@ fun PoiIcon(
                 ),
         )
         Text(
-            modifier = Modifier.width(64.dp),
+            modifier = Modifier
+                .width(64.dp)
+                .alpha(alpha = alpha),
             text = label,
             textAlign = TextAlign.Center,
             fontSize = 11.sp,

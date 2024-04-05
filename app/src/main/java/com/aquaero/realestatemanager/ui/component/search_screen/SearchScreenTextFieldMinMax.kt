@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
@@ -25,6 +27,7 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -51,6 +54,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
+import com.aquaero.realestatemanager.CLEAR_BUTTON_SIZE
 import com.aquaero.realestatemanager.DP_CONTAINER_COLOR
 import com.aquaero.realestatemanager.DP_TEXT_COLOR
 import com.aquaero.realestatemanager.MAX
@@ -66,20 +70,23 @@ fun SearchScreenTextFieldMinMax(
     fieldFontSize: TextUnit = 16.sp,
     labelFontSize: TextUnit = 14.sp,
     iconSize: Dp = 40.dp,
-    fieldHeight: Dp = 32.dp,
+    fieldHeight: Dp = 40.dp,
     labelText: String,
     icon: ImageVector,
     iconCD: String,
+    minText: String?,
+    maxText: String?,
     onValueChange: (String, String) -> Unit,
+    onClearButtonClick: (String) -> Unit,
     // For keyboard input
     shouldBeDigitsOnly: Boolean = true,                // True when the item is an input field
     // For DatePicker
     fieldsAreDates: Boolean = false,                    // True when the item is a DatePicker
 ) {
-    var minValue by remember { mutableStateOf("") }
-    var maxValue by remember { mutableStateOf("") }
-    val onValidValue: (String, String) -> Unit = { textField, value ->
-        when (textField) {
+    var minValue by remember { mutableStateOf(minText) }
+    var maxValue by remember { mutableStateOf(maxText) }
+    val onValidValue: (String, String) -> Unit = { fieldBound, value ->
+        when (fieldBound) {
             MIN -> minValue = value
             MAX -> maxValue = value
         }
@@ -114,6 +121,7 @@ fun SearchScreenTextFieldMinMax(
             text = labelText,
         )
 
+        // Row fields
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -143,10 +151,12 @@ fun SearchScreenTextFieldMinMax(
                     fieldsAreDates = fieldsAreDates,
                     fieldFontSize = fieldFontSize,
                     shouldBeDigitsOnly = shouldBeDigitsOnly,
-                    fieldType = MIN,
-                    maxValue = maxValue,
+                    fieldBound = MIN,
+                    fieldValue = minValue ?: "",
+                    otherFieldValue = maxValue ?: "",
                     onValidValue = onValidValue,
                     onValueChange = onValueChange,
+                    onClearButtonClick = onClearButtonClick,
                 )
             }
 
@@ -173,12 +183,15 @@ fun SearchScreenTextFieldMinMax(
                     fieldsAreDates = fieldsAreDates,
                     fieldFontSize = fieldFontSize,
                     shouldBeDigitsOnly = shouldBeDigitsOnly,
-                    fieldType = MAX,
-                    minValue = minValue,
+                    fieldBound = MAX,
+                    fieldValue = maxValue ?: "",
+                    otherFieldValue = minValue ?: "",
                     onValidValue = onValidValue,
                     onValueChange = onValueChange,
+                    onClearButtonClick = onClearButtonClick,
                 )
             }
+
             Spacer(modifier = Modifier.width(4.dp))
         }
     }
@@ -187,14 +200,16 @@ fun SearchScreenTextFieldMinMax(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicTextFieldMinMaxItem(
+    clearButtonSize: Dp = CLEAR_BUTTON_SIZE,
     fieldsAreDates: Boolean,
     fieldFontSize: TextUnit,
     shouldBeDigitsOnly: Boolean,
-    fieldType: String,
-    minValue: String = "",
-    maxValue: String = "",
+    fieldBound: String,
+    fieldValue: String,
+    otherFieldValue: String?,
     onValidValue: (String, String) -> Unit,
     onValueChange: (String, String) -> Unit,
+    onClearButtonClick: (String) -> Unit,
 ) {
     // For keyboard input
     var isValid by remember { mutableStateOf(true) }
@@ -205,64 +220,89 @@ fun BasicTextFieldMinMaxItem(
         // Triggered only if fields are !enabled (i.e., fieldsAreDates is true)
         if (fieldsAreDates) {
             openDpDialog = true
-            Log.w("SearchScreen", "Click in $fieldType date field")
+            Log.w("SearchScreen", "Click in $fieldBound date field")
         }
     }
     // For all
-    var fieldText by remember { mutableStateOf("") }
-    val onSurfaceColor =  MaterialTheme.colorScheme.onSurface
+    var fieldText by remember { mutableStateOf(fieldValue) }
+    val onSurfaceColor = MaterialTheme.colorScheme.onSurface
+
     // Defines fields text color according to the correct ordering of min/max values
     fun orderCheckColor(value: String): Color {
         return if (value.isEmpty()) {
             onSurfaceColor
         } else {
             val isDisordered = if (value.isDigitsOnly()) {
-                (fieldType == MIN && maxValue.isNotEmpty() && value.toInt() > maxValue.toInt())
-                        || (fieldType == MAX && minValue.isNotEmpty() && value.toInt() < minValue.toInt())
+                (fieldBound == MIN && !otherFieldValue.isNullOrEmpty() && value.toInt() > otherFieldValue.toInt())
+                        || (fieldBound == MAX && !otherFieldValue.isNullOrEmpty() && value.toInt() < otherFieldValue.toInt())
             } else {
-                (fieldType == MIN && maxValue.isNotEmpty() && value > maxValue)
-                        || (fieldType == MAX && minValue.isNotEmpty() && value < minValue)
+                (fieldBound == MIN && !otherFieldValue.isNullOrEmpty() && value > otherFieldValue)
+                        || (fieldBound == MAX && !otherFieldValue.isNullOrEmpty() && value < otherFieldValue)
             }
             if (!isDisordered) onSurfaceColor else Red
         }
     }
 
-    BasicTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                focusManager.clearFocus()
-                onClick()
+    Box(
+        modifier = Modifier.fillMaxHeight()
+    ) {
+        BasicTextField(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .fillMaxWidth()
+                .clickable {
+                    focusManager.clearFocus()
+                    onClick()
+                },
+            enabled = (!fieldsAreDates),
+            textStyle = TextStyle(
+                fontSize = fieldFontSize,
+                textAlign = TextAlign.Center,
+                color = orderCheckColor(fieldText)
+            ),
+            singleLine = true,
+            minLines = 1,
+            maxLines = 1,
+            value = fieldText,
+            onValueChange = {
+                isValid = !shouldBeDigitsOnly || it.isEmpty() || it.isDigitsOnly()
+                if (isValid) {
+                    fieldText = it
+                    onValidValue(fieldBound, it)
+                    onValueChange(fieldBound, it)
+                    Log.w("SearchScreen", "$fieldBound = $it")
+                }
             },
-        enabled = (!fieldsAreDates),
-        textStyle = TextStyle(
-            fontSize = fieldFontSize,
-            textAlign = TextAlign.Center,
-            color = orderCheckColor(fieldText)
-        ),
-        singleLine = true,
-        minLines = 1,
-        maxLines = 1,
-        value = fieldText,
-        onValueChange = {
-            isValid = !shouldBeDigitsOnly || it.isEmpty() || it.isDigitsOnly()
-            if (isValid) {
-                fieldText = it
-                onValidValue(fieldType, it)
-                onValueChange(fieldType, it)
-                Log.w("SearchScreen", "$fieldType = $it")
+            keyboardOptions = if (shouldBeDigitsOnly) {
+                KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                )
+            } else {
+                KeyboardOptions.Default
+            },
+            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+        )
+
+        if (fieldText.isNotEmpty()) {
+            IconButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .size(clearButtonSize),
+                onClick = {
+                    fieldText = ""
+                    onValidValue(fieldBound, "")
+                    onClearButtonClick(fieldBound)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Cancel,
+                    contentDescription = stringResource(id = R.string.cd_button_clear),
+                    tint = Red
+                )
             }
-        },
-        keyboardOptions = if (shouldBeDigitsOnly) {
-            KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
-            )
-        } else {
-            KeyboardOptions.Default
-        },
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() } ),
-    )
+        }
+    }
 
     if (fieldsAreDates) {
         val dpState = rememberDatePickerState(
@@ -273,15 +313,16 @@ fun BasicTextFieldMinMaxItem(
         if (openDpDialog) {
             DatePickerDialog(
                 shape = DatePickerDefaults.shape,
-                colors = DatePickerDefaults.colors(containerColor = DP_CONTAINER_COLOR,),
+                colors = DatePickerDefaults.colors(containerColor = DP_CONTAINER_COLOR),
                 onDismissRequest = { openDpDialog = false },
                 confirmButton = {
                     TextButton(
                         onClick = {
                             if (dpState.selectedDateMillis != null) {
-                                fieldText = convertDateMillisToString(dpState.selectedDateMillis!!)
-                                onValidValue(fieldType, fieldText)
-                                onValueChange(fieldType, fieldText)
+                                fieldText =
+                                    convertDateMillisToString(dpState.selectedDateMillis!!)
+                                onValidValue(fieldBound, fieldText)
+                                onValueChange(fieldBound, fieldText)
                             }
                             openDpDialog = false
                         },
@@ -320,6 +361,9 @@ fun SearchScreenTextFieldMinMaxPreview() {
         labelText = "Label",
         icon = Icons.Default.QuestionMark,
         iconCD = "",
+        minText = "MIN value",
+        maxText = "MAX value",
         onValueChange = { _, _ -> },
+        onClearButtonClick = {},
     )
 }

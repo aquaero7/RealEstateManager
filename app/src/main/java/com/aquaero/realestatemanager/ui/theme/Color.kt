@@ -46,3 +46,5 @@ val BoxTextColor = Color(0xFF444444)
 
 val Gray66Trans66 = Color(0x66666666)
 val GrayDisabled = Color(0xFFCCCCCC)
+
+val Transparent = Color(0x00FFFFFF)

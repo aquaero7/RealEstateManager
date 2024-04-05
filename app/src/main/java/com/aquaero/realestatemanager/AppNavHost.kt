@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -104,16 +105,12 @@ fun AppNavHost(
         }
 
         composable(route = SearchCriteria.route) {
-            searchViewModel.resetData()
             SearchComposable(
-//                navController = navController,
-//                contentType = contentType,
+                navController = navController,
                 searchViewModel = searchViewModel,
                 types = types,
                 stringTypes = stringTypes,
-                agents = agents,
                 stringAgents = stringAgents,
-//                pois = pois,
                 currency = currency,
                 addresses = addresses,
                 photos = photos,
@@ -152,10 +149,16 @@ fun AppNavHost(
     }
 }
 
-fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String?) {
+fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String?, viewModel: Any? = null) {
     val selected = false
     val route =
         if (destination == ListAndDetail) "${destination.route}/${propertyId}/${selected}" else destination.route
+    when (destination) {
+        SearchCriteria -> {
+            with (viewModel as SearchViewModel) { resetData() }
+            Log.w("AppNavHost", "SearchScreen data reset")
+        }
+    }
     this.navigate(route = route) {
         popUpTo(id = this@navigateSingleTopTo.graph.findStartDestination().id) { saveState = false }
         launchSingleTop = true

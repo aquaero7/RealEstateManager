@@ -4,10 +4,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -31,9 +29,10 @@ import com.aquaero.realestatemanager.R
 @Composable
 fun SearchScreenRadioButtons(
     radioOptions: List<String>,
+    radioIndex: Int,
     radioButtonClick: (String) -> Unit,
 ) {
-    var selectedOptions by remember { mutableStateOf(radioOptions[2]) }
+    var selectedOption by remember { mutableStateOf(radioOptions[radioIndex]) }
     val color = MaterialTheme.colorScheme.tertiary
 
     Row(
@@ -62,9 +61,9 @@ fun SearchScreenRadioButtons(
                             disabledSelectedColor = RadioButtonDefaults.colors().disabledSelectedColor,
                             disabledUnselectedColor = RadioButtonDefaults.colors().disabledUnselectedColor
                         ),
-                        selected = (it == selectedOptions),
+                        selected = (it == selectedOption),
                         onClick = {
-                            selectedOptions = it
+                            selectedOption = it
                             radioButtonClick(it)
                         }
                     )
@@ -90,11 +89,13 @@ fun SearchScreenRadioButtonsPreview() {
         SearchScreenRadioButtons(
             radioOptions =
             listOf(stringResource(id = R.string.for_sale), stringResource(id = R.string.sold), stringResource(id = R.string.both)),
+            radioIndex = 2,
             radioButtonClick = {},
         )
         SearchScreenRadioButtons(
             radioOptions =
             listOf(stringResource(id = R.string.with_photo), stringResource(id = R.string.without_photo), stringResource(id = R.string.both)),
+            radioIndex = 2,
             radioButtonClick = {},
         )
     }

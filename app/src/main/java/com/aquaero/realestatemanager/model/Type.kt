@@ -13,6 +13,7 @@ data class Type(
  * For formatted display and translation, these keys should be set in the string resources files.
  */
 enum class TypeEnum(val key: String) {
+//    EMPTY(key = ""),
     UNASSIGNED(key = "_unassigned_"),
     FLAT(key = "flat"),
     HOUSE(key = "house"),
@@ -25,6 +26,7 @@ enum class TypeEnum(val key: String) {
 }
 
 val TYPE_PREPOPULATION_DATA = listOf(
+//    Type(TypeEnum.EMPTY.key),
     Type(TypeEnum.UNASSIGNED.key),
     Type(TypeEnum.FLAT.key),
     Type(TypeEnum.HOUSE.key),

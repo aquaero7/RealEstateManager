@@ -114,6 +114,8 @@
     <string name="select_photo">Select a photo</string>
     <string name="confirm">Confirm</string>
     <string name="abort">Abort</string>
+    <string name="clear_all">Clear all criteria</string>
+    <string name="to_top">Go to the top of criteria</string>
 
 
     <!-- *** NOT TRANSLATABLE *** -->
@@ -154,6 +156,9 @@
     <string name="cd_photo" translatable="false">photo</string>
     <string name="cd_photo_label" translatable="false">photo_label</string>
     <string name="cd_button_cancel" translatable="false">button_cancel</string>
+    <string name="cd_button_clear" translatable="false">button_clear</string>
+    <string name="cd_button_clear_all" translatable="false">button_clear_all</string>
+    <string name="cd_button_to_top" translatable="false">button_to_top</string>
     <string name="lb_tab_color_anim" translatable="false">tab_color_anim</string>
 
     <!-- CURRENCY -->

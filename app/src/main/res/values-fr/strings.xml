@@ -114,5 +114,7 @@
     <string name="select_photo">Sélectionner une photo</string>
     <string name="confirm">Confirmer</string>
     <string name="abort">Abandonner</string>
+    <string name="clear_all">Effacer tous les critères</string>
+    <string name="to_top">Aller au haut des critères</string>
 
 </resources>

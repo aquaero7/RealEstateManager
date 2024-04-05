@@ -21,14 +21,22 @@ data class Agent(
  * For formatted display and translation, this key should be set in the string resources files.
  */
 enum class AgentEnum(val key: String) {
+//    EMPTY(key = ""),
     UNASSIGNED(key = "_unassigned_"),
 }
 
 val AGENT_PREPOPULATION_DATA = listOf(
+    /*
+    Agent(
+        agentId = EMPTY_ID,
+        firstName = AgentEnum.EMPTY.key,
+        lastName = AgentEnum.EMPTY.key,
+    ),
+    */
     Agent(
         agentId = UNASSIGNED_ID,
         firstName = AgentEnum.UNASSIGNED.key,
-        lastName = null,
+        lastName = "",
     ),
     Agent(
         agentId = 2L,

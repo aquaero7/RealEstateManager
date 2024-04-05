@@ -1,10 +1,8 @@
 package com.aquaero.realestatemanager
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -170,6 +168,8 @@ fun RealEstateManagerApp(
                         context = context,
                         properties = properties,
                         addresses = addresses,
+                        types = types,
+                        agents = agents,
                         photos = photos,
                         propertyPoiJoins = propertyPoiJoins
                     )
@@ -206,9 +206,14 @@ fun RealEstateManagerApp(
                 AppTabRow(
                     allScreens = tabRowScreens,
                     onTabSelected = { newScreen ->
+                        val viewModel = when (newScreen) {
+                            SearchCriteria -> searchViewModel
+                            else -> null
+                        }
                         navController.navigateSingleTopTo(
                             destination = newScreen,
-                            propertyId = propertyId.toString()
+                            propertyId = propertyId.toString(),
+                            viewModel = viewModel
                         )
                     },
                     currentScreen = currentTabScreen,

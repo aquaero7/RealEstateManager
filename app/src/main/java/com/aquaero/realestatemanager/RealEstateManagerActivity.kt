@@ -165,7 +165,6 @@ fun RealEstateManagerApp(
             SearchCriteria.route -> {
                 {
                     searchViewModel.onClickMenu(
-                        context = context,
                         properties = properties,
                         addresses = addresses,
                         types = types,
@@ -210,10 +209,11 @@ fun RealEstateManagerApp(
                             SearchCriteria -> searchViewModel
                             else -> null
                         }
+                        if (newScreen == SearchCriteria) searchViewModel.resetScrollToResults()
                         navController.navigateSingleTopTo(
                             destination = newScreen,
                             propertyId = propertyId.toString(),
-                            viewModel = viewModel
+                            viewModel = viewModel,
                         )
                     },
                     currentScreen = currentTabScreen,

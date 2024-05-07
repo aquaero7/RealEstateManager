@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.AppContentType
+import com.aquaero.realestatemanager.DEFAULT_START_POSITION
 import com.aquaero.realestatemanager.Field
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.SEARCH_RESULT_START_POSITION
@@ -117,10 +118,9 @@ fun SearchScreen(
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
     var counter by remember { mutableIntStateOf(0) }    // Counter set to avoid scrolling at first screen display
-    var scrollToTop by remember { mutableStateOf(false) }
+    var scrollToTop by remember { mutableStateOf(true) }
 
     LaunchedEffect(key1 = scrollToResultsCounter) {
-//    LaunchedEffect(key1 = searchResults, key2 = scrollToResultsCounter) {
         counter += 1
         if (counter > 1 ) {
             scrollState.animateScrollTo(SEARCH_RESULT_START_POSITION)
@@ -128,7 +128,7 @@ fun SearchScreen(
     }
     LaunchedEffect(key1 = scrollToTop)  {
         if (scrollToTop) {
-            scrollState.animateScrollTo(0)
+            scrollState.animateScrollTo(DEFAULT_START_POSITION)
             scrollToTop = false
         }
     }

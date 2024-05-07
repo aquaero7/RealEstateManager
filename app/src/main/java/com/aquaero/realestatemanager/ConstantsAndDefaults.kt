@@ -132,6 +132,7 @@ val DP_CONTAINER_COLOR = PurpleGrey40
 
 // Miscellaneous
 val CLEAR_BUTTON_SIZE: Dp = 14.dp
+const val DEFAULT_START_POSITION = 0
 const val SEARCH_RESULT_START_POSITION = 2200
 const val MIN = "MIN"
 const val MAX = "MAX"
@@ -141,6 +142,8 @@ const val NO_PHOTO_ID = -1L
 const val PHOTO_DELETION = "photoDeletion"
 const val DATE_PATTERN = "yyyy-MM-dd"
 const val RATE_OF_DOLLAR_IN_EURO = 0.812
+const val DEFAULT_LIST_INDEX = -1
+const val DEFAULT_RADIO_INDEX = 2
 
 
 // Cache values

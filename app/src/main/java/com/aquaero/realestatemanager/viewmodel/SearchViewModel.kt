@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
+import com.aquaero.realestatemanager.DEFAULT_LIST_INDEX
+import com.aquaero.realestatemanager.DEFAULT_RADIO_INDEX
 import com.aquaero.realestatemanager.DropdownMenuCategory
 import com.aquaero.realestatemanager.Field
 import com.aquaero.realestatemanager.MAX
@@ -34,9 +36,9 @@ class SearchViewModel(
     var roomsMin: String? = null ; var roomsMax: String? = null
     var bathroomsMin: String? = null ; var bathroomsMax: String? = null
     var bedroomsMin: String? = null ; var bedroomsMax: String? = null
-    var typeIndex: Int = -1
+    private var typeIndex: Int = DEFAULT_LIST_INDEX
     var type: String? = null
-    var agentIndex: Int = -1
+    private var agentIndex: Int = DEFAULT_LIST_INDEX
     var agent : String? = null
     var zip: String? = null
     var city: String? = null
@@ -44,8 +46,8 @@ class SearchViewModel(
     var country: String? = null
     var registrationDateMin: String? = null ; var registrationDateMax: String? = null
     var saleDateMin: String? = null ; var saleDateMax: String? = null
-    var salesRadioIndex: Int = 2
-    var photosRadioIndex: Int = 2
+    var salesRadioIndex: Int = DEFAULT_RADIO_INDEX
+    var photosRadioIndex: Int = DEFAULT_RADIO_INDEX
     val itemPois: MutableList<Poi> = mutableListOf()
     private var filteredList: MutableList<Property> = mutableListOf()
 
@@ -62,29 +64,34 @@ class SearchViewModel(
         _searchResults = mutableListOf()
         _searchResultsFlow.value = _searchResults
         // Init scroll to results counter
-        _scrollToResults = 0
-        _scrollToResultsFlow.value = _scrollToResults
+        resetScrollToResults()
     }
 
     private fun clearCriteria() {
-        description = null
-        priceMin = null ; priceMax = null
-        surfaceMin = null ; surfaceMax = null
-        roomsMin = null ; roomsMax = null
-        bathroomsMin = null ; bathroomsMax = null
-        bedroomsMin = null ; bedroomsMax = null
-        typeIndex = -1
-        type = null
-        agentIndex = -1
-        agent = null
-        zip = null
-        city = null
-        state = null
-        country = null
-        registrationDateMin = null ; registrationDateMax = null
-        saleDateMin = null ; saleDateMax = null
-        salesRadioIndex = 2
-        photosRadioIndex = 2
+        onClearButtonClick("", Field.DESCRIPTION.name)
+        onClearButtonClick(MIN, Field.PRICE.name)
+        onClearButtonClick(MAX, Field.PRICE.name)
+        onClearButtonClick(MIN, Field.SURFACE.name)
+        onClearButtonClick(MAX, Field.SURFACE.name)
+        onClearButtonClick(MIN, Field.ROOMS.name)
+        onClearButtonClick(MAX, Field.ROOMS.name)
+        onClearButtonClick(MIN, Field.BATHROOMS.name)
+        onClearButtonClick(MAX, Field.BATHROOMS.name)
+        onClearButtonClick(MIN, Field.BEDROOMS.name)
+        onClearButtonClick(MAX, Field.BEDROOMS.name)
+        onClearButtonClick("", DropdownMenuCategory.TYPE.name)
+        onClearButtonClick("", DropdownMenuCategory.AGENT.name)
+        onClearButtonClick("", Field.ZIP_CODE.name)
+        onClearButtonClick("", Field.CITY.name)
+        onClearButtonClick("", Field.STATE.name)
+        onClearButtonClick("", Field.COUNTRY.name)
+        onClearButtonClick(MIN, Field.REGISTRATION_DATE.name)
+        onClearButtonClick(MAX, Field.REGISTRATION_DATE.name)
+        onClearButtonClick(MIN, Field.SALE_DATE.name)
+        onClearButtonClick(MAX, Field.SALE_DATE.name)
+
+        salesRadioIndex = DEFAULT_RADIO_INDEX
+        photosRadioIndex = DEFAULT_RADIO_INDEX
         itemPois.clear()
     }
 
@@ -112,11 +119,11 @@ class SearchViewModel(
                 MAX -> bedroomsMax = null
             }
             DropdownMenuCategory.TYPE.name -> {
-                typeIndex = -1
+                typeIndex = DEFAULT_LIST_INDEX
                 type = null
             }
             DropdownMenuCategory.AGENT.name -> {
-                agentIndex = -1
+                agentIndex = DEFAULT_LIST_INDEX
                 agent = null
             }
             Field.ZIP_CODE.name -> zip = null
@@ -140,8 +147,12 @@ class SearchViewModel(
         _searchResultsFlow.value = filteredList
     }
 
+    fun resetScrollToResults() {
+        _scrollToResults = 0
+        _scrollToResultsFlow.value = _scrollToResults
+    }
+
     fun onClickMenu(
-        context: Context,
         properties: MutableList<Property>,
         addresses: MutableList<Address>,
         types: MutableList<Type>,
@@ -281,7 +292,7 @@ class SearchViewModel(
         salesRadioIndex = when (button) {
             context.getString(R.string.for_sale) -> 0
             context.getString(R.string.sold) -> 1
-            else -> 2
+            else -> DEFAULT_RADIO_INDEX
         }
     }
 
@@ -290,7 +301,7 @@ class SearchViewModel(
         photosRadioIndex = when (button) {
             context.getString(R.string.with_photo) -> 0
             context.getString(R.string.without_photo) -> 1
-            else -> 2
+            else -> DEFAULT_RADIO_INDEX
         }
     }
 

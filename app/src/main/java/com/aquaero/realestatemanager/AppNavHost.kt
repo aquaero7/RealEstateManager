@@ -149,7 +149,9 @@ fun AppNavHost(
     }
 }
 
-fun NavHostController.navigateSingleTopTo(destination: AppDestination, propertyId: String?, viewModel: Any? = null) {
+fun NavHostController.navigateSingleTopTo(
+    destination: AppDestination, propertyId: String?, viewModel: Any? = null,
+) {
     val selected = false
     val route =
         if (destination == ListAndDetail) "${destination.route}/${propertyId}/${selected}" else destination.route

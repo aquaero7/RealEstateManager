@@ -56,7 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.AppContentType
 import com.aquaero.realestatemanager.DEFAULT_START_POSITION
-import com.aquaero.realestatemanager.Field
+import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.SEARCH_RESULT_START_POSITION
 import com.aquaero.realestatemanager.model.Address
@@ -176,7 +176,7 @@ fun SearchScreen(
 
         // Description
         SearchScreenTextField(
-            leftLocationField = Field.DESCRIPTION.name,
+            leftLocationField = EditField.DESCRIPTION.name,
             leftIcon = Icons.Default.NoteAlt,
             leftIconCD = stringResource(id = R.string.cd_description),
             leftLabel = stringResource(id = R.string.description),
@@ -192,11 +192,10 @@ fun SearchScreen(
             minText = priceMinValue,
             maxText = priceMaxValue,
             onValueChange = { fieldType, value ->
-                onFieldValueChange(Field.PRICE.name, fieldType, value)
+                onFieldValueChange(EditField.PRICE.name, fieldType, value)
                 Log.w("SearchScreen", "Price: $fieldType value = $value")
             },
-            onClearButtonClick = { onClearButtonClick(it, Field.PRICE.name) },
-
+            onClearButtonClick = { onClearButtonClick(it, EditField.PRICE.name) },
         )
         // Surface
         SearchScreenTextFieldMinMax(
@@ -206,10 +205,10 @@ fun SearchScreen(
             minText = surfaceMinValue,
             maxText = surfaceMaxValue,
             onValueChange = { fieldType, value ->
-                onFieldValueChange(Field.SURFACE.name, fieldType, value)
+                onFieldValueChange(EditField.SURFACE.name, fieldType, value)
                 Log.w("SearchScreen", "Surface: $fieldType value = $value")
             },
-            onClearButtonClick = { onClearButtonClick(it, Field.SURFACE.name) },
+            onClearButtonClick = { onClearButtonClick(it, EditField.SURFACE.name) },
         )
         // Number of rooms
         SearchScreenTextFieldMinMax(
@@ -219,10 +218,10 @@ fun SearchScreen(
             minText = roomsMinValue,
             maxText = roomsMaxValue,
             onValueChange = { fieldType, value ->
-                onFieldValueChange(Field.ROOMS.name, fieldType, value)
+                onFieldValueChange(EditField.ROOMS.name, fieldType, value)
                 Log.w("SearchScreen", "Rooms: $fieldType value = $value")
             },
-            onClearButtonClick = { onClearButtonClick(it, Field.ROOMS.name) },
+            onClearButtonClick = { onClearButtonClick(it, EditField.ROOMS.name) },
         )
         // Number of bathrooms
         SearchScreenTextFieldMinMax(
@@ -232,10 +231,10 @@ fun SearchScreen(
             minText = bathroomsMinValue,
             maxText = bathroomsMaxValue,
             onValueChange = { fieldType, value ->
-                onFieldValueChange(Field.BATHROOMS.name, fieldType, value)
+                onFieldValueChange(EditField.BATHROOMS.name, fieldType, value)
                 Log.w("SearchScreen", "Bathrooms: $fieldType value = $value")
             },
-            onClearButtonClick = { onClearButtonClick(it, Field.BATHROOMS.name) },
+            onClearButtonClick = { onClearButtonClick(it, EditField.BATHROOMS.name) },
         )
         // Number of bedrooms
         SearchScreenTextFieldMinMax(
@@ -245,10 +244,10 @@ fun SearchScreen(
             minText = bedroomsMinValue,
             maxText = bedroomsMaxValue,
             onValueChange = { fieldType, value ->
-                onFieldValueChange(Field.BEDROOMS.name, fieldType, value)
+                onFieldValueChange(EditField.BEDROOMS.name, fieldType, value)
                 Log.w("SearchScreen", "Bedrooms: $fieldType value = $value")
             },
-            onClearButtonClick = { onClearButtonClick(it, Field.BEDROOMS.name) },
+            onClearButtonClick = { onClearButtonClick(it, EditField.BEDROOMS.name) },
         )
         // Type and agent
         SearchScreenDropdownMenu(
@@ -265,12 +264,12 @@ fun SearchScreen(
         )
         // ZIP code and city
         SearchScreenTextField(
-            leftLocationField = Field.ZIP_CODE.name,
+            leftLocationField = EditField.ZIP_CODE.name,
             leftIcon = Icons.Default.LocationOn,
             leftIconCD = stringResource(id = R.string.cd_address),
             leftLabel = stringResource(id = R.string.zip_code),
             leftText = zipValue,
-            rightLocationField = Field.CITY.name,
+            rightLocationField = EditField.CITY.name,
             rightIcon = Icons.Default.LocationOn,
             rightIconCD = stringResource(id = R.string.cd_address),
             rightLabel = stringResource(id = R.string.city),
@@ -280,12 +279,12 @@ fun SearchScreen(
         )
         // State and country
         SearchScreenTextField(
-            leftLocationField = Field.STATE.name,
+            leftLocationField = EditField.STATE.name,
             leftIcon = Icons.Default.LocationOn,
             leftIconCD = stringResource(id = R.string.cd_address),
             leftLabel = stringResource(id = R.string.state),
             leftText = stateValue,
-            rightLocationField = Field.COUNTRY.name,
+            rightLocationField = EditField.COUNTRY.name,
             rightIcon = Icons.Default.LocationOn,
             rightIconCD = stringResource(id = R.string.cd_address),
             rightLabel = stringResource(id = R.string.country),
@@ -301,10 +300,10 @@ fun SearchScreen(
             minText = registrationDateMinValue,
             maxText = registrationDateMaxValue,
             onValueChange = { fieldType, value ->
-                onFieldValueChange(Field.REGISTRATION_DATE.name, fieldType, value)
+                onFieldValueChange(EditField.REGISTRATION_DATE.name, fieldType, value)
                 Log.w("SearchScreen", "Registration date: $fieldType value = $value")
             },
-            onClearButtonClick = { onClearButtonClick(it, Field.REGISTRATION_DATE.name) },
+            onClearButtonClick = { onClearButtonClick(it, EditField.REGISTRATION_DATE.name) },
             shouldBeDigitsOnly = false,
             fieldsAreDates = true,
         )
@@ -316,10 +315,10 @@ fun SearchScreen(
             minText = saleDateMinValue,
             maxText = saleDateMaxValue,
             onValueChange = { fieldType, value ->
-                onFieldValueChange(Field.SALE_DATE.name, fieldType, value)
+                onFieldValueChange(EditField.SALE_DATE.name, fieldType, value)
                 Log.w("SearchScreen", "Sale date: $fieldType value = $value")
             },
-            onClearButtonClick = { onClearButtonClick(it, Field.SALE_DATE.name) },
+            onClearButtonClick = { onClearButtonClick(it, EditField.SALE_DATE.name) },
             shouldBeDigitsOnly = false,
             fieldsAreDates = true,
         )

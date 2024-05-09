@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.DropdownMenuCategory
-import com.aquaero.realestatemanager.Field
+import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.NULL_PROPERTY_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
@@ -248,25 +248,25 @@ class EditViewModel(
 
     fun onFieldValueChange(field: String, value: String, currency: String) {
         val digitalValue =
-            if (field != Field.DESCRIPTION.name && value.isNotEmpty() && value.isDigitsOnly()) value.toInt() else null
+            if (field != EditField.DESCRIPTION.name && value.isNotEmpty() && value.isDigitsOnly()) value.toInt() else null
         when (field) {
-            Field.SURFACE.name -> cacheProperty.surface = digitalValue
-            Field.ROOMS.name -> cacheProperty.nbOfRooms = digitalValue
-            Field.BATHROOMS.name -> cacheProperty.nbOfBathrooms = digitalValue
-            Field.BEDROOMS.name -> cacheProperty.nbOfBedrooms = digitalValue
-            Field.DESCRIPTION.name -> cacheProperty.description = value
-            Field.REGISTRATION_DATE.name -> cacheProperty.registrationDate = value
-            Field.SALE_DATE.name -> cacheProperty.saleDate = value
+            EditField.SURFACE.name -> cacheProperty.surface = digitalValue
+            EditField.ROOMS.name -> cacheProperty.nbOfRooms = digitalValue
+            EditField.BATHROOMS.name -> cacheProperty.nbOfBathrooms = digitalValue
+            EditField.BEDROOMS.name -> cacheProperty.nbOfBedrooms = digitalValue
+            EditField.DESCRIPTION.name -> cacheProperty.description = value
+            EditField.REGISTRATION_DATE.name -> cacheProperty.registrationDate = value
+            EditField.SALE_DATE.name -> cacheProperty.saleDate = value
 
-            Field.STREET_NUMBER.name -> cacheAddress.streetNumber = value
-            Field.STREET_NAME.name -> cacheAddress.streetName = value
-            Field.ADD_INFO.name -> cacheAddress.addInfo = value
-            Field.CITY.name -> cacheAddress.city = value
-            Field.STATE.name -> cacheAddress.state = value
-            Field.ZIP_CODE.name -> cacheAddress.zipCode = value
-            Field.COUNTRY.name -> cacheAddress.country = value
+            EditField.STREET_NUMBER.name -> cacheAddress.streetNumber = value
+            EditField.STREET_NAME.name -> cacheAddress.streetName = value
+            EditField.ADD_INFO.name -> cacheAddress.addInfo = value
+            EditField.CITY.name -> cacheAddress.city = value
+            EditField.STATE.name -> cacheAddress.state = value
+            EditField.ZIP_CODE.name -> cacheAddress.zipCode = value
+            EditField.COUNTRY.name -> cacheAddress.country = value
 
-            Field.PRICE.name -> cacheProperty.price =
+            EditField.PRICE.name -> cacheProperty.price =
                 if (value.isNotEmpty() && value.isDigitsOnly()) {
                     when (currency) {
 //                        "€" -> convertEuroToDollar(euros = value.toInt())

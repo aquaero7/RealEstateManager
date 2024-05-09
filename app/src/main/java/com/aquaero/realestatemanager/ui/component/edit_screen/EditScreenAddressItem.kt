@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aquaero.realestatemanager.Field
+import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.model.Address
 
 @Composable
@@ -96,7 +96,7 @@ fun EditScreenAddressItem(
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = streetNumberPlaceHolderText,
-                            field = Field.STREET_NUMBER.name,
+                            field = EditField.STREET_NUMBER.name,
                             onValueChange = onFieldValueChange,
                             itemText = it?.streetNumber ?: "",
                         )
@@ -104,7 +104,7 @@ fun EditScreenAddressItem(
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = streetNamePlaceHolderText,
-                            field = Field.STREET_NAME.name,
+                            field = EditField.STREET_NAME.name,
                             onValueChange = onFieldValueChange,
                             itemText = it?.streetName ?: "",
                         )
@@ -112,7 +112,7 @@ fun EditScreenAddressItem(
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = addInfoPlaceHolderText,
-                            field = Field.ADD_INFO.name,
+                            field = EditField.ADD_INFO.name,
                             onValueChange = onFieldValueChange,
                             itemText = it?.addInfo ?: "",
                         )
@@ -120,7 +120,7 @@ fun EditScreenAddressItem(
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = cityPlaceHolderText,
-                            field = Field.CITY.name,
+                            field = EditField.CITY.name,
                             onValueChange = onFieldValueChange,
                             itemText = it?.city ?: "",
                         )
@@ -128,7 +128,7 @@ fun EditScreenAddressItem(
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = statePlaceHolderText,
-                            field = Field.STATE.name,
+                            field = EditField.STATE.name,
                             onValueChange = onFieldValueChange,
                             itemText = it?.state ?: "",
                         )
@@ -136,7 +136,7 @@ fun EditScreenAddressItem(
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = zipCodePlaceHolderText,
-                            field = Field.ZIP_CODE.name,
+                            field = EditField.ZIP_CODE.name,
                             onValueChange = onFieldValueChange,
                             itemText = it?.zipCode ?: "",
                         )
@@ -144,7 +144,7 @@ fun EditScreenAddressItem(
                         EditScreenAddressTextFieldItem(
                             fieldFontSize = fieldFontSize,
                             placeHolderText = countryPlaceHolderText,
-                            field = Field.COUNTRY.name,
+                            field = EditField.COUNTRY.name,
                             onValueChange = onFieldValueChange,
                             itemText = it?.country ?: "",
                         )

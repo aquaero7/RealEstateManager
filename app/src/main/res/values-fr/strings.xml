@@ -73,6 +73,11 @@
     <string name="search_title">RECHERCHE MULTI-CRITÈRES</string>
     <string name="search_info">Voir les résultats au bas de l\'écran après validation des critères dans le menu en haut à droite</string>
     <string name="search_results">RESULTATS DE LA RECHERCHE</string>
+    <string name="loan_title">CALCULATEUR D\'EMPRUNT</string>
+    <string name="loan_amount">Montant de l\'emprunt</string>
+    <string name="loan_term">Durée de l\'emprunt</string>
+    <string name="years">Années:</string>
+    <string name="months">Mois:</string>
 
     <!-- AGENT OR TYPE OF PROPERTY -->
     <string name="_unassigned_">Non attribué</string>

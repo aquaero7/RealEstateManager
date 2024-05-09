@@ -71,7 +71,7 @@ enum class DropdownMenuCategory {
 /**
  * Edition fields.
  */
-enum class Field {
+enum class EditField {
     SURFACE,
     ROOMS,
     BATHROOMS,
@@ -87,6 +87,19 @@ enum class Field {
     ZIP_CODE,
     COUNTRY,
     PRICE,
+}
+
+
+/**
+ * Loan fields.
+ */
+enum class LoanField {
+    AMOUNT,
+    TERM,
+    YEARS,
+    MONTHS,
+
+
 }
 
 

@@ -8,7 +8,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.aquaero.realestatemanager.DropdownMenuCategory
-import com.aquaero.realestatemanager.Field
+import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Property
@@ -55,7 +55,7 @@ fun EditScreenColumn2(
         placeHolderText = stringResource(id = R.string.registration_date),
         icon = Icons.Default.ArrowCircleDown,
         iconCD = stringResource(id = R.string.cd_registration_date),
-        onValueChange = { onFieldValueChange(Field.REGISTRATION_DATE.name, it) },
+        onValueChange = { onFieldValueChange(EditField.REGISTRATION_DATE.name, it) },
         storedDate = property?.registrationDate ?: "",
         clearableDate = true,
     )
@@ -65,7 +65,7 @@ fun EditScreenColumn2(
         placeHolderText = stringResource(id = R.string.sale_date),
         icon = Icons.Default.ArrowCircleUp,
         iconCD = stringResource(id = R.string.cd_sale_date),
-        onValueChange = { onFieldValueChange(Field.SALE_DATE.name, it) },
+        onValueChange = { onFieldValueChange(EditField.SALE_DATE.name, it) },
         storedDate = property?.saleDate ?: "",
         clearableDate = true,
     )

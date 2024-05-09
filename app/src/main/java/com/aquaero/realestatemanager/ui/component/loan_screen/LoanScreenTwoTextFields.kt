@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager.ui.component.search_screen
+package com.aquaero.realestatemanager.ui.component.loan_screen
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -21,17 +21,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.QuestionMark
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,7 +33,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -55,18 +48,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.aquaero.realestatemanager.CLEAR_BUTTON_SIZE
-import com.aquaero.realestatemanager.DP_CONTAINER_COLOR
-import com.aquaero.realestatemanager.DP_TEXT_COLOR
-import com.aquaero.realestatemanager.MAX
-import com.aquaero.realestatemanager.MIN
+import com.aquaero.realestatemanager.LoanField
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.ui.component.edit_screen.editScreenDatePickerColors
 import com.aquaero.realestatemanager.ui.theme.Red
-import com.aquaero.realestatemanager.utils.convertDateMillisToString
-import com.aquaero.realestatemanager.utils.convertDateStringToMillis
 
 @Composable
-fun SearchScreenTextFieldMinMax(
+fun LoanScreenTwoTextFields(
     fieldFontSize: TextUnit = 16.sp,
     labelFontSize: TextUnit = 14.sp,
     iconSize: Dp = 40.dp,
@@ -74,21 +61,18 @@ fun SearchScreenTextFieldMinMax(
     labelText: String,
     icon: ImageVector,
     iconCD: String,
-    minText: String?,
-    maxText: String?,
+    yearsText: String?,
+    monthsText: String?,
+    shouldBeDigitsOnly: Boolean = true,
     onValueChange: (String, String) -> Unit,
     onClearButtonClick: (String) -> Unit,
-    // For keyboard input
-    shouldBeDigitsOnly: Boolean = true,                // True when the item is an input field
-    // For DatePicker
-    fieldsAreDates: Boolean = false,                    // True when the item is a DatePicker
 ) {
-    var minValue by remember { mutableStateOf(minText) }
-    var maxValue by remember { mutableStateOf(maxText) }
-    val onValidValue: (String, String) -> Unit = { fieldBound, value ->
-        when (fieldBound) {
-            MIN -> minValue = value
-            MAX -> maxValue = value
+    var yearsValue by remember { mutableStateOf(yearsText) }
+    var monthsValue by remember { mutableStateOf(monthsText) }
+    val onValidValue: (String, String) -> Unit = { field, value ->
+        when (field) {
+            LoanField.YEARS.name -> yearsValue = value
+            LoanField.MONTHS.name -> monthsValue = value
         }
     }
 
@@ -128,7 +112,7 @@ fun SearchScreenTextFieldMinMax(
                 .wrapContentHeight()
                 .fillMaxWidth(),
         ) {
-            // Min label
+            // Years label
             Text(
                 modifier = Modifier
                     .weight(1F)
@@ -136,31 +120,29 @@ fun SearchScreenTextFieldMinMax(
                 textAlign = TextAlign.Center,
                 fontSize = labelFontSize,
                 color = MaterialTheme.colorScheme.tertiary,
-                text = stringResource(id = R.string.min),
+                text = stringResource(id = R.string.years),
             )
 
-            // Min field
+            // Years field
             Box(
                 modifier = Modifier
-                    .weight(2F)
+                    .weight(1F)
                     .height(fieldHeight)
                     .background(color = MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.CenterStart
             ) {
-                BasicSearchTextFieldMinMaxItem(
-                    fieldsAreDates = fieldsAreDates,
+                BasicLoanTwoTextFieldsItem(
                     fieldFontSize = fieldFontSize,
                     shouldBeDigitsOnly = shouldBeDigitsOnly,
-                    fieldBound = MIN,
-                    fieldValue = minValue ?: "",
-                    otherFieldValue = maxValue ?: "",
+                    unit = LoanField.YEARS.name,
+                    fieldValue = yearsValue ?: "",
                     onValidValue = onValidValue,
                     onValueChange = onValueChange,
                     onClearButtonClick = onClearButtonClick,
                 )
             }
 
-            // Max label
+            // Months label
             Text(
                 modifier = Modifier
                     .weight(1F)
@@ -168,24 +150,22 @@ fun SearchScreenTextFieldMinMax(
                 textAlign = TextAlign.Center,
                 fontSize = labelFontSize,
                 color = MaterialTheme.colorScheme.tertiary,
-                text = stringResource(id = R.string.max),
+                text = stringResource(id = R.string.months),
             )
 
-            // Max field
+            // Months field
             Box(
                 modifier = Modifier
-                    .weight(2F)
+                    .weight(1F)
                     .height(fieldHeight)
                     .background(color = MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.CenterStart
             ) {
-                BasicSearchTextFieldMinMaxItem(
-                    fieldsAreDates = fieldsAreDates,
+                BasicLoanTwoTextFieldsItem(
                     fieldFontSize = fieldFontSize,
                     shouldBeDigitsOnly = shouldBeDigitsOnly,
-                    fieldBound = MAX,
-                    fieldValue = maxValue ?: "",
-                    otherFieldValue = minValue ?: "",
+                    unit = LoanField.MONTHS.name,
+                    fieldValue = monthsValue ?: "",
                     onValidValue = onValidValue,
                     onValueChange = onValueChange,
                     onClearButtonClick = onClearButtonClick,
@@ -199,49 +179,20 @@ fun SearchScreenTextFieldMinMax(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BasicSearchTextFieldMinMaxItem(
+fun BasicLoanTwoTextFieldsItem(
     clearButtonSize: Dp = CLEAR_BUTTON_SIZE,
-    fieldsAreDates: Boolean,
     fieldFontSize: TextUnit,
     shouldBeDigitsOnly: Boolean,
-    fieldBound: String,
+    unit: String,
     fieldValue: String,
-    otherFieldValue: String?,
     onValidValue: (String, String) -> Unit,
     onValueChange: (String, String) -> Unit,
     onClearButtonClick: (String) -> Unit,
 ) {
-    // For keyboard input
     var isValid by remember { mutableStateOf(true) }
     val focusManager = LocalFocusManager.current
-    // For DatePicker
-    var openDpDialog by remember { mutableStateOf(false) }
-    val onClick: () -> Unit = {
-        // Triggered only if fields are !enabled (i.e., fieldsAreDates is true)
-        if (fieldsAreDates) {
-            openDpDialog = true
-            Log.w("SearchScreen", "Click in $fieldBound date field")
-        }
-    }
-    // For all
     var fieldText by remember { mutableStateOf(fieldValue) }
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface
-
-    // Defines fields text color according to the correct ordering of min/max values
-    fun orderCheckColor(value: String): Color {
-        return if (value.isEmpty()) {
-            onSurfaceColor
-        } else {
-            val isDisordered = if (value.isDigitsOnly()) {
-                (fieldBound == MIN && !otherFieldValue.isNullOrEmpty() && value.toInt() > otherFieldValue.toInt())
-                        || (fieldBound == MAX && !otherFieldValue.isNullOrEmpty() && value.toInt() < otherFieldValue.toInt())
-            } else {
-                (fieldBound == MIN && !otherFieldValue.isNullOrEmpty() && value > otherFieldValue)
-                        || (fieldBound == MAX && !otherFieldValue.isNullOrEmpty() && value < otherFieldValue)
-            }
-            if (!isDisordered) onSurfaceColor else Red
-        }
-    }
 
     Box(
         modifier = Modifier.fillMaxHeight()
@@ -250,15 +201,12 @@ fun BasicSearchTextFieldMinMaxItem(
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .fillMaxWidth()
-                .clickable {
-                    focusManager.clearFocus()
-                    onClick()
-                },
-            enabled = (!fieldsAreDates),
+                .clickable { focusManager.clearFocus() },
+            enabled = true,
             textStyle = TextStyle(
                 fontSize = fieldFontSize,
                 textAlign = TextAlign.Center,
-                color = orderCheckColor(fieldText)
+                color = onSurfaceColor
             ),
             singleLine = true,
             minLines = 1,
@@ -268,9 +216,9 @@ fun BasicSearchTextFieldMinMaxItem(
                 isValid = !shouldBeDigitsOnly || it.isEmpty() || it.isDigitsOnly()
                 if (isValid) {
                     fieldText = it
-                    onValidValue(fieldBound, it)
-                    onValueChange(fieldBound, it)
-                    Log.w("SearchScreen", "$fieldBound = $it")
+                    onValidValue(unit, it)
+                    onValueChange(unit, it)
+                    Log.w("LoanScreen", "$unit = $it")
                 }
             },
             keyboardOptions = if (shouldBeDigitsOnly) {
@@ -291,8 +239,8 @@ fun BasicSearchTextFieldMinMaxItem(
                     .size(clearButtonSize),
                 onClick = {
                     fieldText = ""
-                    onValidValue(fieldBound, "")
-                    onClearButtonClick(fieldBound)
+                    onValidValue(unit, "")
+                    onClearButtonClick(unit)
                 }
             ) {
                 Icon(
@@ -304,65 +252,18 @@ fun BasicSearchTextFieldMinMaxItem(
         }
     }
 
-    if (fieldsAreDates) {
-        val dpState = rememberDatePickerState(
-            initialSelectedDateMillis = convertDateStringToMillis(fieldText),
-            initialDisplayMode = DisplayMode.Picker
-        )
-
-        if (openDpDialog) {
-            DatePickerDialog(
-                shape = DatePickerDefaults.shape,
-                colors = DatePickerDefaults.colors(containerColor = DP_CONTAINER_COLOR),
-                onDismissRequest = { openDpDialog = false },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            if (dpState.selectedDateMillis != null) {
-                                fieldText =
-                                    convertDateMillisToString(dpState.selectedDateMillis!!)
-                                onValidValue(fieldBound, fieldText)
-                                onValueChange(fieldBound, fieldText)
-                            }
-                            openDpDialog = false
-                        },
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.ok),
-                            color = DP_TEXT_COLOR,
-                        )
-                    }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = { openDpDialog = false },
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.cancel),
-                            color = DP_TEXT_COLOR,
-                        )
-                    }
-                },
-            ) {
-                DatePicker(
-                    state = dpState,
-                    colors = editScreenDatePickerColors(),
-                )
-            }
-        }
-    }
 }
 
 
 @Preview(showBackground = true)
 @Composable
-fun SearchScreenTextFieldMinMaxPreview() {
-    SearchScreenTextFieldMinMax(
+fun LoanScreenTwoTextFieldsPreview() {
+    LoanScreenTwoTextFields(
         labelText = "Label",
         icon = Icons.Default.QuestionMark,
         iconCD = "",
-        minText = "MIN value",
-        maxText = "MAX value",
+        yearsText = "MIN value",
+        monthsText = "MAX value",
         onValueChange = { _, _ -> },
         onClearButtonClick = {},
     )

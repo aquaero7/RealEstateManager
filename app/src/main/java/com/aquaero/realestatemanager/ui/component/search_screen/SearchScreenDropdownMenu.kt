@@ -118,7 +118,7 @@ fun SearchScreenDropdownMenu(
                         .padding(horizontal = 4.dp)
                         .background(color = MaterialTheme.colorScheme.surfaceVariant),
                 ) {
-                    BasicDropdownMenuItem(
+                    BasicSearchDropdownMenuItem(
                         dropdownMenuCategory = DropdownMenuCategory.TYPE,
                         stringItems = stringTypes,
                         fieldFontSize = fieldFontSize,
@@ -173,7 +173,7 @@ fun SearchScreenDropdownMenu(
                         .padding(horizontal = 4.dp)
                         .background(color = MaterialTheme.colorScheme.surfaceVariant),
                 ) {
-                    BasicDropdownMenuItem(
+                    BasicSearchDropdownMenuItem(
                         dropdownMenuCategory = DropdownMenuCategory.AGENT,
                         stringItems = stringAgents,
                         fieldFontSize = fieldFontSize,
@@ -189,7 +189,7 @@ fun SearchScreenDropdownMenu(
 
 
 @Composable
-fun BasicDropdownMenuItem(
+fun BasicSearchDropdownMenuItem(
     clearButtonSize: Dp = CLEAR_BUTTON_SIZE,
     dropdownMenuCategory: DropdownMenuCategory,
     stringItems: MutableList<String>,

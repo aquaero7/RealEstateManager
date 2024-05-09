@@ -10,7 +10,7 @@ import androidx.compose.material.icons.filled.OtherHouses
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.aquaero.realestatemanager.DropdownMenuCategory
-import com.aquaero.realestatemanager.Field
+import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Property
 
@@ -29,7 +29,7 @@ fun EditScreenColumn1(
         placeHolderText = "${stringResource(id = R.string.price_in)} $currency",
         icon = Icons.Default.Money,
         iconCD = stringResource(id = R.string.cd_price),
-        onValueChange = { onFieldValueChange(Field.PRICE.name, it) },
+        onValueChange = { onFieldValueChange(EditField.PRICE.name, it) },
         itemText = property?.priceInCurrency(currency)?.toString() ?: "",
         shouldBeDigitsOnly = true,
     )
@@ -50,7 +50,7 @@ fun EditScreenColumn1(
         placeHolderText = "${stringResource(id = R.string.surface_in)} ${stringResource(id = R.string.surface_unit)}",
         icon = Icons.Default.AspectRatio,
         iconCD = stringResource(id = R.string.cd_surface),
-        onValueChange = { onFieldValueChange(Field.SURFACE.name, it) },
+        onValueChange = { onFieldValueChange(EditField.SURFACE.name, it) },
         itemText = property?.surface?.toString() ?: "",
         shouldBeDigitsOnly = true,
     )
@@ -60,7 +60,7 @@ fun EditScreenColumn1(
         placeHolderText = stringResource(id = R.string.rooms),
         icon = Icons.Default.OtherHouses,
         iconCD = stringResource(id = R.string.cd_rooms),
-        onValueChange = { onFieldValueChange(Field.ROOMS.name, it) },
+        onValueChange = { onFieldValueChange(EditField.ROOMS.name, it) },
         itemText = property?.nbOfRooms?.toString() ?: "",
         shouldBeDigitsOnly = true,
     )
@@ -70,7 +70,7 @@ fun EditScreenColumn1(
         placeHolderText = stringResource(id = R.string.bathrooms),
         icon = Icons.Default.Bathtub,
         iconCD = stringResource(id = R.string.cd_bathrooms),
-        onValueChange = { onFieldValueChange(Field.BATHROOMS.name, it) },
+        onValueChange = { onFieldValueChange(EditField.BATHROOMS.name, it) },
         itemText = property?.nbOfBathrooms?.toString() ?: "",
         shouldBeDigitsOnly = true,
     )
@@ -80,7 +80,7 @@ fun EditScreenColumn1(
         placeHolderText = stringResource(id = R.string.bedrooms),
         icon = Icons.Default.Bed,
         iconCD = stringResource(id = R.string.cd_bedrooms),
-        onValueChange = { onFieldValueChange(Field.BEDROOMS.name, it) },
+        onValueChange = { onFieldValueChange(EditField.BEDROOMS.name, it) },
         itemText = property?.nbOfBedrooms?.toString() ?: "",
         shouldBeDigitsOnly = true,
     )

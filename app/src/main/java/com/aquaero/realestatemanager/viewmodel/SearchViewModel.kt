@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.aquaero.realestatemanager.DEFAULT_LIST_INDEX
 import com.aquaero.realestatemanager.DEFAULT_RADIO_INDEX
 import com.aquaero.realestatemanager.DropdownMenuCategory
-import com.aquaero.realestatemanager.Field
+import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.MAX
 import com.aquaero.realestatemanager.MIN
 import com.aquaero.realestatemanager.R
@@ -68,27 +68,27 @@ class SearchViewModel(
     }
 
     private fun clearCriteria() {
-        onClearButtonClick("", Field.DESCRIPTION.name)
-        onClearButtonClick(MIN, Field.PRICE.name)
-        onClearButtonClick(MAX, Field.PRICE.name)
-        onClearButtonClick(MIN, Field.SURFACE.name)
-        onClearButtonClick(MAX, Field.SURFACE.name)
-        onClearButtonClick(MIN, Field.ROOMS.name)
-        onClearButtonClick(MAX, Field.ROOMS.name)
-        onClearButtonClick(MIN, Field.BATHROOMS.name)
-        onClearButtonClick(MAX, Field.BATHROOMS.name)
-        onClearButtonClick(MIN, Field.BEDROOMS.name)
-        onClearButtonClick(MAX, Field.BEDROOMS.name)
+        onClearButtonClick("", EditField.DESCRIPTION.name)
+        onClearButtonClick(MIN, EditField.PRICE.name)
+        onClearButtonClick(MAX, EditField.PRICE.name)
+        onClearButtonClick(MIN, EditField.SURFACE.name)
+        onClearButtonClick(MAX, EditField.SURFACE.name)
+        onClearButtonClick(MIN, EditField.ROOMS.name)
+        onClearButtonClick(MAX, EditField.ROOMS.name)
+        onClearButtonClick(MIN, EditField.BATHROOMS.name)
+        onClearButtonClick(MAX, EditField.BATHROOMS.name)
+        onClearButtonClick(MIN, EditField.BEDROOMS.name)
+        onClearButtonClick(MAX, EditField.BEDROOMS.name)
         onClearButtonClick("", DropdownMenuCategory.TYPE.name)
         onClearButtonClick("", DropdownMenuCategory.AGENT.name)
-        onClearButtonClick("", Field.ZIP_CODE.name)
-        onClearButtonClick("", Field.CITY.name)
-        onClearButtonClick("", Field.STATE.name)
-        onClearButtonClick("", Field.COUNTRY.name)
-        onClearButtonClick(MIN, Field.REGISTRATION_DATE.name)
-        onClearButtonClick(MAX, Field.REGISTRATION_DATE.name)
-        onClearButtonClick(MIN, Field.SALE_DATE.name)
-        onClearButtonClick(MAX, Field.SALE_DATE.name)
+        onClearButtonClick("", EditField.ZIP_CODE.name)
+        onClearButtonClick("", EditField.CITY.name)
+        onClearButtonClick("", EditField.STATE.name)
+        onClearButtonClick("", EditField.COUNTRY.name)
+        onClearButtonClick(MIN, EditField.REGISTRATION_DATE.name)
+        onClearButtonClick(MAX, EditField.REGISTRATION_DATE.name)
+        onClearButtonClick(MIN, EditField.SALE_DATE.name)
+        onClearButtonClick(MAX, EditField.SALE_DATE.name)
 
         salesRadioIndex = DEFAULT_RADIO_INDEX
         photosRadioIndex = DEFAULT_RADIO_INDEX
@@ -97,24 +97,24 @@ class SearchViewModel(
 
     fun onClearButtonClick(bound: String, field: String) {
         when (field) {
-            Field.DESCRIPTION.name -> description = null
-            Field.PRICE.name -> when (bound) {
+            EditField.DESCRIPTION.name -> description = null
+            EditField.PRICE.name -> when (bound) {
                 MIN -> priceMin = null
                 MAX -> priceMax = null
             }
-            Field.SURFACE.name -> when (bound) {
+            EditField.SURFACE.name -> when (bound) {
                 MIN -> surfaceMin = null
                 MAX -> surfaceMax = null
             }
-            Field.ROOMS.name -> when (bound) {
+            EditField.ROOMS.name -> when (bound) {
                 MIN -> roomsMin = null
                 MAX -> roomsMax = null
             }
-            Field.BATHROOMS.name -> when (bound) {
+            EditField.BATHROOMS.name -> when (bound) {
                 MIN -> bathroomsMin = null
                 MAX -> bathroomsMax = null
             }
-            Field.BEDROOMS.name -> when (bound) {
+            EditField.BEDROOMS.name -> when (bound) {
                 MIN -> bedroomsMin = null
                 MAX -> bedroomsMax = null
             }
@@ -126,15 +126,15 @@ class SearchViewModel(
                 agentIndex = DEFAULT_LIST_INDEX
                 agent = null
             }
-            Field.ZIP_CODE.name -> zip = null
-            Field.CITY.name -> city = null
-            Field.STATE.name -> state = null
-            Field.COUNTRY.name -> country = null
-            Field.REGISTRATION_DATE.name -> when (bound) {
+            EditField.ZIP_CODE.name -> zip = null
+            EditField.CITY.name -> city = null
+            EditField.STATE.name -> state = null
+            EditField.COUNTRY.name -> country = null
+            EditField.REGISTRATION_DATE.name -> when (bound) {
                 MIN -> registrationDateMin = null
                 MAX -> registrationDateMax = null
             }
-            Field.SALE_DATE.name -> when (bound) {
+            EditField.SALE_DATE.name -> when (bound) {
                 MIN -> saleDateMin = null
                 MAX -> saleDateMax = null
             }
@@ -178,38 +178,38 @@ class SearchViewModel(
     fun onFieldValueChange(field: String, fieldType: String?, fieldValue: String, currency: String) {
         val value: String? = fieldValue.ifEmpty { null }
         val digitalValue: Int? = value?.let {
-            if (field != Field.DESCRIPTION.name && it.isDigitsOnly()) it.toInt() else null
+            if (field != EditField.DESCRIPTION.name && it.isDigitsOnly()) it.toInt() else null
         }
         when (field) {
-            Field.SURFACE.name -> {
+            EditField.SURFACE.name -> {
                 Log.w("SearchViewModel", "$field: $fieldType = $value")
                 when (fieldType) {
                     MIN -> surfaceMin = digitalValue?.toString()
                     MAX -> surfaceMax = digitalValue?.toString()
                 }
             }
-            Field.ROOMS.name -> {
+            EditField.ROOMS.name -> {
                 Log.w("SearchViewModel", "$field: $fieldType = $value")
                 when (fieldType) {
                     MIN -> roomsMin = digitalValue?.toString()
                     MAX -> roomsMax = digitalValue?.toString()
                 }
             }
-            Field.BATHROOMS.name -> {
+            EditField.BATHROOMS.name -> {
                 Log.w("SearchViewModel", "$field: $fieldType = $value")
                 when (fieldType) {
                     MIN -> bathroomsMin = digitalValue?.toString()
                     MAX -> bathroomsMax = digitalValue?.toString()
                 }
             }
-            Field.BEDROOMS.name -> {
+            EditField.BEDROOMS.name -> {
                 Log.w("SearchViewModel", "$field: $fieldType = $value")
                 when (fieldType) {
                     MIN -> bedroomsMin = digitalValue?.toString()
                     MAX -> bedroomsMax = digitalValue?.toString()
                 }
             }
-            Field.PRICE.name -> {
+            EditField.PRICE.name -> {
                 Log.w("SearchViewModel", "$field: $fieldType = $value $currency")
                 val price: Int? = digitalValue?.let {
                     when (currency) {
@@ -222,34 +222,34 @@ class SearchViewModel(
                     MAX -> priceMax = price?.toString()
                 }
             }
-            Field.DESCRIPTION.name -> {
+            EditField.DESCRIPTION.name -> {
                 Log.w("SearchViewModel", "$field = $value")
                 description = value
             }
-            Field.CITY.name -> {
+            EditField.CITY.name -> {
                 Log.w("SearchViewModel", "$field = $value")
                 city = value
             }
-            Field.STATE.name -> {
+            EditField.STATE.name -> {
                 Log.w("SearchViewModel", "$field = $value")
                 state = value
             }
-            Field.ZIP_CODE.name -> {
+            EditField.ZIP_CODE.name -> {
                 Log.w("SearchViewModel", "$field = $value")
                 zip = value
             }
-            Field.COUNTRY.name -> {
+            EditField.COUNTRY.name -> {
                 Log.w("SearchViewModel", "$field = $value")
                 country = value
             }
-            Field.REGISTRATION_DATE.name -> {
+            EditField.REGISTRATION_DATE.name -> {
                 Log.w("SearchViewModel", "$field: $fieldType = $value")
                 when (fieldType) {
                     MIN -> registrationDateMin = value
                     MAX -> registrationDateMax = value
                 }
             }
-            Field.SALE_DATE.name -> {
+            EditField.SALE_DATE.name -> {
                 Log.w("SearchViewModel", "$field: $fieldType = $value")
                 when (fieldType) {
                     MIN -> saleDateMin = value

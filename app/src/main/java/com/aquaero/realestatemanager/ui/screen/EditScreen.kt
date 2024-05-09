@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,7 +22,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.aquaero.realestatemanager.Field
+import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Photo
@@ -81,7 +80,7 @@ fun EditScreen(
             placeHolderText = stringResource(id = R.string.description),
             icon = Icons.Default.NoteAlt,
             iconCD = stringResource(id = R.string.cd_description),
-            onValueChange = { onFieldValueChange(Field.DESCRIPTION.name, it) },
+            onValueChange = { onFieldValueChange(EditField.DESCRIPTION.name, it) },
         )
 
         // Columns

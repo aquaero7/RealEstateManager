@@ -175,7 +175,7 @@ fun RealEstateManagerApp(
                 }
             }
             Loan.route -> {
-                { loanViewModel.onClickMenu(context = context) }
+                { loanViewModel.onClickMenu(navController = navController, context = context) }
             }
             else -> { {} }
         }

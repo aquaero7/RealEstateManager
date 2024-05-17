@@ -98,8 +98,8 @@ enum class LoanField {
     TERM,
     YEARS,
     MONTHS,
-
-
+    ANNUAL_INTEREST_RATE,
+    ANNUAL_INSURANCE_RATE,
 }
 
 

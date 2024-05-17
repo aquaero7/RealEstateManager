@@ -78,6 +78,15 @@
     <string name="loan_term">Durée de l\'emprunt</string>
     <string name="years">Années:</string>
     <string name="months">Mois:</string>
+    <string name="annual_interest_rate">Taux d\'intérêt annuel</string>
+    <string name="annual_insurance_rate">Taux d\'assurance annuel</string>
+    <string name="monthly_principal">Principal mensuel</string>
+    <string name="monthly_interest">Intérêts mensuels</string>
+    <string name="monthly_insurance">Assurance mensuelle</string>
+    <string name="total_monthly">Total paiement mensuel</string>
+    <string name="total_payments">Total Paiements</string>
+    <string name="total_interest">Total Intérêts</string>
+    <string name="total_insurance">Total Assurance</string>
 
     <!-- AGENT OR TYPE OF PROPERTY -->
     <string name="_unassigned_">Non attribué</string>
@@ -121,5 +130,6 @@
     <string name="abort">Abandonner</string>
     <string name="clear_all">Effacer tous les critères</string>
     <string name="to_top">Aller au haut des critères</string>
+    <string name="clear">Effacer</string>
 
 </resources>

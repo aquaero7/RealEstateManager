@@ -60,6 +60,12 @@ fun ellipsis(): String {
     return ellipsisChar.toString()
 }
 
+fun isDecimal(str: String): Boolean {
+//    val regex = "[0-9]+[.]?[0-9]*".toRegex()
+    val regex = Regex("^\\d+[.]?\\d*$")
+    return regex.matches(str)
+}
+
 /**
  * Generates a negative five-digit number of type 'Long', based on epoch time.
  * The absence of collision (uniqueness) for this value is guaranteed, on the same device

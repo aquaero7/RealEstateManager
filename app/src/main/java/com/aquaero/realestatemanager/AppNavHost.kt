@@ -120,6 +120,7 @@ fun AppNavHost(
 
         composable(route = Loan.route) {
             LoanComposable(
+                navController = navController,
                 loanViewModel = loanViewModel,
                 currency = currency,
                 popBackStack = popBackStack,

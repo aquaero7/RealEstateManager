@@ -48,6 +48,7 @@ import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.component.search_screen.SearchScreenTextField
 import com.aquaero.realestatemanager.ui.theme.Red
+import com.aquaero.realestatemanager.utils.isDecimal
 
 @Composable
 fun LoanScreenTextField(
@@ -60,6 +61,7 @@ fun LoanScreenTextField(
     iconCD: String,
     text: String?,
     shouldBeDigitsOnly: Boolean = true,
+    shouldBeDecimal: Boolean,
     onValueChange: (String) -> Unit,
     onClearButtonClick: () -> Unit,
 ) {
@@ -81,7 +83,7 @@ fun LoanScreenTextField(
         ) {
             // Icon
             Icon(
-                modifier = androidx.compose.ui.Modifier
+                modifier = Modifier
                     .size(iconSize)
                     .padding(horizontal = 4.dp),
                 imageVector = icon,
@@ -115,6 +117,7 @@ fun LoanScreenTextField(
                     BasicLoanTextFieldItem(
 //                        field = field,
                         shouldBeDigitsOnly = shouldBeDigitsOnly,
+                        shouldBeDecimal = shouldBeDecimal,
                         fieldFontSize = fieldFontSize,
                         fieldValue = value,
                         onValueChange = onValueChange,
@@ -133,6 +136,7 @@ fun BasicLoanTextFieldItem(
     clearButtonSize: Dp = CLEAR_BUTTON_SIZE,
 //    field: String,
     shouldBeDigitsOnly: Boolean,
+    shouldBeDecimal: Boolean,
     fieldFontSize: TextUnit,
     fieldValue: String?,
     onValueChange: (String) -> Unit,
@@ -161,8 +165,8 @@ fun BasicLoanTextFieldItem(
             maxLines = 1,
             value = fieldText ?: "",
             onValueChange = {
-
-                isValid = !shouldBeDigitsOnly || it.isEmpty() || it.isDigitsOnly()
+                isValid =
+                    !shouldBeDigitsOnly || it.isEmpty() || if (shouldBeDecimal) isDecimal(it) else it.isDigitsOnly()
                 if (isValid) {
                     fieldText = it
 //                    onValueChange(field, null, it)
@@ -212,6 +216,7 @@ fun LoanScreenTextFieldPreview() {
         icon = Icons.Default.QuestionMark,
         iconCD = "",
         text = "Value",
+        shouldBeDecimal = true,
         onValueChange = {},
         onClearButtonClick = {}
     )

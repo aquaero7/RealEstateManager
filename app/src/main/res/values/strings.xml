@@ -78,6 +78,15 @@
     <string name="loan_term">Loan term</string>
     <string name="years">Years:</string>
     <string name="months">Months:</string>
+    <string name="annual_interest_rate">Annual Interest Rate</string>
+    <string name="annual_insurance_rate">Annual Insurance Rate</string>
+    <string name="monthly_principal">Monthly Principal Payment</string>
+    <string name="monthly_interest">Monthly Interest Payment</string>
+    <string name="monthly_insurance">Monthly Insurance Payment</string>
+    <string name="total_monthly">Total Monthly Payment</string>
+    <string name="total_payments">Total Payments</string>
+    <string name="total_interest">Total Interest</string>
+    <string name="total_insurance">Total Insurance</string>
 
     <!-- AGENT OR TYPE OF PROPERTY -->
     <string name="_unassigned_">Unassigned</string>
@@ -121,6 +130,7 @@
     <string name="abort">Abort</string>
     <string name="clear_all">Clear all criteria</string>
     <string name="to_top">Go to the top of criteria</string>
+    <string name="clear">Clear</string>
 
 
     <!-- *** NOT TRANSLATABLE *** -->
@@ -166,6 +176,10 @@
     <string name="cd_button_to_top" translatable="false">button_to_top</string>
     <string name="cd_loan_amount" translatable="false">loan_amount</string>
     <string name="cd_loan_term" translatable="false">loan_term</string>
+    <string name="cd_annual_interest_rate" translatable="false">annual_interest_rate</string>
+    <string name="cd_annual_insurance_rate" translatable="false">annual_insurance_rate</string>
+    <string name="cd_loan_calculation_result" translatable="false">loan_calculation_result</string>
+    <string name="cd_loan_total_result" translatable="false">loan_total_result</string>
     <string name="lb_tab_color_anim" translatable="false">tab_color_anim</string>
 
     <!-- CURRENCY -->

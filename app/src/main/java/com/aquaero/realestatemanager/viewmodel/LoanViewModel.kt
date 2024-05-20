@@ -1,20 +1,18 @@
 package com.aquaero.realestatemanager.viewmodel
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import com.aquaero.realestatemanager.ApplicationRoot
-import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.Loan
 import com.aquaero.realestatemanager.LoanField
-import com.aquaero.realestatemanager.MAX
-import com.aquaero.realestatemanager.MIN
-import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.navigateSingleTopTo
+import com.aquaero.realestatemanager.utils.convertDollarToEuro
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
+import com.aquaero.realestatemanager.utils.isDecimal
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlin.math.pow
 
 class LoanViewModel(
 
@@ -26,72 +24,77 @@ class LoanViewModel(
     var months: Int? = null
     var annualInterestRate: Float? = null
     var annualInsuranceRate: Float? = null
-    var monthlyPrincipal: Float? = null
-    var monthlyInterest: Float? = null
+    var monthlyPayment: Float? = null
     var monthlyInsurance: Float? = null
     var totalMonthly: Float? = null
     var totalPayments: Float? = null
     var totalInterest: Float? = null
     var totalInsurance: Float? = null
 
+    private var inputCurrency: String = "$"
 
-    fun onClickMenu(navController: NavHostController, context: Context) {
-        // TODO
+    private val _refreshResultsDisplay = MutableStateFlow(false)
+    val refreshResultsDisplay: StateFlow<Boolean> = _refreshResultsDisplay.asStateFlow()
 
-        monthlyPrincipal = 123456.78f
-        monthlyInterest = 123456.78f
-        monthlyInsurance = 123456.78f
-        totalMonthly = 123456.78f
-        totalPayments = 123456.78f
-        totalInterest = 123456.78f
-        totalInsurance = 123456.78f
 
+    fun onClickMenu(navController: NavHostController, currency: String) {
+        val term: Int = ((years ?: 0) * 12 + (months ?: 0)).coerceAtLeast(1)
+
+        if (currency == "$" && inputCurrency == "€") amount = convertEuroToDollar(euros = amount)
+        if (currency == "€" && inputCurrency == "$") amount = convertDollarToEuro(dollars = amount)
+        inputCurrency = currency
+
+        monthlyPayment = amount?.let {
+            if (annualInterestRate != null && annualInterestRate != 0f && term != 1) {
+                (it * annualInterestRate!! / 100 / 12) / (1 - (1 + annualInterestRate!! / 100 / 12).pow(-term))
+            } else {
+                it / term.toFloat()
+            }
+        }
+        monthlyInsurance = amount?.let {
+            if (term != 1) it * (annualInsuranceRate ?: 0f) / 100 / 12 else 0f
+        }
+        totalMonthly = monthlyInsurance?.let { monthlyPayment?.plus(it) }
+        val totalLoanPayments: Float? = monthlyPayment?.let { it * term }
+        totalInterest = totalLoanPayments?.let { it - amount!! }
+        totalInsurance = monthlyInsurance?.let { it * term }
+        totalPayments = totalInsurance?.let { ti -> totalLoanPayments?.plus(ti) }
+
+        // Reload screen to refresh results display
         navController.navigateSingleTopTo(Loan, null)
-
     }
 
 
     fun onFieldValueChange(field: String, unit: String?, fieldValue: String, currency: String) {
         var value: String? = fieldValue.ifEmpty { null }
+
         // Adds a '0' to the value if it ends with '.' or ','
         value?.let { if (!it[it.length.minus(1)].isDigit()) value += "0" }
         Log.w("LoanViewmodel", "Value $value ends with : ${value?.length?.minus(1)?.let { value[it] }}")
 
-        val digitalValue: Float? = value?.let {
-//            if (it.isDigitsOnly()) it.toInt() else null
-            if (it.isDigitsOnly()) it.toFloat() else null
-            /*
-            when (field) {
-                LoanField.AMOUNT.name, LoanField.TERM.name -> if (it.isDigitsOnly()) it.toInt() else null
-                LoanField.ANNUAL_INTEREST_RATE.name -> if (it.isDigitsOnly()) it.toFloat() else null
-                else -> null
-            }
-            */
-        }
+        val digitalValue: Float? = value?.let { if (isDecimal(it)) it.toFloat() else null }
         when (field) {
             LoanField.AMOUNT.name -> {
                 Log.w("LoanViewModel", "$field = $value $currency")
-                amount = digitalValue?.let {
-                    when (currency) {
-                        "€" -> convertEuroToDollar(euros = it.toInt())
-//                        "€" -> convertEuroToDollar(euros = it as Int)
-                        else -> it.toInt()
-//                        else -> it as Int
-                    }
-                }
+                amount = digitalValue?.toInt()
+                inputCurrency = currency
             }
             LoanField.TERM.name -> {
                 Log.w("LoanViewModel", "$field: $unit = $value")
                 when (unit) {
                     LoanField.YEARS.name -> years = digitalValue?.toInt()
-//                    LoanField.YEARS.name -> years = digitalValue as Int
                     LoanField.MONTHS.name -> months = digitalValue?.toInt()
-//                    LoanField.MONTHS.name -> months = digitalValue as Int
                 }
             }
             LoanField.ANNUAL_INTEREST_RATE.name -> annualInterestRate = digitalValue
-//            LoanField.ANNUAL_INTEREST_RATE.name -> annualInterestRate = digitalValue as Float
             LoanField.ANNUAL_INSURANCE_RATE.name -> annualInsuranceRate = digitalValue
+        }
+
+        // Results are now invalid and new input has to be validated
+        if (monthlyPayment != null) {
+            clearResults()
+            // Refresh results display
+            _refreshResultsDisplay.value = !refreshResultsDisplay.value
         }
     }
 
@@ -108,16 +111,36 @@ class LoanViewModel(
             LoanField.ANNUAL_INSURANCE_RATE.name -> annualInsuranceRate = null
 
         }
+
+        // Results are now invalid and must be cleared until the new input is validated
+        if (monthlyPayment != null) {
+            clearResults()
+            // Refresh results display
+            _refreshResultsDisplay.value = !refreshResultsDisplay.value
+        }
     }
 
-    fun clearAllFields() {
+    fun onClearAllButtonClick(navController: NavHostController) {
+        clearAllFields()
+        // Reload screen to refresh results display
+        navController.navigateSingleTopTo(destination = Loan, null)
+    }
+
+    private fun clearAllFields() {
+        clearInput()
+        clearResults()
+    }
+
+    private fun clearInput() {
         amount = null
         years = null
         months = null
         annualInterestRate = null
         annualInsuranceRate = null
-        monthlyPrincipal = null
-        monthlyInterest = null
+    }
+
+    private fun clearResults() {
+        monthlyPayment = null
         monthlyInsurance = null
         totalMonthly = null
         totalPayments = null

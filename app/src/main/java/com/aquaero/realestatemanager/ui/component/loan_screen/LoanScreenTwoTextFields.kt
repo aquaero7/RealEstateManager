@@ -21,7 +21,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.QuestionMark
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -51,6 +50,7 @@ import com.aquaero.realestatemanager.CLEAR_BUTTON_SIZE
 import com.aquaero.realestatemanager.LoanField
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.Red
+import com.aquaero.realestatemanager.ui.theme.White
 
 @Composable
 fun LoanScreenTwoTextFields(
@@ -177,7 +177,6 @@ fun LoanScreenTwoTextFields(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicLoanTwoTextFieldsItem(
     clearButtonSize: Dp = CLEAR_BUTTON_SIZE,
@@ -244,9 +243,10 @@ fun BasicLoanTwoTextFieldsItem(
                 }
             ) {
                 Icon(
+                    modifier = Modifier.background(color = White),
+                    tint = Red,
                     imageVector = Icons.Default.Cancel,
                     contentDescription = stringResource(id = R.string.cd_button_clear),
-                    tint = Red
                 )
             }
         }

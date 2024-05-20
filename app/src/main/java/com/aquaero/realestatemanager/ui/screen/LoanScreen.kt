@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.CalendarViewMonth
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Percent
@@ -51,8 +53,7 @@ fun LoanScreen(
     monthsValue: String?,
     annualInterestRateValue: String?,
     annualInsuranceRateValue: String?,
-    monthlyPrincipalValue: String?,
-    monthlyInterestValue: String?,
+    monthlyPaymentValue: String?,
     monthlyInsuranceValue: String?,
     totalMonthlyValue: String?,
     totalPaymentsValue: String?,
@@ -63,12 +64,6 @@ fun LoanScreen(
     onClearAllButtonClick: () -> Unit,
     popBackStack: () -> Unit,
 ) {
-    /*
-    val language = Locale.current.language                                  // TODO: To be deleted after screen implementation
-    val region = Locale.current.region                                      // TODO: To be deleted after screen implementation
-    Text(text = "LoanScreen - Language = $language - Region = $region")     // TODO: To be deleted after screen implementation
-    */
-
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
 
@@ -187,32 +182,24 @@ fun LoanScreen(
 
         // Monthly results
         Column {
-            // Monthly Principal Payment
+            // Monthly Payment
             LoanScreenResultText(
-                labelText = "${stringResource(id = R.string.monthly_principal)} ($currency) : ",
-//                icon = Icons.Default.Calculate,
-                icon = ImageVector.vectorResource(R.drawable.gears),
+                labelText = "${stringResource(id = R.string.monthly_payment)} ($currency) : ",
+                icon = Icons.Default.CalendarMonth,
                 iconCD = stringResource(id = R.string.cd_loan_calculation_result),
-                resultText = monthlyPrincipalValue ?: ""
-            )
-            // Monthly Interest Payment
-            LoanScreenResultText(
-                labelText = "${stringResource(id = R.string.monthly_interest)} ($currency) : ",
-                icon = ImageVector.vectorResource(R.drawable.gears),
-                iconCD = stringResource(id = R.string.cd_loan_calculation_result),
-                resultText = monthlyInterestValue ?: ""
+                resultText = monthlyPaymentValue ?: ""
             )
             // Monthly Insurance Payment
             LoanScreenResultText(
                 labelText = "${stringResource(id = R.string.monthly_insurance)} ($currency) : ",
-                icon = ImageVector.vectorResource(R.drawable.gears),
+                icon = Icons.Default.CalendarMonth,
                 iconCD = stringResource(id = R.string.cd_loan_calculation_result),
                 resultText = monthlyInsuranceValue ?: ""
             )
             // Total Monthly Payment
             LoanScreenResultText(
                 labelText = "${stringResource(id = R.string.total_monthly)} ($currency) : ",
-                icon = ImageVector.vectorResource(R.drawable.gears),
+                icon = Icons.Default.CalendarMonth,
                 iconCD = stringResource(id = R.string.cd_loan_calculation_result),
                 resultText = totalMonthlyValue ?: ""
             )
@@ -225,7 +212,6 @@ fun LoanScreen(
             // Total Payments
             LoanScreenResultText(
                 labelText = "${stringResource(id = R.string.total_payments)} ($currency) : ",
-//                icon = Icons.Default.Calculate,
                 icon = ImageVector.vectorResource(R.drawable.sigma),
                 iconCD = stringResource(id = R.string.cd_loan_total_result),
                 resultText = totalPaymentsValue ?: ""

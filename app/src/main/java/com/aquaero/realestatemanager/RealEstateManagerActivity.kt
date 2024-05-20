@@ -38,15 +38,6 @@ import com.aquaero.realestatemanager.viewmodel.ViewModelFactory
 
 class RealEstateManagerActivity : ComponentActivity() {
 
-    /*  // TODO: To be deleted
-    // Init ViewModels
-    private val appViewModel by viewModels<AppViewModel> { ViewModelFactory }
-    private val listAndDetailViewModel by viewModels<ListAndDetailViewModel> { ViewModelFactory }
-    private val editViewModel by viewModels<EditViewModel> { ViewModelFactory }
-    private val mapViewModel by viewModels<MapViewModel> { ViewModelFactory }
-    private val searchViewModel by viewModels<SearchViewModel> { ViewModelFactory }
-    private val loanViewModel by viewModels<LoanViewModel> { ViewModelFactory }
-    */
     // Declare ViewModels
     private lateinit var appViewModel: AppViewModel
     private lateinit var listAndDetailViewModel: ListAndDetailViewModel
@@ -55,7 +46,6 @@ class RealEstateManagerActivity : ComponentActivity() {
     private lateinit var searchViewModel: SearchViewModel
     private lateinit var loanViewModel: LoanViewModel
 
-//    @SuppressLint("NewApi")   // TODO: To be deleted
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initViewModels(this.applicationContext)
@@ -72,7 +62,6 @@ class RealEstateManagerActivity : ComponentActivity() {
         }
     }
 
-//    @SuppressLint("NewApi")       // TODO: To be deleted
     override fun onResume() {
         super.onResume()
         mapViewModel.checkForPermissions(context = this.applicationContext)
@@ -90,7 +79,6 @@ class RealEstateManagerActivity : ComponentActivity() {
 
 }
 
-//@SuppressLint("NewApi")       // TODO: To be deleted
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun RealEstateManagerApp(
@@ -175,7 +163,7 @@ fun RealEstateManagerApp(
                 }
             }
             Loan.route -> {
-                { loanViewModel.onClickMenu(navController = navController, context = context) }
+                { loanViewModel.onClickMenu(navController = navController, currency = currency) }
             }
             else -> { {} }
         }

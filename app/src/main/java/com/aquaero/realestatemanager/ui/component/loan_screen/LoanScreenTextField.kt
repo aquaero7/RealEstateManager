@@ -44,10 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.aquaero.realestatemanager.CLEAR_BUTTON_SIZE
-import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.ui.component.search_screen.SearchScreenTextField
 import com.aquaero.realestatemanager.ui.theme.Red
+import com.aquaero.realestatemanager.ui.theme.White
 import com.aquaero.realestatemanager.utils.isDecimal
 
 @Composable
@@ -115,7 +114,6 @@ fun LoanScreenTextField(
                         .background(color = MaterialTheme.colorScheme.surfaceVariant),
                 ) {
                     BasicLoanTextFieldItem(
-//                        field = field,
                         shouldBeDigitsOnly = shouldBeDigitsOnly,
                         shouldBeDecimal = shouldBeDecimal,
                         fieldFontSize = fieldFontSize,
@@ -134,7 +132,6 @@ fun LoanScreenTextField(
 @Composable
 fun BasicLoanTextFieldItem(
     clearButtonSize: Dp = CLEAR_BUTTON_SIZE,
-//    field: String,
     shouldBeDigitsOnly: Boolean,
     shouldBeDecimal: Boolean,
     fieldFontSize: TextUnit,
@@ -169,7 +166,6 @@ fun BasicLoanTextFieldItem(
                     !shouldBeDigitsOnly || it.isEmpty() || if (shouldBeDecimal) isDecimal(it) else it.isDigitsOnly()
                 if (isValid) {
                     fieldText = it
-//                    onValueChange(field, null, it)
                     onValueChange(it)
                     Log.w("LoanScreen", "field = $it")
                 }
@@ -192,14 +188,14 @@ fun BasicLoanTextFieldItem(
                     .size(clearButtonSize),
                 onClick = {
                     fieldText = ""
-//                    onClearButtonClick(field)
                     onClearButtonClick()
                 }
             ) {
                 Icon(
+                    modifier = Modifier.background(color = White),
+                    tint = Red,
                     imageVector = Icons.Default.Cancel,
                     contentDescription = stringResource(id = R.string.cd_button_clear),
-                    tint = Red
                 )
             }
         }

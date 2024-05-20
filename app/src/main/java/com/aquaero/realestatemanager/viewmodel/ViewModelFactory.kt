@@ -3,7 +3,6 @@ package com.aquaero.realestatemanager.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.database.AppDatabase
 import com.aquaero.realestatemanager.database.dao.AddressDao
 import com.aquaero.realestatemanager.database.dao.AgentDao

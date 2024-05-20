@@ -62,6 +62,7 @@ import com.aquaero.realestatemanager.MIN
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.component.edit_screen.editScreenDatePickerColors
 import com.aquaero.realestatemanager.ui.theme.Red
+import com.aquaero.realestatemanager.ui.theme.White
 import com.aquaero.realestatemanager.utils.convertDateMillisToString
 import com.aquaero.realestatemanager.utils.convertDateStringToMillis
 
@@ -296,9 +297,10 @@ fun BasicSearchTextFieldMinMaxItem(
                 }
             ) {
                 Icon(
+                    modifier = Modifier.background(color = White),
+                    tint = Red,
                     imageVector = Icons.Default.Cancel,
                     contentDescription = stringResource(id = R.string.cd_button_clear),
-                    tint = Red
                 )
             }
         }

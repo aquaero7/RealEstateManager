@@ -48,6 +48,7 @@ import com.aquaero.realestatemanager.CLEAR_BUTTON_SIZE
 import com.aquaero.realestatemanager.DropdownMenuCategory
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.Red
+import com.aquaero.realestatemanager.ui.theme.White
 import com.aquaero.realestatemanager.utils.textWithEllipsis
 
 @Composable
@@ -246,9 +247,10 @@ fun BasicSearchDropdownMenuItem(
                 }
             ) {
                 Icon(
+                    modifier = Modifier.background(color = White),
+                    tint = Red,
                     imageVector = Icons.Default.Cancel,
                     contentDescription = stringResource(id = R.string.cd_button_clear),
-                    tint = Red
                 )
             }
         }

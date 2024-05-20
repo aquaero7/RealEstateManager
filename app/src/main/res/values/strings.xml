@@ -80,8 +80,7 @@
     <string name="months">Months:</string>
     <string name="annual_interest_rate">Annual Interest Rate</string>
     <string name="annual_insurance_rate">Annual Insurance Rate</string>
-    <string name="monthly_principal">Monthly Principal Payment</string>
-    <string name="monthly_interest">Monthly Interest Payment</string>
+    <string name="monthly_payment">Monthly Loan Payment</string>
     <string name="monthly_insurance">Monthly Insurance Payment</string>
     <string name="total_monthly">Total Monthly Payment</string>
     <string name="total_payments">Total Payments</string>

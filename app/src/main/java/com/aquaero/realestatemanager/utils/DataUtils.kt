@@ -8,6 +8,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import kotlin.math.pow
 import kotlin.math.roundToInt
 
 fun convertDollarToEuro(dollars: Int?): Int? {
@@ -41,6 +42,10 @@ fun convertDateStringToMillis(string: String): Long {
     val instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant()
     return instant.toEpochMilli()
     */
+}
+
+fun calculateMonthlyPaymentWithInterest(amount: Int, annualInterestRate: Float, term: Int): Float {
+    return (amount * annualInterestRate / 100 / 12) / (1 - (1 + annualInterestRate / 100 / 12).pow(-term))
 }
 
 fun textWithEllipsis(fullText: String, maxLength: Int, maxLines: Int): String {

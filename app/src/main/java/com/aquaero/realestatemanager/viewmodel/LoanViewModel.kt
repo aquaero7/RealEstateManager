@@ -6,13 +6,13 @@ import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.Loan
 import com.aquaero.realestatemanager.LoanField
 import com.aquaero.realestatemanager.navigateSingleTopTo
+import com.aquaero.realestatemanager.utils.calculateMonthlyPaymentWithInterest
 import com.aquaero.realestatemanager.utils.convertDollarToEuro
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
 import com.aquaero.realestatemanager.utils.isDecimal
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlin.math.pow
 
 class LoanViewModel(
 
@@ -46,7 +46,8 @@ class LoanViewModel(
 
         monthlyPayment = amount?.let {
             if (annualInterestRate != null && annualInterestRate != 0f && term != 1) {
-                (it * annualInterestRate!! / 100 / 12) / (1 - (1 + annualInterestRate!! / 100 / 12).pow(-term))
+//                (it * annualInterestRate!! / 100 / 12) / (1 - (1 + annualInterestRate!! / 100 / 12).pow(-term))   // TODO: To be deleted
+                calculateMonthlyPaymentWithInterest(it, annualInterestRate!!, term)
             } else {
                 it / term.toFloat()
             }

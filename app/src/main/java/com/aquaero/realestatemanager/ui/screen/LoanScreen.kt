@@ -17,7 +17,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.CalendarViewMonth
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Percent

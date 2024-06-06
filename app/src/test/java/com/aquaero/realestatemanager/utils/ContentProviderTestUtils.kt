@@ -1,9 +1,15 @@
-package com.aquaero.realestatemanager
+package com.aquaero.realestatemanager.utils
 
 import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import com.aquaero.realestatemanager.AddressKey
+import com.aquaero.realestatemanager.AgentKey
+import com.aquaero.realestatemanager.PhotoKey
+import com.aquaero.realestatemanager.PoiKey
+import com.aquaero.realestatemanager.PropertyKey
+import com.aquaero.realestatemanager.TypeKey
 import com.aquaero.realestatemanager.database.AppDatabase
 import com.aquaero.realestatemanager.database.dao.AddressDao
 import com.aquaero.realestatemanager.database.dao.AgentDao

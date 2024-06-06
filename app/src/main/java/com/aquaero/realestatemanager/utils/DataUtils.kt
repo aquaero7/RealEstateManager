@@ -44,8 +44,8 @@ fun convertDateStringToMillis(string: String): Long {
     */
 }
 
-fun calculateMonthlyPaymentWithInterest(amount: Int, annualInterestRate: Float, term: Int): Float {
-    return (amount * annualInterestRate / 100 / 12) / (1 - (1 + annualInterestRate / 100 / 12).pow(-term))
+fun calculateMonthlyPaymentWithInterest(amount: Int, annualInterestRate: Float, termInMonths: Int): Float {
+    return (amount * annualInterestRate / 100 / 12) / (1 - (1 + annualInterestRate / 100 / 12).pow(-termInMonths))
 }
 
 fun textWithEllipsis(fullText: String, maxLength: Int, maxLines: Int): String {

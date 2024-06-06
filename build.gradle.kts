@@ -6,11 +6,17 @@ plugins {
     id("com.google.devtools.ksp") version "1.9.22-1.0.17" apply false
 }
 
-// secrets-gradle-plugin
+// secrets-gradle-plugin and Mockito
 buildscript {
+    // secrets-gradle-plugin
     dependencies {
         classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
         // Room: To use Kotlin Symbol Processing (KSP)
         classpath(kotlin("gradle-plugin", version = "1.9.22"))
+    }
+
+    // Mockito
+    repositories {
+        mavenCentral()
     }
 }

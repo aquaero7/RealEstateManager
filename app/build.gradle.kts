@@ -134,6 +134,7 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("com.google.ai.client.generativeai:generativeai:0.2.1")
     implementation("androidx.test:core-ktx:1.5.0")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     // Room: To use Kotlin Symbol Processing (KSP)
     ksp("androidx.room:room-compiler:2.6.1")

@@ -33,4 +33,10 @@ class CurrencyStore(private val context: Context) {
         }
     }
 
+    suspend fun clearCurrency() {
+        context.dataStore.edit { value ->
+            value.remove(CURRENCY_KEY)
+        }
+    }
+
 }

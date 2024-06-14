@@ -4,12 +4,9 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.aquaero.realestatemanager.utils.CurrencyStore
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -5,7 +5,8 @@ import com.google.android.gms.maps.LocationSource
 import com.google.android.gms.maps.model.LatLng
 
 class MyLocationSource: LocationSource {
-    private var listener: LocationSource.OnLocationChangedListener? = null
+//    private var listener: LocationSource.OnLocationChangedListener? = null
+    var listener: LocationSource.OnLocationChangedListener? = null
 
     override fun activate(p0: LocationSource.OnLocationChangedListener) {
         this.listener = p0

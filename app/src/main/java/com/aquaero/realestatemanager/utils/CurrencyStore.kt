@@ -14,14 +14,16 @@ import kotlinx.coroutines.flow.map
 
 class CurrencyStore(private val context: Context) {
 
-    private val defaultCurrency =
-        if (Locale.current.region == Region.FR.name) context.getString(R.string.euro)
-        else context.getString(R.string.dollar)
-
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("currency")
         private val CURRENCY_KEY = stringPreferencesKey("currency_key")
     }
+
+    private val defaultCurrency: String =
+        if (Locale.current.region == Region.FR.name) context.getString(R.string.euro)
+        else context.getString(R.string.dollar)
+
+    val getDefaultCurrency: String = defaultCurrency
 
     val getCurrency: Flow<String> = context.dataStore.data.map { value ->
         value[CURRENCY_KEY] ?: defaultCurrency

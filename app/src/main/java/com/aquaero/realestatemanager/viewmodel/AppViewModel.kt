@@ -42,6 +42,8 @@ class AppViewModel(
     private val typeRepository : TypeRepository,
     poiRepository: PoiRepository,
     propertyPoiJoinRepository: PropertyPoiJoinRepository,
+    // For test (mock)                                                                                      // TODO: To be deleted
+//    private val currencyStoreFactory: (Context) -> CurrencyStore = { context -> CurrencyStore(context) }  // TODO: To be deleted
 ) : ViewModel() {
 
     /* Room */
@@ -70,7 +72,9 @@ class AppViewModel(
     }
 
     /* Currency */
-    private fun currencyStore(context: Context): CurrencyStore = CurrencyStore(context)
+//    private fun currencyStore(context: Context): CurrencyStore = CurrencyStore(context)   // TODO: To be deleted
+//    private fun currencyStore(context: Context): CurrencyStore = currencyStoreFactory(context)  // For test (mock)    // TODO: To be deleted
+    fun currencyStore(context: Context): CurrencyStore = CurrencyStore(context)
 
     fun currencyHelper(context: Context): Pair<CurrencyStore, String> {
         val currencyStore = currencyStore(context = context)
@@ -83,7 +87,7 @@ class AppViewModel(
 
     /* Navigation data */
 
-    private fun propertyId(currentBackStack: NavBackStackEntry?, properties: MutableList<Property>): Comparable<*> {
+    fun propertyId(currentBackStack: NavBackStackEntry?, properties: MutableList<Property>): Comparable<*> {
         val defaultPropertyId = if (properties.isNotEmpty()) properties[0].propertyId else NULL_PROPERTY_ID
         return currentBackStack?.arguments?.getString(propertyKey) ?: defaultPropertyId
     }
@@ -154,7 +158,6 @@ class AppViewModel(
     }
 
     /**/
-
 
 }
 

@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager
+package com.aquaero.realestatemanager.viewModel_test
 
 import android.content.Context
 import android.os.Bundle
@@ -9,7 +9,15 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.test.core.app.ApplicationProvider
+import com.aquaero.realestatemanager.AppContentType
+import com.aquaero.realestatemanager.GeolocMap
+import com.aquaero.realestatemanager.ListAndDetail
+import com.aquaero.realestatemanager.Loan
+import com.aquaero.realestatemanager.NULL_PROPERTY_ID
+import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.SearchCriteria
 import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.propertyKey
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
@@ -21,7 +29,6 @@ import com.aquaero.realestatemanager.utils.CurrencyStore
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -36,7 +43,6 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
 import java.util.Locale
 

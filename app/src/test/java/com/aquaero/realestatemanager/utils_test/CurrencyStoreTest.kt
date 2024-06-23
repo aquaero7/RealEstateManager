@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager
+package com.aquaero.realestatemanager.utils_test
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider

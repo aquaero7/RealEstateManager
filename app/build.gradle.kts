@@ -145,9 +145,15 @@ dependencies {
 
 
     // Tests
+    // JUnit for unit testing
     testImplementation("junit:junit:4.13.2")
+    //
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")
-    // testImplementation ("androidx.arch.core:core-testing:2.2.0")
+    // AndroidX Test - Core & Rules
+    // testImplementation ("androidx.test:core:1.5.0")
+    // testImplementation ("androidx.test:rules:1.5.0")
+    // LiveData and ViewModel testing (InstantTaskExecutorRule)
+    testImplementation ("androidx.arch.core:core-testing:2.2.0")
     // Mockito
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
     // testImplementation ("org.mockito:mockito-core:4.0.0")

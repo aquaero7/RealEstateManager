@@ -1,4 +1,4 @@
-package com.aquaero.realestatemanager
+package com.aquaero.realestatemanager.utils_test
 
 import android.content.ContentResolver
 import android.content.Context

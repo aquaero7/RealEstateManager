@@ -1,5 +1,7 @@
-package com.aquaero.realestatemanager
+package com.aquaero.realestatemanager.utils_test
 
+import com.aquaero.realestatemanager.DATE_PATTERN
+import com.aquaero.realestatemanager.RATE_OF_DOLLAR_IN_EURO
 import com.aquaero.realestatemanager.utils.calculateMonthlyPaymentWithInterest
 import com.aquaero.realestatemanager.utils.convertDateMillisToString
 import com.aquaero.realestatemanager.utils.convertDateStringToMillis
@@ -9,10 +11,8 @@ import com.aquaero.realestatemanager.utils.ellipsis
 import com.aquaero.realestatemanager.utils.generateProvisionalId
 import com.aquaero.realestatemanager.utils.isDecimal
 import com.aquaero.realestatemanager.utils.textWithEllipsis
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import okhttp3.internal.wait
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

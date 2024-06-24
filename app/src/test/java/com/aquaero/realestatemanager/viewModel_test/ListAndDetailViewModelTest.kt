@@ -50,7 +50,6 @@ import org.robolectric.RobolectricTestRunner
 //@RunWith(MockitoJUnitRunner::class)
 @RunWith(RobolectricTestRunner::class)
 class ListAndDetailViewModelTest {
-
     // @get:Rule
     // var rule: TestRule = InstantTaskExecutorRule()
 
@@ -86,19 +85,18 @@ class ListAndDetailViewModelTest {
             poiRepository,
             locationRepository
         )
-
     }
 
 
     @Test
-    fun testOnClickMenu() {
+    fun clickOnMenuWithSuccess() {
         val idForTest = 9L
         viewModel.onClickMenu(navController, idForTest)
         verify(navController).navigateToEditDetail(idForTest.toString())
     }
 
     @Test
-    fun testOnPropertyClick() {
+    fun clickOnPropertyWithSuccess() {
         val idForTest = 9L
         val contentType: AppContentType = AppContentType.LIST_OR_DETAIL
 
@@ -108,13 +106,13 @@ class ListAndDetailViewModelTest {
     }
 
     @Test
-    fun testOnFabClick() {
+    fun clickOnFabWithSuccess() {
         viewModel.onFabClick(navController)
         verify(navController).navigateToEditDetail(NULL_PROPERTY_ID.toString())
     }
 
     @Test
-    fun testCheckForConnection() {
+    fun checkForConnectionWithSuccess() {
         val connection: ConnectionState = mock(ConnectionState::class.java)
 
         // Test when connection check returns false
@@ -129,7 +127,7 @@ class ListAndDetailViewModelTest {
     }
 
     @Test
-    fun testItemData() = runTest {
+    fun getItemDataWithSuccess() = runTest {
         val property1 = Property(
             propertyId = 1L,
             addressId = 1L,
@@ -173,7 +171,7 @@ class ListAndDetailViewModelTest {
         val thumbNailUrl = SM_URL + SM_SIZE + SM_SCALE + SM_TYPE + SM_MARKER_COLOR + addressMarker + SM_KEY
 
         // Mock data setup
-        val propertyId: Long = 1L
+        val propertyId = 1L
         val mockProperties = mutableListOf(property1)
         val mockPhotos = mutableListOf(photo1)
         val mockPropertyPoiJoins = mutableListOf(propertyPoiJoin1)
@@ -218,7 +216,7 @@ class ListAndDetailViewModelTest {
     }
 
     @Test
-    fun testStringLatLngItem() {
+    fun getStringLatLngItemWithSuccess() {
         val addresses = mutableListOf<Address>()
         val latLngItem = "latLngItem"
         // Mock data setup
@@ -244,7 +242,7 @@ class ListAndDetailViewModelTest {
     }
 
     @Test
-    fun testItemType() {
+    fun getItemTypeWithSuccess() {
         val typeId = "typeId"
         val stringType = "typeString"
         val types = mutableListOf<Type>()
@@ -272,5 +270,7 @@ class ListAndDetailViewModelTest {
         // Verify the result
         assertEquals("typeString", result)
     }
+
+    // All private functions of the viewModel are indirectly tested in test getItemDataWithSuccess()
 
 }

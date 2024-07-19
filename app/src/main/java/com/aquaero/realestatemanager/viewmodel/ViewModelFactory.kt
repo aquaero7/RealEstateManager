@@ -13,6 +13,7 @@ import com.aquaero.realestatemanager.database.dao.PropertyPoiJoinDao
 import com.aquaero.realestatemanager.database.dao.TypeDao
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.AgentRepository
+import com.aquaero.realestatemanager.repository.CacheRepository
 import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.PoiRepository
@@ -43,6 +44,7 @@ class ViewModelFactory(context: Context):  ViewModelProvider.Factory {
     private val propertyPoiJoinRepository: PropertyPoiJoinRepository =
         PropertyPoiJoinRepository(propertyPoiJoinDao = propertyPoiJoinDao)
     private val locationRepository: LocationRepository = LocationRepository()
+    private val cacheRepository: CacheRepository = CacheRepository()
 
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -54,7 +56,7 @@ class ViewModelFactory(context: Context):  ViewModelProvider.Factory {
                 agentRepository, typeRepository, poiRepository, locationRepository) as T
         } else if (modelClass.isAssignableFrom(EditViewModel::class.java)) {
             EditViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
-                typeRepository, poiRepository, propertyPoiJoinRepository, locationRepository) as T
+                typeRepository, poiRepository, propertyPoiJoinRepository, locationRepository, cacheRepository) as T
         } else if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
             MapViewModel(locationRepository) as T
         } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {

@@ -89,6 +89,11 @@ enum class EditField {
     PRICE,
 }
 
+enum class NonEditField {
+    ADDRESS_ID,
+    PROPERTY_ID,
+}
+
 
 /**
  * Loan fields.

@@ -6,8 +6,10 @@ import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.navigation.NavHostController
+import com.aquaero.realestatemanager.DropdownMenuCategory
+import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.NonEditField
-import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.RATE_OF_DOLLAR_IN_EURO
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Photo
@@ -31,6 +33,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -48,14 +51,17 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.mockStatic
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import org.mockito.kotlin.doNothing
 //import org.mockito.kotlin.any                       // Choose 2B
 import org.mockito.kotlin.doReturn                  // Choose 1B
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.isNotNull
+import org.mockito.kotlin.isNull
 import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
+import org.mockito.kotlin.verifyNoMoreInteractions
 import org.robolectric.RobolectricTestRunner
+import kotlin.math.roundToInt
 import kotlin.properties.Delegates
 
 //@RunWith(MockitoJUnitRunner::class)
@@ -80,18 +86,28 @@ class EditViewModelTest {
     private lateinit var stringAgent: String
     private lateinit var property1: Property
     private lateinit var property2: Property
+    private lateinit var photo: Photo
     private lateinit var photo1: Photo
     private lateinit var photo2: Photo
     private lateinit var poiId: String
     private lateinit var poi1: Poi
     private lateinit var poi2: Poi
     private lateinit var toast: Toast
+    private lateinit var typeId: String
+    private lateinit var type: Type
+    private lateinit var agent: Agent
+    private lateinit var unassigned: String
+    private lateinit var poiItem: String
+    private lateinit var uri: Uri
+    private lateinit var stringUri: String
+    private lateinit var label: String
 
     private val lat: Double = 0.1
     private val lng: Double = 0.2
     private val latLng: LatLng = LatLng(lat, lng)
     private val propertyId: Long = 1L
     private val addressId: Long = 1L
+    private val agentId: Long = 1L
 
     private var delayInMs by Delegates.notNull<Long>()
 
@@ -121,12 +137,21 @@ class EditViewModelTest {
         poi1 = mock(Poi::class.java)
         poi2 = mock(Poi::class.java)
         toast = mock(Toast::class.java)
+        uri = mock(Uri::class.java)
 
         stringType = "stringType"
         stringAgent = "stringAgent"
-        photo1 = Photo(1, "", null, 1L)
-        photo2 = Photo(2, "", null, 1L)
+        stringUri = "stringUri"
+        label = "label"
+        photo = Photo(1L, uri.toString(), label, 1L)
+        photo1 = Photo(1L, "", null, 1L)
+        photo2 = Photo(2L, "", null, 1L)
         poiId = "poiId"
+        typeId = "typeId"
+        type = Type(typeId)
+        agent = Agent(agentId, "firstName", "lastName")
+        unassigned = "unassigned"
+        poiItem = "poiItem"
 
         delayInMs = 500L
 
@@ -171,8 +196,10 @@ class EditViewModelTest {
 
             // Init some more mocks for test testItemData()
             doReturn(stringType).`when`(cacheProperty).typeId
-            doReturn(stringType).`when`(typeRepository).stringType(anyString(), anyList(), anyList())
-            doReturn(stringAgent).`when`(agentRepository).stringAgent(anyLong(), anyList(), anyList())
+            doReturn(stringType).`when`(typeRepository)
+                .stringType(anyString(), anyList(), anyList())
+            doReturn(stringAgent).`when`(agentRepository)
+                .stringAgent(anyLong(), anyList(), anyList())
             doReturn(address).`when`(addressRepository).address(anyLong(), anyList())
 
             // Init some more mocks for test xxx()
@@ -211,7 +238,10 @@ class EditViewModelTest {
             viewModel.onClickMenu(navController, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(cacheRepository).updateCacheAddress(null, null)  // Reached
-            verify(cacheRepository, never()).updateCacheAddress(anyDouble(), anyDouble())    // Not reached
+            verify(cacheRepository, never()).updateCacheAddress(
+                anyDouble(),
+                anyDouble()
+            )    // Not reached
 
             // Reset mocks to avoid interference between inner test parts
             reset(cacheRepository)
@@ -273,7 +303,10 @@ class EditViewModelTest {
 //            verify(cacheRepository).updateCacheAddress(null, null)  // Not reached
             verify(cacheRepository, never()).updateCacheAddress(null, null)  // Not reached
 //            verify(cacheRepository, times(3)).updateCacheAddress(anyDouble(), anyDouble())  // Not reached
-            verify(cacheRepository, never()).updateCacheAddress(anyDouble(), anyDouble())  // Not reached
+            verify(cacheRepository, never()).updateCacheAddress(
+                anyDouble(),
+                anyDouble()
+            )  // Not reached
         }
     }
 
@@ -287,8 +320,14 @@ class EditViewModelTest {
             delay(delayInMs)    // Allow the coroutine to execute
             verify(addressRepository, never()).deleteAddressFromRoom(cacheAddress)  // Not reached
             verify(cacheRepository, never()).updateCacheAddress(anyLong())  // Not reached
-            verify(cacheRepository, never()).updateCachePropertyItem(NonEditField.ADDRESS_ID.name, null)    // Not reached
-            verify(cacheRepository, never()).updateCachePropertyItem(NonEditField.ADDRESS_ID.name, eq(anyLong()))  // Not reached
+            verify(cacheRepository, never()).updateCachePropertyItem(
+                NonEditField.ADDRESS_ID.name,
+                null
+            )    // Not reached
+            verify(cacheRepository, never()).updateCachePropertyItem(
+                NonEditField.ADDRESS_ID.name,
+                eq(anyLong())
+            )  // Not reached
 
             // Case 2: If isEmpty = true and isUpdate = false
             doReturn(initialAddress).`when`(cacheRepository).getInitialAddress()
@@ -296,8 +335,14 @@ class EditViewModelTest {
             delay(delayInMs)    // Allow the coroutine to execute
             verify(addressRepository).deleteAddressFromRoom(cacheAddress)   // Reached
             verify(cacheRepository, never()).updateCacheAddress(anyLong())  // Not reached
-            verify(cacheRepository).updateCachePropertyItem(NonEditField.ADDRESS_ID.name, null) // Reached
-            verify(cacheRepository, never()).updateCachePropertyItem(NonEditField.ADDRESS_ID.name, eq(anyLong()))  // Not reached
+            verify(cacheRepository).updateCachePropertyItem(
+                NonEditField.ADDRESS_ID.name,
+                null
+            ) // Reached
+            verify(cacheRepository, never()).updateCachePropertyItem(
+                NonEditField.ADDRESS_ID.name,
+                eq(anyLong())
+            )  // Not reached
 
             // Reset mocks to avoid interference between inner test parts
             reset(addressRepository, cacheRepository)
@@ -312,8 +357,14 @@ class EditViewModelTest {
             verify(addressRepository, never()).deleteAddressFromRoom(cacheAddress)   // Not reached
             verify(cacheRepository).updateCacheAddress(addressId)  // Reached
 //            verify(cacheRepository).updateCachePropertyItem(NonEditField.ADDRESS_ID.name, null) // Not reached
-            verify(cacheRepository, never()).updateCachePropertyItem(NonEditField.ADDRESS_ID.name, null) // Not reached
-            verify(cacheRepository).updateCachePropertyItem(NonEditField.ADDRESS_ID.name, addressId)  // Reached
+            verify(cacheRepository, never()).updateCachePropertyItem(
+                NonEditField.ADDRESS_ID.name,
+                null
+            ) // Not reached
+            verify(cacheRepository).updateCachePropertyItem(
+                NonEditField.ADDRESS_ID.name,
+                addressId
+            )  // Reached
 
             // Reset mocks to avoid interference between inner test parts
             reset(addressRepository, cacheRepository)
@@ -329,9 +380,15 @@ class EditViewModelTest {
 //            verify(cacheRepository, times(2)).updateCacheAddress(addressId)  // Reached
             verify(cacheRepository).updateCacheAddress(addressId)  // Reached
 //            verify(cacheRepository).updateCachePropertyItem(NonEditField.ADDRESS_ID.name, null) // Not reached
-            verify(cacheRepository, never()).updateCachePropertyItem(NonEditField.ADDRESS_ID.name, null) // Not reached
+            verify(cacheRepository, never()).updateCachePropertyItem(
+                NonEditField.ADDRESS_ID.name,
+                null
+            ) // Not reached
 //            verify(cacheRepository, times(2)).updateCachePropertyItem(NonEditField.ADDRESS_ID.name, addressId)  // Reached
-            verify(cacheRepository).updateCachePropertyItem(NonEditField.ADDRESS_ID.name, addressId)  // Reached
+            verify(cacheRepository).updateCachePropertyItem(
+                NonEditField.ADDRESS_ID.name,
+                addressId
+            )  // Reached
         }
     }
 
@@ -343,14 +400,20 @@ class EditViewModelTest {
             doReturn(0L).`when`(propertyRepository).upsertPropertyInRoom(cacheProperty)
             viewModel.onClickMenu(navController, context)
             delay(delayInMs)    // Allow the coroutine to execute
-            verify(cacheRepository, never()).updateCachePropertyItem(NonEditField.PROPERTY_ID.name, eq(anyLong()))   // Not reached
+            verify(cacheRepository, never()).updateCachePropertyItem(
+                NonEditField.PROPERTY_ID.name,
+                eq(anyLong())
+            )   // Not reached
             verify(cacheRepository, never()).updateCacheItemPhotos(anyLong())  // Not reached
 
             // Case 2: If isNewProperty is true and newPropertyIdFromRoom <= 0
             doReturn(0L).`when`(cacheProperty).propertyId
             viewModel.onClickMenu(navController, context)
             delay(delayInMs)    // Allow the coroutine to execute
-            verify(cacheRepository, never()).updateCachePropertyItem(NonEditField.PROPERTY_ID.name, eq(anyLong()))   // Not reached
+            verify(cacheRepository, never()).updateCachePropertyItem(
+                NonEditField.PROPERTY_ID.name,
+                eq(anyLong())
+            )   // Not reached
             verify(cacheRepository, never()).updateCacheItemPhotos(anyLong())  // Not reached
 
             // Case 3: If isNewProperty is false and newPropertyIdFromRoom > 0
@@ -358,7 +421,10 @@ class EditViewModelTest {
             doReturn(1L).`when`(propertyRepository).upsertPropertyInRoom(cacheProperty)
             viewModel.onClickMenu(navController, context)
             delay(delayInMs)    // Allow the coroutine to execute
-            verify(cacheRepository, never()).updateCachePropertyItem(NonEditField.PROPERTY_ID.name, eq(anyLong()))   // Not reached
+            verify(cacheRepository, never()).updateCachePropertyItem(
+                NonEditField.PROPERTY_ID.name,
+                eq(anyLong())
+            )   // Not reached
             verify(cacheRepository, never()).updateCacheItemPhotos(anyLong())  // Not reached
 
             // Reset mocks to avoid interference between inner test parts
@@ -370,7 +436,10 @@ class EditViewModelTest {
             doReturn(0L).`when`(cacheProperty).propertyId
             viewModel.onClickMenu(navController, context)
             delay(delayInMs)    // Allow the coroutine to execute
-            verify(cacheRepository).updateCachePropertyItem(NonEditField.PROPERTY_ID.name, 1L)   // Reached
+            verify(cacheRepository).updateCachePropertyItem(
+                NonEditField.PROPERTY_ID.name,
+                1L
+            )   // Reached
             verify(cacheRepository).updateCacheItemPhotos(1L)  // Reached
         }
     }
@@ -398,7 +467,10 @@ class EditViewModelTest {
             viewModel.onClickMenu(navController, context)
             delay(delayInMs)    // Allow the coroutine to execute
 //            verify(photoRepository).deletePhotosFromRoom(mutableListOf(photo2))   // Not reached
-            verify(photoRepository, never()).deletePhotosFromRoom(mutableListOf(photo2))   // Not reached
+            verify(
+                photoRepository,
+                never()
+            ).deletePhotosFromRoom(mutableListOf(photo2))   // Not reached
             verify(photoRepository).upsertPhotosInRoom(initialPhotos)  // Reached
         }
     }
@@ -415,8 +487,12 @@ class EditViewModelTest {
             doReturn(initialPois).`when`(cacheRepository).getInitialItemPois()
             viewModel.onClickMenu(navController, context)
             delay(delayInMs)    // Allow the coroutine to execute
-            verify(propertyPoiJoinRepository).deletePropertyPoiJoinsFromRoom(propertyPoiJoinsModified)   // Reached
-            verify(propertyPoiJoinRepository, never()).upsertPropertyPoiJoinsInRoom(propertyPoiJoinsModified)  // Not reached
+            verify(propertyPoiJoinRepository).deletePropertyPoiJoinsFromRoom(
+                propertyPoiJoinsModified
+            )   // Reached
+            verify(propertyPoiJoinRepository, never()).upsertPropertyPoiJoinsInRoom(
+                propertyPoiJoinsModified
+            )  // Not reached
 
             // Reset mock to avoid interference between inner test parts
             reset(propertyPoiJoinRepository)
@@ -427,7 +503,9 @@ class EditViewModelTest {
             viewModel.onClickMenu(navController, context)
             delay(delayInMs)    // Allow the coroutine to execute
 //            verify(propertyPoiJoinRepository).deletePropertyPoiJoinsFromRoom(propertyPoiJoinsModified)   // Not reached
-            verify(propertyPoiJoinRepository, never()).deletePropertyPoiJoinsFromRoom(propertyPoiJoinsModified)   // Not reached
+            verify(propertyPoiJoinRepository, never()).deletePropertyPoiJoinsFromRoom(
+                propertyPoiJoinsModified
+            )   // Not reached
             verify(propertyPoiJoinRepository).upsertPropertyPoiJoinsInRoom(propertyPoiJoinsModified)  // Reached
         }
     }
@@ -495,7 +573,13 @@ class EditViewModelTest {
             `when`(Toast.makeText(eq(context), anyString(), anyInt())).thenReturn(toast)
             viewModel.onResponseToCamPermRequest(false, cameraLauncher, cameraUri, context)
             verify(cameraLauncher, never()).launch(any())   // Not reached
-            it.verify { Toast.makeText(eq(context), anyString(), eq(Toast.LENGTH_SHORT)) }  // Reached
+            it.verify {
+                Toast.makeText(
+                    eq(context),
+                    anyString(),
+                    eq(Toast.LENGTH_SHORT)
+                )
+            }  // Reached
             verify(toast).show()   // Reached
 
             // Reset mocks to avoid interference between inner test parts
@@ -505,7 +589,10 @@ class EditViewModelTest {
             // If isGranted = true
             viewModel.onResponseToCamPermRequest(true, cameraLauncher, cameraUri, context)
             verify(cameraLauncher).launch(cameraUri)    // Reached
-            it.verify( { Toast.makeText(eq(context), anyString(), eq(Toast.LENGTH_SHORT)) }, never())  // Not reached
+            it.verify(
+                { Toast.makeText(eq(context), anyString(), eq(Toast.LENGTH_SHORT)) },
+                never()
+            )  // Not reached
             verify(toast, never()).show()   // Not reached
         }
     }
@@ -517,7 +604,12 @@ class EditViewModelTest {
         val uri = Uri.EMPTY
 
         viewModel.onShootPhotoMenuItemClick(context, uri, cameraLauncher, camPermLauncher)
-        verify(photoRepository).onShootPhotoMenuItemClick(context, uri, cameraLauncher, camPermLauncher)
+        verify(photoRepository).onShootPhotoMenuItemClick(
+            context,
+            uri,
+            cameraLauncher,
+            camPermLauncher
+        )
     }
 
     @Test
@@ -532,12 +624,27 @@ class EditViewModelTest {
     fun testInitCache() {
         val itemPhotos = mutableListOf(photo1)
         val itemPois = mutableListOf(poi1)
-        val unassigned = "unassigned"
 
         doReturn(unassigned).`when`(context).getString(anyInt())
 
-        viewModel.initCache(context, property1, stringType, stringAgent, address, itemPhotos, itemPois)
-        verify(cacheRepository).initCache(unassigned, property1, stringType, stringAgent, address, itemPhotos, itemPois)
+        viewModel.initCache(
+            context,
+            property1,
+            stringType,
+            stringAgent,
+            address,
+            itemPhotos,
+            itemPois
+        )
+        verify(cacheRepository).initCache(
+            unassigned,
+            property1,
+            stringType,
+            stringAgent,
+            address,
+            itemPhotos,
+            itemPois
+        )
     }
 
     @Test
@@ -548,9 +655,267 @@ class EditViewModelTest {
 
     @Test
     fun testOnDropdownMenuValueChange() {
+        val types: MutableList<Type> = mutableListOf(type)
+        val agents: MutableList<Agent> = mutableListOf(agent)
+
+        // Category TYPE
+        var otherCat = DropdownMenuCategory.AGENT.name
+        var category = DropdownMenuCategory.TYPE.name
+        var value = "$category#0"
+        viewModel.onDropdownMenuValueChange(value, types, agents)
+        verify(cacheRepository).updateCachePropertyItem(category, type.typeId)
+        verify(cacheRepository, never()).updateCachePropertyItem(eq(otherCat), any())
+
+        // Reset mock to avoid interference between inner test parts
+        reset(cacheRepository)
+
+        // Category AGENT
+        otherCat = DropdownMenuCategory.TYPE.name
+        category = DropdownMenuCategory.AGENT.name
+        value = "$category#0"
+        viewModel.onDropdownMenuValueChange(value, types, agents)
+        verify(cacheRepository).updateCachePropertyItem(category, agent.agentId)
+        verify(cacheRepository, never()).updateCachePropertyItem(eq(otherCat), any())
+
+        // Reset mock to avoid interference between inner test parts
+        reset(cacheRepository)
+
+        // Other category
+        category = "category"
+        value = "$category#0"
+        viewModel.onDropdownMenuValueChange(value, types, agents)
+        verify(cacheRepository, never()).updateCachePropertyItem(anyString(), any())
+    }
+
+    @Test
+    fun testOnFieldValueChange() {
+        val euro = "€"
+        val dollar = "$"
+        val stringValue = "value"
+        val digitalValue = "7"
+        val valueInDollar = (digitalValue.toInt() / RATE_OF_DOLLAR_IN_EURO).roundToInt()
+        val emptyValue = ""
+
+        // Field PRICE with digital value in euro
+        var field = EditField.PRICE.name
+        viewModel.onFieldValueChange(field, digitalValue, euro)
+        verify(cacheRepository).cacheItemPhotosFlow // Init viewmodel
+        verify(cacheRepository).updateCacheItemPhotos(mutableListOf())  // Init viewmodel
+        verify(cacheRepository).updateCachePropertyItem(field, valueInDollar)
+        verifyNoMoreInteractions(cacheRepository)
+
+        // Reset mock to avoid interference between inner test parts
+        reset(cacheRepository)
+
+        // Field PRICE with digital value in dollar
+        field = EditField.PRICE.name
+        viewModel.onFieldValueChange(field, digitalValue, dollar)
+        verify(cacheRepository).updateCachePropertyItem(field, digitalValue.toInt())
+        verifyNoMoreInteractions(cacheRepository)
+
+        // Reset mock to avoid interference between inner test parts
+        reset(cacheRepository)
+
+        // Field PRICE with string value
+        field = EditField.PRICE.name
+        viewModel.onFieldValueChange(field, stringValue, euro)
+        verify(cacheRepository).updateCachePropertyItem(field, null)
+        verifyNoMoreInteractions(cacheRepository)
+
+        // Reset mock to avoid interference between inner test parts
+        reset(cacheRepository)
+
+        // Field PRICE with empty value
+        field = EditField.PRICE.name
+        viewModel.onFieldValueChange(field, emptyValue, euro)
+        verify(cacheRepository).updateCachePropertyItem(field, null)
+        verifyNoMoreInteractions(cacheRepository)
+
+        // Reset mock to avoid interference between inner test parts
+        reset(cacheRepository)
+
+        // With field SURFACE with digital value
+        field = EditField.SURFACE.name
+        viewModel.onFieldValueChange(field, digitalValue, emptyValue)
+        verify(cacheRepository).updateCachePropertyItem(field, digitalValue.toInt())
+        verifyNoMoreInteractions(cacheRepository)
+
+        // Reset mock to avoid interference between inner test parts
+        reset(cacheRepository)
+
+        // With field SURFACE with string value
+        field = EditField.SURFACE.name
+        viewModel.onFieldValueChange(field, stringValue, emptyValue)
+        verify(cacheRepository).updateCachePropertyItem(field, null)
+        verifyNoMoreInteractions(cacheRepository)
+
+        // Reset mock to avoid interference between inner test parts
+        reset(cacheRepository)
+
+        // With field SURFACE with empty value
+        field = EditField.SURFACE.name
+        viewModel.onFieldValueChange(field, emptyValue, emptyValue)
+        verify(cacheRepository).updateCachePropertyItem(field, null)
+        verifyNoMoreInteractions(cacheRepository)
+
+        // Reset mock to avoid interference between inner test parts
+        reset(cacheRepository)
+
+        // With field DESCRIPTION
+        field = EditField.DESCRIPTION.name
+        viewModel.onFieldValueChange(field, stringValue, emptyValue)
+        verify(cacheRepository).updateCachePropertyItem(field, stringValue)
+        verifyNoMoreInteractions(cacheRepository)
+
+        // Reset mock to avoid interference between inner test parts
+        reset(cacheRepository)
+
+        // With field COUNTRY
+        field = EditField.COUNTRY.name
+        viewModel.onFieldValueChange(field, stringValue, emptyValue)
+        verify(cacheRepository).updateCacheAddressItem(field, stringValue)
+        verifyNoMoreInteractions(cacheRepository)
+    }
+
+    @Test
+    fun testOnPoiClick() {
+        viewModel.onPoiClick(poiItem, true)
+        verify(cacheRepository).updateCacheItemPois(poiItem, true)
+    }
+
+    @Test
+    fun testSaveToInternalStorage() {
+        val uri = Uri.EMPTY
+        viewModel.saveToInternalStorage(context, uri)
+        verify(photoRepository).saveToInternalStorage(context, uri)
+    }
+
+    @Test
+    fun testCheckUris() {
+        // No Uri empty
+        var capturedImageUri = mock(Uri::class.java)
+        var pickerUri = mock(Uri::class.java)
+        var photoToAddUri = mock(Uri::class.java)
+        var result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
+        assertEquals(Uri.EMPTY, result.first)
+        assertEquals(Uri.EMPTY, result.second)
+        assertEquals(pickerUri, result.third)
+
+        // capturedImageUri empty
+        capturedImageUri = Uri.EMPTY
+        pickerUri = mock(Uri::class.java)
+        photoToAddUri = mock(Uri::class.java)
+        result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
+        assertEquals(Uri.EMPTY, result.first)
+        assertEquals(Uri.EMPTY, result.second)
+        assertEquals(pickerUri, result.third)
+
+        // pickerUri empty
+        capturedImageUri = mock(Uri::class.java)
+        pickerUri = Uri.EMPTY
+        photoToAddUri = mock(Uri::class.java)
+        result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
+        assertEquals(Uri.EMPTY, result.first)
+        assertEquals(Uri.EMPTY, result.second)
+        assertEquals(capturedImageUri, result.third)
+
+        // photoToAddUri empty
+        capturedImageUri = mock(Uri::class.java)
+        pickerUri = mock(Uri::class.java)
+        photoToAddUri = Uri.EMPTY
+        result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
+        assertEquals(Uri.EMPTY, result.first)
+        assertEquals(Uri.EMPTY, result.second)
+        assertEquals(pickerUri, result.third)
+
+        // capturedImageUri and pickerUri empty
+        capturedImageUri = Uri.EMPTY
+        pickerUri = Uri.EMPTY
+        photoToAddUri = mock(Uri::class.java)
+        result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
+        assertEquals(Uri.EMPTY, result.first)
+        assertEquals(Uri.EMPTY, result.second)
+        assertEquals(photoToAddUri, result.third)
+
+        // capturedImageUri and photoToAddUri empty
+        capturedImageUri = Uri.EMPTY
+        pickerUri = mock(Uri::class.java)
+        photoToAddUri = Uri.EMPTY
+        result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
+        assertEquals(Uri.EMPTY, result.first)
+        assertEquals(Uri.EMPTY, result.second)
+        assertEquals(pickerUri, result.third)
+
+        // pickerUri and photoToAddUri empty
+        capturedImageUri = mock(Uri::class.java)
+        pickerUri = Uri.EMPTY
+        photoToAddUri = Uri.EMPTY
+        result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
+        assertEquals(Uri.EMPTY, result.first)
+        assertEquals(Uri.EMPTY, result.second)
+        assertEquals(capturedImageUri, result.third)
+
+        // All Uri empty
+        capturedImageUri = Uri.EMPTY
+        pickerUri = Uri.EMPTY
+        photoToAddUri = Uri.EMPTY
+        result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
+        assertEquals(Uri.EMPTY, result.first)
+        assertEquals(Uri.EMPTY, result.second)
+        assertEquals(Uri.EMPTY, result.third)
+    }
+
+    @Test
+    fun testOnCancelPhotoEditionButtonClick() {
+        val result = viewModel.onCancelPhotoEditionButtonClick()
+        assertEquals(Uri.EMPTY, result)
+    }
+
+    @Test
+    fun testOnSavePhotoButtonClick() {
+        // The photo already exists
+        doReturn(mutableListOf(photo)).`when`(cacheRepository).getCacheItemPhotos()
+        var result = viewModel.onSavePhotoButtonClick(uri, label)
+        verify(cacheRepository).cacheItemPhotosFlow // Init viewmodel
+        verify(cacheRepository).updateCacheItemPhotos(mutableListOf())  // Init viewmodel
+        verify(cacheRepository, times(2)).getCacheItemPhotos()
+        verify(cacheRepository).getCacheProperty()
+        verify(cacheRepository).updateCacheItemPhotos(0, photo)
+        verifyNoMoreInteractions(cacheRepository)
+        assertEquals(Uri.EMPTY, result)
+
+        // Reset mock to avoid interference between inner test parts
+        reset(cacheRepository)
+        doReturn(cacheProperty).`when`(cacheRepository).getCacheProperty()
+
+        // The photo doesn't already exist
+        doReturn(mutableListOf<Photo>()).`when`(cacheRepository).getCacheItemPhotos()
+        result = viewModel.onSavePhotoButtonClick(uri, label)
+        verify(cacheRepository, times(1)).getCacheItemPhotos()
+        verify(cacheRepository).getCacheProperty()
+        verify(cacheRepository).updateCacheItemPhotos(isNotNull(), isNull())
+        verifyNoMoreInteractions(cacheRepository)
+        assertEquals(Uri.EMPTY, result)
+    }
+
+    @Test
+    fun testOnEditPhotoMenuItemClick() {
+        val uri = Uri.parse(stringUri)
+        val photo = Photo(1L, stringUri, label, 1L)
+
+        val result = viewModel.onEditPhotoMenuItemClick(photo)
+
+        assertEquals(uri, result.first)
+        assertEquals(true, result.second)
+    }
+
+    @Test
+    fun testOnPhotoDeletionConfirmation() {
+
 
 
     }
+
 
 
 

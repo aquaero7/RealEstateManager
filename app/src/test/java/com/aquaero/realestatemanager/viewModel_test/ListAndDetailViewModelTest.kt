@@ -45,6 +45,8 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.never
+import org.mockito.kotlin.reset
 import org.robolectric.RobolectricTestRunner
 
 //@RunWith(MockitoJUnitRunner::class)
@@ -115,14 +117,19 @@ class ListAndDetailViewModelTest {
     fun checkForConnectionWithSuccess() {
         val connection: ConnectionState = mock(ConnectionState::class.java)
 
-        // Test when connection check returns false
+        // Connection check returns false
         doReturn(false).`when`(locationRepository).checkForConnection(connection)
         var result = viewModel.checkForConnection(connection)
+        verify(locationRepository).checkForConnection(connection)
         assertFalse(result)
 
-        // Test when connection check returns true
+        // Reset mock to avoid interference between inner test parts
+        reset(locationRepository)
+
+        // Connection check returns true
         doReturn(true).`when`(locationRepository).checkForConnection(connection)
         result = viewModel.checkForConnection(connection)
+        verify(locationRepository).checkForConnection(connection)
         assertTrue(result)
     }
 
@@ -223,21 +230,25 @@ class ListAndDetailViewModelTest {
         val context = mock(Context::class.java)
         val property = mock(Property::class.java)
 
-        // Case 1: Configure the mocks when addressId is not null
+        // Case 1: addressId is not null
         doReturn(1L).`when`(property).addressId
         doReturn("latLngString").`when`(addressRepository).stringLatLngItem(anyLong(), anyList(), anyString())
         // Call the method under test
         var result = viewModel.stringLatLngItem(property, addresses, latLngItem, context)
-        // Verify the result
+        // Verify the invocation and the result
+        verify(addressRepository).stringLatLngItem(1L, addresses, latLngItem)
         assertEquals("latLngString", result)
 
+        // Reset mock to avoid interference between inner test parts
+        reset(addressRepository)
 
-        // Case 2: Configure the mocks when addressId is null
+        // Case 2: addressId is null
         doReturn(null).`when`(property).addressId
         doReturn("Unavailable").`when`(context).getString(R.string.unavailable)
         // Call the method under test
         result = viewModel.stringLatLngItem(property, addresses, latLngItem, context)
-        // Verify the result
+        // Verify the invocation and the result
+        verify(addressRepository, never()).stringLatLngItem(anyLong(), anyList(), anyString())
         assertEquals("Unavailable", result)
     }
 
@@ -248,13 +259,13 @@ class ListAndDetailViewModelTest {
         val types = mutableListOf<Type>()
         val stringTypes = mutableListOf<String>()
 
-        // Case 1: Configure the mocks when type is null (types is empty)
+        // Case 1: type is null (types is empty)
         // Call the method under test
         var result = viewModel.itemType(typeId, types, stringTypes)
         // Verify the result
         assertEquals("", result)
 
-        // Case 2: Configure the mocks when type is not null and stringTypes is empty
+        // Case 2: type is not null and stringTypes is empty
         val type = mock(Type::class.java)
         types.add(type)
         doReturn(typeId).`when`(type).typeId
@@ -263,7 +274,7 @@ class ListAndDetailViewModelTest {
         // Verify the result
         assertEquals("", result)
 
-        // Case 3: Configure the mocks when type is not null and stringTypes is not empty
+        // Case 3: type is not null and stringTypes is not empty
         stringTypes.add(stringType)
         // Call the method under test
         result = viewModel.itemType(typeId, types, stringTypes)

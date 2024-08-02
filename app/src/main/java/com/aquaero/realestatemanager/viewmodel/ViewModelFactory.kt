@@ -19,6 +19,7 @@ import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.PoiRepository
 import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
+import com.aquaero.realestatemanager.repository.SearchDataRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 
 @Suppress("UNCHECKED_CAST")
@@ -45,6 +46,7 @@ class ViewModelFactory(context: Context):  ViewModelProvider.Factory {
         PropertyPoiJoinRepository(propertyPoiJoinDao = propertyPoiJoinDao)
     private val locationRepository: LocationRepository = LocationRepository()
     private val cacheRepository: CacheRepository = CacheRepository()
+    private val searchDataRepository: SearchDataRepository = SearchDataRepository()
 
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -60,7 +62,7 @@ class ViewModelFactory(context: Context):  ViewModelProvider.Factory {
         } else if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
             MapViewModel(locationRepository) as T
         } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
-            SearchViewModel(addressRepository, photoRepository) as T
+            SearchViewModel(addressRepository, photoRepository, searchDataRepository) as T
         } else if (modelClass.isAssignableFrom(LoanViewModel::class.java)) {
             LoanViewModel() as T
         } else {

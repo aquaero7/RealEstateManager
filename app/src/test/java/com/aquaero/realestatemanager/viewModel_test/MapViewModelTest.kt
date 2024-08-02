@@ -15,8 +15,8 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.any
 import org.mockito.Mockito.doReturn
 import org.mockito.Mockito.mock
-import org.mockito.kotlin.reset
-import org.mockito.kotlin.verify
+import org.mockito.Mockito.reset
+import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
 
 //@RunWith(MockitoJUnitRunner::class)

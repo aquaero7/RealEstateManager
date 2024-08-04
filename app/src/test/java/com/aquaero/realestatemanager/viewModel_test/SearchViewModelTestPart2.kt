@@ -40,7 +40,7 @@ import org.robolectric.RobolectricTestRunner
 // @RunWith(MockitoJUnitRunner::class)
 @RunWith(RobolectricTestRunner::class)
 /**
- * Testing applyFilters() through onClickMenu() in searchViewModel
+ * Testing applyFilters() through onClickMenu()
  */
 class SearchViewModelTestPart2 {
     private lateinit var addressRepository: AddressRepository

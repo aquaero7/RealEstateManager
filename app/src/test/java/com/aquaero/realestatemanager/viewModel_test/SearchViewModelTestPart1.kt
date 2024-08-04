@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.DEFAULT_LIST_INDEX
 import com.aquaero.realestatemanager.DEFAULT_RADIO_INDEX
+import com.aquaero.realestatemanager.EditField
+import com.aquaero.realestatemanager.MAX
+import com.aquaero.realestatemanager.MIN
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Photo
@@ -20,7 +23,6 @@ import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.anyInt
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.doAnswer
@@ -37,7 +39,7 @@ import kotlin.reflect.KMutableProperty1
 // @RunWith(MockitoJUnitRunner::class)
 @RunWith(RobolectricTestRunner::class)
 /**
- * Testing searchViewModel functions except applyFilters()
+ * Testing searchViewModel functions except applyFilters() and onFieldValueChange()
  */
 class SearchViewModelTestPart1 {
     private lateinit var addressRepository: AddressRepository
@@ -124,6 +126,7 @@ class SearchViewModelTestPart1 {
         }.`when`(searchDataRepository).apply { setter.set(this, captor.capture()) }
     }
 
+
     @Test
     fun testResetData() {
         /* Also testing clearCriteria() and onClearButtonClick() */
@@ -153,9 +156,7 @@ class SearchViewModelTestPart1 {
         captureSetterArgument(SearchDataRepository::saleDateMin, stringArgumentCaptor)
         captureSetterArgument(SearchDataRepository::saleDateMax, stringArgumentCaptor)
 
-//        doReturn(itemPois).`when`(searchDataRepository).itemPois
         assertEquals(1, searchDataRepository.itemPois.size)
-//        doReturn(filteredList).`when`(searchDataRepository).filteredList
         assertEquals(1, searchDataRepository.filteredList.size)
 
         viewModel.resetData()
@@ -185,12 +186,12 @@ class SearchViewModelTestPart1 {
         verify(searchDataRepository).saleDateMax = null
 
         assertEquals(21, stringArgumentCaptor.allValues.size)
-        for (index: Int in 0..< stringArgumentCaptor.allValues.size) {
+        for (index: Int in 0..<stringArgumentCaptor.allValues.size) {
             assertNull(stringArgumentCaptor.allValues[index])
         }
 
         assertEquals(2, intArgumentCaptor.allValues.size)
-        for (index: Int in 0..< intArgumentCaptor.allValues.size) {
+        for (index: Int in 0..<intArgumentCaptor.allValues.size) {
             assertEquals(DEFAULT_LIST_INDEX, intArgumentCaptor.allValues[index])
         }
 
@@ -241,12 +242,6 @@ class SearchViewModelTestPart1 {
         assertEquals(scrollValue + 1, intArgumentCaptor.allValues[0])
     }
 
-    @Test
-    fun testOnFieldValueChange() {
 
-
-
-
-    }
 
 }

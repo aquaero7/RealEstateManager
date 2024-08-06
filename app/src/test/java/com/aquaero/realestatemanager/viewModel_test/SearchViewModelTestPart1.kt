@@ -45,8 +45,8 @@ class SearchViewModelTestPart1 {
     private lateinit var addressRepository: AddressRepository
     private lateinit var photoRepository: PhotoRepository
     private lateinit var searchDataRepository: SearchDataRepository
-    private lateinit var navController: NavHostController
-    private lateinit var context: Context
+//    private lateinit var navController: NavHostController
+//    private lateinit var context: Context
     private lateinit var viewModel: SearchViewModel
 
     private lateinit var stringArgumentCaptor: KArgumentCaptor<String?>
@@ -82,8 +82,8 @@ class SearchViewModelTestPart1 {
         addressRepository = mock(AddressRepository::class.java)
         photoRepository = mock(PhotoRepository::class.java)
         searchDataRepository = mock(SearchDataRepository::class.java)
-        navController = mock(NavHostController::class.java)
-        context = mock(Context::class.java)
+//        navController = mock(NavHostController::class.java)
+//        context = mock(Context::class.java)
 
         poi1 = mock(Poi::class.java)
         property1 = mock(Property::class.java)

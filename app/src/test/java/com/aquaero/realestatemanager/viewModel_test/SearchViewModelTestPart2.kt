@@ -1,9 +1,5 @@
 package com.aquaero.realestatemanager.viewModel_test
 
-import android.content.Context
-import androidx.navigation.NavHostController
-import com.aquaero.realestatemanager.DEFAULT_LIST_INDEX
-import com.aquaero.realestatemanager.DEFAULT_RADIO_INDEX
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Photo
@@ -16,25 +12,17 @@ import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.SearchDataRepository
 import com.aquaero.realestatemanager.viewmodel.SearchViewModel
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.anyInt
 import org.mockito.Mockito.anyList
 import org.mockito.Mockito.anyLong
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.doReturn
-import org.mockito.Mockito.mockingDetails
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
-import org.mockito.invocation.Invocation
 import org.mockito.kotlin.KArgumentCaptor
 import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.atLeastOnce
-import org.mockito.kotlin.times
 import org.robolectric.RobolectricTestRunner
 
 // @RunWith(MockitoJUnitRunner::class)
@@ -46,8 +34,8 @@ class SearchViewModelTestPart2 {
     private lateinit var addressRepository: AddressRepository
     private lateinit var photoRepository: PhotoRepository
     private lateinit var searchDataRepository: SearchDataRepository
-    private lateinit var navController: NavHostController
-    private lateinit var context: Context
+//    private lateinit var navController: NavHostController
+//    private lateinit var context: Context
     private lateinit var viewModel: SearchViewModel
 
     private lateinit var listArgumentCaptor: KArgumentCaptor<MutableList<Property>>
@@ -79,8 +67,8 @@ class SearchViewModelTestPart2 {
         addressRepository = mock(AddressRepository::class.java)
         photoRepository = mock(PhotoRepository::class.java)
         searchDataRepository = mock(SearchDataRepository::class.java)
-        navController = mock(NavHostController::class.java)
-        context = mock(Context::class.java)
+//        navController = mock(NavHostController::class.java)
+//        context = mock(Context::class.java)
 
         poi1 = mock(Poi::class.java)
         property1 = mock(Property::class.java)
@@ -126,14 +114,44 @@ class SearchViewModelTestPart2 {
         doReturn("poiId").`when`(poi1).poiId
     }
 
-    private fun resetRepository() {
+    private fun <T, R> launchTest(
+        mock1: SearchDataRepository = searchDataRepository,
+        mock2: Any? = null,
+        getter1: (() -> T),
+        getter2: (() -> T)? = null,
+        getter2b: (() -> T)? = null,
+        mockValue1: R,
+        mockValue2: R? = null,
+        mockValue2b: R? = null,
+        expectedResult: MutableList<Property>,
+        incrementCaptorIndex: Boolean = true
+    ) {
+        // Reset mocks
         reset(searchDataRepository)
         doReturn(properties).`when`(searchDataRepository).searchResults
         doReturn(2).`when`(searchDataRepository).salesRadioIndex
         doReturn(2).`when`(searchDataRepository).photosRadioIndex
-    }
 
-    private fun launchTestAndVerify(expectedResult: MutableList<Property>, incrementCaptorIndex: Boolean = true) {
+        mock2?.let {
+            when (it) {
+                property1, photoRepository -> doReturn(mockValue2).`when`(it).apply { getter2?.invoke() }
+                else -> {}
+            }
+        }
+
+        doReturn(mockValue1).`when`(mock1).apply { getter1.invoke() }
+
+        mock2?.let {
+            when (it) {
+                type1, agent1 -> doReturn(mockValue2).`when`(it).apply { getter2?.invoke() }
+                propertyPoiJoin1 -> {
+                    doReturn(mockValue2).`when`(it).apply { getter2?.invoke() }
+                    doReturn(mockValue2b).`when`(it).apply { getter2b?.invoke() }
+                }
+                else -> {}
+            }
+        }
+
         viewModel.onClickMenu(properties, addresses, types, agents, photos, propertyPoiJoins)
 
         verify(searchDataRepository).updateSearchResultsFlow(listArgumentCaptor.capture())
@@ -144,318 +162,339 @@ class SearchViewModelTestPart2 {
     @Test
     fun testOnClickMenu() {
         // Testing surface >= surfaceMin
-        resetRepository()
-        doReturn("50").`when`(searchDataRepository).surfaceMin
-        launchTestAndVerify(expectedResult = properties, incrementCaptorIndex = false)
+        launchTest(
+            getter1 = searchDataRepository::surfaceMin, mockValue1 = "50",
+            expectedResult = properties, incrementCaptorIndex = false
+        )
 
         // Testing surface < surfaceMin
-        resetRepository()
-        doReturn("150").`when`(searchDataRepository).surfaceMin
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::surfaceMin, mockValue1 = "150", expectedResult = emptyPropertyList
+        )
 
         // Testing surface <= surfaceMax
-        resetRepository()
-        doReturn("150").`when`(searchDataRepository).surfaceMax
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::surfaceMax, mockValue1 = "150", expectedResult = properties
+        )
 
         // Testing surface > surfaceMax
-        resetRepository()
-        doReturn("50").`when`(searchDataRepository).surfaceMax
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::surfaceMax, mockValue1 = "50", expectedResult = emptyPropertyList
+        )
 
         // Testing nbOfRooms >= roomsMin
-        resetRepository()
-        doReturn("3").`when`(searchDataRepository).roomsMin
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::roomsMin, mockValue1 = "3", expectedResult = properties
+        )
 
         // Testing nbOfRooms < roomsMin
-        resetRepository()
-        doReturn("5").`when`(searchDataRepository).roomsMin
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::roomsMin, mockValue1 = "5", expectedResult = emptyPropertyList
+        )
 
         // Testing nbOfRooms <= roomsMax
-        resetRepository()
-        doReturn("5").`when`(searchDataRepository).roomsMax
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::roomsMax, mockValue1 = "5", expectedResult = properties
+        )
 
         // Testing nbOfRooms > roomsMax
-        resetRepository()
-        doReturn("3").`when`(searchDataRepository).roomsMax
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::roomsMax, mockValue1 = "3", expectedResult = emptyPropertyList
+        )
 
         // Testing nbOfBathrooms >= bathroomsMin
-        resetRepository()
-        doReturn("3").`when`(searchDataRepository).bathroomsMin
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::bathroomsMin, mockValue1 = "3", expectedResult = properties
+        )
 
         // Testing nbOfBathrooms < bathroomsMin
-        resetRepository()
-        doReturn("5").`when`(searchDataRepository).bathroomsMin
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::bathroomsMin, mockValue1 = "5", expectedResult = emptyPropertyList
+        )
 
         // Testing nbOfBathrooms <= bathroomsMax
-        resetRepository()
-        doReturn("5").`when`(searchDataRepository).bathroomsMax
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::bathroomsMax, mockValue1 = "5", expectedResult = properties
+        )
 
         // Testing nbOfBathrooms > bathroomsMax
-        resetRepository()
-        doReturn("3").`when`(searchDataRepository).bathroomsMax
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::bathroomsMax, mockValue1 = "3", expectedResult = emptyPropertyList
+        )
 
         // Testing nbOfBedrooms >= bedroomsMin
-        resetRepository()
-        doReturn("3").`when`(searchDataRepository).bedroomsMin
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::bedroomsMin, mockValue1 = "3", expectedResult = properties
+        )
 
         // Testing nbOfBedrooms < bedroomsMin
-        resetRepository()
-        doReturn("5").`when`(searchDataRepository).bedroomsMin
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::bedroomsMin, mockValue1 = "5", expectedResult = emptyPropertyList
+        )
 
         // Testing nbOfBedrooms <= bedroomsMax
-        resetRepository()
-        doReturn("5").`when`(searchDataRepository).bedroomsMax
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::bedroomsMax, mockValue1 = "5", expectedResult = properties
+        )
 
         // Testing nbOfBedrooms > bedroomsMax
-        resetRepository()
-        doReturn("3").`when`(searchDataRepository).bedroomsMax
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::bedroomsMax, mockValue1 = "3", expectedResult = emptyPropertyList
+        )
 
         // Testing price >= priceMin
-        resetRepository()
-        doReturn("50000").`when`(searchDataRepository).priceMin
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::priceMin, mockValue1 = "50000", expectedResult = properties
+        )
 
         // Testing price < priceMin
-        resetRepository()
-        doReturn("150000").`when`(searchDataRepository).priceMin
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::priceMin, mockValue1 = "150000", expectedResult = emptyPropertyList
+        )
 
         // Testing price <= priceMax
-        resetRepository()
-        doReturn("150000").`when`(searchDataRepository).priceMax
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::priceMax, mockValue1 = "150000", expectedResult = properties
+        )
 
         // Testing price > priceMax
-        resetRepository()
-        doReturn("50000").`when`(searchDataRepository).priceMax
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::priceMax, mockValue1 = "50000", expectedResult = emptyPropertyList
+        )
 
         // Testing description matching reference
-        resetRepository()
-        doReturn("description").`when`(searchDataRepository).description
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::description, mockValue1 = "description", expectedResult = properties
+        )
 
         // Testing description not matching reference
-        resetRepository()
-        doReturn("anotherDescription").`when`(searchDataRepository).description
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::description, mockValue1 = "anotherDescription", expectedResult = emptyPropertyList
+        )
 
         // Testing zip matching reference
-        resetRepository()
-        doReturn("12345").`when`(searchDataRepository).zip
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::zip, mockValue1 = "12345", expectedResult = properties
+        )
 
         // Testing zip not matching reference
-        resetRepository()
-        doReturn("54321").`when`(searchDataRepository).zip
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::zip, mockValue1 = "54321", expectedResult = emptyPropertyList
+        )
 
         // Testing city matching reference
-        resetRepository()
-        doReturn("city").`when`(searchDataRepository).city
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::city, mockValue1 = "city", expectedResult = properties
+        )
 
         // Testing city not matching reference
-        resetRepository()
-        doReturn("otherCity").`when`(searchDataRepository).city
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::city, mockValue1 = "otherCity", expectedResult = emptyPropertyList
+        )
 
         // Testing state matching reference
-        resetRepository()
-        doReturn("state").`when`(searchDataRepository).state
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::state, mockValue1 = "state", expectedResult = properties
+        )
 
         // Testing state not matching reference
-        resetRepository()
-        doReturn("otherState").`when`(searchDataRepository).state
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::state, mockValue1 = "otherState", expectedResult = emptyPropertyList
+        )
 
         // Testing country matching reference
-        resetRepository()
-        doReturn("country").`when`(searchDataRepository).country
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::country, mockValue1 = "country", expectedResult = properties
+        )
 
         // Testing country not matching reference
-        resetRepository()
-        doReturn("otherCountry").`when`(searchDataRepository).country
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::country, mockValue1 = "otherCountry", expectedResult = emptyPropertyList
+        )
 
         // Testing registrationDate >= registrationDateMin
-        resetRepository()
-        doReturn("2024-06-01").`when`(searchDataRepository).registrationDateMin
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::registrationDateMin, mockValue1 = "2024-06-01", expectedResult = properties
+        )
 
         // Testing registrationDate < registrationDateMin
-        resetRepository()
-        doReturn("2024-06-30").`when`(searchDataRepository).registrationDateMin
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::registrationDateMin, mockValue1 = "2024-06-30", expectedResult = emptyPropertyList
+        )
 
         // Testing registrationDate <= registrationDateMax
-        resetRepository()
-        doReturn("2024-06-30").`when`(searchDataRepository).registrationDateMax
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::registrationDateMax, mockValue1 = "2024-06-30", expectedResult = properties
+        )
 
         // Testing registrationDate > registrationDateMax
-        resetRepository()
-        doReturn("2024-06-01").`when`(searchDataRepository).registrationDateMax
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::registrationDateMax, mockValue1 = "2024-06-01", expectedResult = emptyPropertyList
+        )
 
         // Testing saleDate >= saleDateMin
-        resetRepository()
-        doReturn("2024-06-01").`when`(searchDataRepository).saleDateMin
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::saleDateMin, mockValue1 = "2024-06-01", expectedResult = properties
+        )
 
         // Testing saleDate < saleDateMin
-        resetRepository()
-        doReturn("2024-06-30").`when`(searchDataRepository).saleDateMin
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::saleDateMin, mockValue1 = "2024-06-30", expectedResult = emptyPropertyList
+        )
 
         // Testing saleDate <= saleDateMax
-        resetRepository()
-        doReturn("2024-06-30").`when`(searchDataRepository).saleDateMax
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::saleDateMax, mockValue1 = "2024-06-30", expectedResult = properties
+        )
 
         // Testing saleDate > saleDateMax
-        resetRepository()
-        doReturn("2024-06-01").`when`(searchDataRepository).saleDateMax
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::saleDateMax, mockValue1 = "2024-06-01", expectedResult = emptyPropertyList
+        )
 
         // Testing type matching reference
-        resetRepository()
-        doReturn("typeIsNotNull").`when`(searchDataRepository).type
-        doReturn("typeId").`when`(type1).typeId
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::type, mockValue1 = "typeIsNotNull",
+            mock2 = type1, getter2 = type1::typeId, mockValue2 = "typeId",
+            expectedResult = properties
+        )
 
         // Testing type not matching reference
-        resetRepository()
-        doReturn("typeIsNotNull").`when`(searchDataRepository).type
-        doReturn("anotherTypeId").`when`(type1).typeId
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::type, mockValue1 = "typeIsNotNull",
+            mock2 = type1, getter2 = type1::typeId, mockValue2 = "anotherTypeId",
+            expectedResult = emptyPropertyList
+        )
 
         // Testing agent matching reference
-        resetRepository()
-        doReturn("agentIsNotNull").`when`(searchDataRepository).agent
-        doReturn(1L).`when`(agent1).agentId
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::agent, mockValue1 = "agentIsNotNull",
+            mock2 = agent1, getter2 = agent1::agentId, mockValue2 = 1L,
+            expectedResult = properties
+        )
 
         // Testing agent not matching reference
-        resetRepository()
-        doReturn("agentIsNotNull").`when`(searchDataRepository).agent
-        doReturn(2L).`when`(agent1).agentId
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::agent, mockValue1 = "agentIsNotNull",
+            mock2 = agent1, getter2 = agent1::agentId, mockValue2 = 2L,
+            expectedResult = emptyPropertyList
+        )
 
         // Testing salesRadioIndex with saleDate not null and index = 2
-        resetRepository()
-        doReturn("2024-06-15").`when`(property1).saleDate
-        doReturn(2).`when`(searchDataRepository).salesRadioIndex
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::salesRadioIndex, mockValue1 = 2,
+            mock2 = property1, getter2 = property1::saleDate, mockValue2 = "2024-06-15",
+            expectedResult = properties
+        )
 
         // Testing salesRadioIndex with saleDate not null and index = 1
-        resetRepository()
-        doReturn("2024-06-15").`when`(property1).saleDate
-        doReturn(1).`when`(searchDataRepository).salesRadioIndex
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::salesRadioIndex, mockValue1 = 1,
+            mock2 = property1, getter2 = property1::saleDate, mockValue2 = "2024-06-15",
+            expectedResult = properties
+        )
 
         // Testing salesRadioIndex with saleDate not null and index = 0
-        resetRepository()
-        doReturn("2024-06-15").`when`(property1).saleDate
-        doReturn(0).`when`(searchDataRepository).salesRadioIndex
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::salesRadioIndex, mockValue1 = 0,
+            mock2 = property1, getter2 = property1::saleDate, mockValue2 = "2024-06-15",
+            expectedResult = emptyPropertyList
+        )
 
         // Testing salesRadioIndex with saleDate null and index = 2
-        resetRepository()
-        doReturn(null).`when`(property1).saleDate
-        doReturn(2).`when`(searchDataRepository).salesRadioIndex
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::salesRadioIndex, mockValue1 = 2,
+            mock2 = property1, getter2 = property1::saleDate, mockValue2 = null,
+            expectedResult = properties
+        )
 
         // Testing salesRadioIndex with saleDate null and index = 1
-        resetRepository()
-        doReturn(null).`when`(property1).saleDate
-        doReturn(1).`when`(searchDataRepository).salesRadioIndex
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::salesRadioIndex, mockValue1 = 1,
+            mock2 = property1, getter2 = property1::saleDate, mockValue2 = null,
+            expectedResult = emptyPropertyList
+        )
 
         // Testing salesRadioIndex with saleDate null and index = 0
-        resetRepository()
-        doReturn(null).`when`(property1).saleDate
-        doReturn(0).`when`(searchDataRepository).salesRadioIndex
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::salesRadioIndex, mockValue1 = 0,
+            mock2 = property1, getter2 = property1::saleDate, mockValue2 = null,
+            expectedResult = properties
+        )
 
         // Testing photosRadioIndex with at least one photo and index = 2
-        resetRepository()
-        doReturn(itemPhotos).`when`(photoRepository).itemPhotos(anyLong(), anyList())
-        doReturn(2).`when`(searchDataRepository).photosRadioIndex
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::photosRadioIndex, mockValue1 = 2,
+            mock2 = photoRepository, getter2 = { photoRepository.itemPhotos(anyLong(), anyList()) }, mockValue2 = itemPhotos,
+            expectedResult = properties
+        )
 
         // Testing photosRadioIndex with at least one photo and index = 1
-        resetRepository()
-        doReturn(itemPhotos).`when`(photoRepository).itemPhotos(anyLong(), anyList())
-        doReturn(1).`when`(searchDataRepository).photosRadioIndex
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::photosRadioIndex, mockValue1 = 1,
+            mock2 = photoRepository, getter2 = { photoRepository.itemPhotos(anyLong(), anyList()) },mockValue2 = itemPhotos,
+            expectedResult = emptyPropertyList
+        )
 
         // Testing photosRadioIndex with at least one photo and index = 0
-        resetRepository()
-        doReturn(itemPhotos).`when`(photoRepository).itemPhotos(anyLong(), anyList())
-        doReturn(0).`when`(searchDataRepository).photosRadioIndex
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::photosRadioIndex, mockValue1 = 0,
+            mock2 = photoRepository, getter2 = { photoRepository.itemPhotos(anyLong(), anyList()) }, mockValue2 = itemPhotos,
+            expectedResult = properties
+        )
 
         // Testing photosRadioIndex with no photo and index = 2
-        resetRepository()
-        doReturn(emptyPhotoList).`when`(photoRepository).itemPhotos(anyLong(), anyList())
-        doReturn(2).`when`(searchDataRepository).photosRadioIndex
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::photosRadioIndex, mockValue1 = 2,
+            mock2 = photoRepository, getter2 = { photoRepository.itemPhotos(anyLong(), anyList()) }, mockValue2 = emptyPhotoList,
+            expectedResult = properties
+        )
 
         // Testing photosRadioIndex with no photo and index = 1
-        resetRepository()
-        doReturn(emptyPhotoList).`when`(photoRepository).itemPhotos(anyLong(), anyList())
-        doReturn(1).`when`(searchDataRepository).photosRadioIndex
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::photosRadioIndex, mockValue1 = 1,
+            mock2 = photoRepository, getter2 = { photoRepository.itemPhotos(anyLong(), anyList()) }, mockValue2 = emptyPhotoList,
+            expectedResult = properties
+        )
 
         // Testing photosRadioIndex with no photo and index = 0
-        resetRepository()
-        doReturn(emptyPhotoList).`when`(photoRepository).itemPhotos(anyLong(), anyList())
-        doReturn(0).`when`(searchDataRepository).photosRadioIndex
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::photosRadioIndex, mockValue1 = 0,
+            mock2 = photoRepository, getter2 = { photoRepository.itemPhotos(anyLong(), anyList()) }, mockValue2 = emptyPhotoList,
+            expectedResult = emptyPropertyList
+        )
 
         // Testing itemPois when propertyId matching and poiId matching
-        resetRepository()
-        doReturn(itemPois).`when`(searchDataRepository).itemPois
-        doReturn(1L).`when`(propertyPoiJoin1).propertyId
-        doReturn("poiId").`when`(propertyPoiJoin1).poiId
-        launchTestAndVerify(expectedResult = properties)
+        launchTest(
+            getter1 = searchDataRepository::itemPois, mockValue1 = itemPois,
+            mock2 = propertyPoiJoin1, getter2 = propertyPoiJoin1::propertyId, mockValue2 = 1L,
+            getter2b = propertyPoiJoin1::poiId, mockValue2b = "poiId",
+            expectedResult = properties
+        )
 
         // Testing itemPois when propertyId matching and poiId not matching
-        resetRepository()
-        doReturn(itemPois).`when`(searchDataRepository).itemPois
-        doReturn(1L).`when`(propertyPoiJoin1).propertyId
-        doReturn("otherPoiId").`when`(propertyPoiJoin1).poiId
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::itemPois, mockValue1 = itemPois,
+            mock2 = propertyPoiJoin1, getter2 = propertyPoiJoin1::propertyId, mockValue2 = 1L,
+            getter2b = propertyPoiJoin1::poiId, mockValue2b = "otherPoiId",
+            expectedResult = emptyPropertyList
+        )
 
         // Testing itemPois when propertyId not matching and poiId matching
-        resetRepository()
-        doReturn(itemPois).`when`(searchDataRepository).itemPois
-        doReturn(2L).`when`(propertyPoiJoin1).propertyId
-        doReturn("poiId").`when`(propertyPoiJoin1).poiId
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::itemPois, mockValue1 = itemPois,
+            mock2 = propertyPoiJoin1, getter2 = propertyPoiJoin1::propertyId, mockValue2 = 2L,
+            getter2b = propertyPoiJoin1::poiId, mockValue2b = "poiId",
+            expectedResult = emptyPropertyList
+        )
 
         // Testing itemPois when propertyId not matching and poiId not matching
-        resetRepository()
-        doReturn(itemPois).`when`(searchDataRepository).itemPois
-        doReturn(2L).`when`(propertyPoiJoin1).propertyId
-        doReturn("otherPoiId").`when`(propertyPoiJoin1).poiId
-        launchTestAndVerify(expectedResult = emptyPropertyList)
+        launchTest(
+            getter1 = searchDataRepository::itemPois, mockValue1 = itemPois,
+            mock2 = propertyPoiJoin1, getter2 = propertyPoiJoin1::propertyId, mockValue2 = 2L,
+            getter2b = propertyPoiJoin1::poiId, mockValue2b = "otherPoiId",
+            expectedResult = emptyPropertyList
+        )
     }
 
 }

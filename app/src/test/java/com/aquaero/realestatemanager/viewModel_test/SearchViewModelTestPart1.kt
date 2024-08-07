@@ -1,12 +1,9 @@
 package com.aquaero.realestatemanager.viewModel_test
 
 import android.content.Context
-import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.DEFAULT_LIST_INDEX
 import com.aquaero.realestatemanager.DEFAULT_RADIO_INDEX
-import com.aquaero.realestatemanager.EditField
-import com.aquaero.realestatemanager.MAX
-import com.aquaero.realestatemanager.MIN
+import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Photo
@@ -19,7 +16,9 @@ import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.SearchDataRepository
 import com.aquaero.realestatemanager.viewmodel.SearchViewModel
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,6 +28,7 @@ import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.doReturn
 import org.mockito.Mockito.mockingDetails
 import org.mockito.Mockito.reset
+import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.KArgumentCaptor
 import org.mockito.kotlin.argumentCaptor
@@ -46,7 +46,7 @@ class SearchViewModelTestPart1 {
     private lateinit var photoRepository: PhotoRepository
     private lateinit var searchDataRepository: SearchDataRepository
 //    private lateinit var navController: NavHostController
-//    private lateinit var context: Context
+    private lateinit var context: Context
     private lateinit var viewModel: SearchViewModel
 
     private lateinit var stringArgumentCaptor: KArgumentCaptor<String?>
@@ -73,6 +73,9 @@ class SearchViewModelTestPart1 {
     private lateinit var properties: MutableList<Property>
     private lateinit var propertyPoiJoins: MutableList<PropertyPoiJoin>
     private lateinit var itemPois: MutableList<Poi>
+    private lateinit var spyItemPois: MutableList<Poi>
+    private lateinit var poiId: String
+    private lateinit var poi: Poi
 
     private val addressId1 = 1L
 
@@ -83,7 +86,7 @@ class SearchViewModelTestPart1 {
         photoRepository = mock(PhotoRepository::class.java)
         searchDataRepository = mock(SearchDataRepository::class.java)
 //        navController = mock(NavHostController::class.java)
-//        context = mock(Context::class.java)
+        context = mock(Context::class.java)
 
         poi1 = mock(Poi::class.java)
         property1 = mock(Property::class.java)
@@ -104,6 +107,10 @@ class SearchViewModelTestPart1 {
         properties = mutableListOf(property1)
         propertyPoiJoins = mutableListOf(propertyPoiJoin1)
         itemPois = mutableListOf(poi1)
+        spyItemPois = spy(itemPois)
+
+        poiId = "poiId"
+        poi = Poi(poiId = poiId)
 
         viewModel = SearchViewModel(addressRepository, photoRepository, searchDataRepository)
 
@@ -240,6 +247,93 @@ class SearchViewModelTestPart1 {
         verify(searchDataRepository, times(3)).scrollToResults
         verify(searchDataRepository).updateScrollToResultsFlow(anyInt())
         assertEquals(scrollValue + 1, intArgumentCaptor.allValues[0])
+    }
+
+    @Test
+    fun testOnPoiClick() {
+        // Select a Poi
+        spyItemPois = spy(itemPois)
+        doReturn(spyItemPois).`when`(searchDataRepository).itemPois
+
+        viewModel.onPoiClick(poiId, true)
+
+        verify(spyItemPois).add(poi)
+        assertTrue(spyItemPois.contains(poi))
+
+        // Unselect a Poi
+        spyItemPois = spy(itemPois)
+        doReturn(spyItemPois).`when`(searchDataRepository).itemPois
+
+        viewModel.onPoiClick(poiId, false)
+
+        verify(spyItemPois).remove(poi)
+        assertFalse(spyItemPois.contains(poi))
+    }
+
+    @Test
+    fun testOnSalesRadioButtonClick() {
+        val forSale = "For sale"
+        val sold = "Sold"
+        val default = "Default"
+        doReturn(forSale).`when`(context).getString(R.string.for_sale)
+        doReturn(sold).`when`(context).getString(R.string.sold)
+
+        // Button "For sale"
+        intArgumentCaptor = argumentCaptor()
+        captureSetterArgument(SearchDataRepository::salesRadioIndex, intArgumentCaptor)
+
+        viewModel.onSalesRadioButtonClick(context, forSale)
+
+        assertEquals(0, intArgumentCaptor.allValues[0])
+
+        // Button "Sold"
+        intArgumentCaptor = argumentCaptor()
+        captureSetterArgument(SearchDataRepository::salesRadioIndex, intArgumentCaptor)
+
+        viewModel.onSalesRadioButtonClick(context, sold)
+
+        assertEquals(1, intArgumentCaptor.allValues[0])
+
+        // Default button
+        intArgumentCaptor = argumentCaptor()
+        captureSetterArgument(SearchDataRepository::salesRadioIndex, intArgumentCaptor)
+
+        viewModel.onSalesRadioButtonClick(context, default)
+
+        assertEquals(DEFAULT_RADIO_INDEX, intArgumentCaptor.allValues[0])
+    }
+
+    @Test
+    fun testOnPhotosRadioButtonClick() {
+        val withPhoto = "With photo"
+        val withoutPhoto = "Without photo"
+        val default = "Default"
+        doReturn(withPhoto).`when`(context).getString(R.string.with_photo)
+        doReturn(withoutPhoto).`when`(context).getString(R.string.without_photo)
+
+        // Button "With photo"
+        intArgumentCaptor = argumentCaptor()
+        captureSetterArgument(SearchDataRepository::photosRadioIndex, intArgumentCaptor)
+
+        viewModel.onPhotosRadioButtonClick(context, withPhoto)
+
+        assertEquals(0, intArgumentCaptor.allValues[0])
+
+        // Button "Without photo"
+        intArgumentCaptor = argumentCaptor()
+        captureSetterArgument(SearchDataRepository::photosRadioIndex, intArgumentCaptor)
+
+        viewModel.onPhotosRadioButtonClick(context, withoutPhoto)
+
+        assertEquals(1, intArgumentCaptor.allValues[0])
+
+        // Default button
+        intArgumentCaptor = argumentCaptor()
+        captureSetterArgument(SearchDataRepository::photosRadioIndex, intArgumentCaptor)
+
+        viewModel.onPhotosRadioButtonClick(context, default)
+
+        assertEquals(DEFAULT_RADIO_INDEX, intArgumentCaptor.allValues[0])
     }
 
 

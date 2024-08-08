@@ -319,7 +319,9 @@ class SearchViewModel(
         stringTypes: MutableList<String>
     ): String {
         val type = types.find { it.typeId == typeId }
-        return type?.let { if (stringTypes.isNotEmpty()) stringTypes.elementAt(types.indexOf(it)) else "" } ?: "" }
+        return type?.let { if (stringTypes.isNotEmpty()) stringTypes.elementAt(types.indexOf(it)) else "" }
+            ?: ""
+    }
 
     private fun applyFilters(
         unfilteredList: MutableList<Property>,

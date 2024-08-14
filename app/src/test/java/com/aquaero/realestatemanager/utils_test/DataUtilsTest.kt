@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager.utils_test
 
 import com.aquaero.realestatemanager.DATE_PATTERN
 import com.aquaero.realestatemanager.RATE_OF_DOLLAR_IN_EURO
+import com.aquaero.realestatemanager.utils.areDigitsOnly
 import com.aquaero.realestatemanager.utils.calculateMonthlyPaymentWithInterest
 import com.aquaero.realestatemanager.utils.convertDateMillisToString
 import com.aquaero.realestatemanager.utils.convertDateStringToMillis
@@ -156,48 +157,32 @@ class DataUtilsTest {
 
     @Test
     fun checkIfThisNumberIsDecimal() {
-        var inputValue: String = "123"
-        assertTrue("Decimal check error with $inputValue", isDecimal(inputValue))
+        val expectedDecimalNumbers = listOf("123", "12.3", "12.34", "12.")
+        val unexpectedDecimalNumbers =
+            listOf(".123", "-12", "1-2", "12-", "x12", "1x2", "12x", " 12", "1 2", "12 ")
 
-        inputValue = "12.3"
-        assertTrue("Decimal check error with $inputValue", isDecimal(inputValue))
+        expectedDecimalNumbers.forEach {
+            assertTrue("Decimal check error with $it", isDecimal(it))
+        }
 
-        inputValue = "12.34"
-        assertTrue("Decimal check error with $inputValue", isDecimal(inputValue))
+        unexpectedDecimalNumbers.forEach {
+            assertFalse("Decimal check error with $it", isDecimal(it))
+        }
+    }
 
-        inputValue = "12."
-        assertTrue("Decimal check error with $inputValue", isDecimal(inputValue))
+    @Test
+    fun testIfThisStringIsOnlyDigits() {
+        val expectedDigitsStrings = listOf("123")
+        val unexpectedDigitsStrings =
+            listOf("12.3", "12.34", "12.", ".123", "-12", "1-2", "12-", "x12", "1x2", "12x", " 12", "1 2", "12 ")
 
+        expectedDigitsStrings.forEach {
+            assertTrue("Digit check error with $it", it.areDigitsOnly())
+        }
 
-        inputValue = ".123"
-        assertFalse("Decimal check error with $inputValue", isDecimal(inputValue))
-
-        inputValue = "-12"
-        assertFalse("Decimal check error with $inputValue", isDecimal(inputValue))
-
-        inputValue = "1-2"
-        assertFalse("Decimal check error with $inputValue", isDecimal(inputValue))
-
-        inputValue = "12-"
-        assertFalse("Decimal check error with $inputValue", isDecimal(inputValue))
-
-        inputValue = "x12"
-        assertFalse("Decimal check error with $inputValue", isDecimal(inputValue))
-
-        inputValue = "1x2"
-        assertFalse("Decimal check error with $inputValue", isDecimal(inputValue))
-
-        inputValue = "12x"
-        assertFalse("Decimal check error with $inputValue", isDecimal(inputValue))
-
-        inputValue = " 12"
-        assertFalse("Decimal check error with $inputValue", isDecimal(inputValue))
-
-        inputValue = "1 2"
-        assertFalse("Decimal check error with $inputValue", isDecimal(inputValue))
-
-        inputValue = "12 "
-        assertFalse("Decimal check error with $inputValue", isDecimal(inputValue))
+        unexpectedDigitsStrings.forEach {
+            assertFalse("Digit check error with $it", it.areDigitsOnly())
+        }
     }
 
     @Test

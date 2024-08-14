@@ -1,31 +1,33 @@
 package com.aquaero.realestatemanager.viewModel_test
 
 import android.content.Context
+import android.content.Intent
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.utils.ConnectionState
 import com.aquaero.realestatemanager.viewmodel.MapViewModel
 import kotlinx.coroutines.flow.StateFlow
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.any
 import org.mockito.Mockito.doReturn
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
-import org.robolectric.RobolectricTestRunner
+import org.mockito.junit.MockitoJUnitRunner
 
-//@RunWith(MockitoJUnitRunner::class)
-@RunWith(RobolectricTestRunner::class)
+@RunWith(MockitoJUnitRunner::class)
+//@RunWith(RobolectricTestRunner::class)
 class MapViewModelTest {
     private lateinit var locationRepository: LocationRepository
     private lateinit var navController: NavHostController
     private lateinit var context: Context
     private lateinit var viewModel: MapViewModel
+
 
     @Before
     fun setup() {
@@ -117,11 +119,11 @@ class MapViewModelTest {
 
     @Test
     fun openAppSettingsWithSuccess() {
-        doReturn("").`when`(context).packageName
+        val intent = mock(Intent::class.java)
+        doReturn(intent).`when`(locationRepository).createAppSettingsIntent(context)
 
         viewModel.openAppSettings(context)
-        verify(context).packageName
-        verify(context).startActivity(any())
+        verify(context).startActivity(intent)
     }
 
 }

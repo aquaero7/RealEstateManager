@@ -1,8 +1,6 @@
 package com.aquaero.realestatemanager.viewModel_test
 
-import android.text.TextUtils
 import android.util.Log
-import androidx.core.text.isDigitsOnly
 import com.aquaero.realestatemanager.DropdownMenuCategory
 import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.MAX
@@ -19,25 +17,19 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.MockedStatic
-import org.mockito.Mockito
-import org.mockito.Mockito.any
 import org.mockito.Mockito.anyInt
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.mockStatic
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
-import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.KArgumentCaptor
 import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.doCallRealMethod
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.never
-import org.mockito.kotlin.spy
 import org.mockito.kotlin.verifyNoMoreInteractions
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.util.reflector.Static
 import kotlin.reflect.KMutableProperty1
 
 @RunWith(MockitoJUnitRunner::class)
@@ -66,15 +58,12 @@ class SearchViewModelTestPart3 {
 
     // Created to avoid class "Log" error when tests are run with coverage
     private lateinit var logMock: MockedStatic<Log>
-    // Created to avoid class "TextUtils" error when using MockitoJUnitRunner
-//    private lateinit var textUtilsMock: MockedStatic<TextUtils>
+
 
     @Before
     fun setup() {
         // Initialize logMock
-        logMock = Mockito.mockStatic(Log::class.java)
-        // Initialize textUtilsMock
-//        textUtilsMock = Mockito.mockStatic(TextUtils::class.java)
+        logMock = mockStatic(Log::class.java)
 
         addressRepository = mock(AddressRepository::class.java)
         photoRepository = mock(PhotoRepository::class.java)
@@ -99,8 +88,6 @@ class SearchViewModelTestPart3 {
     fun teardown() {
         // Close logMock
         logMock.close()
-        // Close textUtilsMock
-//        textUtilsMock.close()
     }
 
     private fun <T> captureSetterArgument(
@@ -131,17 +118,12 @@ class SearchViewModelTestPart3 {
         // Reset mock and captor
         reset(searchDataRepository)
         stringArgumentCaptor = argumentCaptor()
-//        viewModel = SearchViewModel(addressRepository, photoRepository, searchDataRepository)
+//        viewModel = SearchViewModel(addressRepository, photoRepository, searchDataRepository) // TODO : To be deleted
 
         val args = setupFieldArguments(field, fieldType, fieldValue, currency, captor)
         captureSetterArgument(setter, args.second.second)
 
-        viewModel.onFieldValueChange(
-            args.first.first,
-            args.first.second,
-            args.first.third,
-            args.second.first
-        )
+        viewModel.onFieldValueChange(args.first.first, args.first.second, args.first.third, args.second.first)
 
         if (fieldValue == emptyValue ||
             (fieldValue == stringValue && fieldType != null &&
@@ -151,16 +133,8 @@ class SearchViewModelTestPart3 {
             verify(searchDataRepository).apply { setter.set(this, null as T) }
         } else {
             if (field == EditField.PRICE.name && currency == euro) {
-                assertEquals(
-                    convertEuroToDollar(args.first.third.toInt()).toString(),
-                    args.second.second.allValues[0]
-                )
-                verify(searchDataRepository).apply {
-                    setter.set(
-                        this,
-                        convertEuroToDollar(args.first.third.toInt()).toString() as T
-                    )
-                }
+                assertEquals(convertEuroToDollar(args.first.third.toInt()).toString(), args.second.second.allValues[0])
+                verify(searchDataRepository).apply { setter.set(this, convertEuroToDollar(args.first.third.toInt()).toString() as T) }
             } else {
                 assertEquals(args.first.third, args.second.second.allValues[0])
                 verify(searchDataRepository).apply { setter.set(this, args.first.third as T) }
@@ -192,41 +166,24 @@ class SearchViewModelTestPart3 {
         when (category) {
             DropdownMenuCategory.TYPE.name -> {
                 assertEquals(type, captor.allValues[0])
-                verify(searchDataRepository).apply {
-                    SearchDataRepository::typeIndex.set(
-                        this,
-                        index
-                    )
-                }
+                verify(searchDataRepository).apply { SearchDataRepository::typeIndex.set(this, index) }
                 verify(searchDataRepository).apply { setter?.set(this, type as T) }
             }
 
             DropdownMenuCategory.AGENT.name -> {
                 assertEquals(agent, captor.allValues[0])
-                verify(searchDataRepository).apply {
-                    SearchDataRepository::agentIndex.set(
-                        this,
-                        index
-                    )
-                }
+                verify(searchDataRepository).apply { SearchDataRepository::agentIndex.set(this, index) }
                 verify(searchDataRepository).apply { setter?.set(this, agent as T) }
             }
 
             else -> {
                 assert(captor.allValues.isEmpty())
-                verify(searchDataRepository, never()).apply {
-                    SearchDataRepository::typeIndex.set(
-                        this,
-                        anyInt()
-                    )
-                }
-                verify(searchDataRepository, never()).apply {
-                    SearchDataRepository::agentIndex.set(
-                        this,
-                        anyInt()
-                    )
-                }
-                verify(searchDataRepository, never()).apply { setter?.set(this, anyString() as T) }
+                verify(searchDataRepository, never()).apply { SearchDataRepository::typeIndex.set(this, anyInt()) }
+                verify(searchDataRepository, never()).apply { SearchDataRepository::agentIndex.set(this, anyInt()) }
+
+//                verify(searchDataRepository, never()).apply { setter?.set(this, anyString() as T) }   // TODO : To be deleted
+//                if (setter != null) verify(searchDataRepository, never()).let { setter.set(it, anyString() as T) }    // TODO : To be deleted
+                setter?.let { verify(searchDataRepository, never()).let { setter.set(it, anyString() as T) } }
             }
         }
     }

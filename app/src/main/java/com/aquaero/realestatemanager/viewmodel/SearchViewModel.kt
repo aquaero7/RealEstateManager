@@ -2,7 +2,6 @@ package com.aquaero.realestatemanager.viewmodel
 
 import android.content.Context
 import android.util.Log
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import com.aquaero.realestatemanager.DEFAULT_LIST_INDEX
 import com.aquaero.realestatemanager.DEFAULT_RADIO_INDEX
@@ -21,6 +20,7 @@ import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.SearchDataRepository
+import com.aquaero.realestatemanager.utils.areDigitsOnly
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
 import kotlinx.coroutines.flow.Flow
 
@@ -184,7 +184,7 @@ class SearchViewModel(
     ) {
         val value: String? = fieldValue.ifEmpty { null }
         val digitalValue: Int? = value?.let {
-            if (field != EditField.DESCRIPTION.name && it.isDigitsOnly()) it.toInt() else null
+            if (field != EditField.DESCRIPTION.name && it.areDigitsOnly()) it.toInt() else null
         }
         when (field) {
             EditField.SURFACE.name -> {

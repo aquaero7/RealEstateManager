@@ -45,12 +45,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.text.isDigitsOnly
 import com.aquaero.realestatemanager.CLEAR_BUTTON_SIZE
 import com.aquaero.realestatemanager.LoanField
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.Red
 import com.aquaero.realestatemanager.ui.theme.White
+import com.aquaero.realestatemanager.utils.areDigitsOnly
 
 @Composable
 fun LoanScreenTwoTextFields(
@@ -212,7 +212,7 @@ fun BasicLoanTwoTextFieldsItem(
             maxLines = 1,
             value = fieldText,
             onValueChange = {
-                isValid = !shouldBeDigitsOnly || it.isEmpty() || it.isDigitsOnly()
+                isValid = !shouldBeDigitsOnly || it.isEmpty() || it.areDigitsOnly()
                 if (isValid) {
                     fieldText = it
                     onValidValue(unit, it)

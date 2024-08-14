@@ -39,12 +39,7 @@ class MapViewModel(
     }
 
     fun openAppSettings(context: Context) {
-        Intent(
-            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-            Uri.fromParts("package", context.packageName, null)
-        )
-            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            .also { context.startActivity(it) }
+        context.startActivity(locationRepository.createAppSettingsIntent(context))
     }
 
 }

@@ -50,12 +50,12 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.text.isDigitsOnly
 import com.aquaero.realestatemanager.DP_CONTAINER_COLOR
 import com.aquaero.realestatemanager.DP_TEXT_COLOR
 import com.aquaero.realestatemanager.DropdownMenuCategory
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.Red
+import com.aquaero.realestatemanager.utils.areDigitsOnly
 import com.aquaero.realestatemanager.utils.convertDateMillisToString
 import com.aquaero.realestatemanager.utils.convertDateStringToMillis
 import com.aquaero.realestatemanager.utils.textWithEllipsis
@@ -166,7 +166,7 @@ fun EditScreenTextFieldItem(
                 maxLines = maxLines,
                 value = it,
                 onValueChange = {
-                    isValid = !shouldBeDigitsOnly || it.isEmpty() || it.isDigitsOnly()
+                    isValid = !shouldBeDigitsOnly || it.isEmpty() || it.areDigitsOnly()
                     if (isValid) {
                         fieldText = it
                         onValueChange(it)

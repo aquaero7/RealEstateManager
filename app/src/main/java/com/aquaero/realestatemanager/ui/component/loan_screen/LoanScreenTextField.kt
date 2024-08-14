@@ -42,11 +42,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.text.isDigitsOnly
 import com.aquaero.realestatemanager.CLEAR_BUTTON_SIZE
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.ui.theme.Red
 import com.aquaero.realestatemanager.ui.theme.White
+import com.aquaero.realestatemanager.utils.areDigitsOnly
 import com.aquaero.realestatemanager.utils.isDecimal
 
 @Composable
@@ -163,7 +163,7 @@ fun BasicLoanTextFieldItem(
             value = fieldText ?: "",
             onValueChange = {
                 isValid =
-                    !shouldBeDigitsOnly || it.isEmpty() || if (shouldBeDecimal) isDecimal(it) else it.isDigitsOnly()
+                    !shouldBeDigitsOnly || it.isEmpty() || if (shouldBeDecimal) isDecimal(it) else it.areDigitsOnly()
                 if (isValid) {
                     fieldText = it
                     onValueChange(it)

@@ -25,7 +25,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.core.text.isDigitsOnly
+import com.aquaero.realestatemanager.utils.areDigitsOnly
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +54,7 @@ fun EditScreenAddressTextFieldItem(
             maxLines = maxLines,
             value = it,
             onValueChange = {
-                isValid = !shouldBeDigitsOnly || (it.isNotEmpty() && it.isDigitsOnly())
+                isValid = !shouldBeDigitsOnly || (it.isNotEmpty() && it.areDigitsOnly())
                 if (isValid) {
                     fieldText = it
                     onValueChange(field, it)

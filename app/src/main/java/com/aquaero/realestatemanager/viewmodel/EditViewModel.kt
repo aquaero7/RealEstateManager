@@ -6,7 +6,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -35,12 +34,12 @@ import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.ConnectionState
+import com.aquaero.realestatemanager.utils.areDigitsOnly
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
 import com.aquaero.realestatemanager.utils.generateProvisionalId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
 
@@ -272,11 +271,11 @@ class EditViewModel(
 
     fun onFieldValueChange(field: String, value: String, currency: String) {
         val digitalValue =
-            if (field != EditField.DESCRIPTION.name && value.isNotEmpty() && value.isDigitsOnly()) value.toInt() else null
+            if (field != EditField.DESCRIPTION.name && value.isNotEmpty() && value.areDigitsOnly()) value.toInt() else null
         when (field) {
             EditField.PRICE.name -> {
                 val priceValue: Int? =
-                    if (value.isNotEmpty() && value.isDigitsOnly()) {
+                    if (value.isNotEmpty() && value.areDigitsOnly()) {
                         when (currency) {
 //                            "€" -> convertEuroToDollar(euros = value.toInt())
                             "€" -> convertEuroToDollar(euros = digitalValue)
@@ -306,35 +305,6 @@ class EditViewModel(
             EditField.ZIP_CODE.name,
             EditField.COUNTRY.name,
             -> cacheRepository.updateCacheAddressItem(field, value)
-
-            /*
-            EditField.SURFACE.name -> cacheProperty.surface = digitalValue
-            EditField.ROOMS.name -> cacheProperty.nbOfRooms = digitalValue
-            EditField.BATHROOMS.name -> cacheProperty.nbOfBathrooms = digitalValue
-            EditField.BEDROOMS.name -> cacheProperty.nbOfBedrooms = digitalValue
-            EditField.DESCRIPTION.name -> cacheProperty.description = value
-            EditField.REGISTRATION_DATE.name -> cacheProperty.registrationDate = value
-            EditField.SALE_DATE.name -> cacheProperty.saleDate = value
-
-            EditField.STREET_NUMBER.name -> cacheAddress.streetNumber = value
-            EditField.STREET_NAME.name -> cacheAddress.streetName = value
-            EditField.ADD_INFO.name -> cacheAddress.addInfo = value
-            EditField.CITY.name -> cacheAddress.city = value
-            EditField.STATE.name -> cacheAddress.state = value
-            EditField.ZIP_CODE.name -> cacheAddress.zipCode = value
-            EditField.COUNTRY.name -> cacheAddress.country = value
-
-            EditField.PRICE.name -> cacheProperty.price =
-                if (value.isNotEmpty() && value.isDigitsOnly()) {
-                    when (currency) {
-//                        "€" -> convertEuroToDollar(euros = value.toInt())
-                        "€" -> convertEuroToDollar(euros = digitalValue)
-//                        else -> value.toInt()
-                        else -> digitalValue
-                    }!!
-                } else null
-
-            */
         }
     }
 

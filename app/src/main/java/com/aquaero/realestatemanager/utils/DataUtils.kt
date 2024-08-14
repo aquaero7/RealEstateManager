@@ -65,10 +65,22 @@ fun ellipsis(): String {
     return ellipsisChar.toString()
 }
 
+/**
+ * Returns true if the number is decimal,
+ * Otherwise returns false.
+ */
 fun isDecimal(str: String): Boolean {
 //    val regex = "[0-9]+[.]?[0-9]*".toRegex()
     val regex = Regex("^\\d+[.]?\\d*$")
     return regex.matches(str)
+}
+
+/**
+ * Returns true if each character of the string is a digit,
+ * otherwise returns false.
+ */
+fun String.areDigitsOnly(): Boolean {
+    return this.all { it.isDigit() }
 }
 
 /**

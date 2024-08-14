@@ -3,12 +3,15 @@ package com.aquaero.realestatemanager.repository
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.net.Uri
 import android.os.Build
 import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.aquaero.realestatemanager.utils.ConnectionState
@@ -125,6 +128,14 @@ class LocationRepository {
                 continuation.resume(null)
             }
         }
+
+    fun createAppSettingsIntent(context: Context): Intent {
+        return Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", context.packageName, null)
+        ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+
 
 }
 

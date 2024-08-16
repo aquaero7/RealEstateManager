@@ -7,7 +7,6 @@ import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.utils.ConnectionState
 import com.aquaero.realestatemanager.viewmodel.MapViewModel
 import kotlinx.coroutines.flow.StateFlow
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

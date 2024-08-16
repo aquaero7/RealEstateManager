@@ -115,14 +115,14 @@ fun EditComposable(
     /*
      * Photo shooting and picking
      */
-    val uris = editViewModel.checkUris(
-        capturedImageUri = capturedImageUri,
-        pickerUri = pickerUri,
-        photoToAddUri = photoToAddUri
+    val stringUris = editViewModel.checkStringUris(
+        capturedImageStringUri = capturedImageUri.toString(),
+        pickerStringUri = pickerUri.toString(),
+        photoToAddStringUri = photoToAddUri.toString()
     )
-    capturedImageUri = uris.first
-    pickerUri = uris.second
-    photoToAddUri = uris.third
+    capturedImageUri = Uri.parse(stringUris.first)
+    pickerUri = Uri.parse(stringUris.second)
+    photoToAddUri = Uri.parse(stringUris.third)
     if (photoToAddUri != Uri.EMPTY) {
         painter = rememberAsyncImagePainter(model = photoToAddUri)
         buttonSavePhotoEnabled = true
@@ -131,14 +131,14 @@ fun EditComposable(
         buttonSavePhotoEnabled = false
     }
     val onCancelPhotoEditionButtonClick: () -> Unit =
-        { photoToAddUri = editViewModel.onCancelPhotoEditionButtonClick() }
+        { photoToAddUri = Uri.parse(editViewModel.onCancelPhotoEditionButtonClick()) }
     val onSavePhotoButtonClick: (String) -> Unit = {
         photoToAddUri =
-            editViewModel.onSavePhotoButtonClick(uri = photoToAddUri, label = it.ifBlank { null })
+            Uri.parse(editViewModel.onSavePhotoButtonClick(uri = photoToAddUri, label = it.ifBlank { null }))
     }
     val onEditPhotoMenuItemClick: (Photo) -> Unit = {
         val editResult = editViewModel.onEditPhotoMenuItemClick(photo = it)
-        photoToAddUri = editResult.first
+        photoToAddUri = Uri.parse(editResult.first)
         buttonSavePhotoEnabled = editResult.second
     }
     val onPhotoDeletionConfirmation: (Long) -> Unit = {

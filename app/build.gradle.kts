@@ -159,7 +159,7 @@ dependencies {
     // Mockito
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")   // ex 5.2.1
 //     testImplementation ("org.mockito:mockito-core:5.12.0")
-//     testImplementation ("org.mockito:mockito-inline:4.4.0")
+//     testImplementation ("org.mockito:mockito-inline:5.2.0")
     // Robolectric
     testImplementation("org.robolectric:robolectric:4.11.1")
 

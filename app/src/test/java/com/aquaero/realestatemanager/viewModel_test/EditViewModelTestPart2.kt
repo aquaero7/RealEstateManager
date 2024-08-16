@@ -2,10 +2,12 @@ package com.aquaero.realestatemanager.viewModel_test
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import com.aquaero.realestatemanager.DropdownMenuCategory
+import com.aquaero.realestatemanager.EMPTY_STRING
 import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.RATE_OF_DOLLAR_IN_EURO
 import com.aquaero.realestatemanager.model.Address
@@ -27,6 +29,7 @@ import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.ConnectionState
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -38,10 +41,13 @@ import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyList
 import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.MockedStatic
+import org.mockito.Mockito.lenient
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.mockStatic
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
+import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.isNotNull
@@ -50,11 +56,10 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verifyNoMoreInteractions
-import org.robolectric.RobolectricTestRunner
 import kotlin.math.roundToInt
 
-//@RunWith(MockitoJUnitRunner::class)
-@RunWith(RobolectricTestRunner::class)
+@RunWith(MockitoJUnitRunner::class)
+//@RunWith(RobolectricTestRunner::class)
 class EditViewModelTestPart2 {
 
     private lateinit var propertyRepository: PropertyRepository
@@ -88,6 +93,9 @@ class EditViewModelTestPart2 {
     private lateinit var uri: Uri
     private lateinit var stringUri: String
     private lateinit var label: String
+    private lateinit var capturedImageStringUri: String
+    private lateinit var pickerStringUri: String
+    private lateinit var photoToAddStringUri: String
 
     private val propertyId: Long = 1L
     private val agentId: Long = 2L
@@ -96,9 +104,20 @@ class EditViewModelTestPart2 {
     private lateinit var context: Context
     private lateinit var viewModel: EditViewModel
 
+    // Created to allow tests running with coverage, using MockitoJUnitRunner instead of RobolectricTestRunner
+    private lateinit var uriMock: MockedStatic<Uri>
+
+    // Created to avoid class "LOG" error when tests are run with coverage
+    private lateinit var logMock: MockedStatic<Log>
+
 
     @Before
     fun setup() {
+        // Initialize uriMock
+        uriMock = mockStatic(Uri::class.java)
+        // Initialize logMock
+        logMock = mockStatic(Log::class.java)
+
         propertyRepository = mock(PropertyRepository::class.java)
         addressRepository = mock(AddressRepository::class.java)
         photoRepository = mock(PhotoRepository::class.java)
@@ -131,6 +150,9 @@ class EditViewModelTestPart2 {
         agent = Agent(agentId, "firstName", "lastName")
         unassigned = "unassigned"
         poiItem = "poiItem"
+        capturedImageStringUri = "capturedImageStringUri"
+        pickerStringUri = "pickerStringUri"
+        photoToAddStringUri = "photoToAddStringUri"
 
         context = mock(Context::class.java)
 
@@ -148,7 +170,7 @@ class EditViewModelTestPart2 {
 
         runBlocking {
             // Init some mocks for test onSavePhotoButtonClick()
-            doReturn(cacheProperty).`when`(cacheRepository).getCacheProperty()
+            lenient().doReturn(cacheProperty).`when`(cacheRepository).getCacheProperty()
             doReturn(propertyId).`when`(cacheProperty).propertyId
 
             // Init some more mocks for test testItemData()
@@ -160,6 +182,30 @@ class EditViewModelTestPart2 {
             doReturn(address).`when`(addressRepository).address(anyLong(), anyList())
         }
     }
+
+    @After
+    fun teardown() {
+        // Close uriMock
+        uriMock.close()
+        // Close logMock
+        logMock.close()
+    }
+
+    private fun launchStringUrisCheckTest(
+        stringUris: Triple<String, String, String>,
+        resultsAssertions: Triple<String, String, String>
+    ) {
+        val capturedImageStringUri = stringUris.first
+        val pickerStringUri = stringUris.second
+        val photoToAddStringUri = stringUris.third
+
+        val result = viewModel.checkStringUris(capturedImageStringUri, pickerStringUri, photoToAddStringUri)
+
+        assertEquals(resultsAssertions.first, result.first)
+        assertEquals(resultsAssertions.second, result.second)
+        assertEquals(resultsAssertions.third, result.third)
+    }
+
 
     @Test
     fun testConnexionStatus() {
@@ -224,12 +270,10 @@ class EditViewModelTestPart2 {
     fun testOnResponseToCamPermRequest() {
         // Also testing toastMessage()
         val cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean> = mock()
-        val cameraUri: Uri = Uri.EMPTY
-
         mockStatic(Toast::class.java).use {
-            // isGranted = false
+            // When isGranted = false
             `when`(Toast.makeText(eq(context), anyString(), anyInt())).thenReturn(toast)
-            viewModel.onResponseToCamPermRequest(false, cameraLauncher, cameraUri, context)
+            viewModel.onResponseToCamPermRequest(false, cameraLauncher, uri, context)
             verify(cameraLauncher, never()).launch(any())   // Not reached
             it.verify { Toast.makeText(eq(context), anyString(), eq(Toast.LENGTH_SHORT)) }
             verify(toast).show()
@@ -238,9 +282,9 @@ class EditViewModelTestPart2 {
             reset(cameraLauncher, toast)
             it.reset()
 
-            // isGranted = true
-            viewModel.onResponseToCamPermRequest(true, cameraLauncher, cameraUri, context)
-            verify(cameraLauncher).launch(cameraUri)    // Reached
+            // When isGranted = true
+            viewModel.onResponseToCamPermRequest(true, cameraLauncher, uri, context)
+            verify(cameraLauncher).launch(uri)    // Reached
             it.verify({ Toast.makeText(eq(context), anyString(), eq(Toast.LENGTH_SHORT)) }, never())
             verify(toast, never()).show()
         }
@@ -250,7 +294,6 @@ class EditViewModelTestPart2 {
     fun testOnShootPhotoMenuItemClick() {
         val cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean> = mock()
         val camPermLauncher: ManagedActivityResultLauncher<String, Boolean> = mock()
-        val uri = Uri.EMPTY
         viewModel.onShootPhotoMenuItemClick(context, uri, cameraLauncher, camPermLauncher)
         verify(photoRepository).onShootPhotoMenuItemClick(context, uri, cameraLauncher, camPermLauncher)
     }
@@ -409,90 +452,57 @@ class EditViewModelTestPart2 {
 
     @Test
     fun testSaveToInternalStorage() {
-        val uri = Uri.EMPTY
         viewModel.saveToInternalStorage(context, uri)
         verify(photoRepository).saveToInternalStorage(context, uri)
     }
 
     @Test
-    fun testCheckUris() {
+    fun testCheckStringUris() {
         // No Uri empty
-        var capturedImageUri = mock(Uri::class.java)
-        var pickerUri = mock(Uri::class.java)
-        var photoToAddUri = mock(Uri::class.java)
-        var result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
-        assertEquals(Uri.EMPTY, result.first)
-        assertEquals(Uri.EMPTY, result.second)
-        assertEquals(pickerUri, result.third)
+        var stringUris = Triple(capturedImageStringUri, pickerStringUri, photoToAddStringUri)
+        var resultsAssertions = Triple(EMPTY_STRING, EMPTY_STRING, pickerStringUri)
+        launchStringUrisCheckTest(stringUris, resultsAssertions)
 
         // capturedImageUri empty
-        capturedImageUri = Uri.EMPTY
-        pickerUri = mock(Uri::class.java)
-        photoToAddUri = mock(Uri::class.java)
-        result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
-        assertEquals(Uri.EMPTY, result.first)
-        assertEquals(Uri.EMPTY, result.second)
-        assertEquals(pickerUri, result.third)
+        stringUris = Triple(EMPTY_STRING, pickerStringUri, photoToAddStringUri)
+        resultsAssertions = Triple(EMPTY_STRING, EMPTY_STRING, pickerStringUri)
+        launchStringUrisCheckTest(stringUris, resultsAssertions)
 
         // pickerUri empty
-        capturedImageUri = mock(Uri::class.java)
-        pickerUri = Uri.EMPTY
-        photoToAddUri = mock(Uri::class.java)
-        result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
-        assertEquals(Uri.EMPTY, result.first)
-        assertEquals(Uri.EMPTY, result.second)
-        assertEquals(capturedImageUri, result.third)
+        stringUris = Triple(capturedImageStringUri, EMPTY_STRING, photoToAddStringUri)
+        resultsAssertions = Triple(EMPTY_STRING, EMPTY_STRING, capturedImageStringUri)
+        launchStringUrisCheckTest(stringUris, resultsAssertions)
 
         // photoToAddUri empty
-        capturedImageUri = mock(Uri::class.java)
-        pickerUri = mock(Uri::class.java)
-        photoToAddUri = Uri.EMPTY
-        result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
-        assertEquals(Uri.EMPTY, result.first)
-        assertEquals(Uri.EMPTY, result.second)
-        assertEquals(pickerUri, result.third)
+        stringUris = Triple(capturedImageStringUri, pickerStringUri, EMPTY_STRING)
+        resultsAssertions = Triple(EMPTY_STRING, EMPTY_STRING, pickerStringUri)
+        launchStringUrisCheckTest(stringUris, resultsAssertions)
 
         // capturedImageUri and pickerUri empty
-        capturedImageUri = Uri.EMPTY
-        pickerUri = Uri.EMPTY
-        photoToAddUri = mock(Uri::class.java)
-        result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
-        assertEquals(Uri.EMPTY, result.first)
-        assertEquals(Uri.EMPTY, result.second)
-        assertEquals(photoToAddUri, result.third)
+        stringUris = Triple(EMPTY_STRING, EMPTY_STRING, photoToAddStringUri)
+        resultsAssertions = Triple(EMPTY_STRING, EMPTY_STRING, photoToAddStringUri)
+        launchStringUrisCheckTest(stringUris, resultsAssertions)
 
         // capturedImageUri and photoToAddUri empty
-        capturedImageUri = Uri.EMPTY
-        pickerUri = mock(Uri::class.java)
-        photoToAddUri = Uri.EMPTY
-        result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
-        assertEquals(Uri.EMPTY, result.first)
-        assertEquals(Uri.EMPTY, result.second)
-        assertEquals(pickerUri, result.third)
+        stringUris = Triple(EMPTY_STRING, pickerStringUri, EMPTY_STRING)
+        resultsAssertions = Triple(EMPTY_STRING, EMPTY_STRING, pickerStringUri)
+        launchStringUrisCheckTest(stringUris, resultsAssertions)
 
         // pickerUri and photoToAddUri empty
-        capturedImageUri = mock(Uri::class.java)
-        pickerUri = Uri.EMPTY
-        photoToAddUri = Uri.EMPTY
-        result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
-        assertEquals(Uri.EMPTY, result.first)
-        assertEquals(Uri.EMPTY, result.second)
-        assertEquals(capturedImageUri, result.third)
+        stringUris = Triple(capturedImageStringUri, EMPTY_STRING, EMPTY_STRING)
+        resultsAssertions = Triple(EMPTY_STRING, EMPTY_STRING, capturedImageStringUri)
+        launchStringUrisCheckTest(stringUris, resultsAssertions)
 
         // All Uri empty
-        capturedImageUri = Uri.EMPTY
-        pickerUri = Uri.EMPTY
-        photoToAddUri = Uri.EMPTY
-        result = viewModel.checkUris(capturedImageUri, pickerUri, photoToAddUri)
-        assertEquals(Uri.EMPTY, result.first)
-        assertEquals(Uri.EMPTY, result.second)
-        assertEquals(Uri.EMPTY, result.third)
+        stringUris = Triple(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING)
+        resultsAssertions = Triple(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING)
+        launchStringUrisCheckTest(stringUris, resultsAssertions)
     }
 
     @Test
     fun testOnCancelPhotoEditionButtonClick() {
         val result = viewModel.onCancelPhotoEditionButtonClick()
-        assertEquals(Uri.EMPTY, result)
+        assertEquals(EMPTY_STRING, result)
     }
 
     @Test
@@ -506,7 +516,7 @@ class EditViewModelTestPart2 {
         verify(cacheRepository).getCacheProperty()
         verify(cacheRepository).updateCacheItemPhotos(0, photo)
         verifyNoMoreInteractions(cacheRepository)
-        assertEquals(Uri.EMPTY, result)
+        assertEquals(EMPTY_STRING, result)
 
         // Reset mock to avoid interference between inner test parts
         reset(cacheRepository)
@@ -519,15 +529,14 @@ class EditViewModelTestPart2 {
         verify(cacheRepository).getCacheProperty()
         verify(cacheRepository).updateCacheItemPhotos(isNotNull(), isNull())
         verifyNoMoreInteractions(cacheRepository)
-        assertEquals(Uri.EMPTY, result)
+        assertEquals(EMPTY_STRING, result)
     }
 
     @Test
     fun testOnEditPhotoMenuItemClick() {
-        val uri = Uri.parse(stringUri)
         val photo = Photo(photoId, stringUri, label, propertyId)
         val result = viewModel.onEditPhotoMenuItemClick(photo)
-        assertEquals(uri, result.first)
+        assertEquals(stringUri, result.first)
         assertEquals(true, result.second)
     }
 

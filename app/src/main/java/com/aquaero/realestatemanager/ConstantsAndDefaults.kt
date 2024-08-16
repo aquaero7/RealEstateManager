@@ -162,6 +162,7 @@ const val DATE_PATTERN = "yyyy-MM-dd"
 const val RATE_OF_DOLLAR_IN_EURO = 0.812
 const val DEFAULT_LIST_INDEX = -1
 const val DEFAULT_RADIO_INDEX = 2
+const val EMPTY_STRING = ""
 
 
 // Cache values

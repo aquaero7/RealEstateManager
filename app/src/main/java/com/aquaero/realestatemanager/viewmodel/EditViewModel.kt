@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.DropdownMenuCategory
+import com.aquaero.realestatemanager.EMPTY_STRING
 import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.NULL_PROPERTY_ID
 import com.aquaero.realestatemanager.NonEditField
@@ -317,25 +318,27 @@ class EditViewModel(
         return photoRepository.saveToInternalStorage(context = context, uri = uri)
     }
 
-    fun checkUris(capturedImageUri: Uri, pickerUri: Uri, photoToAddUri: Uri): Triple<Uri, Uri, Uri> {
-        var updatedCapturedImageUri = capturedImageUri
-        var updatedPickerUri = pickerUri
-        var updatedPhotoToAddUri = photoToAddUri
+fun checkStringUris(
+    capturedImageStringUri: String, pickerStringUri: String, photoToAddStringUri: String
+): Triple<String, String, String> {
+        var updatedCapturedImageStringUri = capturedImageStringUri
+        var updatedPickerStringUri = pickerStringUri
+        var updatedPhotoToAddStringUri = photoToAddStringUri
 
-        if (updatedCapturedImageUri != Uri.EMPTY) {
-            updatedPhotoToAddUri = updatedCapturedImageUri
-            updatedCapturedImageUri = Uri.EMPTY
+        if (updatedCapturedImageStringUri != EMPTY_STRING) {
+            updatedPhotoToAddStringUri = updatedCapturedImageStringUri
+            updatedCapturedImageStringUri = EMPTY_STRING
         }
-        if (updatedPickerUri != Uri.EMPTY) {
-            updatedPhotoToAddUri = updatedPickerUri
-            updatedPickerUri = Uri.EMPTY
+        if (updatedPickerStringUri != EMPTY_STRING) {
+            updatedPhotoToAddStringUri = updatedPickerStringUri
+            updatedPickerStringUri = EMPTY_STRING
         }
-        return Triple(updatedCapturedImageUri, updatedPickerUri, updatedPhotoToAddUri)
+        return Triple(updatedCapturedImageStringUri, updatedPickerStringUri, updatedPhotoToAddStringUri)
     }
 
-    fun onCancelPhotoEditionButtonClick(): Uri = Uri.EMPTY
+    fun onCancelPhotoEditionButtonClick(): String = EMPTY_STRING
 
-    fun onSavePhotoButtonClick(uri: Uri, label: String?): Uri {
+    fun onSavePhotoButtonClick(uri: Uri, label: String?): String {
         // Check if the photo already exists
 //        val photo: Photo? = _cacheItemPhotos.find { it.uri == uri.toString() }
         val photo: Photo? = cacheRepository.getCacheItemPhotos().find { it.uri == uri.toString() }
@@ -365,11 +368,11 @@ class EditViewModel(
 //            _cacheItemPhotosFlow.value = _cacheItemPhotos
             cacheRepository.updateCacheItemPhotos(photoToAdd, null)
         }
-        return Uri.EMPTY
+        return EMPTY_STRING
     }
 
-    fun onEditPhotoMenuItemClick(photo: Photo): Pair<Uri, Boolean> {
-        return Pair(Uri.parse(photo.uri), true)
+    fun onEditPhotoMenuItemClick(photo: Photo): Pair<String, Boolean> {
+        return Pair(photo.uri, true)
     }
 
     fun onPhotoDeletionConfirmation(propertyId: Long, photoId: Long) {

@@ -118,7 +118,8 @@ val LOCATION_PERMISSIONS = listOf(
     Manifest.permission.ACCESS_FINE_LOCATION,
     Manifest.permission.ACCESS_COARSE_LOCATION,
 )
-val DEFAULT_LOCATION = Location("").apply { latitude = 0.0 ; longitude = 0.0 }
+const val DEFAULT_LAT = 0.0
+const val DEFAULT_LNG = 0.0
 
 
 // Static Map

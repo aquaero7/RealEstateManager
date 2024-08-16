@@ -17,10 +17,13 @@ import com.aquaero.realestatemanager.repository.PoiRepository
 import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
+import com.aquaero.realestatemanager.utils.AndroidLogger
+import com.aquaero.realestatemanager.utils.Logger
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,19 +31,19 @@ import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyDouble
 import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mockito.lenient
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
-import org.robolectric.RobolectricTestRunner
 import kotlin.properties.Delegates
 
-//@RunWith(MockitoJUnitRunner::class)
-@RunWith(RobolectricTestRunner::class)
+@RunWith(MockitoJUnitRunner::class)
+//@RunWith(RobolectricTestRunner::class)
 class EditViewModelTestPart1 {
-
     private lateinit var propertyRepository: PropertyRepository
     private lateinit var addressRepository: AddressRepository
     private lateinit var photoRepository: PhotoRepository
@@ -50,6 +53,7 @@ class EditViewModelTestPart1 {
     private lateinit var propertyPoiJoinRepository: PropertyPoiJoinRepository
     private lateinit var locationRepository: LocationRepository
     private lateinit var cacheRepository: CacheRepository
+    private lateinit var logger: AndroidLogger
 
     private lateinit var cacheAddress: Address
     private lateinit var initialAddress: Address
@@ -84,6 +88,7 @@ class EditViewModelTestPart1 {
         propertyPoiJoinRepository = mock(PropertyPoiJoinRepository::class.java)
         locationRepository = mock(LocationRepository::class.java)
         cacheRepository = mock(CacheRepository::class.java)
+        logger = mock(AndroidLogger::class.java)
 
         cacheAddress = mock(Address::class.java)
         initialAddress = mock(Address::class.java)
@@ -109,7 +114,8 @@ class EditViewModelTestPart1 {
             poiRepository,
             propertyPoiJoinRepository,
             locationRepository,
-            cacheRepository
+            cacheRepository,
+            logger
         )
 
         runBlocking {
@@ -194,7 +200,7 @@ class EditViewModelTestPart1 {
             // Case 3: isEmpty = false and isModified = false and hasNullLatLng = true
             doReturn(false).`when`(cacheAddress).hasDifferencesWith(initialAddress)
             doReturn(null).`when`(cacheAddress).latitude
-            doReturn(null).`when`(cacheAddress).longitude
+            lenient().doReturn(null).`when`(cacheAddress).longitude
             viewModel.onClickMenu(navController, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(cacheRepository, never()).updateCacheAddress(null, null)

@@ -9,6 +9,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.aquaero.realestatemanager.BuildConfig
 import com.aquaero.realestatemanager.DropdownMenuCategory
 import com.aquaero.realestatemanager.EMPTY_STRING
 import com.aquaero.realestatemanager.EditField
@@ -34,7 +35,9 @@ import com.aquaero.realestatemanager.repository.PoiRepository
 import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
+import com.aquaero.realestatemanager.utils.AndroidLogger
 import com.aquaero.realestatemanager.utils.ConnectionState
+import com.aquaero.realestatemanager.utils.Logger
 import com.aquaero.realestatemanager.utils.areDigitsOnly
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
 import com.aquaero.realestatemanager.utils.generateProvisionalId
@@ -54,6 +57,7 @@ class EditViewModel(
     private val propertyPoiJoinRepository: PropertyPoiJoinRepository,
     private val locationRepository: LocationRepository,
     private val cacheRepository: CacheRepository,
+    private val logger: AndroidLogger
 ) : ViewModel() {
     private val unassignedResId = R.string._unassigned_
     private var unassigned = ""
@@ -363,7 +367,8 @@ fun checkStringUris(
                 label = label,
 //                propertyId = cacheProperty.propertyId)
                 propertyId = cacheRepository.getCacheProperty().propertyId)
-            Log.w("EditViewModel", "Generated provisional photo id: ${photoToAdd.photoId}")
+//            Log.w("EditViewModel", "Generated provisional photo id: ${photoToAdd.photoId}")
+            logger.w("EditViewModel", "Generated provisional photo id: ${photoToAdd.photoId}")
 //            _cacheItemPhotos.add(photoToAdd)
 //            _cacheItemPhotosFlow.value = _cacheItemPhotos
             cacheRepository.updateCacheItemPhotos(photoToAdd, null)
@@ -381,7 +386,8 @@ fun checkStringUris(
 //            _cacheItemPhotos.remove(photoToRemove)
 //            _cacheItemPhotosFlow.value = _cacheItemPhotos
             cacheRepository.updateCacheItemPhotos(null, photoToRemove)
-        } ?: Log.w(
+//        } ?: Log.w(
+        } ?: logger.w(
             "EditViewModel",
             "Photo not found in cache: Id = $photoId, PropertyId = $propertyId"
         )
@@ -411,18 +417,25 @@ fun checkStringUris(
     private fun updateRoomWithCacheData(navController: NavHostController, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                    Log.w("EditViewModel", "Starting latLng update for address...")
+//                    Log.w("EditViewModel", "Starting latLng update for address...")
+                    logger.w("EditViewModel", "Starting latLng update for address...")
                 updateAddressWithLatLng(context = context)
-                    Log.w("EditViewModel", "Room's update jobs are starting...")
-                    Log.w("EditViewModel", "Starting address update in Room...")
+//                    Log.w("EditViewModel", "Room's update jobs are starting...")
+                    logger.w("EditViewModel", "Room's update jobs are starting...")
+//                    Log.w("EditViewModel", "Starting address update in Room...")
+                    logger.w("EditViewModel", "Starting address update in Room...")
                 upDateRoomWithAddress()
-                    Log.w("EditViewModel", "Starting property update in Room...")
+//                    Log.w("EditViewModel", "Starting property update in Room...")
+                    logger.w("EditViewModel", "Starting property update in Room...")
                 upDateRoomWithProperty()
-                    Log.w("EditViewModel", "Starting photos update in Room...")
+//                    Log.w("EditViewModel", "Starting photos update in Room...")
+                    logger.w("EditViewModel", "Starting photos update in Room...")
                 upDateRoomWithPhotos()
-                    Log.w("EditViewModel", "Starting propertyPoiJoins update in Room...")
+//                    Log.w("EditViewModel", "Starting propertyPoiJoins update in Room...")
+                    logger.w("EditViewModel", "Starting propertyPoiJoins update in Room...")
                 upDateRoomWithPropertyPoiJoins()
-                    Log.w("EditViewModel", "Room's update jobs ended with success !")
+//                    Log.w("EditViewModel", "Room's update jobs ended with success !")
+                    logger.w("EditViewModel", "Room's update jobs ended with success !")
                 clearCache()
                 withContext(Dispatchers.Main) {
                     toastMessage(
@@ -473,7 +486,8 @@ fun checkStringUris(
                 }
             }
         } else {
-            Log.w("EditViewModel", "No address change, so updating LatLng is not necessary")
+//            Log.w("EditViewModel", "No address change, so updating LatLng is not necessary")
+            logger.w("EditViewModel", "No address change, so updating LatLng is not necessary")
         }
     }
 
@@ -507,7 +521,8 @@ fun checkStringUris(
                 }
                 // ... then we update database and get the Room's new address id in case of creation...
                 newAddressIdFromRoom = addressRepository.upsertAddressInRoom(address = addressToUpsert)
-                Log.w("EditViewModel", "newAddressIdFromRoom: $newAddressIdFromRoom")
+//                Log.w("EditViewModel", "newAddressIdFromRoom: $newAddressIdFromRoom")
+                logger.w("EditViewModel", "newAddressIdFromRoom: $newAddressIdFromRoom")
                 // ... and, if the address has been created, we set its id in cacheAddress and cacheProperty,
 //                if (cacheAddress.addressId == CACHE_ADDRESS.addressId && newAddressIdFromRoom > 0) {
                 if (cacheRepository.getCacheAddress().addressId == CACHE_ADDRESS.addressId && newAddressIdFromRoom > 0) {
@@ -536,7 +551,8 @@ fun checkStringUris(
 
         // We update database and get the Room's new property id in case of creation...
         newPropertyIdFromRoom = propertyRepository.upsertPropertyInRoom(property = propertyToUpsert)
-        Log.w("EditViewModel", "isNewProperty: $isNewProperty / newPropertyIdFromRoom: $newPropertyIdFromRoom")
+//        Log.w("EditViewModel", "isNewProperty: $isNewProperty / newPropertyIdFromRoom: $newPropertyIdFromRoom")
+        logger.w("EditViewModel", "isNewProperty: $isNewProperty / newPropertyIdFromRoom: $newPropertyIdFromRoom")
 
         // If the property has been created, we set its id in cacheProperty and cacheItemPhotos
         if (isNewProperty && newPropertyIdFromRoom > 0) {

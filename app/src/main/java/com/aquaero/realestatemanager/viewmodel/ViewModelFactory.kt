@@ -21,6 +21,8 @@ import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.SearchDataRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
+import com.aquaero.realestatemanager.utils.AndroidLogger
+import com.aquaero.realestatemanager.utils.Logger
 
 @Suppress("UNCHECKED_CAST")
 class ViewModelFactory(context: Context):  ViewModelProvider.Factory {
@@ -48,6 +50,8 @@ class ViewModelFactory(context: Context):  ViewModelProvider.Factory {
     private val cacheRepository: CacheRepository = CacheRepository()
     private val searchDataRepository: SearchDataRepository = SearchDataRepository()
 
+    private val logger: AndroidLogger = Logger()
+
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
@@ -58,7 +62,7 @@ class ViewModelFactory(context: Context):  ViewModelProvider.Factory {
                 agentRepository, typeRepository, poiRepository, locationRepository) as T
         } else if (modelClass.isAssignableFrom(EditViewModel::class.java)) {
             EditViewModel(propertyRepository, addressRepository, photoRepository, agentRepository,
-                typeRepository, poiRepository, propertyPoiJoinRepository, locationRepository, cacheRepository) as T
+                typeRepository, poiRepository, propertyPoiJoinRepository, locationRepository, cacheRepository, logger) as T
         } else if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
             MapViewModel(locationRepository) as T
         } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {

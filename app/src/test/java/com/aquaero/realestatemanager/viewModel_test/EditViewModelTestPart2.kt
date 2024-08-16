@@ -2,7 +2,6 @@ package com.aquaero.realestatemanager.viewModel_test
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
@@ -26,7 +25,9 @@ import com.aquaero.realestatemanager.repository.PoiRepository
 import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
+import com.aquaero.realestatemanager.utils.AndroidLogger
 import com.aquaero.realestatemanager.utils.ConnectionState
+import com.aquaero.realestatemanager.utils.Logger
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -71,6 +72,7 @@ class EditViewModelTestPart2 {
     private lateinit var propertyPoiJoinRepository: PropertyPoiJoinRepository
     private lateinit var locationRepository: LocationRepository
     private lateinit var cacheRepository: CacheRepository
+    private lateinit var logger: AndroidLogger
 
     private lateinit var cacheProperty: Property
     private lateinit var address: Address
@@ -107,16 +109,11 @@ class EditViewModelTestPart2 {
     // Created to allow tests running with coverage, using MockitoJUnitRunner instead of RobolectricTestRunner
     private lateinit var uriMock: MockedStatic<Uri>
 
-    // Created to avoid class "LOG" error when tests are run with coverage
-    private lateinit var logMock: MockedStatic<Log>
-
 
     @Before
     fun setup() {
         // Initialize uriMock
         uriMock = mockStatic(Uri::class.java)
-        // Initialize logMock
-        logMock = mockStatic(Log::class.java)
 
         propertyRepository = mock(PropertyRepository::class.java)
         addressRepository = mock(AddressRepository::class.java)
@@ -127,6 +124,7 @@ class EditViewModelTestPart2 {
         propertyPoiJoinRepository = mock(PropertyPoiJoinRepository::class.java)
         locationRepository = mock(LocationRepository::class.java)
         cacheRepository = mock(CacheRepository::class.java)
+        logger = mock(AndroidLogger::class.java)
 
         cacheProperty = mock(Property::class.java)
         address = mock(Address::class.java)
@@ -165,7 +163,8 @@ class EditViewModelTestPart2 {
             poiRepository,
             propertyPoiJoinRepository,
             locationRepository,
-            cacheRepository
+            cacheRepository,
+            logger
         )
 
         runBlocking {
@@ -187,8 +186,6 @@ class EditViewModelTestPart2 {
     fun teardown() {
         // Close uriMock
         uriMock.close()
-        // Close logMock
-        logMock.close()
     }
 
     private fun launchStringUrisCheckTest(

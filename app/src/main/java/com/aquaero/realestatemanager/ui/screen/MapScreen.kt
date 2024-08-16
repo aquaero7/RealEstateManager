@@ -27,7 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.aquaero.realestatemanager.DEFAULT_LOCATION
+import com.aquaero.realestatemanager.DEFAULT_LAT
+import com.aquaero.realestatemanager.DEFAULT_LNG
 import com.aquaero.realestatemanager.DEFAULT_ZOOM
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address
@@ -63,7 +64,7 @@ fun MapScreen(
     val currentLocation = getLocationUpdates().collectAsState().value
     val latLngState by remember(currentLocation) {
         mutableStateOf(currentLocation?.let { LatLng(it.latitude, it.longitude) }
-            ?: LatLng(DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude))
+            ?: LatLng(DEFAULT_LAT, DEFAULT_LNG))
     }
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(latLngState, DEFAULT_ZOOM)
@@ -71,7 +72,10 @@ fun MapScreen(
 
     var isMapLoaded by remember { mutableStateOf(false) }
     val isCurrentPositionSet by remember(currentLocation) {
-        mutableStateOf(currentLocation != null && currentLocation != DEFAULT_LOCATION)
+        mutableStateOf(
+            currentLocation != null &&
+                    currentLocation.latitude != DEFAULT_LAT && currentLocation.longitude != DEFAULT_LNG
+        )
     }
     val isMapReady by remember(isMapLoaded, isCurrentPositionSet) {
         mutableStateOf(isMapLoaded && isCurrentPositionSet)

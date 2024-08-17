@@ -23,6 +23,7 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.doReturn
 import org.robolectric.RobolectricTestRunner
 
+//@RunWith(MockitoJUnitRunner::class)
 @RunWith(RobolectricTestRunner::class)
 class NetworkConnectivityServiceTest {
 

@@ -18,12 +18,10 @@ import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.AndroidLogger
-import com.aquaero.realestatemanager.utils.Logger
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

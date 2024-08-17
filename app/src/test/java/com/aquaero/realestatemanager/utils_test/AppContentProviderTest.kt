@@ -4,6 +4,9 @@ import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
 import androidx.test.core.app.ApplicationProvider
+import com.aquaero.realestatemanager.model.PoiEnum
+import com.aquaero.realestatemanager.model.TypeEnum
+import com.aquaero.realestatemanager.provider.AppContentProvider
 import com.aquaero.realestatemanager.utils.ContentProviderTestUtils.cursorAndQuery
 import com.aquaero.realestatemanager.utils.ContentProviderTestUtils.cursorFields
 import com.aquaero.realestatemanager.utils.ContentProviderTestUtils.initDatabase
@@ -19,9 +22,6 @@ import com.aquaero.realestatemanager.utils.ContentProviderTestUtils.uriPropertyP
 import com.aquaero.realestatemanager.utils.ContentProviderTestUtils.uriSoldProperties
 import com.aquaero.realestatemanager.utils.ContentProviderTestUtils.uriTypes
 import com.aquaero.realestatemanager.utils.ContentProviderTestUtils.uris
-import com.aquaero.realestatemanager.model.PoiEnum
-import com.aquaero.realestatemanager.model.TypeEnum
-import com.aquaero.realestatemanager.provider.AppContentProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -33,6 +33,7 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 
+//@RunWith(MockitoJUnitRunner::class)
 @RunWith(RobolectricTestRunner::class)
 class AppContentProviderTest {
 

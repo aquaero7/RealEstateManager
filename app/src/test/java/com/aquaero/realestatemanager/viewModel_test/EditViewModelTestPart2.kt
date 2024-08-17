@@ -27,7 +27,6 @@ import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.AndroidLogger
 import com.aquaero.realestatemanager.utils.ConnectionState
-import com.aquaero.realestatemanager.utils.Logger
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
 import kotlinx.coroutines.runBlocking
 import org.junit.After

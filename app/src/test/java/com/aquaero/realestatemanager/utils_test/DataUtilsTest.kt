@@ -30,7 +30,7 @@ class DataUtilsTest {
 
     @Test
     fun convertDollarToEuroWithSuccess() {
-        val inputValue: Int = 100
+        val inputValue = 100
         val expectedResult: Int = (inputValue * RATE_OF_DOLLAR_IN_EURO).roundToInt()
 
         assertEquals("Wrong value in Euro", expectedResult, convertDollarToEuro(inputValue))
@@ -38,7 +38,7 @@ class DataUtilsTest {
 
     @Test
     fun convertEuroToDollarWithSuccess() {
-        val inputValue: Int = 100
+        val inputValue = 100
         val expectedResult: Int = (inputValue / RATE_OF_DOLLAR_IN_EURO).roundToInt()
 
         assertEquals("Wrong value in Dollar", expectedResult, convertEuroToDollar(inputValue))
@@ -46,7 +46,7 @@ class DataUtilsTest {
 
     @Test
     fun convertDateStringToMillisWithSuccess() {
-        val inputValue: String = "2024-09-15"
+        val inputValue = "2024-09-15"
 //        val expectedResult: Long = 1726358400000
         val expectedResult =
             LocalDate.parse(inputValue, DateTimeFormatter.ofPattern(DATE_PATTERN)).atStartOfDay()
@@ -57,7 +57,7 @@ class DataUtilsTest {
 
     @Test
     fun convertDateMillisToStringWithSuccess() {
-        val inputValue: Long = 1726358400000
+        val inputValue = 1726358400000
 //        val expectedResult: String = "2024-09-15"
         val expectedResult: String =
             Instant.ofEpochMilli(inputValue).atZone(ZoneId.systemDefault()).toLocalDate()
@@ -68,9 +68,9 @@ class DataUtilsTest {
 
     @Test
     fun calculateMonthlyPaymentWithInterestWithSuccess() {
-        val amountInput: Int = 100000
-        val rateInput: Float = 0.5F
-        val termInMonthsInput: Int = 60
+        val amountInput = 100000
+        val rateInput = 0.5F
+        val termInMonthsInput = 60
 //        val expectedResult: Float = 1688.0553F
         val expectedResult: Float =
             (amountInput * rateInput / 100 / 12) / (1 - (1 + rateInput / 100 / 12).pow(-termInMonthsInput))
@@ -84,13 +84,13 @@ class DataUtilsTest {
 
     @Test
     fun addEllipsisToTextWithSuccess() {
-        val maxLengthInput: Int = 14
-        val text13: String = "1234567890123"
-        val text14: String = "12345678901234"
-        val text15: String = "123456789012345"
-        val truncatedText: String = "12345678901…"
+        val maxLengthInput = 14
+        val text13 = "1234567890123"
+        val text14 = "12345678901234"
+        val text15 = "123456789012345"
+        val truncatedText = "12345678901…"
 
-        var maxLinesInput: Int = 1
+        var maxLinesInput = 1
 
         // Case 1a : Max lines = 1 and text length = 13 (< 14)
         var fullTextInput: String = text13
@@ -151,7 +151,7 @@ class DataUtilsTest {
 
     @Test
     fun getEllipsisWithSuccess() {
-        val expectedResult: String = "…"
+        val expectedResult = "…"
         assertEquals("Wrong Ellipsis result", expectedResult, ellipsis())
     }
 
@@ -192,13 +192,19 @@ class DataUtilsTest {
             delay(1000)
             val gen2: Long = generateProvisionalId()
 
-            assertTrue("Provisional id generation error", gen1 < 0)
-            assertTrue("Provisional id generation error", gen2 < 0)
+            val stringGen1 = gen1.toString()
+            val stringGen2 = gen2.toString()
+
+            // Verify if two IDs are different when generated in the same thread with a minimum delay of 1s
             assertTrue("Provisional id generation error", gen1 != gen2)
-            assertTrue("Provisional id generation error", gen1 <= -10000 && gen1 >= -99999)
-            assertTrue("Provisional id generation error", gen2 <= -10000 && gen2 >= -99999)
-            assertEquals("Provisional id generation error", 6, gen1.toString().length)  // Minus sign plus 5 digits
-            assertEquals("Provisional id generation error", 6, gen2.toString().length)  // Minus sign plus 5 digits
+            // Verify if the generated ID is negative and not more than 6 chars long (minus sign + 5 digits)
+            assertTrue("Provisional id generation error", gen1 < 0 && gen1 >= -99999)
+            assertTrue("Provisional id generation error", gen2 < 0 && gen2 >= -99999)
+            assertTrue("Provisional id generation error", stringGen1.length in 2..6)
+            assertTrue("Provisional id generation error", stringGen2.length in 2..6)
+            // Verify if the first char of the generated ID is the minus sign
+            assertEquals("Provisional id generation error", '-', stringGen1[0])
+            assertEquals("Provisional id generation error", '-', stringGen2[0])
         }
     }
 

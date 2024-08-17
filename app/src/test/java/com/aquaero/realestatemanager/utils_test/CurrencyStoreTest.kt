@@ -13,6 +13,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import java.util.Locale
 
+//@RunWith(MockitoJUnitRunner::class)
 @RunWith(RobolectricTestRunner::class)
 class CurrencyStoreTest {
 

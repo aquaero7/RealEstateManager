@@ -43,14 +43,15 @@ import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
 import org.robolectric.RobolectricTestRunner
 
-//@RunWith(MockitoJUnitRunner::class)
-@RunWith(RobolectricTestRunner::class)
+@RunWith(MockitoJUnitRunner::class)
+//@RunWith(RobolectricTestRunner::class)
 class ListAndDetailViewModelTest {
     // @get:Rule
     // var rule: TestRule = InstantTaskExecutorRule()

@@ -1,4 +1,8 @@
-@file:Suppress("UnstableApiUsage")  // For testOptions (Robolectric)
+@file:Suppress("UnstableApiUsage")
+
+import org.gradle.internal.classpath.Instrumented.systemProperty
+
+// For testOptions (Robolectric)
 
 plugins {
     id("com.android.application")
@@ -25,7 +29,6 @@ android {
             useSupportLibrary = true
         }
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false

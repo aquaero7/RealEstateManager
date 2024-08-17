@@ -46,12 +46,10 @@ import org.mockito.kotlin.doReturn
 import org.robolectric.RobolectricTestRunner
 import java.util.Locale
 
+//@RunWith(AndroidJUnit4::class)
+//@RunWith(MockitoJUnitRunner::class)
 @RunWith(RobolectricTestRunner::class)
 class AppViewModelTest {
-
-    // @get:Rule
-    // val instantTaskExecutorRule = InstantTaskExecutorRule()
-
     private lateinit var propertyRepository: PropertyRepository
     private lateinit var addressRepository: AddressRepository
     private lateinit var photoRepository: PhotoRepository
@@ -59,7 +57,6 @@ class AppViewModelTest {
     private lateinit var typeRepository: TypeRepository
     private lateinit var poiRepository: PoiRepository
     private lateinit var propertyPoiJoinRepository: PropertyPoiJoinRepository
-//    private lateinit var currencyStore: CurrencyStore   // For onClickRadioButton() test  // TODO: To be deleted
 
     private lateinit var viewModel: AppViewModel
     private lateinit var context: Context
@@ -67,6 +64,10 @@ class AppViewModelTest {
     private lateinit var property1: Property
     private lateinit var property2: Property
     private lateinit var property3: Property
+
+    private lateinit var localeUS: Locale
+    private lateinit var localeFR: Locale
+
 
     @Before
     fun setUp() {
@@ -79,7 +80,6 @@ class AppViewModelTest {
         typeRepository = mock(TypeRepository::class.java)
         poiRepository = mock(PoiRepository::class.java)
         propertyPoiJoinRepository = mock(PropertyPoiJoinRepository::class.java)
-//        currencyStore = mock(CurrencyStore::class.java) // For onClickRadioButton() test  // TODO: To be deleted
 
         viewModel = AppViewModel(
             propertyRepository = propertyRepository,
@@ -89,8 +89,6 @@ class AppViewModelTest {
             typeRepository = typeRepository,
             poiRepository = poiRepository,
             propertyPoiJoinRepository = propertyPoiJoinRepository,
-            // Inject the mock CurrencyStore for onClickRadioButton() test  // TODO: To be deleted
-//            currencyStoreFactory = { currencyStore }                      // TODO: To be deleted
         )
 
         property1 = Property(
@@ -129,6 +127,9 @@ class AppViewModelTest {
             registrationDate = null,
             saleDate = null
         )
+
+        localeUS = Locale("en", "US")
+        localeFR = Locale("fr", "FR")
     }
 
     @Test
@@ -175,8 +176,8 @@ class AppViewModelTest {
     fun accessToCurrencyStoreWithSuccess() {
 
         /* Case 1: Test with the default US locale */
-        // Mock US locale
-        // Locale.setDefault(Locale.US)
+        // Set Locale US (default)
+        Locale.setDefault(localeUS)
         // Perform the test action
         var currencyStore = viewModel.currencyStore(context)
         // Check the result and verify the default currency
@@ -184,8 +185,8 @@ class AppViewModelTest {
         assertEquals("$", currencyStore.getDefaultCurrency)
 
         /* Test with France locale */
-        // Mock France locale
-        Locale.setDefault(Locale.FRANCE)
+        // Set Locale FR
+        Locale.setDefault(localeFR)
         // Perform the test action
         currencyStore = viewModel.currencyStore(context)
         // Check the result and verify the default currency
@@ -204,17 +205,15 @@ class AppViewModelTest {
 
     @Test
     fun getCurrencyHelperDataWithSuccess() {
-        // With Locale = Default
-        // val localeUS = Locale("en", "US")
-        // Locale.setDefault(localeUS)
+        // Set Locale US (default)
+        Locale.setDefault(localeUS)
         var (currencyStore, defaultCurrency) = viewModel.currencyHelper(context)
 
         assertNotNull(currencyStore)
         assertEquals(context.getString(R.string.dollar), defaultCurrency)
 
 
-        // With Locale = France
-        val localeFR = Locale("fr", "FR")
+        // Set Locale FR
         Locale.setDefault(localeFR)
         val result = viewModel.currencyHelper(context)
         currencyStore = result.first
@@ -318,22 +317,6 @@ class AppViewModelTest {
         assertEquals(context.getString(R.string.cd_check), menuIconContentDesc)
         assertTrue(menuEnabled)
     }
-
-    /*  // TODO: To be deleted
-    @Test
-    fun clickOnRadioButtonWithSuccessOld() = runTest {
-        val currency = "currency"
-        val context: Context = mock(Context::class.java)
-
-        // Perform the test action
-        viewModel.onClickRadioButton(context, currency)
-
-        // Verify that saveCurrency was called with the correct parameter
-        runBlocking {
-            verify(currencyStore).saveCurrency(currency)
-        }
-    }
-    */
 
     @Test
     fun clickOnRadioButtonWithSuccess() = runTest {

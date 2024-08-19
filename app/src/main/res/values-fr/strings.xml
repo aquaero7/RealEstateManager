@@ -80,7 +80,7 @@
     <string name="months">Mois:</string>
     <string name="annual_interest_rate">Taux d\'intérêt annuel</string>
     <string name="annual_insurance_rate">Taux d\'assurance annuel</string>
-    <string name="monthly_payment">Mensualité de l\emprunt</string>
+    <string name="monthly_payment">Mensualité de l\'emprunt</string>
     <string name="monthly_insurance">Assurance mensuelle</string>
     <string name="total_monthly">Total paiement mensuel</string>
     <string name="total_payments">Total Paiements</string>

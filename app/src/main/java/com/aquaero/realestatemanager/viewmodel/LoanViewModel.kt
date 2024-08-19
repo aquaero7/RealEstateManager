@@ -3,19 +3,16 @@ package com.aquaero.realestatemanager.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import com.aquaero.realestatemanager.Loan
 import com.aquaero.realestatemanager.LoanField
-import com.aquaero.realestatemanager.navigateSingleTopTo
-import com.aquaero.realestatemanager.utils.calculateMonthlyPaymentWithInterest
+import com.aquaero.realestatemanager.repository.LoanRepository
 import com.aquaero.realestatemanager.utils.convertDollarToEuro
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
-import com.aquaero.realestatemanager.utils.isDecimal
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class LoanViewModel(
-
+    private val loanRepository: LoanRepository
 ): ViewModel() {
 
     // Init loan data
@@ -31,52 +28,79 @@ class LoanViewModel(
     var totalInterest: Float? = null
     var totalInsurance: Float? = null
 
-    private var inputCurrency: String = "$"
+    var inputCurrency: String = "$"
 
     private val _refreshResultsDisplay = MutableStateFlow(false)
     val refreshResultsDisplay: StateFlow<Boolean> = _refreshResultsDisplay.asStateFlow()
 
 
     fun onClickMenu(navController: NavHostController, currency: String) {
-        val term: Int = ((years ?: 0) * 12 + (months ?: 0)).coerceAtLeast(1)
+        val term = loanRepository.calculateTerm(years = years, months = months)
 
         if (currency == "$" && inputCurrency == "€") amount = convertEuroToDollar(euros = amount)
         if (currency == "€" && inputCurrency == "$") amount = convertDollarToEuro(dollars = amount)
         inputCurrency = currency
 
-        monthlyPayment = amount?.let {
-            if (annualInterestRate != null && annualInterestRate != 0f && term != 1) {
-//                (it * annualInterestRate!! / 100 / 12) / (1 - (1 + annualInterestRate!! / 100 / 12).pow(-term))   // TODO: To be deleted
-                calculateMonthlyPaymentWithInterest(it, annualInterestRate!!, term)
-            } else {
-                it / term.toFloat()
-            }
-        }
-        monthlyInsurance = amount?.let {
-            if (term != 1) it * (annualInsuranceRate ?: 0f) / 100 / 12 else 0f
-        }
-        totalMonthly = monthlyInsurance?.let { monthlyPayment?.plus(it) }
-        val totalLoanPayments: Float? = monthlyPayment?.let { it * term }
-        totalInterest = totalLoanPayments?.let { it - amount!! }
-        totalInsurance = monthlyInsurance?.let { it * term }
-        totalPayments = totalInsurance?.let { ti -> totalLoanPayments?.plus(ti) }
+        monthlyPayment = loanRepository.calculateMonthlyPayment(
+            amount = amount,
+            annualInterestRate = annualInterestRate,
+            term = term
+        )
+
+        monthlyInsurance = loanRepository.calculateMonthlyInsurance(
+            amount = amount,
+            annualInsuranceRate = annualInsuranceRate,
+            term = term
+        )
+
+        totalMonthly = loanRepository.calculateTotalMonthly(
+            monthlyPayment = monthlyPayment,
+            monthlyInsurance = monthlyInsurance
+        )
+
+        val totalLoanPayments = loanRepository.calculateTotalLoanPayments(
+            monthlyPayment = monthlyPayment,
+            term = term
+        )
+
+        totalInterest = loanRepository.calculateTotalInterest(
+            totalLoanPayments = totalLoanPayments,
+            amount = amount
+        )
+
+        totalInsurance = loanRepository.calculateTotalInsurance(
+            monthlyInsurance = monthlyInsurance,
+            term = term
+        )
+
+        totalPayments = loanRepository.calculateTotalPayments(
+            totalLoanPayments = totalLoanPayments,
+            totalInsurance = totalInsurance
+        )
 
         // Reload screen to refresh results display
-        navController.navigateSingleTopTo(Loan, null)
+        loanRepository.reloadScreen(navController = navController)
     }
 
 
     fun onFieldValueChange(field: String, unit: String?, fieldValue: String, currency: String) {
-        var value: String? = fieldValue.ifEmpty { null }
+        val value: String? = loanRepository.reformatDigitalField(fieldValue)
+        Log.w(
+            "LoanViewmodel",
+            if (fieldValue.isNotEmpty()) "FieldValue $fieldValue ends with : ${fieldValue.last()}"
+            else "FieldValue is empty"
+        )
+        Log.w(
+            "LoanViewmodel",
+            value?.let { "Value $it ends with : ${it.last()}" } ?: "Value is null"
+        )
 
-        // Adds a '0' to the value if it ends with '.' or ','
-        value?.let { if (!it[it.length.minus(1)].isDigit()) value += "0" }
-        Log.w("LoanViewmodel", "Value $value ends with : ${value?.length?.minus(1)?.let { value[it] }}")
+//        val digitalValue: Float? = value?.let { if (isDecimal(it)) it.toFloat() else null }
+        val digitalValue: Float? = loanRepository.getDigitalValue(value)
 
-        val digitalValue: Float? = value?.let { if (isDecimal(it)) it.toFloat() else null }
         when (field) {
             LoanField.AMOUNT.name -> {
-                Log.w("LoanViewModel", "$field = $value $currency")
+                Log.w("LoanViewModel", value?.let { "$field = $value $currency" } ?: "$field = null")
                 amount = digitalValue?.toInt()
                 inputCurrency = currency
             }
@@ -124,7 +148,7 @@ class LoanViewModel(
     fun onClearAllButtonClick(navController: NavHostController) {
         clearAllFields()
         // Reload screen to refresh results display
-        navController.navigateSingleTopTo(destination = Loan, null)
+        loanRepository.reloadScreen(navController = navController)
     }
 
     private fun clearAllFields() {

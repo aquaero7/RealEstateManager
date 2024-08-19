@@ -14,6 +14,7 @@ import com.aquaero.realestatemanager.database.dao.TypeDao
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.AgentRepository
 import com.aquaero.realestatemanager.repository.CacheRepository
+import com.aquaero.realestatemanager.repository.LoanRepository
 import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.PoiRepository
@@ -49,6 +50,7 @@ class ViewModelFactory(context: Context):  ViewModelProvider.Factory {
     private val locationRepository: LocationRepository = LocationRepository()
     private val cacheRepository: CacheRepository = CacheRepository()
     private val searchDataRepository: SearchDataRepository = SearchDataRepository()
+    private val loanRepository: LoanRepository = LoanRepository()
 
     private val logger: AndroidLogger = Logger()
 
@@ -68,7 +70,7 @@ class ViewModelFactory(context: Context):  ViewModelProvider.Factory {
         } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
             SearchViewModel(addressRepository, photoRepository, searchDataRepository) as T
         } else if (modelClass.isAssignableFrom(LoanViewModel::class.java)) {
-            LoanViewModel() as T
+            LoanViewModel(loanRepository) as T
         } else {
             throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

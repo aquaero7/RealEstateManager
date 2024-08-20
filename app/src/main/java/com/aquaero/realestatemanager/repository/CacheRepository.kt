@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class CacheRepository {
+
     private var cacheProperty: Property = CACHE_PROPERTY.copy()
     private var initialAddress: Address? = null
     private var cacheAddress: Address = CACHE_ADDRESS.copy()

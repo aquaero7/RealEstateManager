@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import coil.compose.rememberAsyncImagePainter
@@ -69,7 +70,7 @@ fun EditComposable(
      * Photo shooting and picking
      */
     var buttonSavePhotoEnabled by remember { mutableStateOf(false) }
-    var photoToAddUri by remember { mutableStateOf(Uri.EMPTY) }
+    var photoToAddUri by rememberSaveable { mutableStateOf(Uri.EMPTY) }
     val painterResource = painterResource(id = R.drawable.baseline_add_a_photo_black_24)
     var painter by remember { mutableStateOf(painterResource) }
 

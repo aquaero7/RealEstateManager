@@ -75,7 +75,7 @@ fun EditScreenMedia(
     var addPhoto by rememberSaveable { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
     val lineColor = MaterialTheme.colorScheme.onBackground
-    var photoLabel by remember { mutableStateOf("") }
+    var photoLabel by rememberSaveable { mutableStateOf("") }
     val onEditPhotoMenuItemClickGetPhoto: (Photo) -> Unit = { photo ->
         photoLabel = photo.label ?: ""
         onEditPhotoMenuItemClick(photo)

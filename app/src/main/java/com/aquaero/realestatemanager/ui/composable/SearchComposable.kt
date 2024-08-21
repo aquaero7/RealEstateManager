@@ -4,6 +4,10 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.SearchCriteria
@@ -28,6 +32,32 @@ fun SearchComposable(
     popBackStack: () -> Unit,
 ) {
     val context = LocalContext.current
+
+    val descriptionValue by remember { mutableStateOf(searchViewModel.getDescription()) }
+    val zipValue by remember { mutableStateOf(searchViewModel.getZip()) }
+    val cityValue by remember { mutableStateOf(searchViewModel.getCity()) }
+    val stateValue by remember { mutableStateOf(searchViewModel.getState()) }
+    val countryValue by remember { mutableStateOf(searchViewModel.getCountry()) }
+    val priceMinValue by remember { mutableStateOf(searchViewModel.getPriceMin()) }
+    val priceMaxValue by remember { mutableStateOf(searchViewModel.getPriceMax()) }
+    val surfaceMinValue by remember { mutableStateOf(searchViewModel.getSurfaceMin()) }
+    val surfaceMaxValue by remember { mutableStateOf(searchViewModel.getSurfaceMax()) }
+    val roomsMinValue by remember { mutableStateOf(searchViewModel.getRoomsMin()) }
+    val roomsMaxValue by remember { mutableStateOf(searchViewModel.getRoomsMax()) }
+    val bathroomsMinValue by remember { mutableStateOf(searchViewModel.getBathroomsMin()) }
+    val bathroomsMaxValue by remember { mutableStateOf(searchViewModel.getBathroomsMax()) }
+    val bedroomsMinValue by remember { mutableStateOf(searchViewModel.getBedroomsMin()) }
+    val bedroomsMaxValue by remember { mutableStateOf(searchViewModel.getBedroomsMax()) }
+    val registrationDateMinValue by remember { mutableStateOf(searchViewModel.getRegistrationDateMin()) }
+    val registrationDateMaxValue by remember { mutableStateOf(searchViewModel.getRegistrationDateMax()) }
+    val saleDateMinValue by remember { mutableStateOf(searchViewModel.getSaleDateMin()) }
+    val saleDateMaxValue by remember { mutableStateOf(searchViewModel.getSaleDateMax()) }
+    val typeValue by remember { mutableStateOf(searchViewModel.getType() ?: "") }
+    val agentValue by remember { mutableStateOf(searchViewModel.getAgent() ?: "") }
+    val salesRadioIndex by remember { mutableIntStateOf(searchViewModel.getSalesRadioIndex()) }
+    val photosRadioIndex by remember { mutableIntStateOf(searchViewModel.getPhotosRadioIndex()) }
+    val itemPois by remember { mutableStateOf(searchViewModel.getItemPois()) }
+
     val onFieldValueChange: (String, String?, String) -> Unit = { field, fieldType, value ->
         searchViewModel.onFieldValueChange(field = field, fieldType = fieldType, fieldValue = value, currency = currency)
     }
@@ -59,6 +89,7 @@ fun SearchComposable(
     val searchResults: MutableList<Property> by searchViewModel.searchResultsFlow.collectAsState(initial = mutableListOf())
     val scrollToResultsCounter: Int by searchViewModel.scrollToResultsFlow.collectAsState(initial = 0)
 
+
     SearchScreen(
         stringTypes = stringTypes,
         stringAgents = stringAgents,
@@ -68,30 +99,54 @@ fun SearchComposable(
         addresses = addresses,
         photos = photos,
         itemType = itemType,
-        descriptionValue = searchViewModel.description,
-        zipValue = searchViewModel.zip,
-        cityValue = searchViewModel.city,
-        stateValue = searchViewModel.state,
-        countryValue = searchViewModel.country,
-        priceMinValue = searchViewModel.priceMin,
-        priceMaxValue = searchViewModel.priceMax,
-        surfaceMinValue = searchViewModel.surfaceMin,
-        surfaceMaxValue = searchViewModel.surfaceMax,
-        roomsMinValue = searchViewModel.roomsMin,
-        roomsMaxValue = searchViewModel.roomsMax,
-        bathroomsMinValue = searchViewModel.bathroomsMin,
-        bathroomsMaxValue = searchViewModel.bathroomsMax,
-        bedroomsMinValue = searchViewModel.bedroomsMin,
-        bedroomsMaxValue = searchViewModel.bedroomsMax,
-        registrationDateMinValue = searchViewModel.registrationDateMin,
-        registrationDateMaxValue = searchViewModel.registrationDateMax,
-        saleDateMinValue = searchViewModel.saleDateMin,
-        saleDateMaxValue = searchViewModel.saleDateMax,
-        typeValue = searchViewModel.type ?: "",
-        agentValue = searchViewModel.agent ?: "",
-        salesRadioIndex = searchViewModel.salesRadioIndex,
-        photosRadioIndex = searchViewModel.photosRadioIndex,
-        itemPois = searchViewModel.itemPois,
+        descriptionValue = descriptionValue,
+//        descriptionValue = searchViewModel.description,
+        zipValue = zipValue,
+//        zipValue = searchViewModel.zip,
+        cityValue = cityValue,
+//        cityValue = searchViewModel.city,
+        stateValue = stateValue,
+//        stateValue = searchViewModel.state,
+        countryValue = countryValue,
+//        countryValue = searchViewModel.country,
+        priceMinValue = priceMinValue,
+//        priceMinValue = searchViewModel.priceMin,
+        priceMaxValue = priceMaxValue,
+//        priceMaxValue = searchViewModel.priceMax,
+        surfaceMinValue = surfaceMinValue,
+//        surfaceMinValue = searchViewModel.surfaceMin,
+        surfaceMaxValue = surfaceMaxValue,
+//        surfaceMaxValue = searchViewModel.surfaceMax,
+        roomsMinValue = roomsMinValue,
+//        roomsMinValue = searchViewModel.roomsMin,
+        roomsMaxValue = roomsMaxValue,
+//        roomsMaxValue = searchViewModel.roomsMax,
+        bathroomsMinValue = bathroomsMinValue,
+//        bathroomsMinValue = searchViewModel.bathroomsMin,
+        bathroomsMaxValue = bathroomsMaxValue,
+//        bathroomsMaxValue = searchViewModel.bathroomsMax,
+        bedroomsMinValue = bedroomsMinValue,
+//        bedroomsMinValue = searchViewModel.bedroomsMin,
+        bedroomsMaxValue = bedroomsMaxValue,
+//        bedroomsMaxValue = searchViewModel.bedroomsMax,
+        registrationDateMinValue = registrationDateMinValue,
+//        registrationDateMinValue = searchViewModel.registrationDateMin,
+        registrationDateMaxValue = registrationDateMaxValue,
+//        registrationDateMaxValue = searchViewModel.registrationDateMax,
+        saleDateMinValue = saleDateMinValue,
+//        saleDateMinValue = searchViewModel.saleDateMin,
+        saleDateMaxValue = saleDateMaxValue,
+//        saleDateMaxValue = searchViewModel.saleDateMax,
+        typeValue = typeValue,
+//        typeValue = searchViewModel.type ?: "",
+        agentValue = agentValue,
+//        agentValue = searchViewModel.agent ?: "",
+        salesRadioIndex = salesRadioIndex,
+//        salesRadioIndex = searchViewModel.salesRadioIndex,
+        photosRadioIndex = photosRadioIndex,
+//        photosRadioIndex = searchViewModel.photosRadioIndex,
+        itemPois = itemPois.toMutableList(),
+//        itemPois = searchViewModel.itemPois,
         onFieldValueChange = onFieldValueChange,
         onDropdownMenuValueChange = onDropdownMenuValueChange,
         onPoiClick = onPoiClick,

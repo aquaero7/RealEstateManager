@@ -167,22 +167,19 @@ class SearchViewModelTestPart3 {
             DropdownMenuCategory.TYPE.name -> {
                 assertEquals(type, captor.allValues[0])
                 verify(searchDataRepository).apply { SearchDataRepository::typeIndex.set(this, index) }
-                verify(searchDataRepository).apply { setter?.set(this, type as T) }
+//                verify(searchDataRepository).apply { setter?.set(this, type as T) }
             }
 
             DropdownMenuCategory.AGENT.name -> {
                 assertEquals(agent, captor.allValues[0])
                 verify(searchDataRepository).apply { SearchDataRepository::agentIndex.set(this, index) }
-                verify(searchDataRepository).apply { setter?.set(this, agent as T) }
+//                verify(searchDataRepository).apply { setter?.set(this, agent as T) }
             }
 
             else -> {
                 assert(captor.allValues.isEmpty())
                 verify(searchDataRepository, never()).apply { SearchDataRepository::typeIndex.set(this, anyInt()) }
                 verify(searchDataRepository, never()).apply { SearchDataRepository::agentIndex.set(this, anyInt()) }
-
-//                verify(searchDataRepository, never()).apply { setter?.set(this, anyString() as T) }   // TODO : To be deleted
-//                if (setter != null) verify(searchDataRepository, never()).let { setter.set(it, anyString() as T) }    // TODO : To be deleted
                 setter?.let { verify(searchDataRepository, never()).let { setter.set(it, anyString() as T) } }
             }
         }

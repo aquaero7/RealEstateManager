@@ -30,30 +30,30 @@ class SearchViewModel(
     private val searchDataRepository: SearchDataRepository,
 ) : ViewModel() {
     // Init search criteria
-    var description: String? = searchDataRepository.description
-    var priceMin: String? = searchDataRepository.priceMin
-    var priceMax: String? = searchDataRepository.priceMax
-    var surfaceMin: String? = searchDataRepository.surfaceMin
-    var surfaceMax: String? = searchDataRepository.surfaceMax
-    var roomsMin: String? = searchDataRepository.roomsMin
-    var roomsMax: String? = searchDataRepository.roomsMax
-    var bathroomsMin: String? = searchDataRepository.bathroomsMin
-    var bathroomsMax: String? = searchDataRepository.bathroomsMax
-    var bedroomsMin: String? = searchDataRepository.bedroomsMin
-    var bedroomsMax: String? = searchDataRepository.bedroomsMax
-    var type: String? = searchDataRepository.type
-    var agent: String? = searchDataRepository.agent
-    var zip: String? = searchDataRepository.zip
-    var city: String? = searchDataRepository.city
-    var state: String? = searchDataRepository.state
-    var country: String? = searchDataRepository.country
-    var registrationDateMin: String? = searchDataRepository.registrationDateMin
-    var registrationDateMax: String? = searchDataRepository.registrationDateMax
-    var saleDateMin: String? = searchDataRepository.saleDateMin
-    var saleDateMax: String? = searchDataRepository.saleDateMax
-    var salesRadioIndex: Int = searchDataRepository.salesRadioIndex
-    var photosRadioIndex: Int = searchDataRepository.photosRadioIndex
-    val itemPois: MutableList<Poi> = searchDataRepository.itemPois
+//    var description: String? = searchDataRepository.description
+//    var priceMin: String? = searchDataRepository.priceMin
+//    var priceMax: String? = searchDataRepository.priceMax
+//    var surfaceMin: String? = searchDataRepository.surfaceMin
+//    var surfaceMax: String? = searchDataRepository.surfaceMax
+//    var roomsMin: String? = searchDataRepository.roomsMin
+//    var roomsMax: String? = searchDataRepository.roomsMax
+//    var bathroomsMin: String? = searchDataRepository.bathroomsMin
+//    var bathroomsMax: String? = searchDataRepository.bathroomsMax
+//    var bedroomsMin: String? = searchDataRepository.bedroomsMin
+//    var bedroomsMax: String? = searchDataRepository.bedroomsMax
+//    var type: String? = searchDataRepository.type
+//    var agent: String? = searchDataRepository.agent
+//    var zip: String? = searchDataRepository.zip
+//    var city: String? = searchDataRepository.city
+//    var state: String? = searchDataRepository.state
+//    var country: String? = searchDataRepository.country
+//    var registrationDateMin: String? = searchDataRepository.registrationDateMin
+//    var registrationDateMax: String? = searchDataRepository.registrationDateMax
+//    var saleDateMin: String? = searchDataRepository.saleDateMin
+//    var saleDateMax: String? = searchDataRepository.saleDateMax
+//    var salesRadioIndex: Int = searchDataRepository.salesRadioIndex
+//    var photosRadioIndex: Int = searchDataRepository.photosRadioIndex
+//    val itemPois: MutableList<Poi> = searchDataRepository.itemPois
 
     val searchResultsFlow: Flow<MutableList<Property>> = searchDataRepository.searchResultsFlow
     val scrollToResultsFlow: Flow<Int> = searchDataRepository.scrollToResultsFlow
@@ -65,6 +65,31 @@ class SearchViewModel(
         // Init scroll to results counter
         resetScrollToResults()
     }
+
+    fun getDescription(): String? { return searchDataRepository.description }
+    fun getZip(): String? { return searchDataRepository.zip }
+    fun getCity(): String? { return searchDataRepository.city }
+    fun getState(): String? { return searchDataRepository.state }
+    fun getCountry(): String? { return searchDataRepository.country }
+    fun getPriceMin(): String? { return searchDataRepository.priceMin }
+    fun getPriceMax(): String? { return searchDataRepository.priceMax }
+    fun getSurfaceMin(): String? { return searchDataRepository.surfaceMin }
+    fun getSurfaceMax(): String? { return searchDataRepository.surfaceMax }
+    fun getRoomsMin(): String? { return searchDataRepository.roomsMin }
+    fun getRoomsMax(): String? { return searchDataRepository.roomsMax }
+    fun getBathroomsMin(): String? { return searchDataRepository.bathroomsMin }
+    fun getBathroomsMax(): String? { return searchDataRepository.bathroomsMax }
+    fun getBedroomsMin(): String? { return searchDataRepository.bedroomsMin }
+    fun getBedroomsMax(): String? { return searchDataRepository.bedroomsMax }
+    fun getRegistrationDateMin(): String? { return searchDataRepository.registrationDateMin }
+    fun getRegistrationDateMax(): String? { return searchDataRepository.registrationDateMax }
+    fun getSaleDateMin(): String? { return searchDataRepository.saleDateMin }
+    fun getSaleDateMax(): String? { return searchDataRepository.saleDateMax }
+    fun getType(): String? { return searchDataRepository.type }
+    fun getAgent(): String? { return searchDataRepository.agent }
+    fun getSalesRadioIndex(): Int { return searchDataRepository.salesRadioIndex }
+    fun getPhotosRadioIndex(): Int { return searchDataRepository.photosRadioIndex }
+    fun getItemPois(): List<Poi> { return searchDataRepository.itemPois.toList() }
 
     private fun clearCriteria() {
         onClearButtonClick("", EditField.DESCRIPTION.name)

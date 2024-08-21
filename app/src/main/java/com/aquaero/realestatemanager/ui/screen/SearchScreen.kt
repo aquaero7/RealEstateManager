@@ -43,6 +43,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -118,7 +119,7 @@ fun SearchScreen(
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
     var counter by remember { mutableIntStateOf(0) }    // Counter set to avoid scrolling at first screen display
-    var scrollToTop by remember { mutableStateOf(true) }
+    var scrollToTop by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(key1 = scrollToResultsCounter) {
         counter += 1

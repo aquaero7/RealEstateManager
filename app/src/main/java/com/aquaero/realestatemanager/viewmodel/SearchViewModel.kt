@@ -41,6 +41,7 @@ class SearchViewModel(
     }
 
     /* GETTERS */
+    fun getScrollToResults(): Int { return searchRepository.scrollToResults }
     fun getDescription(): String? { return searchRepository.description }
     fun getZip(): String? { return searchRepository.zip }
     fun getCity(): String? { return searchRepository.city }

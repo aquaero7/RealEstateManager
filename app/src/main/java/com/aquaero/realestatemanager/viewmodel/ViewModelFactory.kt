@@ -20,7 +20,7 @@ import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.PoiRepository
 import com.aquaero.realestatemanager.repository.PropertyPoiJoinRepository
 import com.aquaero.realestatemanager.repository.PropertyRepository
-import com.aquaero.realestatemanager.repository.SearchDataRepository
+import com.aquaero.realestatemanager.repository.SearchRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.AndroidLogger
 import com.aquaero.realestatemanager.utils.Logger
@@ -49,7 +49,7 @@ class ViewModelFactory(context: Context):  ViewModelProvider.Factory {
         PropertyPoiJoinRepository(propertyPoiJoinDao = propertyPoiJoinDao)
     private val locationRepository: LocationRepository = LocationRepository()
     private val cacheRepository: CacheRepository = CacheRepository()
-    private val searchDataRepository: SearchDataRepository = SearchDataRepository()
+    private val searchRepository: SearchRepository = SearchRepository()
     private val loanRepository: LoanRepository = LoanRepository()
 
     private val logger: AndroidLogger = Logger()
@@ -68,7 +68,7 @@ class ViewModelFactory(context: Context):  ViewModelProvider.Factory {
         } else if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
             MapViewModel(locationRepository) as T
         } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
-            SearchViewModel(addressRepository, photoRepository, searchDataRepository) as T
+            SearchViewModel(addressRepository, photoRepository, searchRepository) as T
         } else if (modelClass.isAssignableFrom(LoanViewModel::class.java)) {
             LoanViewModel(loanRepository) as T
         } else {

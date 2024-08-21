@@ -7,7 +7,7 @@ import com.aquaero.realestatemanager.MAX
 import com.aquaero.realestatemanager.MIN
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
-import com.aquaero.realestatemanager.repository.SearchDataRepository
+import com.aquaero.realestatemanager.repository.SearchRepository
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
 import com.aquaero.realestatemanager.viewmodel.SearchViewModel
 import org.junit.After
@@ -40,7 +40,7 @@ import kotlin.reflect.KMutableProperty1
 class SearchViewModelTestPart3 {
     private lateinit var addressRepository: AddressRepository
     private lateinit var photoRepository: PhotoRepository
-    private lateinit var searchDataRepository: SearchDataRepository
+    private lateinit var searchRepository: SearchRepository
 
     private lateinit var viewModel: SearchViewModel
 
@@ -67,11 +67,11 @@ class SearchViewModelTestPart3 {
 
         addressRepository = mock(AddressRepository::class.java)
         photoRepository = mock(PhotoRepository::class.java)
-        searchDataRepository = mock(SearchDataRepository::class.java)
+        searchRepository = mock(SearchRepository::class.java)
         stringTypes = mock()
         stringAgents = mock()
 
-        viewModel = SearchViewModel(addressRepository, photoRepository, searchDataRepository)
+        viewModel = SearchViewModel(addressRepository, photoRepository, searchRepository)
 
         stringArgumentCaptor = argumentCaptor()
         stringValue = "fieldValue"
@@ -91,13 +91,13 @@ class SearchViewModelTestPart3 {
     }
 
     private fun <T> captureSetterArgument(
-        setter: KMutableProperty1<SearchDataRepository, T>,
+        setter: KMutableProperty1<SearchRepository, T>,
         captor: KArgumentCaptor<T>
     ) {
         doAnswer {
             println("Setter for ${setter.name} called with argument: ${it.arguments[0]}")
             it.callRealMethod()
-        }.`when`(searchDataRepository).apply { setter.set(this, captor.capture()) }
+        }.`when`(searchRepository).apply { setter.set(this, captor.capture()) }
     }
 
     private fun <T> setupFieldArguments(
@@ -113,10 +113,10 @@ class SearchViewModelTestPart3 {
         fieldValue: String,
         currency: String,
         captor: KArgumentCaptor<T>,
-        setter: KMutableProperty1<SearchDataRepository, T>,
+        setter: KMutableProperty1<SearchRepository, T>,
     ) {
         // Reset mock and captor
-        reset(searchDataRepository)
+        reset(searchRepository)
         stringArgumentCaptor = argumentCaptor()
 //        viewModel = SearchViewModel(addressRepository, photoRepository, searchDataRepository) // TODO : To be deleted
 
@@ -130,31 +130,31 @@ class SearchViewModelTestPart3 {
                     field != EditField.REGISTRATION_DATE.name && field != EditField.SALE_DATE.name)
         ) {
             assertNull(args.second.second.allValues[0])
-            verify(searchDataRepository).apply { setter.set(this, null as T) }
+            verify(searchRepository).apply { setter.set(this, null as T) }
         } else {
             if (field == EditField.PRICE.name && currency == euro) {
                 assertEquals(convertEuroToDollar(args.first.third.toInt()).toString(), args.second.second.allValues[0])
-                verify(searchDataRepository).apply { setter.set(this, convertEuroToDollar(args.first.third.toInt()).toString() as T) }
+                verify(searchRepository).apply { setter.set(this, convertEuroToDollar(args.first.third.toInt()).toString() as T) }
             } else {
                 assertEquals(args.first.third, args.second.second.allValues[0])
-                verify(searchDataRepository).apply { setter.set(this, args.first.third as T) }
+                verify(searchRepository).apply { setter.set(this, args.first.third as T) }
             }
         }
-        verifyNoMoreInteractions(searchDataRepository)
+        verifyNoMoreInteractions(searchRepository)
     }
 
     private fun <T> launchDropdownMenuTest(
         category: String,
         captor: KArgumentCaptor<T>,
-        setter: KMutableProperty1<SearchDataRepository, T>? = null,
+        setter: KMutableProperty1<SearchRepository, T>? = null,
     ) {
         val index = 0
         val value = "$category#$index"
 
         // Reset mock and captor
         stringArgumentCaptor = argumentCaptor()
-        reset(searchDataRepository)
-        viewModel = SearchViewModel(addressRepository, photoRepository, searchDataRepository)
+        reset(searchRepository)
+        viewModel = SearchViewModel(addressRepository, photoRepository, searchRepository)
 
         doReturn(type).`when`(stringTypes).elementAt(anyInt())
         doReturn(agent).`when`(stringAgents).elementAt(anyInt())
@@ -166,21 +166,21 @@ class SearchViewModelTestPart3 {
         when (category) {
             DropdownMenuCategory.TYPE.name -> {
                 assertEquals(type, captor.allValues[0])
-                verify(searchDataRepository).apply { SearchDataRepository::typeIndex.set(this, index) }
+                verify(searchRepository).apply { SearchRepository::typeIndex.set(this, index) }
 //                verify(searchDataRepository).apply { setter?.set(this, type as T) }
             }
 
             DropdownMenuCategory.AGENT.name -> {
                 assertEquals(agent, captor.allValues[0])
-                verify(searchDataRepository).apply { SearchDataRepository::agentIndex.set(this, index) }
+                verify(searchRepository).apply { SearchRepository::agentIndex.set(this, index) }
 //                verify(searchDataRepository).apply { setter?.set(this, agent as T) }
             }
 
             else -> {
                 assert(captor.allValues.isEmpty())
-                verify(searchDataRepository, never()).apply { SearchDataRepository::typeIndex.set(this, anyInt()) }
-                verify(searchDataRepository, never()).apply { SearchDataRepository::agentIndex.set(this, anyInt()) }
-                setter?.let { verify(searchDataRepository, never()).let { setter.set(it, anyString() as T) } }
+                verify(searchRepository, never()).apply { SearchRepository::typeIndex.set(this, anyInt()) }
+                verify(searchRepository, never()).apply { SearchRepository::agentIndex.set(this, anyInt()) }
+                setter?.let { verify(searchRepository, never()).let { setter.set(it, anyString() as T) } }
             }
         }
     }
@@ -195,7 +195,7 @@ class SearchViewModelTestPart3 {
             digitalValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::surfaceMin
+            SearchRepository::surfaceMin
         )
         // Field surface max is digital
         launchFieldTest(
@@ -204,7 +204,7 @@ class SearchViewModelTestPart3 {
             digitalValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::surfaceMax
+            SearchRepository::surfaceMax
         )
         // Field surface min is not digital
         launchFieldTest(
@@ -213,7 +213,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::surfaceMin
+            SearchRepository::surfaceMin
         )
         // Field surface max is not digital
         launchFieldTest(
@@ -222,7 +222,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::surfaceMax
+            SearchRepository::surfaceMax
         )
         // Field surface min is empty
         launchFieldTest(
@@ -231,7 +231,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::surfaceMin
+            SearchRepository::surfaceMin
         )
         // Field surface max is empty
         launchFieldTest(
@@ -240,7 +240,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::surfaceMax
+            SearchRepository::surfaceMax
         )
 
         // Field rooms min is digital
@@ -250,7 +250,7 @@ class SearchViewModelTestPart3 {
             digitalValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::roomsMin
+            SearchRepository::roomsMin
         )
         // Field rooms max is digital
         launchFieldTest(
@@ -259,7 +259,7 @@ class SearchViewModelTestPart3 {
             digitalValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::roomsMax
+            SearchRepository::roomsMax
         )
         // Field rooms min is not digital
         launchFieldTest(
@@ -268,7 +268,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::roomsMin
+            SearchRepository::roomsMin
         )
         // Field rooms max is not digital
         launchFieldTest(
@@ -277,7 +277,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::roomsMax
+            SearchRepository::roomsMax
         )
         // Field rooms min is empty
         launchFieldTest(
@@ -286,7 +286,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::roomsMin
+            SearchRepository::roomsMin
         )
         // Field rooms max is empty
         launchFieldTest(
@@ -295,7 +295,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::roomsMax
+            SearchRepository::roomsMax
         )
 
         // Field bathrooms min is digital
@@ -305,7 +305,7 @@ class SearchViewModelTestPart3 {
             digitalValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::bathroomsMin
+            SearchRepository::bathroomsMin
         )
         // Field bathrooms max is digital
         launchFieldTest(
@@ -314,7 +314,7 @@ class SearchViewModelTestPart3 {
             digitalValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::bathroomsMax
+            SearchRepository::bathroomsMax
         )
         // Field bathrooms min is not digital
         launchFieldTest(
@@ -323,7 +323,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::bathroomsMin
+            SearchRepository::bathroomsMin
         )
         // Field bathrooms max is not digital
         launchFieldTest(
@@ -332,7 +332,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::bathroomsMax
+            SearchRepository::bathroomsMax
         )
         // Field bathrooms min is empty
         launchFieldTest(
@@ -341,7 +341,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::bathroomsMin
+            SearchRepository::bathroomsMin
         )
         // Field bathrooms max is empty
         launchFieldTest(
@@ -350,7 +350,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::bathroomsMax
+            SearchRepository::bathroomsMax
         )
 
         // Field bedrooms min is digital
@@ -360,7 +360,7 @@ class SearchViewModelTestPart3 {
             digitalValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::bedroomsMin
+            SearchRepository::bedroomsMin
         )
         // Field bedrooms max is digital
         launchFieldTest(
@@ -369,7 +369,7 @@ class SearchViewModelTestPart3 {
             digitalValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::bedroomsMax
+            SearchRepository::bedroomsMax
         )
         // Field bedrooms min is not digital
         launchFieldTest(
@@ -378,7 +378,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::bedroomsMin
+            SearchRepository::bedroomsMin
         )
         // Field bedrooms max is not digital
         launchFieldTest(
@@ -387,7 +387,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::bedroomsMax
+            SearchRepository::bedroomsMax
         )
         // Field bedrooms min is empty
         launchFieldTest(
@@ -396,7 +396,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::bedroomsMin
+            SearchRepository::bedroomsMin
         )
         // Field bedrooms max is empty
         launchFieldTest(
@@ -405,7 +405,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::bedroomsMax
+            SearchRepository::bedroomsMax
         )
 
         // Field price min is digital and currency is dollar
@@ -415,7 +415,7 @@ class SearchViewModelTestPart3 {
             digitalValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::priceMin
+            SearchRepository::priceMin
         )
         // Field price max is digital and currency is dollar
         launchFieldTest(
@@ -424,7 +424,7 @@ class SearchViewModelTestPart3 {
             digitalValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::priceMax
+            SearchRepository::priceMax
         )
         // Field price min is digital and currency is euro
         launchFieldTest(
@@ -433,7 +433,7 @@ class SearchViewModelTestPart3 {
             digitalValue,
             euro,
             stringArgumentCaptor,
-            SearchDataRepository::priceMin
+            SearchRepository::priceMin
         )
         // Field price max is digital and currency is euro
         launchFieldTest(
@@ -442,7 +442,7 @@ class SearchViewModelTestPart3 {
             digitalValue,
             euro,
             stringArgumentCaptor,
-            SearchDataRepository::priceMax
+            SearchRepository::priceMax
         )
         // Field price min is not digital
         launchFieldTest(
@@ -451,7 +451,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::priceMin
+            SearchRepository::priceMin
         )
         // Field price max is not digital
         launchFieldTest(
@@ -460,7 +460,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::priceMax
+            SearchRepository::priceMax
         )
         // Field price min is empty
         launchFieldTest(
@@ -469,7 +469,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::priceMin
+            SearchRepository::priceMin
         )
         // Field price max is empty
         launchFieldTest(
@@ -478,7 +478,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::priceMax
+            SearchRepository::priceMax
         )
 
         // Field description not empty
@@ -488,7 +488,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::description
+            SearchRepository::description
         )
         // Field description empty
         launchFieldTest(
@@ -497,7 +497,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::description
+            SearchRepository::description
         )
 
         // Field city not empty
@@ -507,7 +507,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::city
+            SearchRepository::city
         )
         // Field city empty
         launchFieldTest(
@@ -516,7 +516,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::city
+            SearchRepository::city
         )
 
         // Field state not empty
@@ -526,7 +526,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::state
+            SearchRepository::state
         )
         // Field state empty
         launchFieldTest(
@@ -535,7 +535,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::state
+            SearchRepository::state
         )
 
         // Field zip code not empty
@@ -545,7 +545,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::zip
+            SearchRepository::zip
         )
         // Field zip code empty
         launchFieldTest(
@@ -554,7 +554,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::zip
+            SearchRepository::zip
         )
 
         // Field country not empty
@@ -564,7 +564,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::country
+            SearchRepository::country
         )
         // Field country empty
         launchFieldTest(
@@ -573,7 +573,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::country
+            SearchRepository::country
         )
 
         // Field registration date min not empty
@@ -583,7 +583,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::registrationDateMin
+            SearchRepository::registrationDateMin
         )
         // Field registration date max not empty
         launchFieldTest(
@@ -592,7 +592,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::registrationDateMax
+            SearchRepository::registrationDateMax
         )
         // Field registration date min empty
         launchFieldTest(
@@ -601,7 +601,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::registrationDateMin
+            SearchRepository::registrationDateMin
         )
         // Field registration date max empty
         launchFieldTest(
@@ -610,7 +610,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::registrationDateMax
+            SearchRepository::registrationDateMax
         )
 
         // Field sale date min not empty
@@ -620,7 +620,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::saleDateMin
+            SearchRepository::saleDateMin
         )
         // Field sale date max not empty
         launchFieldTest(
@@ -629,7 +629,7 @@ class SearchViewModelTestPart3 {
             stringValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::saleDateMax
+            SearchRepository::saleDateMax
         )
         // Field sale date min empty
         launchFieldTest(
@@ -638,7 +638,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::saleDateMin
+            SearchRepository::saleDateMin
         )
         // Field sale date max empty
         launchFieldTest(
@@ -647,7 +647,7 @@ class SearchViewModelTestPart3 {
             emptyValue,
             dollar,
             stringArgumentCaptor,
-            SearchDataRepository::saleDateMax
+            SearchRepository::saleDateMax
         )
     }
 
@@ -657,13 +657,13 @@ class SearchViewModelTestPart3 {
         launchDropdownMenuTest(
             DropdownMenuCategory.TYPE.name,
             stringArgumentCaptor,
-            SearchDataRepository::type
+            SearchRepository::type
         )
         // Category Agent
         launchDropdownMenuTest(
             DropdownMenuCategory.AGENT.name,
             stringArgumentCaptor,
-            SearchDataRepository::agent
+            SearchRepository::agent
         )
         // Other category
         launchDropdownMenuTest("otherCategory", stringArgumentCaptor)

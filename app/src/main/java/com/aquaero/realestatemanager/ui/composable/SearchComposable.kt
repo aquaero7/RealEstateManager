@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.SearchCriteria
@@ -84,7 +83,7 @@ fun SearchComposable(
         Log.w("SearchComposable", "Click on clear all button")
     }
     val itemType: (String) -> String =
-        { searchViewModel.itemType(typeId = it, types = types, stringTypes = stringTypes) }
+        { searchViewModel.getItemType(typeId = it, types = types, stringTypes = stringTypes) }
 
     val searchResults: MutableList<Property> by searchViewModel.searchResultsFlow.collectAsState(initial = mutableListOf())
     val scrollToResultsCounter: Int by searchViewModel.scrollToResultsFlow.collectAsState(initial = 0)

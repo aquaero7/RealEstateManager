@@ -14,7 +14,7 @@ import com.aquaero.realestatemanager.model.PropertyPoiJoin
 import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
-import com.aquaero.realestatemanager.repository.SearchDataRepository
+import com.aquaero.realestatemanager.repository.SearchRepository
 import com.aquaero.realestatemanager.viewmodel.SearchViewModel
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -49,7 +49,7 @@ import kotlin.reflect.KMutableProperty1
 class SearchViewModelTestPart1 {
     private lateinit var addressRepository: AddressRepository
     private lateinit var photoRepository: PhotoRepository
-    private lateinit var searchDataRepository: SearchDataRepository
+    private lateinit var searchRepository: SearchRepository
     private lateinit var context: Context
     private lateinit var viewModel: SearchViewModel
 
@@ -91,7 +91,7 @@ class SearchViewModelTestPart1 {
 
         addressRepository = mock(AddressRepository::class.java)
         photoRepository = mock(PhotoRepository::class.java)
-        searchDataRepository = mock(SearchDataRepository::class.java)
+        searchRepository = mock(SearchRepository::class.java)
         context = mock(Context::class.java)
 
         poi1 = mock(Poi::class.java)
@@ -118,14 +118,14 @@ class SearchViewModelTestPart1 {
         poiId = "poiId"
         poi = Poi(poiId = poiId)
 
-        viewModel = SearchViewModel(addressRepository, photoRepository, searchDataRepository)
+        viewModel = SearchViewModel(addressRepository, photoRepository, searchRepository)
 
         stringArgumentCaptor = argumentCaptor()
         intArgumentCaptor = argumentCaptor()
         listArgumentCaptor = argumentCaptor()
 
-        doReturn(itemPois).`when`(searchDataRepository).itemPois
-        doReturn(filteredList).`when`(searchDataRepository).filteredList
+        doReturn(itemPois).`when`(searchRepository).itemPois
+        doReturn(filteredList).`when`(searchRepository).filteredList
     }
 
      @After
@@ -136,18 +136,18 @@ class SearchViewModelTestPart1 {
 
 
     private fun <T> captureSetterArgument(
-        setter: KMutableProperty1<SearchDataRepository, T>,
+        setter: KMutableProperty1<SearchRepository, T>,
         captor: KArgumentCaptor<T>
     ) {
         doAnswer {
             println("Setter for ${setter.name} called with argument: ${it.arguments[0]}")
             it.callRealMethod()
-        }.`when`(searchDataRepository).apply { setter.set(this, captor.capture()) }
+        }.`when`(searchRepository).apply { setter.set(this, captor.capture()) }
     }
 
     private fun launchPoiTest(isSelected: Boolean) {
         spyItemPois = spy(itemPois)
-        doReturn(spyItemPois).`when`(searchDataRepository).itemPois
+        doReturn(spyItemPois).`when`(searchRepository).itemPois
 
         viewModel.onPoiClick(poiId, isSelected)
 
@@ -162,7 +162,7 @@ class SearchViewModelTestPart1 {
         }
     }
 
-    private fun <T> launchRadioButtonTest(setter: KMutableProperty1<SearchDataRepository, T>) {
+    private fun <T> launchRadioButtonTest(setter: KMutableProperty1<SearchRepository, T>) {
         val forSale = "For sale"
         val sold = "Sold"
         val withPhoto = "With photo"
@@ -181,8 +181,8 @@ class SearchViewModelTestPart1 {
             intArgumentCaptor = argumentCaptor()
             captureSetterArgument(setter, intArgumentCaptor as KArgumentCaptor<T>)
             when (setter) {
-                SearchDataRepository::salesRadioIndex -> viewModel.onSalesRadioButtonClick(context, salesButtons[it])
-                SearchDataRepository::photosRadioIndex -> viewModel.onPhotosRadioButtonClick(context, photosButtons[it])
+                SearchRepository::salesRadioIndex -> viewModel.onSalesRadioButtonClick(context, salesButtons[it])
+                SearchRepository::photosRadioIndex -> viewModel.onPhotosRadioButtonClick(context, photosButtons[it])
             }
             assertEquals(it, intArgumentCaptor.allValues[0])
         }
@@ -194,58 +194,58 @@ class SearchViewModelTestPart1 {
         /* Also testing clearCriteria() and onClearButtonClick() */
 
         // Capture setters arguments
-        captureSetterArgument(SearchDataRepository::description, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::priceMin, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::priceMax, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::surfaceMin, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::surfaceMax, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::roomsMin, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::roomsMax, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::bathroomsMin, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::bathroomsMax, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::bedroomsMin, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::bedroomsMax, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::typeIndex, intArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::type, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::agentIndex, intArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::agent, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::zip, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::city, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::state, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::country, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::registrationDateMin, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::registrationDateMax, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::saleDateMin, stringArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::saleDateMax, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::description, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::priceMin, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::priceMax, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::surfaceMin, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::surfaceMax, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::roomsMin, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::roomsMax, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::bathroomsMin, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::bathroomsMax, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::bedroomsMin, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::bedroomsMax, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::typeIndex, intArgumentCaptor)
+        captureSetterArgument(SearchRepository::type, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::agentIndex, intArgumentCaptor)
+        captureSetterArgument(SearchRepository::agent, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::zip, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::city, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::state, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::country, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::registrationDateMin, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::registrationDateMax, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::saleDateMin, stringArgumentCaptor)
+        captureSetterArgument(SearchRepository::saleDateMax, stringArgumentCaptor)
 
-        assertEquals(1, searchDataRepository.itemPois.size)
-        assertEquals(1, searchDataRepository.filteredList.size)
+        assertEquals(1, searchRepository.itemPois.size)
+        assertEquals(1, searchRepository.filteredList.size)
 
         viewModel.resetData()
 
-        verify(searchDataRepository).description = null
-        verify(searchDataRepository).priceMin = null
-        verify(searchDataRepository).priceMax = null
-        verify(searchDataRepository).surfaceMin = null
-        verify(searchDataRepository).surfaceMax = null
-        verify(searchDataRepository).roomsMin = null
-        verify(searchDataRepository).roomsMax = null
-        verify(searchDataRepository).bathroomsMin = null
-        verify(searchDataRepository).bathroomsMax = null
-        verify(searchDataRepository).bedroomsMin = null
-        verify(searchDataRepository).bedroomsMax = null
-        verify(searchDataRepository).typeIndex = DEFAULT_LIST_INDEX
-        verify(searchDataRepository).type = null
-        verify(searchDataRepository).agentIndex = DEFAULT_LIST_INDEX
-        verify(searchDataRepository).agent = null
-        verify(searchDataRepository).zip = null
-        verify(searchDataRepository).city = null
-        verify(searchDataRepository).state = null
-        verify(searchDataRepository).country = null
-        verify(searchDataRepository).registrationDateMin = null
-        verify(searchDataRepository).registrationDateMax = null
-        verify(searchDataRepository).saleDateMin = null
-        verify(searchDataRepository).saleDateMax = null
+        verify(searchRepository).description = null
+        verify(searchRepository).priceMin = null
+        verify(searchRepository).priceMax = null
+        verify(searchRepository).surfaceMin = null
+        verify(searchRepository).surfaceMax = null
+        verify(searchRepository).roomsMin = null
+        verify(searchRepository).roomsMax = null
+        verify(searchRepository).bathroomsMin = null
+        verify(searchRepository).bathroomsMax = null
+        verify(searchRepository).bedroomsMin = null
+        verify(searchRepository).bedroomsMax = null
+        verify(searchRepository).typeIndex = DEFAULT_LIST_INDEX
+        verify(searchRepository).type = null
+        verify(searchRepository).agentIndex = DEFAULT_LIST_INDEX
+        verify(searchRepository).agent = null
+        verify(searchRepository).zip = null
+        verify(searchRepository).city = null
+        verify(searchRepository).state = null
+        verify(searchRepository).country = null
+        verify(searchRepository).registrationDateMin = null
+        verify(searchRepository).registrationDateMax = null
+        verify(searchRepository).saleDateMin = null
+        verify(searchRepository).saleDateMax = null
 
         assertEquals(21, stringArgumentCaptor.allValues.size)
         for (index: Int in 0..<stringArgumentCaptor.allValues.size) {
@@ -257,12 +257,12 @@ class SearchViewModelTestPart1 {
             assertEquals(DEFAULT_LIST_INDEX, intArgumentCaptor.allValues[index])
         }
 
-        verify(searchDataRepository).salesRadioIndex = DEFAULT_RADIO_INDEX
-        verify(searchDataRepository).photosRadioIndex = DEFAULT_RADIO_INDEX
-        assertEquals(0, searchDataRepository.itemPois.size)
-        assertEquals(0, searchDataRepository.filteredList.size)
+        verify(searchRepository).salesRadioIndex = DEFAULT_RADIO_INDEX
+        verify(searchRepository).photosRadioIndex = DEFAULT_RADIO_INDEX
+        assertEquals(0, searchRepository.itemPois.size)
+        assertEquals(0, searchRepository.filteredList.size)
 
-        val invocations = mockingDetails(searchDataRepository).invocations
+        val invocations = mockingDetails(searchRepository).invocations
         val filteredInvocations = invocations.filter {
             it.method.name == "updateSearchResultsFlow" && it.arguments[0] === filteredList
         }
@@ -271,15 +271,15 @@ class SearchViewModelTestPart1 {
 
     @Test
     fun testResetScrollToResults() {
-        reset(searchDataRepository) // To reset invocations count during init
-        captureSetterArgument(SearchDataRepository::scrollToResults, intArgumentCaptor)
+        reset(searchRepository) // To reset invocations count during init
+        captureSetterArgument(SearchRepository::scrollToResults, intArgumentCaptor)
 
         viewModel.resetScrollToResults()
 
-        verify(searchDataRepository).scrollToResults = 0
+        verify(searchRepository).scrollToResults = 0
         assertEquals(0, intArgumentCaptor.allValues[0])
 
-        val invocations = mockingDetails(searchDataRepository).invocations
+        val invocations = mockingDetails(searchRepository).invocations
         val filteredInvocations = invocations.filter {
             it.method.name == "updateScrollToResultsFlow" && it.arguments[0] == 0
         }
@@ -288,19 +288,20 @@ class SearchViewModelTestPart1 {
 
     @Test
     fun testOnClickMenu() {
-        val scrollValue = searchDataRepository.scrollToResults  // Reference value to test increment
-        reset(searchDataRepository)     // To reset invocations count (above and during init)
+        val currency: String = "$"
+        val scrollValue = searchRepository.scrollToResults  // Reference value to test increment
+        reset(searchRepository)     // To reset invocations count (above and during init)
 
-        captureSetterArgument(SearchDataRepository::searchResults, listArgumentCaptor)
-        captureSetterArgument(SearchDataRepository::scrollToResults, intArgumentCaptor)
+        captureSetterArgument(SearchRepository::searchResults, listArgumentCaptor)
+        captureSetterArgument(SearchRepository::scrollToResults, intArgumentCaptor)
 
-        viewModel.onClickMenu(properties, addresses, types, agents, photos, propertyPoiJoins)
+        viewModel.onClickMenu(properties, addresses, types, agents, photos, propertyPoiJoins, currency)
 
-        verify(searchDataRepository).searchResults = properties.toMutableList()
+        verify(searchRepository).searchResults = properties.toMutableList()
         assertEquals(properties.toMutableList(), listArgumentCaptor.allValues[0])
 
-        verify(searchDataRepository, times(3)).scrollToResults
-        verify(searchDataRepository).updateScrollToResultsFlow(anyInt())
+        verify(searchRepository, times(3)).scrollToResults
+        verify(searchRepository).updateScrollToResultsFlow(anyInt())
         assertEquals(scrollValue + 1, intArgumentCaptor.allValues[0])
     }
 
@@ -314,12 +315,12 @@ class SearchViewModelTestPart1 {
 
     @Test
     fun testOnSalesRadioButtonClick() {
-        launchRadioButtonTest(SearchDataRepository::salesRadioIndex)
+        launchRadioButtonTest(SearchRepository::salesRadioIndex)
     }
 
     @Test
     fun testOnPhotosRadioButtonClick() {
-        launchRadioButtonTest(SearchDataRepository::photosRadioIndex)
+        launchRadioButtonTest(SearchRepository::photosRadioIndex)
     }
 
     @Test
@@ -334,11 +335,11 @@ class SearchViewModelTestPart1 {
         val emptyStringTypes = mutableListOf<String>()
 
         // types contains typeId and stringTypes isn't empty
-        assertEquals(stringType, viewModel.itemType(typeId, types, stringTypes))
+        assertEquals(stringType, viewModel.getItemType(typeId, types, stringTypes))
         // types contains typeId and stringTypes is empty
-        assertEquals(emptyString, viewModel.itemType(typeId, types, emptyStringTypes))
+        assertEquals(emptyString, viewModel.getItemType(typeId, types, emptyStringTypes))
         // types doesn't contain typeId
-        assertEquals(emptyString, viewModel.itemType(otherTypeId, types, stringTypes))
+        assertEquals(emptyString, viewModel.getItemType(otherTypeId, types, stringTypes))
     }
 
 }

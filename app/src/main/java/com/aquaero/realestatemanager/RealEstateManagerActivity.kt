@@ -158,7 +158,8 @@ fun RealEstateManagerApp(
                         types = types,
                         agents = agents,
                         photos = photos,
-                        propertyPoiJoins = propertyPoiJoins
+                        propertyPoiJoins = propertyPoiJoins,
+                        currency = currency,
                     )
                 }
             }

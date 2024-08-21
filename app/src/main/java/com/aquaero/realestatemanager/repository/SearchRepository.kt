@@ -4,10 +4,12 @@ import com.aquaero.realestatemanager.DEFAULT_LIST_INDEX
 import com.aquaero.realestatemanager.DEFAULT_RADIO_INDEX
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.model.Type
+import com.aquaero.realestatemanager.utils.convertEuroToDollar
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class SearchDataRepository {
+class SearchRepository {
 
     // Init search criteria
     var description: String? = null
@@ -49,5 +51,19 @@ class SearchDataRepository {
 
     fun updateSearchResultsFlow(results: MutableList<Property>) { _searchResultsFlow.value = results }
     fun updateScrollToResultsFlow(scroll: Int) { _scrollToResultsFlow.value = scroll }
+
+    fun convertPrice(digitalValue: Int?, currency: String): Int? {
+        return digitalValue?.let {
+            when (currency) {
+                "€" -> convertEuroToDollar(euros = it)
+                else -> it
+            }
+        }
+    }
+
+    fun getItemType(typeId: String, types: MutableList<Type>, stringTypes: MutableList<String>): String {
+        val type = types.find { it.typeId == typeId }
+        return type?.let { if (stringTypes.isNotEmpty()) stringTypes.elementAt(types.indexOf(it)) else "" } ?: ""
+    }
 
 }

@@ -10,7 +10,7 @@ import com.aquaero.realestatemanager.model.PropertyPoiJoin
 import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
-import com.aquaero.realestatemanager.repository.SearchDataRepository
+import com.aquaero.realestatemanager.repository.SearchRepository
 import com.aquaero.realestatemanager.viewmodel.SearchViewModel
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -38,7 +38,7 @@ import org.mockito.kotlin.argumentCaptor
 class SearchViewModelTestPart2 {
     private lateinit var addressRepository: AddressRepository
     private lateinit var photoRepository: PhotoRepository
-    private lateinit var searchDataRepository: SearchDataRepository
+    private lateinit var searchRepository: SearchRepository
 
     private lateinit var viewModel: SearchViewModel
 
@@ -76,7 +76,7 @@ class SearchViewModelTestPart2 {
 
         addressRepository = mock(AddressRepository::class.java)
         photoRepository = mock(PhotoRepository::class.java)
-        searchDataRepository = mock(SearchDataRepository::class.java)
+        searchRepository = mock(SearchRepository::class.java)
 
         poi1 = mock(Poi::class.java)
         property1 = mock(Property::class.java)
@@ -96,7 +96,7 @@ class SearchViewModelTestPart2 {
         propertyPoiJoins = mutableListOf(propertyPoiJoin1)
         itemPois = mutableListOf(poi1)
 
-        viewModel = SearchViewModel(addressRepository, photoRepository, searchDataRepository)
+        viewModel = SearchViewModel(addressRepository, photoRepository, searchRepository)
 
         listArgumentCaptor = argumentCaptor()
 
@@ -130,7 +130,7 @@ class SearchViewModelTestPart2 {
 
 
     private fun <T, R> launchFilterTest(
-        mock1: SearchDataRepository = searchDataRepository,
+        mock1: SearchRepository = searchRepository,
         mock2: Any? = null,
         getter1: (() -> T),
         getter2: (() -> T)? = null,
@@ -141,11 +141,13 @@ class SearchViewModelTestPart2 {
         expectedResult: MutableList<Property>,
         incrementCaptorIndex: Boolean = true
     ) {
+        val currency: String = "$"
+
         // Reset mocks
-        reset(searchDataRepository)
-        doReturn(properties).`when`(searchDataRepository).searchResults
-        doReturn(2).`when`(searchDataRepository).salesRadioIndex
-        doReturn(2).`when`(searchDataRepository).photosRadioIndex
+        reset(searchRepository)
+        doReturn(properties).`when`(searchRepository).searchResults
+        doReturn(2).`when`(searchRepository).salesRadioIndex
+        doReturn(2).`when`(searchRepository).photosRadioIndex
 
         doReturn(mockValue1).`when`(mock1).apply { getter1.invoke() }
         mock2?.let {
@@ -166,9 +168,9 @@ class SearchViewModelTestPart2 {
             }
         }
 
-        viewModel.onClickMenu(properties, addresses, types, agents, photos, propertyPoiJoins)
+        viewModel.onClickMenu(properties, addresses, types, agents, photos, propertyPoiJoins, currency)
 
-        verify(searchDataRepository).updateSearchResultsFlow(listArgumentCaptor.capture())
+        verify(searchRepository).updateSearchResultsFlow(listArgumentCaptor.capture())
         if (incrementCaptorIndex) captorIndex += 1
         assertEquals(expectedResult, listArgumentCaptor.allValues[captorIndex])
     }
@@ -178,332 +180,332 @@ class SearchViewModelTestPart2 {
     fun testOnClickMenu() {
         // Testing surface >= surfaceMin
         launchFilterTest(
-            getter1 = searchDataRepository::surfaceMin, mockValue1 = "50",
+            getter1 = searchRepository::surfaceMin, mockValue1 = "50",
             expectedResult = properties, incrementCaptorIndex = false
         )
 
         // Testing surface < surfaceMin
         launchFilterTest(
-            getter1 = searchDataRepository::surfaceMin,
+            getter1 = searchRepository::surfaceMin,
             mockValue1 = "150",
             expectedResult = emptyPropertyList
         )
 
         // Testing surface <= surfaceMax
         launchFilterTest(
-            getter1 = searchDataRepository::surfaceMax,
+            getter1 = searchRepository::surfaceMax,
             mockValue1 = "150",
             expectedResult = properties
         )
 
         // Testing surface > surfaceMax
         launchFilterTest(
-            getter1 = searchDataRepository::surfaceMax,
+            getter1 = searchRepository::surfaceMax,
             mockValue1 = "50",
             expectedResult = emptyPropertyList
         )
 
         // Testing nbOfRooms >= roomsMin
         launchFilterTest(
-            getter1 = searchDataRepository::roomsMin, mockValue1 = "3", expectedResult = properties
+            getter1 = searchRepository::roomsMin, mockValue1 = "3", expectedResult = properties
         )
 
         // Testing nbOfRooms < roomsMin
         launchFilterTest(
-            getter1 = searchDataRepository::roomsMin,
+            getter1 = searchRepository::roomsMin,
             mockValue1 = "5",
             expectedResult = emptyPropertyList
         )
 
         // Testing nbOfRooms <= roomsMax
         launchFilterTest(
-            getter1 = searchDataRepository::roomsMax, mockValue1 = "5", expectedResult = properties
+            getter1 = searchRepository::roomsMax, mockValue1 = "5", expectedResult = properties
         )
 
         // Testing nbOfRooms > roomsMax
         launchFilterTest(
-            getter1 = searchDataRepository::roomsMax,
+            getter1 = searchRepository::roomsMax,
             mockValue1 = "3",
             expectedResult = emptyPropertyList
         )
 
         // Testing nbOfBathrooms >= bathroomsMin
         launchFilterTest(
-            getter1 = searchDataRepository::bathroomsMin,
+            getter1 = searchRepository::bathroomsMin,
             mockValue1 = "3",
             expectedResult = properties
         )
 
         // Testing nbOfBathrooms < bathroomsMin
         launchFilterTest(
-            getter1 = searchDataRepository::bathroomsMin,
+            getter1 = searchRepository::bathroomsMin,
             mockValue1 = "5",
             expectedResult = emptyPropertyList
         )
 
         // Testing nbOfBathrooms <= bathroomsMax
         launchFilterTest(
-            getter1 = searchDataRepository::bathroomsMax,
+            getter1 = searchRepository::bathroomsMax,
             mockValue1 = "5",
             expectedResult = properties
         )
 
         // Testing nbOfBathrooms > bathroomsMax
         launchFilterTest(
-            getter1 = searchDataRepository::bathroomsMax,
+            getter1 = searchRepository::bathroomsMax,
             mockValue1 = "3",
             expectedResult = emptyPropertyList
         )
 
         // Testing nbOfBedrooms >= bedroomsMin
         launchFilterTest(
-            getter1 = searchDataRepository::bedroomsMin,
+            getter1 = searchRepository::bedroomsMin,
             mockValue1 = "3",
             expectedResult = properties
         )
 
         // Testing nbOfBedrooms < bedroomsMin
         launchFilterTest(
-            getter1 = searchDataRepository::bedroomsMin,
+            getter1 = searchRepository::bedroomsMin,
             mockValue1 = "5",
             expectedResult = emptyPropertyList
         )
 
         // Testing nbOfBedrooms <= bedroomsMax
         launchFilterTest(
-            getter1 = searchDataRepository::bedroomsMax,
+            getter1 = searchRepository::bedroomsMax,
             mockValue1 = "5",
             expectedResult = properties
         )
 
         // Testing nbOfBedrooms > bedroomsMax
         launchFilterTest(
-            getter1 = searchDataRepository::bedroomsMax,
+            getter1 = searchRepository::bedroomsMax,
             mockValue1 = "3",
             expectedResult = emptyPropertyList
         )
 
         // Testing price >= priceMin
         launchFilterTest(
-            getter1 = searchDataRepository::priceMin,
+            getter1 = searchRepository::priceMin,
             mockValue1 = "50000",
             expectedResult = properties
         )
 
         // Testing price < priceMin
         launchFilterTest(
-            getter1 = searchDataRepository::priceMin,
+            getter1 = searchRepository::priceMin,
             mockValue1 = "150000",
             expectedResult = emptyPropertyList
         )
 
         // Testing price <= priceMax
         launchFilterTest(
-            getter1 = searchDataRepository::priceMax,
+            getter1 = searchRepository::priceMax,
             mockValue1 = "150000",
             expectedResult = properties
         )
 
         // Testing price > priceMax
         launchFilterTest(
-            getter1 = searchDataRepository::priceMax,
+            getter1 = searchRepository::priceMax,
             mockValue1 = "50000",
             expectedResult = emptyPropertyList
         )
 
         // Testing description matching reference
         launchFilterTest(
-            getter1 = searchDataRepository::description,
+            getter1 = searchRepository::description,
             mockValue1 = "description",
             expectedResult = properties
         )
 
         // Testing description not matching reference
         launchFilterTest(
-            getter1 = searchDataRepository::description,
+            getter1 = searchRepository::description,
             mockValue1 = "anotherDescription",
             expectedResult = emptyPropertyList
         )
 
         // Testing zip matching reference
         launchFilterTest(
-            getter1 = searchDataRepository::zip, mockValue1 = "12345", expectedResult = properties
+            getter1 = searchRepository::zip, mockValue1 = "12345", expectedResult = properties
         )
 
         // Testing zip not matching reference
         launchFilterTest(
-            getter1 = searchDataRepository::zip,
+            getter1 = searchRepository::zip,
             mockValue1 = "54321",
             expectedResult = emptyPropertyList
         )
 
         // Testing city matching reference
         launchFilterTest(
-            getter1 = searchDataRepository::city, mockValue1 = "city", expectedResult = properties
+            getter1 = searchRepository::city, mockValue1 = "city", expectedResult = properties
         )
 
         // Testing city not matching reference
         launchFilterTest(
-            getter1 = searchDataRepository::city,
+            getter1 = searchRepository::city,
             mockValue1 = "otherCity",
             expectedResult = emptyPropertyList
         )
 
         // Testing state matching reference
         launchFilterTest(
-            getter1 = searchDataRepository::state, mockValue1 = "state", expectedResult = properties
+            getter1 = searchRepository::state, mockValue1 = "state", expectedResult = properties
         )
 
         // Testing state not matching reference
         launchFilterTest(
-            getter1 = searchDataRepository::state,
+            getter1 = searchRepository::state,
             mockValue1 = "otherState",
             expectedResult = emptyPropertyList
         )
 
         // Testing country matching reference
         launchFilterTest(
-            getter1 = searchDataRepository::country,
+            getter1 = searchRepository::country,
             mockValue1 = "country",
             expectedResult = properties
         )
 
         // Testing country not matching reference
         launchFilterTest(
-            getter1 = searchDataRepository::country,
+            getter1 = searchRepository::country,
             mockValue1 = "otherCountry",
             expectedResult = emptyPropertyList
         )
 
         // Testing registrationDate >= registrationDateMin
         launchFilterTest(
-            getter1 = searchDataRepository::registrationDateMin,
+            getter1 = searchRepository::registrationDateMin,
             mockValue1 = "2024-06-01",
             expectedResult = properties
         )
 
         // Testing registrationDate < registrationDateMin
         launchFilterTest(
-            getter1 = searchDataRepository::registrationDateMin,
+            getter1 = searchRepository::registrationDateMin,
             mockValue1 = "2024-06-30",
             expectedResult = emptyPropertyList
         )
 
         // Testing registrationDate <= registrationDateMax
         launchFilterTest(
-            getter1 = searchDataRepository::registrationDateMax,
+            getter1 = searchRepository::registrationDateMax,
             mockValue1 = "2024-06-30",
             expectedResult = properties
         )
 
         // Testing registrationDate > registrationDateMax
         launchFilterTest(
-            getter1 = searchDataRepository::registrationDateMax,
+            getter1 = searchRepository::registrationDateMax,
             mockValue1 = "2024-06-01",
             expectedResult = emptyPropertyList
         )
 
         // Testing saleDate >= saleDateMin
         launchFilterTest(
-            getter1 = searchDataRepository::saleDateMin,
+            getter1 = searchRepository::saleDateMin,
             mockValue1 = "2024-06-01",
             expectedResult = properties
         )
 
         // Testing saleDate < saleDateMin
         launchFilterTest(
-            getter1 = searchDataRepository::saleDateMin,
+            getter1 = searchRepository::saleDateMin,
             mockValue1 = "2024-06-30",
             expectedResult = emptyPropertyList
         )
 
         // Testing saleDate <= saleDateMax
         launchFilterTest(
-            getter1 = searchDataRepository::saleDateMax,
+            getter1 = searchRepository::saleDateMax,
             mockValue1 = "2024-06-30",
             expectedResult = properties
         )
 
         // Testing saleDate > saleDateMax
         launchFilterTest(
-            getter1 = searchDataRepository::saleDateMax,
+            getter1 = searchRepository::saleDateMax,
             mockValue1 = "2024-06-01",
             expectedResult = emptyPropertyList
         )
 
         // Testing type matching reference
         launchFilterTest(
-            getter1 = searchDataRepository::type, mockValue1 = "typeIsNotNull",
+            getter1 = searchRepository::type, mockValue1 = "typeIsNotNull",
             mock2 = type1, getter2 = type1::typeId, mockValue2 = "typeId",
             expectedResult = properties
         )
 
         // Testing type not matching reference
         launchFilterTest(
-            getter1 = searchDataRepository::type, mockValue1 = "typeIsNotNull",
+            getter1 = searchRepository::type, mockValue1 = "typeIsNotNull",
             mock2 = type1, getter2 = type1::typeId, mockValue2 = "anotherTypeId",
             expectedResult = emptyPropertyList
         )
 
         // Testing agent matching reference
         launchFilterTest(
-            getter1 = searchDataRepository::agent, mockValue1 = "agentIsNotNull",
+            getter1 = searchRepository::agent, mockValue1 = "agentIsNotNull",
             mock2 = agent1, getter2 = agent1::agentId, mockValue2 = 1L,
             expectedResult = properties
         )
 
         // Testing agent not matching reference
         launchFilterTest(
-            getter1 = searchDataRepository::agent, mockValue1 = "agentIsNotNull",
+            getter1 = searchRepository::agent, mockValue1 = "agentIsNotNull",
             mock2 = agent1, getter2 = agent1::agentId, mockValue2 = 2L,
             expectedResult = emptyPropertyList
         )
 
         // Testing salesRadioIndex with saleDate not null and index = 2
         launchFilterTest(
-            getter1 = searchDataRepository::salesRadioIndex, mockValue1 = 2,
+            getter1 = searchRepository::salesRadioIndex, mockValue1 = 2,
             mock2 = property1, getter2 = property1::saleDate, mockValue2 = "2024-06-15",
             expectedResult = properties
         )
 
         // Testing salesRadioIndex with saleDate not null and index = 1
         launchFilterTest(
-            getter1 = searchDataRepository::salesRadioIndex, mockValue1 = 1,
+            getter1 = searchRepository::salesRadioIndex, mockValue1 = 1,
             mock2 = property1, getter2 = property1::saleDate, mockValue2 = "2024-06-15",
             expectedResult = properties
         )
 
         // Testing salesRadioIndex with saleDate not null and index = 0
         launchFilterTest(
-            getter1 = searchDataRepository::salesRadioIndex, mockValue1 = 0,
+            getter1 = searchRepository::salesRadioIndex, mockValue1 = 0,
             mock2 = property1, getter2 = property1::saleDate, mockValue2 = "2024-06-15",
             expectedResult = emptyPropertyList
         )
 
         // Testing salesRadioIndex with saleDate null and index = 2
         launchFilterTest(
-            getter1 = searchDataRepository::salesRadioIndex, mockValue1 = 2,
+            getter1 = searchRepository::salesRadioIndex, mockValue1 = 2,
             mock2 = property1, getter2 = property1::saleDate, mockValue2 = null,
             expectedResult = properties
         )
 
         // Testing salesRadioIndex with saleDate null and index = 1
         launchFilterTest(
-            getter1 = searchDataRepository::salesRadioIndex, mockValue1 = 1,
+            getter1 = searchRepository::salesRadioIndex, mockValue1 = 1,
             mock2 = property1, getter2 = property1::saleDate, mockValue2 = null,
             expectedResult = emptyPropertyList
         )
 
         // Testing salesRadioIndex with saleDate null and index = 0
         launchFilterTest(
-            getter1 = searchDataRepository::salesRadioIndex, mockValue1 = 0,
+            getter1 = searchRepository::salesRadioIndex, mockValue1 = 0,
             mock2 = property1, getter2 = property1::saleDate, mockValue2 = null,
             expectedResult = properties
         )
 
         // Testing photosRadioIndex with at least one photo and index = 2
         launchFilterTest(
-            getter1 = searchDataRepository::photosRadioIndex,
+            getter1 = searchRepository::photosRadioIndex,
             mockValue1 = 2,
             mock2 = photoRepository,
             getter2 = { photoRepository.itemPhotos(anyLong(), anyList()) },
@@ -513,7 +515,7 @@ class SearchViewModelTestPart2 {
 
         // Testing photosRadioIndex with at least one photo and index = 1
         launchFilterTest(
-            getter1 = searchDataRepository::photosRadioIndex,
+            getter1 = searchRepository::photosRadioIndex,
             mockValue1 = 1,
             mock2 = photoRepository,
             getter2 = { photoRepository.itemPhotos(anyLong(), anyList()) },
@@ -523,7 +525,7 @@ class SearchViewModelTestPart2 {
 
         // Testing photosRadioIndex with at least one photo and index = 0
         launchFilterTest(
-            getter1 = searchDataRepository::photosRadioIndex,
+            getter1 = searchRepository::photosRadioIndex,
             mockValue1 = 0,
             mock2 = photoRepository,
             getter2 = { photoRepository.itemPhotos(anyLong(), anyList()) },
@@ -533,7 +535,7 @@ class SearchViewModelTestPart2 {
 
         // Testing photosRadioIndex with no photo and index = 2
         launchFilterTest(
-            getter1 = searchDataRepository::photosRadioIndex,
+            getter1 = searchRepository::photosRadioIndex,
             mockValue1 = 2,
             mock2 = photoRepository,
             getter2 = { photoRepository.itemPhotos(anyLong(), anyList()) },
@@ -543,7 +545,7 @@ class SearchViewModelTestPart2 {
 
         // Testing photosRadioIndex with no photo and index = 1
         launchFilterTest(
-            getter1 = searchDataRepository::photosRadioIndex,
+            getter1 = searchRepository::photosRadioIndex,
             mockValue1 = 1,
             mock2 = photoRepository,
             getter2 = { photoRepository.itemPhotos(anyLong(), anyList()) },
@@ -553,7 +555,7 @@ class SearchViewModelTestPart2 {
 
         // Testing photosRadioIndex with no photo and index = 0
         launchFilterTest(
-            getter1 = searchDataRepository::photosRadioIndex,
+            getter1 = searchRepository::photosRadioIndex,
             mockValue1 = 0,
             mock2 = photoRepository,
             getter2 = { photoRepository.itemPhotos(anyLong(), anyList()) },
@@ -563,7 +565,7 @@ class SearchViewModelTestPart2 {
 
         // Testing itemPois when propertyId matching and poiId matching
         launchFilterTest(
-            getter1 = searchDataRepository::itemPois, mockValue1 = itemPois,
+            getter1 = searchRepository::itemPois, mockValue1 = itemPois,
             mock2 = propertyPoiJoin1, getter2 = propertyPoiJoin1::propertyId, mockValue2 = 1L,
             getter2b = propertyPoiJoin1::poiId, mockValue2b = "poiId",
             expectedResult = properties
@@ -571,7 +573,7 @@ class SearchViewModelTestPart2 {
 
         // Testing itemPois when propertyId matching and poiId not matching
         launchFilterTest(
-            getter1 = searchDataRepository::itemPois, mockValue1 = itemPois,
+            getter1 = searchRepository::itemPois, mockValue1 = itemPois,
             mock2 = propertyPoiJoin1, getter2 = propertyPoiJoin1::propertyId, mockValue2 = 1L,
             getter2b = propertyPoiJoin1::poiId, mockValue2b = "otherPoiId",
             expectedResult = emptyPropertyList
@@ -579,7 +581,7 @@ class SearchViewModelTestPart2 {
 
         // Testing itemPois when propertyId not matching and poiId matching
         launchFilterTest(
-            getter1 = searchDataRepository::itemPois, mockValue1 = itemPois,
+            getter1 = searchRepository::itemPois, mockValue1 = itemPois,
             mock2 = propertyPoiJoin1, getter2 = propertyPoiJoin1::propertyId, mockValue2 = 2L,
             getter2b = propertyPoiJoin1::poiId, mockValue2b = "poiId",
             expectedResult = emptyPropertyList
@@ -587,7 +589,7 @@ class SearchViewModelTestPart2 {
 
         // Testing itemPois when propertyId not matching and poiId not matching
         launchFilterTest(
-            getter1 = searchDataRepository::itemPois, mockValue1 = itemPois,
+            getter1 = searchRepository::itemPois, mockValue1 = itemPois,
             mock2 = propertyPoiJoin1, getter2 = propertyPoiJoin1::propertyId, mockValue2 = 2L,
             getter2b = propertyPoiJoin1::poiId, mockValue2b = "otherPoiId",
             expectedResult = emptyPropertyList

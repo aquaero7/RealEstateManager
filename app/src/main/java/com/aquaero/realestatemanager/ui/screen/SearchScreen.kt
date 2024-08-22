@@ -42,7 +42,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,10 +55,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.AppContentType
-import com.aquaero.realestatemanager.DEFAULT_START_POSITION
 import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.SEARCH_RESULT_START_POSITION
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
@@ -79,6 +76,8 @@ fun SearchScreen(
     stringAgents: MutableList<String>,
     currency: String,
     searchResults: MutableList<Property>,
+    defaultStartPositionPxInt: Int,
+    searchResultsStartPositionPxInt: Int,
     scrollToResultsCounter: Int,
     addresses: List<Address>,
     photos: List<Photo>,
@@ -118,18 +117,19 @@ fun SearchScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
-    var counter by remember { mutableIntStateOf(0) }    // Counter set to avoid scrolling at first screen display
+//    var counter by remember { mutableIntStateOf(0) }    // Counter set to avoid scrolling at first screen display
+    var counter by rememberSaveable { mutableIntStateOf(scrollToResultsCounter) }    // Counter set to avoid scrolling at first screen display
     var scrollToTop by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(key1 = scrollToResultsCounter) {
         counter += 1
         if (counter > 1 ) {
-            scrollState.animateScrollTo(SEARCH_RESULT_START_POSITION)
+            scrollState.animateScrollTo(searchResultsStartPositionPxInt)
         }
     }
     LaunchedEffect(key1 = scrollToTop)  {
         if (scrollToTop) {
-            scrollState.animateScrollTo(DEFAULT_START_POSITION)
+            scrollState.animateScrollTo(defaultStartPositionPxInt)
             scrollToTop = false
         }
     }
@@ -361,7 +361,7 @@ fun SearchScreen(
         // Clear all criteria button
         ScreenButton(
             paddingTop = 20.dp,
-            paddingBottom = 10.dp,
+            paddingBottom = 2.dp,
             onClick = {
                 onClearAllButtonClick()
                 scrollToTop = true
@@ -373,7 +373,7 @@ fun SearchScreen(
 
         // Top of screen button
         ScreenButton(
-            paddingTop = 10.dp,
+            paddingTop = 2.dp,
             paddingBottom = 0.dp,
             onClick = { scrollToTop = true },
             imageVector = Icons.Default.ArrowUpward,

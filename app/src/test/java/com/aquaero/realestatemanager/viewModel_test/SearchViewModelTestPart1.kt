@@ -284,6 +284,8 @@ class SearchViewModelTestPart1 {
             it.method.name == "updateScrollToResultsFlow" && it.arguments[0] == 0
         }
         assertEquals(1, filteredInvocations.size)
+
+        verify(searchRepository).updateScrollToResultsFlow(scroll = false)
     }
 
     @Test
@@ -301,7 +303,8 @@ class SearchViewModelTestPart1 {
         assertEquals(properties.toMutableList(), listArgumentCaptor.allValues[0])
 
         verify(searchRepository, times(3)).scrollToResults
-        verify(searchRepository).updateScrollToResultsFlow(anyInt())
+//        verify(searchRepository).updateScrollToResultsFlow(anyInt())
+        verify(searchRepository).updateScrollToResultsFlow(scroll = true)
         assertEquals(scrollValue + 1, intArgumentCaptor.allValues[0])
     }
 

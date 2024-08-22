@@ -8,7 +8,12 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.aquaero.realestatemanager.DEFAULT_START_POSITION_DP
+import com.aquaero.realestatemanager.SEARCH_RESULT_START_POSITION_DP
 import com.aquaero.realestatemanager.SearchCriteria
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Photo
@@ -16,6 +21,7 @@ import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.navigateSingleTopTo
 import com.aquaero.realestatemanager.ui.screen.SearchScreen
+import com.aquaero.realestatemanager.utils.convertDpToPxInt
 import com.aquaero.realestatemanager.viewmodel.SearchViewModel
 
 @Composable
@@ -31,7 +37,13 @@ fun SearchComposable(
     popBackStack: () -> Unit,
 ) {
     val context = LocalContext.current
-
+    val density = LocalDensity.current
+    val defaultStartPositionPxInt by remember {
+        mutableIntStateOf(convertDpToPxInt(dpValue = DEFAULT_START_POSITION_DP, density = density))
+    }
+    val searchResultsStartPositionPxInt by remember {
+        mutableIntStateOf(convertDpToPxInt(dpValue = SEARCH_RESULT_START_POSITION_DP, density = density))
+    }
     val descriptionValue by remember { mutableStateOf(searchViewModel.getDescription()) }
     val zipValue by remember { mutableStateOf(searchViewModel.getZip()) }
     val cityValue by remember { mutableStateOf(searchViewModel.getCity()) }
@@ -94,6 +106,8 @@ fun SearchComposable(
         stringAgents = stringAgents,
         currency = currency,
         searchResults = searchResults,
+        defaultStartPositionPxInt = defaultStartPositionPxInt,
+        searchResultsStartPositionPxInt = searchResultsStartPositionPxInt,
         scrollToResultsCounter = scrollToResultsCounter,
         addresses = addresses,
         photos = photos,

@@ -1,6 +1,9 @@
 package com.aquaero.realestatemanager.utils
 
 import android.annotation.SuppressLint
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.DATE_PATTERN
 import com.aquaero.realestatemanager.RATE_OF_DOLLAR_IN_EURO
 import java.time.Instant
@@ -10,6 +13,10 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import kotlin.math.pow
 import kotlin.math.roundToInt
+
+fun convertDpToPxInt(dpValue: Int, density: Density): Int {
+    return with(density) { dpValue.dp.toPx().toInt() }
+}
 
 fun convertDollarToEuro(dollars: Int?): Int? {
     return dollars?.let { (it * RATE_OF_DOLLAR_IN_EURO).roundToInt() }

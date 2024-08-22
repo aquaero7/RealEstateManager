@@ -148,8 +148,9 @@ class SearchViewModel(
     }
 
     fun resetScrollToResults() {
-        searchRepository.scrollToResults = 0
-        searchRepository.updateScrollToResultsFlow(0)
+//        searchRepository.scrollToResults = 0
+//        searchRepository.updateScrollToResultsFlow(searchRepository.scrollToResults)
+        searchRepository.updateScrollToResultsFlow(scroll = false)
     }
 
     fun onClickMenu(
@@ -174,8 +175,9 @@ class SearchViewModel(
         )
         searchRepository.updateSearchResultsFlow(results)
 
-        searchRepository.scrollToResults +=1
-        searchRepository.updateScrollToResultsFlow(searchRepository.scrollToResults)
+//        searchRepository.scrollToResults += 1
+//        searchRepository.updateScrollToResultsFlow(searchRepository.scrollToResults)
+        searchRepository.updateScrollToResultsFlow(scroll = true)
         Log.w("SearchViewModel", "Click on menu valid ${searchRepository.scrollToResults} times")
     }
 

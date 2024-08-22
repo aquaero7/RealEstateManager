@@ -1,7 +1,6 @@
 package com.aquaero.realestatemanager
 
 import android.Manifest
-import android.location.Location
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.model.TypeEnum
@@ -151,8 +150,8 @@ val DP_CONTAINER_COLOR = PurpleGrey40
 
 // Miscellaneous
 val CLEAR_BUTTON_SIZE: Dp = 14.dp
-const val DEFAULT_START_POSITION = 0
-const val SEARCH_RESULT_START_POSITION = 2200
+const val DEFAULT_START_POSITION_DP = 0
+const val SEARCH_RESULT_START_POSITION_DP = 740
 const val MIN = "MIN"
 const val MAX = "MAX"
 const val UNASSIGNED_ID = 1L    // For unassigned Agent

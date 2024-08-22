@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.utils_test
 
+import androidx.compose.ui.unit.Density
 import com.aquaero.realestatemanager.DATE_PATTERN
 import com.aquaero.realestatemanager.RATE_OF_DOLLAR_IN_EURO
 import com.aquaero.realestatemanager.utils.areDigitsOnly
@@ -7,6 +8,7 @@ import com.aquaero.realestatemanager.utils.calculateMonthlyPaymentWithInterest
 import com.aquaero.realestatemanager.utils.convertDateMillisToString
 import com.aquaero.realestatemanager.utils.convertDateStringToMillis
 import com.aquaero.realestatemanager.utils.convertDollarToEuro
+import com.aquaero.realestatemanager.utils.convertDpToPxInt
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
 import com.aquaero.realestatemanager.utils.ellipsis
 import com.aquaero.realestatemanager.utils.generateProvisionalId
@@ -27,6 +29,21 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 
 class DataUtilsTest {
+    @Test
+    fun convertDpToPxIntWithSuccess() {
+        val densityValue = 2.0F
+        val fontScaleValue = 1.0F
+        val computedDensityValue = Density(density = densityValue, fontScale = fontScaleValue)
+
+        val inputValueInt = 800
+        val expectedResultInt = (inputValueInt * densityValue).toInt()
+
+        assertEquals(
+            "Wrong value in Px",
+            expectedResultInt,
+            convertDpToPxInt(inputValueInt, computedDensityValue)
+        )
+    }
 
     @Test
     fun convertDollarToEuroWithSuccess() {

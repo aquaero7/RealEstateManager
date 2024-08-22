@@ -51,6 +51,11 @@ class SearchRepository {
 
     fun updateSearchResultsFlow(results: MutableList<Property>) { _searchResultsFlow.value = results }
     fun updateScrollToResultsFlow(scroll: Int) { _scrollToResultsFlow.value = scroll }
+    fun updateScrollToResultsFlow(scroll: Boolean) {
+        scrollToResults = if (scroll) scrollToResults + 1 else 0
+        _scrollToResultsFlow.value = scrollToResults
+    }
+
 
     fun convertPrice(digitalValue: Int?, currency: String): Int? {
         return digitalValue?.let {

@@ -25,7 +25,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.MockedStatic
-import org.mockito.Mockito.anyInt
 import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.doReturn
 import org.mockito.Mockito.mock
@@ -299,7 +298,7 @@ class SearchViewModelTestPart1 {
 
         viewModel.onClickMenu(properties, addresses, types, agents, photos, propertyPoiJoins, currency)
 
-        verify(searchRepository).searchResults = properties.toMutableList()
+        verify(searchRepository).updateSearchResults = properties.toMutableList()
         assertEquals(properties.toMutableList(), listArgumentCaptor.allValues[0])
 
         verify(searchRepository, times(3)).scrollToResults

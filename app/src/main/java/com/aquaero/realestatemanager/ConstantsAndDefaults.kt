@@ -94,6 +94,32 @@ enum class NonEditField {
 }
 
 
+// Search fields
+/**
+ * Search fields.
+ */
+enum class SearchField {
+    SURFACE,
+    ROOMS,
+    BATHROOMS,
+    BEDROOMS,
+    PRICE,
+    DESCRIPTION,
+    ZIP_CODE,
+    CITY,
+    STATE,
+    COUNTRY,
+    REGISTRATION_DATE,
+    SALE_DATE,
+    TYPE,
+    AGENT,
+    SALES_STATUS,
+    PHOTOS_STATUS,
+    POIS,
+}
+
+
+// Loan fields
 /**
  * Loan fields.
  */

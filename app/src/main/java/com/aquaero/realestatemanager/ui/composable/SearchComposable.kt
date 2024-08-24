@@ -67,7 +67,7 @@ fun SearchComposable(
     val agentValue by remember { mutableStateOf(searchViewModel.getAgent() ?: "") }
     val salesRadioIndex by remember { mutableIntStateOf(searchViewModel.getSalesRadioIndex()) }
     val photosRadioIndex by remember { mutableIntStateOf(searchViewModel.getPhotosRadioIndex()) }
-    val itemPois by remember { mutableStateOf(searchViewModel.getItemPois()) }
+    val itemPois by remember { mutableStateOf(searchViewModel.getItemPois().toList()) }
 
     val onFieldValueChange: (String, String?, String) -> Unit = { field, fieldType, value ->
         searchViewModel.onFieldValueChange(field = field, fieldType = fieldType, fieldValue = value, currency = currency)

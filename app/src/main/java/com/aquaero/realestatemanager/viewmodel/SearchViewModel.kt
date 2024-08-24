@@ -22,6 +22,7 @@ import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.SearchRepository
 import com.aquaero.realestatemanager.utils.areDigitsOnly
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class SearchViewModel(
     private val addressRepository: AddressRepository,
@@ -29,43 +30,56 @@ class SearchViewModel(
     private val searchRepository: SearchRepository,
 ) : ViewModel() {
 
-    val searchResultsFlow: Flow<MutableList<Property>> = searchRepository.searchResultsFlow
+    /* SEARCH RESULTS FLOW */
+
+//    val searchResultsFlow: Flow<MutableList<Property>> = searchRepository.searchResultsFlow
+    private var searchResults: MutableList<Property> = mutableListOf()
+    private val _searchResultsFlow: MutableStateFlow<MutableList<Property>> = MutableStateFlow(searchResults)
+    val searchResultsFlow: Flow<MutableList<Property>> = _searchResultsFlow
+
+    /* SCROLL TO RESULTS FLOW */
+
     val scrollToResultsFlow: Flow<Int> = searchRepository.scrollToResultsFlow
 
     init {
         // Init of _searchResults at this place is needed to display the first property added
-        searchRepository.searchResults.clear()
-        searchRepository.updateSearchResultsFlow(searchRepository.searchResults)
+        clearSearchResults()
+        updateSearchResultsFlow()
         // Init scroll to results counter
         resetScrollToResults()
     }
 
+    fun clearSearchResults() { searchResults = mutableListOf() }
+    fun updateSearchResults(results: MutableList<Property>) { searchResults = results }
+    fun updateSearchResultsFlow() { _searchResultsFlow.value = searchResults }
+
+
     /* GETTERS */
-    fun getScrollToResults(): Int { return searchRepository.scrollToResults }
-    fun getDescription(): String? { return searchRepository.description }
-    fun getZip(): String? { return searchRepository.zip }
-    fun getCity(): String? { return searchRepository.city }
-    fun getState(): String? { return searchRepository.state }
-    fun getCountry(): String? { return searchRepository.country }
-    fun getPriceMin(): String? { return searchRepository.priceMin }
-    fun getPriceMax(): String? { return searchRepository.priceMax }
-    fun getSurfaceMin(): String? { return searchRepository.surfaceMin }
-    fun getSurfaceMax(): String? { return searchRepository.surfaceMax }
-    fun getRoomsMin(): String? { return searchRepository.roomsMin }
-    fun getRoomsMax(): String? { return searchRepository.roomsMax }
-    fun getBathroomsMin(): String? { return searchRepository.bathroomsMin }
-    fun getBathroomsMax(): String? { return searchRepository.bathroomsMax }
-    fun getBedroomsMin(): String? { return searchRepository.bedroomsMin }
-    fun getBedroomsMax(): String? { return searchRepository.bedroomsMax }
-    fun getRegistrationDateMin(): String? { return searchRepository.registrationDateMin }
-    fun getRegistrationDateMax(): String? { return searchRepository.registrationDateMax }
-    fun getSaleDateMin(): String? { return searchRepository.saleDateMin }
-    fun getSaleDateMax(): String? { return searchRepository.saleDateMax }
-    fun getType(): String? { return searchRepository.type }
-    fun getAgent(): String? { return searchRepository.agent }
-    fun getSalesRadioIndex(): Int { return searchRepository.salesRadioIndex }
-    fun getPhotosRadioIndex(): Int { return searchRepository.photosRadioIndex }
-    fun getItemPois(): List<Poi> { return searchRepository.itemPois.toList() }
+    fun getDescription(): String? { return searchRepository.getDescription() }
+    fun getZip(): String? { return searchRepository.getZip() }
+    fun getCity(): String? { return searchRepository.getCity() }
+    fun getState(): String? { return searchRepository.getState() }
+    fun getCountry(): String? { return searchRepository.getCountry() }
+    fun getPriceMin(): String? { return searchRepository.getPriceMin() }
+    fun getPriceMax(): String? { return searchRepository.getPriceMax() }
+    fun getSurfaceMin(): String? { return searchRepository.getSurfaceMin() }
+    fun getSurfaceMax(): String? { return searchRepository.getSurfaceMax() }
+    fun getRoomsMin(): String? { return searchRepository.getRoomsMin() }
+    fun getRoomsMax(): String? { return searchRepository.getRoomsMax() }
+    fun getBathroomsMin(): String? { return searchRepository.getBathroomsMin() }
+    fun getBathroomsMax(): String? { return searchRepository.getBathroomsMax() }
+    fun getBedroomsMin(): String? { return searchRepository.getBedroomsMin() }
+    fun getBedroomsMax(): String? { return searchRepository.getBedroomsMax() }
+    fun getRegistrationDateMin(): String? { return searchRepository.getRegistrationDateMin() }
+    fun getRegistrationDateMax(): String? { return searchRepository.getRegistrationDateMax() }
+    fun getSaleDateMin(): String? { return searchRepository.getSaleDateMin() }
+    fun getSaleDateMax(): String? { return searchRepository.getSaleDateMax() }
+    fun getType(): String? { return searchRepository.getType() }
+    fun getAgent(): String? { return searchRepository.getAgent() }
+    fun getSalesRadioIndex(): Int { return searchRepository.getSalesRadioIndex() }
+    fun getPhotosRadioIndex(): Int { return searchRepository.getPhotosRadioIndex() }
+    fun getItemPois(): MutableList<Poi> { return searchRepository.getItemPois() }
+
 
     private fun clearCriteria() {
         onClearButtonClick("", EditField.DESCRIPTION.name)
@@ -90,68 +104,66 @@ class SearchViewModel(
         onClearButtonClick(MIN, EditField.SALE_DATE.name)
         onClearButtonClick(MAX, EditField.SALE_DATE.name)
 
-        searchRepository.salesRadioIndex = DEFAULT_RADIO_INDEX
-        searchRepository.photosRadioIndex = DEFAULT_RADIO_INDEX
-        searchRepository.itemPois.clear()
+        searchRepository.setSalesRadioIndex(DEFAULT_RADIO_INDEX)
+        searchRepository.setPhotosRadioIndex(DEFAULT_RADIO_INDEX)
+        searchRepository.clearItemPois()
     }
 
     fun onClearButtonClick(bound: String, field: String) {
         when (field) {
-            EditField.DESCRIPTION.name -> searchRepository.description = null
+            EditField.DESCRIPTION.name -> searchRepository.setDescription(null)
             EditField.PRICE.name -> when (bound) {
-                MIN -> searchRepository.priceMin = null
-                MAX -> searchRepository.priceMax = null
+                MIN -> searchRepository.setPriceMin(null)
+                MAX -> searchRepository.setPriceMax(null)
             }
             EditField.SURFACE.name -> when (bound) {
-                MIN -> searchRepository.surfaceMin = null
-                MAX -> searchRepository.surfaceMax = null
+                MIN -> searchRepository.setSurfaceMin(null)
+                MAX -> searchRepository.setSurfaceMax(null)
             }
             EditField.ROOMS.name -> when (bound) {
-                MIN -> searchRepository.roomsMin = null
-                MAX -> searchRepository.roomsMax = null
+                MIN -> searchRepository.setRoomsMin(null)
+                MAX -> searchRepository.setRoomsMax(null)
             }
             EditField.BATHROOMS.name -> when (bound) {
-                MIN -> searchRepository.bathroomsMin = null
-                MAX -> searchRepository.bathroomsMax = null
+                MIN -> searchRepository.setBathroomsMin(null)
+                MAX -> searchRepository.setBathroomsMax(null)
             }
             EditField.BEDROOMS.name -> when (bound) {
-                MIN -> searchRepository.bedroomsMin = null
-                MAX -> searchRepository.bedroomsMax = null
+                MIN -> searchRepository.setBedroomsMin(null)
+                MAX -> searchRepository.setBedroomsMax(null)
             }
             DropdownMenuCategory.TYPE.name -> {
-                searchRepository.typeIndex = DEFAULT_LIST_INDEX
-                searchRepository.type = null
+                searchRepository.setDropdownMenuCategory(
+                    DropdownMenuCategory.TYPE, index = DEFAULT_LIST_INDEX, value = null
+                )
             }
             DropdownMenuCategory.AGENT.name -> {
-                searchRepository.agentIndex = DEFAULT_LIST_INDEX
-                searchRepository.agent = null
+                searchRepository.setDropdownMenuCategory(
+                    category = DropdownMenuCategory.AGENT, index = DEFAULT_LIST_INDEX, value = null
+                )
             }
-            EditField.ZIP_CODE.name -> searchRepository.zip = null
-            EditField.CITY.name -> searchRepository.city = null
-            EditField.STATE.name -> searchRepository.state = null
-            EditField.COUNTRY.name -> searchRepository.country = null
+            EditField.ZIP_CODE.name -> searchRepository.setZip(null)
+            EditField.CITY.name -> searchRepository.setCity(null)
+            EditField.STATE.name -> searchRepository.setState(null)
+            EditField.COUNTRY.name -> searchRepository.setCountry(null)
             EditField.REGISTRATION_DATE.name -> when (bound) {
-                MIN -> searchRepository.registrationDateMin = null
-                MAX -> searchRepository.registrationDateMax = null
+                MIN -> searchRepository.setRegistrationDateMin(null)
+                MAX -> searchRepository.setRegistrationDateMax(null)
             }
             EditField.SALE_DATE.name -> when (bound) {
-                MIN -> searchRepository.saleDateMin = null
-                MAX -> searchRepository.saleDateMax = null
+                MIN -> searchRepository.setSaleDateMin(null)
+                MAX -> searchRepository.setSaleDateMax(null)
             }
         }
     }
 
     fun resetData() {
         clearCriteria()
-        searchRepository.filteredList.clear()
-        searchRepository.updateSearchResultsFlow(searchRepository.filteredList)
+        clearSearchResults()
+        updateSearchResultsFlow()
     }
 
-    fun resetScrollToResults() {
-//        searchRepository.scrollToResults = 0
-//        searchRepository.updateScrollToResultsFlow(searchRepository.scrollToResults)
-        searchRepository.updateScrollToResultsFlow(scroll = false)
-    }
+    fun resetScrollToResults() { searchRepository.updateScrollToResultsFlow(scroll = false) }
 
     fun onClickMenu(
         properties: MutableList<Property>,
@@ -162,21 +174,23 @@ class SearchViewModel(
         propertyPoiJoins: MutableList<PropertyPoiJoin>,
         currency: String,
     ) {
-        searchRepository.searchResults = properties.toMutableList()
-
-        val results = applyFilters(
-            unfilteredList = searchRepository.searchResults,
-            addresses = addresses,
-            types = types,
-            agents = agents,
-            photos = photos,
-            propertyPoiJoins = propertyPoiJoins,
-            currency = currency,
+        updateSearchResults(
+            searchRepository.applyFilters(
+                unfilteredList = properties,
+                addresses = addresses,
+                types = types,
+                agents = agents,
+                photos = photos,
+                propertyPoiJoins = propertyPoiJoins,
+                currency = currency,
+                addressRepository = addressRepository,
+                photoRepository = photoRepository,
+            )
         )
-        searchRepository.updateSearchResultsFlow(results)
 
-//        searchRepository.scrollToResults += 1
-//        searchRepository.updateScrollToResultsFlow(searchRepository.scrollToResults)
+        updateSearchResultsFlow()
+        Log.w("SearchViewModel", "Results list contains ${searchResults.size} items")
+
         searchRepository.updateScrollToResultsFlow(scroll = true)
         Log.w("SearchViewModel", "Click on menu valid ${searchRepository.scrollToResults} times")
     }
@@ -195,70 +209,70 @@ class SearchViewModel(
             EditField.SURFACE.name -> {
                 Log.w("SearchViewModel", "$field: $fieldType = $value")
                 when (fieldType) {
-                    MIN -> searchRepository.surfaceMin = digitalValue?.toString()
-                    MAX -> searchRepository.surfaceMax = digitalValue?.toString()
+                    MIN -> searchRepository.setSurfaceMin(digitalValue?.toString())
+                    MAX -> searchRepository.setSurfaceMax(digitalValue?.toString())
                 }
             }
             EditField.ROOMS.name -> {
                 Log.w("SearchViewModel", "$field: $fieldType = $value")
                 when (fieldType) {
-                    MIN -> searchRepository.roomsMin = digitalValue?.toString()
-                    MAX -> searchRepository.roomsMax = digitalValue?.toString()
+                    MIN -> searchRepository.setRoomsMin(digitalValue?.toString())
+                    MAX -> searchRepository.setRoomsMax(digitalValue?.toString())
                 }
             }
             EditField.BATHROOMS.name -> {
                 Log.w("SearchViewModel", "$field: $fieldType = $value")
                 when (fieldType) {
-                    MIN -> searchRepository.bathroomsMin = digitalValue?.toString()
-                    MAX -> searchRepository.bathroomsMax = digitalValue?.toString()
+                    MIN -> searchRepository.setBathroomsMin(digitalValue?.toString())
+                    MAX -> searchRepository.setBathroomsMax(digitalValue?.toString())
                 }
             }
             EditField.BEDROOMS.name -> {
                 Log.w("SearchViewModel", "$field: $fieldType = $value")
                 when (fieldType) {
-                    MIN -> searchRepository.bedroomsMin = digitalValue?.toString()
-                    MAX -> searchRepository.bedroomsMax = digitalValue?.toString()
+                    MIN -> searchRepository.setBedroomsMin(digitalValue?.toString())
+                    MAX -> searchRepository.setBedroomsMax(digitalValue?.toString())
                 }
             }
             EditField.PRICE.name -> {
                 Log.w("SearchViewModel", "$field: $fieldType = $value $currency")
                 when (fieldType) {
-                    MIN -> searchRepository.priceMin = digitalValue?.toString()
-                    MAX -> searchRepository.priceMax = digitalValue?.toString()
+                    MIN -> searchRepository.setPriceMin(digitalValue?.toString())
+                    MAX -> searchRepository.setPriceMax(digitalValue?.toString())
                 }
             }
             EditField.DESCRIPTION.name -> {
                 Log.w("SearchViewModel", "$field = $value")
-                searchRepository.description = value
+                searchRepository.setDescription(value)
             }
             EditField.CITY.name -> {
                 Log.w("SearchViewModel", "$field = $value")
-                searchRepository.city = value
+                searchRepository.setCity(value)
             }
             EditField.STATE.name -> {
                 Log.w("SearchViewModel", "$field = $value")
-                searchRepository.state = value
+                searchRepository.setState(value)
             }
             EditField.ZIP_CODE.name -> {
                 Log.w("SearchViewModel", "$field = $value")
-                searchRepository.zip = value
+                searchRepository.setZip(value)
             }
             EditField.COUNTRY.name -> {
                 Log.w("SearchViewModel", "$field = $value")
-                searchRepository.country = value
+                searchRepository.setCountry(value)
             }
             EditField.REGISTRATION_DATE.name -> {
                 Log.w("SearchViewModel", "$field: $fieldType = $value")
                 when (fieldType) {
-                    MIN -> searchRepository.registrationDateMin = value
-                    MAX -> searchRepository.registrationDateMax = value
+                    MIN -> searchRepository.setRegistrationDateMin(value)
+                    MAX -> searchRepository.setRegistrationDateMax(value)
                 }
             }
             EditField.SALE_DATE.name -> {
                 Log.w("SearchViewModel", "$field: $fieldType = $value")
                 when (fieldType) {
-                    MIN -> searchRepository.saleDateMin = value
-                    MAX -> searchRepository.saleDateMax = value
+                    MIN -> searchRepository.setSaleDateMin(value)
+                    MAX -> searchRepository.setSaleDateMax(value)
                 }
             }
         }
@@ -273,207 +287,57 @@ class SearchViewModel(
         val index = value.substringAfter(delimiter = "#", missingDelimiterValue = value).toInt()
         when (category) {
             DropdownMenuCategory.TYPE.name -> {
-                searchRepository.typeIndex = index
-                searchRepository.type = stringTypes.elementAt(index)
                 Log.w("SearchViewModel", "typeIndex = $index")
+                searchRepository.setDropdownMenuCategory(
+                    DropdownMenuCategory.TYPE, index = index, value = stringTypes.elementAt(index)
+                )
             }
             DropdownMenuCategory.AGENT.name -> {
-                searchRepository.agentIndex = index
-                searchRepository.agent = stringAgents.elementAt(index)
                 Log.w("SearchViewModel", "agentIndex = $index")
+                searchRepository.setDropdownMenuCategory(
+                    DropdownMenuCategory.AGENT, index = index, value = stringAgents.elementAt(index)
+                )
             }
         }
     }
 
     fun onPoiClick(poiItem: String, isSelected: Boolean) {
-        if (isSelected) searchRepository.itemPois.add(Poi(poiId = poiItem))
-        else searchRepository.itemPois.remove(Poi(poiId = poiItem))
+        if (isSelected) searchRepository.updateItemPois(
+            trueAddFalseRemove = true, poi = Poi(poiId = poiItem)
+        )
+        else searchRepository.updateItemPois(
+            trueAddFalseRemove = false, poi = Poi(poiId = poiItem)
+        )
 
-        val itemPois = searchRepository.itemPois
+        val itemPois = searchRepository.getItemPois()
         Log.w("SearchViewModel", "itemPois contains ${itemPois.size} items")
         itemPois.forEach { Log.w("SearchViewModel", it.poiId) }
     }
 
     fun onSalesRadioButtonClick(context: Context, button: String) {
         Log.w("SearchViewModel", "Sales selection is: $button")
-        searchRepository.salesRadioIndex = when (button) {
-            context.getString(R.string.for_sale) -> 0
-            context.getString(R.string.sold) -> 1
-            else -> DEFAULT_RADIO_INDEX
-        }
+        searchRepository.setSalesRadioIndex(
+            when (button) {
+                context.getString(R.string.for_sale) -> 0
+                context.getString(R.string.sold) -> 1
+                else -> DEFAULT_RADIO_INDEX
+            }
+        )
     }
 
     fun onPhotosRadioButtonClick(context: Context, button: String) {
         Log.w("SearchViewModel", "Photos selection is: $button")
-        searchRepository.photosRadioIndex = when (button) {
-            context.getString(R.string.with_photo) -> 0
-            context.getString(R.string.without_photo) -> 1
-            else -> DEFAULT_RADIO_INDEX
-        }
+        searchRepository.setPhotosRadioIndex(
+            when (button) {
+                context.getString(R.string.with_photo) -> 0
+                context.getString(R.string.without_photo) -> 1
+                else -> DEFAULT_RADIO_INDEX
+            }
+        )
     }
 
     fun getItemType(typeId: String, types: MutableList<Type>, stringTypes: MutableList<String>): String {
         return searchRepository.getItemType(typeId, types, stringTypes)
-    }
-
-    private fun applyFilters(
-        unfilteredList: MutableList<Property>,
-        addresses: MutableList<Address>,
-        types: MutableList<Type>,
-        agents: MutableList<Agent>,
-        photos: MutableList<Photo>,
-        propertyPoiJoins: MutableList<PropertyPoiJoin>,
-        currency: String,
-    ): MutableList<Property> {
-        var filteredList: MutableList<Property> = unfilteredList
-
-        searchRepository.surfaceMin?.let { surfaceMin ->
-            filteredList = filteredList.filter { property ->
-                property.surface?.let { it >= surfaceMin.toInt() } ?: false
-            }.toMutableList()
-        }
-        searchRepository.surfaceMax?.let { surfaceMax ->
-            filteredList = filteredList.filter { property ->
-                property.surface?.let { it <= surfaceMax.toInt() } ?: false
-            }.toMutableList()
-        }
-        searchRepository.roomsMin?.let { roomsMin ->
-            filteredList = filteredList.filter { property ->
-                property.nbOfRooms?.let { it >= roomsMin.toInt() } ?: false
-            }.toMutableList()
-        }
-        searchRepository.roomsMax?.let { roomsMax ->
-            filteredList = filteredList.filter { property ->
-                property.nbOfRooms?.let { it <= roomsMax.toInt() } ?: false
-            }.toMutableList()
-        }
-        searchRepository.bathroomsMin?.let { bathroomsMin ->
-            filteredList = filteredList.filter { property ->
-                property.nbOfBathrooms?.let { it >= bathroomsMin.toInt() } ?: false
-            }.toMutableList()
-        }
-        searchRepository.bathroomsMax?.let { bathroomsMax ->
-            filteredList = filteredList.filter { property ->
-                property.nbOfBathrooms?.let { it <= bathroomsMax.toInt() } ?: false
-            }.toMutableList()
-        }
-        searchRepository.bedroomsMin?.let { bedroomsMin ->
-            filteredList = filteredList.filter { property ->
-                property.nbOfBedrooms?.let { it >= bedroomsMin.toInt() } ?: false
-            }.toMutableList()
-        }
-        searchRepository.bedroomsMax?.let { bedroomsMax ->
-            filteredList = filteredList.filter { property ->
-                property.nbOfBedrooms?.let { it <= bedroomsMax.toInt() } ?: false
-            }.toMutableList()
-        }
-        searchRepository.priceMin?.let { value ->
-            val priceMin = searchRepository.convertPrice(value.toInt(), currency).toString()
-            filteredList = filteredList.filter { property ->
-                property.price?.let { it >= priceMin.toInt() } ?: false
-            }.toMutableList()
-        }
-        searchRepository.priceMax?.let { value ->
-            val priceMax = searchRepository.convertPrice(value.toInt(), currency).toString()
-            filteredList = filteredList.filter { property ->
-                property.price?.let { it <= priceMax.toInt() } ?: false
-            }.toMutableList()
-        }
-        searchRepository.description?.let { description ->
-            filteredList =
-                filteredList.filter { property -> property.description!!.contains(description) }
-                    .toMutableList()
-        }
-        searchRepository.zip?.let { zip ->
-            filteredList =
-                filteredList.filter { property ->
-                    val address =
-                        property.addressId?.let { addressRepository.addressFromId(it, addresses) }
-                    address?.let { it.zipCode == zip } ?: false
-                }.toMutableList()
-        }
-        searchRepository.city?.let { city ->
-            filteredList =
-                filteredList.filter { property ->
-                    val address =
-                        property.addressId?.let { addressRepository.addressFromId(it, addresses) }
-                    address?.let { it.city == city } ?: false
-                }.toMutableList()
-        }
-        searchRepository.state?.let { state ->
-            filteredList =
-                filteredList.filter { property ->
-                    val address =
-                        property.addressId?.let { addressRepository.addressFromId(it, addresses) }
-                    address?.let { it.state == state } ?: false
-                }.toMutableList()
-        }
-        searchRepository.country?.let { country ->
-            filteredList =
-                filteredList.filter { property ->
-                    val address =
-                        property.addressId?.let { addressRepository.addressFromId(it, addresses) }
-                    address?.let { it.country == country } ?: false
-                }.toMutableList()
-        }
-        searchRepository.registrationDateMin?.let { registrationDateMin ->
-            filteredList = filteredList.filter { property ->
-                property.registrationDate?.let { it >= registrationDateMin } ?: false
-            }.toMutableList()
-        }
-        searchRepository.registrationDateMax?.let { registrationDateMax ->
-            filteredList = filteredList.filter { property ->
-                property.registrationDate?.let { it <= registrationDateMax } ?: false
-            }.toMutableList()
-        }
-        searchRepository.saleDateMin?.let { saleDateMin ->
-            filteredList = filteredList.filter { property ->
-                property.saleDate?.let { it >= saleDateMin } ?: false
-            }.toMutableList()
-        }
-        searchRepository.saleDateMax?.let { saleDateMax ->
-            filteredList = filteredList.filter { property ->
-                property.saleDate?.let { it <= saleDateMax } ?: false
-            }.toMutableList()
-        }
-        searchRepository.type?.let {
-            val typeId = types.elementAt(searchRepository.typeIndex).typeId
-            filteredList = filteredList.filter { it.typeId == typeId }.toMutableList()
-        }
-        searchRepository.agent?.let {
-            val agentId = agents.elementAt(searchRepository.agentIndex).agentId
-            filteredList = filteredList.filter { it.agentId == agentId }.toMutableList()
-        }
-        when (searchRepository.salesRadioIndex) {
-            0 -> filteredList = filteredList.filter { it.saleDate == null }.toMutableList()
-            1 -> filteredList = filteredList.filter { it.saleDate != null }.toMutableList()
-        }
-        when (searchRepository.photosRadioIndex) {
-            0 -> {
-                filteredList = filteredList.filter { property ->
-                    val itemPhotos = photoRepository.itemPhotos(property.propertyId, photos)
-                    itemPhotos.isNotEmpty()
-                }.toMutableList()
-            }
-            1 -> {
-                filteredList = filteredList.filter { property ->
-                    val itemPhotos = photoRepository.itemPhotos(property.propertyId, photos)
-                    itemPhotos.isEmpty()
-                }.toMutableList()
-            }
-        }
-        val itemPois = searchRepository.itemPois
-        if (itemPois.isNotEmpty()) {
-            filteredList = filteredList.filter { property ->
-                itemPois.all { itemPoi ->
-                    propertyPoiJoins.any {
-                        it.propertyId == property.propertyId && it.poiId == itemPoi.poiId
-                    }
-                }
-            }.toMutableList()
-        }
-
-        return filteredList
     }
 
 }

@@ -1,5 +1,6 @@
 package com.aquaero.realestatemanager.repository
 
+import android.util.Log
 import com.aquaero.realestatemanager.DEFAULT_LIST_INDEX
 import com.aquaero.realestatemanager.DEFAULT_RADIO_INDEX
 import com.aquaero.realestatemanager.DropdownMenuCategory
@@ -49,22 +50,32 @@ class SearchRepository {
     private val itemPois: MutableList<Poi> = mutableListOf()
     private var filteredList: MutableList<Property> = mutableListOf()
 
-    /* SEARCH RESULTS FLOW */
+    /* SEARCH RESULTS FLOW */       // TODO: Case 2: Only if the flow is handled in the repository
 
-//    private var searchResults: MutableList<Property> = mutableListOf()
-//    private val _searchResultsFlow: MutableStateFlow<MutableList<Property>> = MutableStateFlow(searchResults)
-//    val searchResultsFlow: Flow<MutableList<Property>> = _searchResultsFlow
+    private var searchResults: MutableList<Property> = mutableListOf()
+    private val _searchResultsFlow: MutableStateFlow<MutableList<Property>> = MutableStateFlow(searchResults)
+    val searchResultsFlow: Flow<MutableList<Property>> = _searchResultsFlow
 
-    /* SCROLL TO RESULTS FLOW */
+    fun clearSearchResults() { searchResults = mutableListOf() }
+    fun updateSearchResults(results: MutableList<Property>) { searchResults = results }
+    fun updateSearchResultsFlow() {
+        _searchResultsFlow.value = searchResults
+        Log.w("SearchRepository", "Results list contains ${searchResults.size} items")
+    }
 
-    var scrollToResults: Int = 0
+
+    /* SCROLL TO RESULTS FLOW */        // TODO: Case 2: Only if the flow is handled in the repository
+
+    private var scrollToResults: Int = 0
     private val _scrollToResultsFlow: MutableStateFlow<Int> = MutableStateFlow(scrollToResults)
     val scrollToResultsFlow: Flow<Int> = _scrollToResultsFlow
 
     fun updateScrollToResultsFlow(scroll: Boolean) {
         scrollToResults = if (scroll) scrollToResults + 1 else 0
         _scrollToResultsFlow.value = scrollToResults
+        Log.w("SearchRepository", "Click on menu valid ${scrollToResults} times")
     }
+
 
     /* GETTERS */
     fun getDescription(): String? { return description }

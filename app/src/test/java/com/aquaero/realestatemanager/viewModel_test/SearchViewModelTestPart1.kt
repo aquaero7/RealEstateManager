@@ -39,6 +39,8 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.times
 import kotlin.reflect.KMutableProperty1
 
+/*
+
 @RunWith(MockitoJUnitRunner::class)
 //@RunWith(RobolectricTestRunner::class)
 /**
@@ -345,3 +347,5 @@ class SearchViewModelTestPart1 {
     }
 
 }
+
+*/

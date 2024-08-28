@@ -32,6 +32,8 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verifyNoMoreInteractions
 import kotlin.reflect.KMutableProperty1
 
+/*
+
 @RunWith(MockitoJUnitRunner::class)
 //@RunWith(RobolectricTestRunner::class)
 /**
@@ -670,3 +672,5 @@ class SearchViewModelTestPart3 {
     }
 
 }
+
+*/

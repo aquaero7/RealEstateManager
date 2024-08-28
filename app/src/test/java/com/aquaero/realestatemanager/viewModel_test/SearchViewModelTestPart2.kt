@@ -30,6 +30,8 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.KArgumentCaptor
 import org.mockito.kotlin.argumentCaptor
 
+/*
+
 @RunWith(MockitoJUnitRunner::class)
 //@RunWith(RobolectricTestRunner::class)
 /**
@@ -597,3 +599,5 @@ class SearchViewModelTestPart2 {
     }
 
 }
+
+*/

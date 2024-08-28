@@ -68,15 +68,6 @@ class SearchViewModel(
     private fun updateScrollToResultsFlow(scroll: Boolean) { searchRepository.updateScrollToResultsFlow(scroll) }
     //
 
-
-    init {
-        // Init of _searchResults at this place is needed to display the first property added
-        clearSearchResults()
-        updateSearchResultsFlow()
-        // Init scroll to results counter
-        resetScrollToResults()
-    }
-
     /* GETTERS */
     fun getDescription(): String? { return searchRepository.getDescription() }
     fun getZip(): String? { return searchRepository.getZip() }
@@ -103,36 +94,51 @@ class SearchViewModel(
     fun getPhotosRadioIndex(): Int { return searchRepository.getPhotosRadioIndex() }
     fun getItemPois(): MutableList<Poi> { return searchRepository.getItemPois() }
 
+    init {
+        // Init of _searchResults at this place is needed to display the first property added
+        clearSearchResults()
+        updateSearchResultsFlow()
+        // Init scroll to results counter
+        resetScrollToResults()
+    }
+
+    fun resetScrollToResults() { updateScrollToResultsFlow(scroll = false) }
+
+    fun resetData() {
+        clearCriteria()
+        clearSearchResults()
+        updateSearchResultsFlow()
+    }
 
     private fun clearCriteria() {
-        onClearButtonClick("", EditField.DESCRIPTION.name)
-        onClearButtonClick(MIN, EditField.PRICE.name)
-        onClearButtonClick(MAX, EditField.PRICE.name)
-        onClearButtonClick(MIN, EditField.SURFACE.name)
-        onClearButtonClick(MAX, EditField.SURFACE.name)
-        onClearButtonClick(MIN, EditField.ROOMS.name)
-        onClearButtonClick(MAX, EditField.ROOMS.name)
-        onClearButtonClick(MIN, EditField.BATHROOMS.name)
-        onClearButtonClick(MAX, EditField.BATHROOMS.name)
-        onClearButtonClick(MIN, EditField.BEDROOMS.name)
-        onClearButtonClick(MAX, EditField.BEDROOMS.name)
-        onClearButtonClick("", DropdownMenuCategory.TYPE.name)
-        onClearButtonClick("", DropdownMenuCategory.AGENT.name)
-        onClearButtonClick("", EditField.ZIP_CODE.name)
-        onClearButtonClick("", EditField.CITY.name)
-        onClearButtonClick("", EditField.STATE.name)
-        onClearButtonClick("", EditField.COUNTRY.name)
-        onClearButtonClick(MIN, EditField.REGISTRATION_DATE.name)
-        onClearButtonClick(MAX, EditField.REGISTRATION_DATE.name)
-        onClearButtonClick(MIN, EditField.SALE_DATE.name)
-        onClearButtonClick(MAX, EditField.SALE_DATE.name)
+        onClearButtonClick(field = EditField.DESCRIPTION.name)
+        onClearButtonClick(field = EditField.PRICE.name, bound = MIN)
+        onClearButtonClick(field = EditField.PRICE.name, bound = MAX)
+        onClearButtonClick(field = EditField.SURFACE.name, bound = MIN)
+        onClearButtonClick(field = EditField.SURFACE.name, bound = MAX)
+        onClearButtonClick(field = EditField.ROOMS.name, bound = MIN)
+        onClearButtonClick(field = EditField.ROOMS.name, bound = MAX)
+        onClearButtonClick(field = EditField.BATHROOMS.name, bound = MIN)
+        onClearButtonClick(field = EditField.BATHROOMS.name, bound = MAX)
+        onClearButtonClick(field = EditField.BEDROOMS.name, bound = MIN)
+        onClearButtonClick(field = EditField.BEDROOMS.name, bound = MAX)
+        onClearButtonClick(field = DropdownMenuCategory.TYPE.name)
+        onClearButtonClick(field = DropdownMenuCategory.AGENT.name)
+        onClearButtonClick(field = EditField.ZIP_CODE.name)
+        onClearButtonClick(field = EditField.CITY.name)
+        onClearButtonClick(field = EditField.STATE.name)
+        onClearButtonClick(field = EditField.COUNTRY.name)
+        onClearButtonClick(field = EditField.REGISTRATION_DATE.name, bound = MIN)
+        onClearButtonClick(field = EditField.REGISTRATION_DATE.name, bound = MAX)
+        onClearButtonClick(field = EditField.SALE_DATE.name, bound = MIN)
+        onClearButtonClick(field = EditField.SALE_DATE.name, bound = MAX)
 
         searchRepository.setSalesRadioIndex(DEFAULT_RADIO_INDEX)
         searchRepository.setPhotosRadioIndex(DEFAULT_RADIO_INDEX)
         searchRepository.clearItemPois()
     }
 
-    fun onClearButtonClick(bound: String, field: String) {
+    fun onClearButtonClick(field: String, bound: String? = null) {
         when (field) {
             EditField.DESCRIPTION.name -> searchRepository.setDescription(null)
             EditField.PRICE.name -> when (bound) {
@@ -157,12 +163,12 @@ class SearchViewModel(
             }
             DropdownMenuCategory.TYPE.name -> {
                 searchRepository.setDropdownMenuCategory(
-                    DropdownMenuCategory.TYPE, index = DEFAULT_LIST_INDEX, value = null
+                    category = DropdownMenuCategory.TYPE.name, index = DEFAULT_LIST_INDEX, value = null
                 )
             }
             DropdownMenuCategory.AGENT.name -> {
                 searchRepository.setDropdownMenuCategory(
-                    category = DropdownMenuCategory.AGENT, index = DEFAULT_LIST_INDEX, value = null
+                    category = DropdownMenuCategory.AGENT.name, index = DEFAULT_LIST_INDEX, value = null
                 )
             }
             EditField.ZIP_CODE.name -> searchRepository.setZip(null)
@@ -179,14 +185,6 @@ class SearchViewModel(
             }
         }
     }
-
-    fun resetData() {
-        clearCriteria()
-        clearSearchResults()
-        updateSearchResultsFlow()
-    }
-
-    fun resetScrollToResults() { updateScrollToResultsFlow(scroll = false) }
 
     fun onClickMenu(
         properties: MutableList<Property>,
@@ -309,13 +307,13 @@ class SearchViewModel(
             DropdownMenuCategory.TYPE.name -> {
                 Log.w("SearchViewModel", "typeIndex = $index")
                 searchRepository.setDropdownMenuCategory(
-                    DropdownMenuCategory.TYPE, index = index, value = stringTypes.elementAt(index)
+                    DropdownMenuCategory.TYPE.name, index = index, value = stringTypes.elementAt(index)
                 )
             }
             DropdownMenuCategory.AGENT.name -> {
                 Log.w("SearchViewModel", "agentIndex = $index")
                 searchRepository.setDropdownMenuCategory(
-                    DropdownMenuCategory.AGENT, index = index, value = stringAgents.elementAt(index)
+                    DropdownMenuCategory.AGENT.name, index = index, value = stringAgents.elementAt(index)
                 )
             }
         }

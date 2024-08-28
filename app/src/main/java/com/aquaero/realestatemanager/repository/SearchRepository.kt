@@ -76,6 +76,22 @@ class SearchRepository {
         Log.w("SearchRepository", "Click on menu valid ${scrollToResults} times")
     }
 
+    /**
+     * For test only
+     * Returns the repository private MutableStateFlow variable: _scrollToResultsFlow
+     */
+    fun getScrollToResultsStateFlow(): MutableStateFlow<Int> { return _scrollToResultsFlow }
+    /**
+     * For test only
+     * Returns the repository private Int variable: typeIndex
+     */
+    fun getTypeIndex(): Int { return typeIndex }
+    /**
+     * For test only
+     * Returns the repository private Int variable: agentIndex
+     */
+    fun getAgentIndex(): Int { return agentIndex }
+
 
     /* GETTERS */
     fun getDescription(): String? { return description }
@@ -142,13 +158,13 @@ class SearchRepository {
         if (trueAddFalseRemove) itemPois.add(poi) else itemPois.remove(poi)
     }
 
-    fun setDropdownMenuCategory(category: DropdownMenuCategory, index: Int, value: String?) {
+    fun setDropdownMenuCategory(category: String, index: Int, value: String?) {
         when (category) {
-            DropdownMenuCategory.TYPE -> {
+            DropdownMenuCategory.TYPE.name -> {
                 typeIndex = index
                 type = value
             }
-            DropdownMenuCategory.AGENT -> {
+            DropdownMenuCategory.AGENT.name -> {
                 agentIndex = index
                 agent = value
             }
@@ -180,145 +196,145 @@ class SearchRepository {
 
         surfaceMin?.let { surfaceMin ->
             filteredList = filterList(
-                SearchField.SURFACE, Property::surface as KMutableProperty1<Any, Any?>,
+                SearchField.SURFACE.name, Property::surface as KMutableProperty1<Any, Any?>,
                 bound = MIN, fieldValue = surfaceMin
             )
         }
         surfaceMax?.let { surfaceMax ->
             filteredList = filterList(
-                SearchField.SURFACE, Property::surface as KMutableProperty1<Any, Any?>,
+                SearchField.SURFACE.name, Property::surface as KMutableProperty1<Any, Any?>,
                 bound = MAX, fieldValue = surfaceMax
             )
         }
         roomsMin?.let { roomsMin ->
             filteredList = filterList(
-                SearchField.ROOMS, Property::nbOfRooms as KMutableProperty1<Any, Any?>,
+                SearchField.ROOMS.name, Property::nbOfRooms as KMutableProperty1<Any, Any?>,
                 bound = MIN, fieldValue = roomsMin
             )
         }
         roomsMax?.let { roomsMax ->
             filteredList = filterList(
-                SearchField.ROOMS, Property::nbOfRooms as KMutableProperty1<Any, Any?>,
+                SearchField.ROOMS.name, Property::nbOfRooms as KMutableProperty1<Any, Any?>,
                 bound = MAX, fieldValue = roomsMax
             )
         }
         bathroomsMin?.let { bathroomsMin ->
             filteredList = filterList(
-                SearchField.BATHROOMS, Property::nbOfBathrooms as KMutableProperty1<Any, Any?>,
+                SearchField.BATHROOMS.name, Property::nbOfBathrooms as KMutableProperty1<Any, Any?>,
                 bound = MIN, fieldValue = bathroomsMin
             )
         }
         bathroomsMax?.let { bathroomsMax ->
             filteredList = filterList(
-                SearchField.BATHROOMS, Property::nbOfBathrooms as KMutableProperty1<Any, Any?>,
+                SearchField.BATHROOMS.name, Property::nbOfBathrooms as KMutableProperty1<Any, Any?>,
                 bound = MAX, fieldValue = bathroomsMax
             )
         }
         bedroomsMin?.let { bedroomsMin ->
             filteredList = filterList(
-                SearchField.BEDROOMS, Property::nbOfBedrooms as KMutableProperty1<Any, Any?>,
+                SearchField.BEDROOMS.name, Property::nbOfBedrooms as KMutableProperty1<Any, Any?>,
                 bound = MIN, fieldValue = bedroomsMin
             )
         }
         bedroomsMax?.let { bedroomsMax ->
             filteredList = filterList(
-                SearchField.BEDROOMS, Property::nbOfBedrooms as KMutableProperty1<Any, Any?>,
+                SearchField.BEDROOMS.name, Property::nbOfBedrooms as KMutableProperty1<Any, Any?>,
                 bound = MAX, fieldValue = bedroomsMax
             )
         }
         priceMin?.let { value ->
             val priceMin = convertPrice(value.toInt(), currency).toString()
             filteredList = filterList(
-                SearchField.PRICE, Property::price as KMutableProperty1<Any, Any?>,
+                SearchField.PRICE.name, Property::price as KMutableProperty1<Any, Any?>,
                 bound = MIN, fieldValue = priceMin
             )
         }
         priceMax?.let { value ->
             val priceMax = convertPrice(value.toInt(), currency).toString()
             filteredList = filterList(
-                SearchField.PRICE, Property::price as KMutableProperty1<Any, Any?>,
+                SearchField.PRICE.name, Property::price as KMutableProperty1<Any, Any?>,
                 bound = MAX, fieldValue = priceMax
             )
         }
         description?.let { description ->
             filteredList = filterList(
-                SearchField.DESCRIPTION, Property::description as KMutableProperty1<Any, Any?>,
+                SearchField.DESCRIPTION.name, Property::description as KMutableProperty1<Any, Any?>,
                 fieldValue = description
             )
         }
         zip?.let { zip ->
             filteredList = filterList(
-                SearchField.ZIP_CODE, Address::zipCode as KMutableProperty1<Any, Any?>,
+                SearchField.ZIP_CODE.name, Address::zipCode as KMutableProperty1<Any, Any?>,
                 fieldValue = zip, addresses = addresses, addressRepository = addressRepository
             )
         }
         city?.let { city ->
             filteredList = filterList(
-                SearchField.CITY, Address::city as KMutableProperty1<Any, Any?>,
+                SearchField.CITY.name, Address::city as KMutableProperty1<Any, Any?>,
                 fieldValue = city, addresses = addresses, addressRepository = addressRepository
             )
         }
         state?.let { state ->
             filteredList = filterList(
-                SearchField.STATE, Address::state as KMutableProperty1<Any, Any?>,
+                SearchField.STATE.name, Address::state as KMutableProperty1<Any, Any?>,
                 fieldValue = state, addresses = addresses, addressRepository = addressRepository
             )
         }
         country?.let { country ->
             filteredList = filterList(
-                SearchField.COUNTRY, Address::country as KMutableProperty1<Any, Any?>,
+                SearchField.COUNTRY.name, Address::country as KMutableProperty1<Any, Any?>,
                 fieldValue = country, addresses = addresses, addressRepository = addressRepository
             )
         }
         registrationDateMin?.let { registrationDateMin ->
             filteredList = filterList(
-                SearchField.REGISTRATION_DATE, Property::registrationDate as KMutableProperty1<Any, Any?>,
+                SearchField.REGISTRATION_DATE.name, Property::registrationDate as KMutableProperty1<Any, Any?>,
                 bound = MIN, fieldValue = registrationDateMin
             )
         }
         registrationDateMax?.let { registrationDateMax ->
             filteredList = filterList(
-                SearchField.REGISTRATION_DATE, Property::registrationDate as KMutableProperty1<Any, Any?>,
+                SearchField.REGISTRATION_DATE.name, Property::registrationDate as KMutableProperty1<Any, Any?>,
                 bound = MAX, fieldValue = registrationDateMax
             )
         }
         saleDateMin?.let { saleDateMin ->
             filteredList = filterList(
-                SearchField.SALE_DATE, Property::saleDate as KMutableProperty1<Any, Any?>,
+                SearchField.SALE_DATE.name, Property::saleDate as KMutableProperty1<Any, Any?>,
                 bound = MIN, fieldValue = saleDateMin
             )
         }
         saleDateMax?.let { saleDateMax ->
             filteredList = filterList(
-                SearchField.SALE_DATE, Property::saleDate as KMutableProperty1<Any, Any?>,
+                SearchField.SALE_DATE.name, Property::saleDate as KMutableProperty1<Any, Any?>,
                 bound = MAX, fieldValue = saleDateMax
             )
         }
         type?.let {
             val typeId = types.elementAt(typeIndex).typeId
             filteredList = filterList(
-                SearchField.TYPE, Property::typeId as KMutableProperty1<Any, Any?>,
+                SearchField.TYPE.name, Property::typeId as KMutableProperty1<Any, Any?>,
                 fieldValue = typeId
             )
         }
         agent?.let {
             val agentId = agents.elementAt(agentIndex).agentId
             filteredList = filterList(
-                SearchField.AGENT, Property::agentId as KMutableProperty1<Any, Any?>,
+                SearchField.AGENT.name, Property::agentId as KMutableProperty1<Any, Any?>,
                 fieldValue = agentId
             )
         }
         filteredList = filterList(
-            SearchField.SALES_STATUS, Property::saleDate as KMutableProperty1<Any, Any?>,
+            SearchField.SALES_STATUS.name, Property::saleDate as KMutableProperty1<Any, Any?>,
             fieldValue = salesRadioIndex
         )
         filteredList = filterList(
-            SearchField.PHOTOS_STATUS, Property::propertyId as KMutableProperty1<Any, Any?>,
+            SearchField.PHOTOS_STATUS.name, Property::propertyId as KMutableProperty1<Any, Any?>,
             fieldValue = photosRadioIndex, photos = photos, photoRepository = photoRepository,
         )
         if (itemPois.isNotEmpty()) {
             filteredList = filterList(
-                SearchField.POIS, Property::propertyId as KMutableProperty1<Any, Any?>,
+                SearchField.POIS.name, Property::propertyId as KMutableProperty1<Any, Any?>,
                 propertyPoiJoins = propertyPoiJoins
             )
         }
@@ -327,7 +343,7 @@ class SearchRepository {
     }
 
     fun filterList(
-        field: SearchField,
+        field: String,
         getter: KMutableProperty1<Any, Any?>,
         bound: String? = null,
         fieldValue: Any? = null,
@@ -338,7 +354,7 @@ class SearchRepository {
         propertyPoiJoins: MutableList<PropertyPoiJoin>? = null
     ): MutableList<Property> {
         return when (field) {
-            SearchField.DESCRIPTION -> {
+            SearchField.DESCRIPTION.name -> {
                 filteredList.filter { property ->
                     val value = getter.get(property)
                     if (fieldValue != null) {
@@ -347,7 +363,7 @@ class SearchRepository {
                 }.toMutableList()
             }
 
-            SearchField.TYPE, SearchField.AGENT -> {
+            SearchField.TYPE.name, SearchField.AGENT.name -> {
                 filteredList.filter { property ->
                     val value = getter.get(property)
                     when (getter) {
@@ -358,7 +374,7 @@ class SearchRepository {
                 }.toMutableList()
             }
 
-            SearchField.SALES_STATUS -> {
+            SearchField.SALES_STATUS.name -> {
                 when (fieldValue) {
                     0 -> filteredList.filter { property -> getter.get(property) == null }
                         .toMutableList()
@@ -368,7 +384,7 @@ class SearchRepository {
                 }
             }
 
-            SearchField.PHOTOS_STATUS -> {
+            SearchField.PHOTOS_STATUS.name -> {
                 filteredList.filter { property ->
                     val value = getter.get(property)
                     if (photoRepository != null && photos != null) {
@@ -384,7 +400,7 @@ class SearchRepository {
                 }.toMutableList()
             }
 
-            SearchField.POIS -> {
+            SearchField.POIS.name -> {
                 filteredList.filter { property ->
                     val value = getter.get(property)
                     value?.let {
@@ -399,7 +415,8 @@ class SearchRepository {
                 }.toMutableList()
             }
 
-            SearchField.ZIP_CODE, SearchField.CITY, SearchField.STATE, SearchField.COUNTRY -> {
+            SearchField.ZIP_CODE.name, SearchField.CITY.name,
+            SearchField.STATE.name, SearchField.COUNTRY.name -> {
                 filteredList.filter { property ->
                     if (addressRepository != null && addresses != null) {
                         val address =
@@ -410,7 +427,7 @@ class SearchRepository {
                 }.toMutableList()
             }
 
-            SearchField.REGISTRATION_DATE, SearchField.SALE_DATE -> {
+            SearchField.REGISTRATION_DATE.name, SearchField.SALE_DATE.name -> {
                 filteredList.filter { property ->
                     val value = getter.get(property)
                     when {

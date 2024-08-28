@@ -84,8 +84,8 @@ fun SearchComposable(
     val onPhotosRadioButtonClick: (String) -> Unit = {
         searchViewModel.onPhotosRadioButtonClick(context = context , button = it)
     }
-    val onClearButtonClick: (String, String) -> Unit = { bound, field ->
-        searchViewModel.onClearButtonClick(bound, field)
+    val onClearButtonClick: (String, String?) -> Unit = { field, bound ->
+        searchViewModel.onClearButtonClick(field, bound)
     }
     val onClearAllButtonClick: () -> Unit = {
         searchViewModel.resetScrollToResults()

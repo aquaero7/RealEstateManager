@@ -9,8 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.DEFAULT_START_POSITION_DP
 import com.aquaero.realestatemanager.SEARCH_RESULT_START_POSITION_DP
@@ -69,8 +67,8 @@ fun SearchComposable(
     val photosRadioIndex by remember { mutableIntStateOf(searchViewModel.getPhotosRadioIndex()) }
     val itemPois by remember { mutableStateOf(searchViewModel.getItemPois().toList()) }
 
-    val onFieldValueChange: (String, String?, String) -> Unit = { field, fieldType, value ->
-        searchViewModel.onFieldValueChange(field = field, fieldType = fieldType, fieldValue = value, currency = currency)
+    val onFieldValueChange: (String, String?, String) -> Unit = { field, bound, value ->
+        searchViewModel.onFieldValueChange(field = field, bound = bound, fieldValue = value, currency = currency)
     }
     val onDropdownMenuValueChange: (String) -> Unit = {
         searchViewModel.onDropdownMenuValueChange(value = it, stringTypes = stringTypes, stringAgents = stringAgents)

@@ -22,7 +22,6 @@ import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.SearchRepository
 import com.aquaero.realestatemanager.utils.areDigitsOnly
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 
 class SearchViewModel(
     private val addressRepository: AddressRepository,
@@ -215,7 +214,7 @@ class SearchViewModel(
 
     fun onFieldValueChange(
         field: String,
-        fieldType: String?,
+        bound: String?,
         fieldValue: String,
         currency: String
     ) {
@@ -225,36 +224,36 @@ class SearchViewModel(
         }
         when (field) {
             EditField.SURFACE.name -> {
-                Log.w("SearchViewModel", "$field: $fieldType = $value")
-                when (fieldType) {
+                Log.w("SearchViewModel", "$field: $bound = $value")
+                when (bound) {
                     MIN -> searchRepository.setSurfaceMin(digitalValue?.toString())
                     MAX -> searchRepository.setSurfaceMax(digitalValue?.toString())
                 }
             }
             EditField.ROOMS.name -> {
-                Log.w("SearchViewModel", "$field: $fieldType = $value")
-                when (fieldType) {
+                Log.w("SearchViewModel", "$field: $bound = $value")
+                when (bound) {
                     MIN -> searchRepository.setRoomsMin(digitalValue?.toString())
                     MAX -> searchRepository.setRoomsMax(digitalValue?.toString())
                 }
             }
             EditField.BATHROOMS.name -> {
-                Log.w("SearchViewModel", "$field: $fieldType = $value")
-                when (fieldType) {
+                Log.w("SearchViewModel", "$field: $bound = $value")
+                when (bound) {
                     MIN -> searchRepository.setBathroomsMin(digitalValue?.toString())
                     MAX -> searchRepository.setBathroomsMax(digitalValue?.toString())
                 }
             }
             EditField.BEDROOMS.name -> {
-                Log.w("SearchViewModel", "$field: $fieldType = $value")
-                when (fieldType) {
+                Log.w("SearchViewModel", "$field: $bound = $value")
+                when (bound) {
                     MIN -> searchRepository.setBedroomsMin(digitalValue?.toString())
                     MAX -> searchRepository.setBedroomsMax(digitalValue?.toString())
                 }
             }
             EditField.PRICE.name -> {
-                Log.w("SearchViewModel", "$field: $fieldType = $value $currency")
-                when (fieldType) {
+                Log.w("SearchViewModel", "$field: $bound = $value $currency")
+                when (bound) {
                     MIN -> searchRepository.setPriceMin(digitalValue?.toString())
                     MAX -> searchRepository.setPriceMax(digitalValue?.toString())
                 }
@@ -280,15 +279,15 @@ class SearchViewModel(
                 searchRepository.setCountry(value)
             }
             EditField.REGISTRATION_DATE.name -> {
-                Log.w("SearchViewModel", "$field: $fieldType = $value")
-                when (fieldType) {
+                Log.w("SearchViewModel", "$field: $bound = $value")
+                when (bound) {
                     MIN -> searchRepository.setRegistrationDateMin(value)
                     MAX -> searchRepository.setRegistrationDateMax(value)
                 }
             }
             EditField.SALE_DATE.name -> {
-                Log.w("SearchViewModel", "$field: $fieldType = $value")
-                when (fieldType) {
+                Log.w("SearchViewModel", "$field: $bound = $value")
+                when (bound) {
                     MIN -> searchRepository.setSaleDateMin(value)
                     MAX -> searchRepository.setSaleDateMax(value)
                 }

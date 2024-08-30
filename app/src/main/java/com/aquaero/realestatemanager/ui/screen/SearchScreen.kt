@@ -192,9 +192,9 @@ fun SearchScreen(
             iconCD = stringResource(id = R.string.cd_price),
             minText = priceMinValue,
             maxText = priceMaxValue,
-            onValueChange = { fieldType, value ->
-                onFieldValueChange(EditField.PRICE.name, fieldType, value)
-                Log.w("SearchScreen", "Price: $fieldType value = $value")
+            onValueChange = { bound, value ->
+                onFieldValueChange(EditField.PRICE.name, bound, value)
+                Log.w("SearchScreen", "Price: $bound value = $value")
             },
             onClearButtonClick = { onClearButtonClick(EditField.PRICE.name, it) },
         )
@@ -205,9 +205,9 @@ fun SearchScreen(
             iconCD = stringResource(id = R.string.cd_surface),
             minText = surfaceMinValue,
             maxText = surfaceMaxValue,
-            onValueChange = { fieldType, value ->
-                onFieldValueChange(EditField.SURFACE.name, fieldType, value)
-                Log.w("SearchScreen", "Surface: $fieldType value = $value")
+            onValueChange = { bound, value ->
+                onFieldValueChange(EditField.SURFACE.name, bound, value)
+                Log.w("SearchScreen", "Surface: $bound value = $value")
             },
             onClearButtonClick = { onClearButtonClick(EditField.SURFACE.name, it) },
         )
@@ -218,9 +218,9 @@ fun SearchScreen(
             iconCD = stringResource(id = R.string.cd_rooms),
             minText = roomsMinValue,
             maxText = roomsMaxValue,
-            onValueChange = { fieldType, value ->
-                onFieldValueChange(EditField.ROOMS.name, fieldType, value)
-                Log.w("SearchScreen", "Rooms: $fieldType value = $value")
+            onValueChange = { bound, value ->
+                onFieldValueChange(EditField.ROOMS.name, bound, value)
+                Log.w("SearchScreen", "Rooms: $bound value = $value")
             },
             onClearButtonClick = { onClearButtonClick(EditField.ROOMS.name, it) },
         )
@@ -231,9 +231,9 @@ fun SearchScreen(
             iconCD = stringResource(id = R.string.cd_bathrooms),
             minText = bathroomsMinValue,
             maxText = bathroomsMaxValue,
-            onValueChange = { fieldType, value ->
-                onFieldValueChange(EditField.BATHROOMS.name, fieldType, value)
-                Log.w("SearchScreen", "Bathrooms: $fieldType value = $value")
+            onValueChange = { bound, value ->
+                onFieldValueChange(EditField.BATHROOMS.name, bound, value)
+                Log.w("SearchScreen", "Bathrooms: $bound value = $value")
             },
             onClearButtonClick = { onClearButtonClick(EditField.BATHROOMS.name, it) },
         )
@@ -244,9 +244,9 @@ fun SearchScreen(
             iconCD = stringResource(id = R.string.cd_bedrooms),
             minText = bedroomsMinValue,
             maxText = bedroomsMaxValue,
-            onValueChange = { fieldType, value ->
-                onFieldValueChange(EditField.BEDROOMS.name, fieldType, value)
-                Log.w("SearchScreen", "Bedrooms: $fieldType value = $value")
+            onValueChange = { bound, value ->
+                onFieldValueChange(EditField.BEDROOMS.name, bound, value)
+                Log.w("SearchScreen", "Bedrooms: $bound value = $value")
             },
             onClearButtonClick = { onClearButtonClick(EditField.BEDROOMS.name, it) },
         )
@@ -300,9 +300,9 @@ fun SearchScreen(
             iconCD = stringResource(id = R.string.cd_registration_date),
             minText = registrationDateMinValue,
             maxText = registrationDateMaxValue,
-            onValueChange = { fieldType, value ->
-                onFieldValueChange(EditField.REGISTRATION_DATE.name, fieldType, value)
-                Log.w("SearchScreen", "Registration date: $fieldType value = $value")
+            onValueChange = { bound, value ->
+                onFieldValueChange(EditField.REGISTRATION_DATE.name, bound, value)
+                Log.w("SearchScreen", "Registration date: $bound value = $value")
             },
             onClearButtonClick = { onClearButtonClick(EditField.REGISTRATION_DATE.name, it) },
             shouldBeDigitsOnly = false,
@@ -315,9 +315,9 @@ fun SearchScreen(
             iconCD = stringResource(id = R.string.cd_sale_date),
             minText = saleDateMinValue,
             maxText = saleDateMaxValue,
-            onValueChange = { fieldType, value ->
-                onFieldValueChange(EditField.SALE_DATE.name, fieldType, value)
-                Log.w("SearchScreen", "Sale date: $fieldType value = $value")
+            onValueChange = { bound, value ->
+                onFieldValueChange(EditField.SALE_DATE.name, bound, value)
+                Log.w("SearchScreen", "Sale date: $bound value = $value")
             },
             onClearButtonClick = { onClearButtonClick(EditField.SALE_DATE.name, it) },
             shouldBeDigitsOnly = false,

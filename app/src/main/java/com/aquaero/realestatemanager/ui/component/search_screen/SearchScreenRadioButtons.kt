@@ -14,7 +14,7 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -28,11 +28,11 @@ import com.aquaero.realestatemanager.R
 
 @Composable
 fun SearchScreenRadioButtons(
-    radioOptions: List<String>,
+    radioOptions: List<Int>,
     radioIndex: Int,
-    radioButtonClick: (String) -> Unit,
+    radioButtonClick: (Int) -> Unit,
 ) {
-    var selectedOption by remember { mutableStateOf(radioOptions[radioIndex]) }
+    var selectedOption by remember { mutableIntStateOf(radioOptions[radioIndex]) }
     val color = MaterialTheme.colorScheme.tertiary
 
     Row(
@@ -73,7 +73,7 @@ fun SearchScreenRadioButtons(
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
                         lineHeight = 14.sp,
-                        text = it
+                        text = stringResource(id = it)
                     )
                 }
             }
@@ -88,13 +88,13 @@ fun SearchScreenRadioButtonsPreview() {
     Column {
         SearchScreenRadioButtons(
             radioOptions =
-            listOf(stringResource(id = R.string.for_sale), stringResource(id = R.string.sold), stringResource(id = R.string.both)),
+            listOf(R.string.for_sale, R.string.sold, R.string.both),
             radioIndex = 2,
             radioButtonClick = {},
         )
         SearchScreenRadioButtons(
             radioOptions =
-            listOf(stringResource(id = R.string.with_photo), stringResource(id = R.string.without_photo), stringResource(id = R.string.both)),
+            listOf(R.string.with_photo, R.string.without_photo, R.string.both),
             radioIndex = 2,
             radioButtonClick = {},
         )

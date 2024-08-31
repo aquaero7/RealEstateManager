@@ -1,6 +1,5 @@
 package com.aquaero.realestatemanager.viewmodel
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.aquaero.realestatemanager.DEFAULT_LIST_INDEX
@@ -10,6 +9,7 @@ import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.MAX
 import com.aquaero.realestatemanager.MIN
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.RadioButtonCategory
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Photo
@@ -331,26 +331,29 @@ class SearchViewModel(
         itemPois.forEach { Log.w("SearchViewModel", it.poiId) }
     }
 
-    fun onSalesRadioButtonClick(context: Context, button: String) {
-        Log.w("SearchViewModel", "Sales selection is: $button")
-        searchRepository.setSalesRadioIndex(
-            when (button) {
-                context.getString(R.string.for_sale) -> 0
-                context.getString(R.string.sold) -> 1
-                else -> DEFAULT_RADIO_INDEX
+    fun onRadioButtonClick(category: String, button: Int) {
+        when (category) {
+            RadioButtonCategory.SALES.name -> {
+                Log.w("SearchViewModel", "Sales selection is: $button")
+                searchRepository.setSalesRadioIndex(
+                    when (button) {
+                        R.string.for_sale -> 0
+                        R.string.sold -> 1
+                        else -> DEFAULT_RADIO_INDEX
+                    }
+                )
             }
-        )
-    }
-
-    fun onPhotosRadioButtonClick(context: Context, button: String) {
-        Log.w("SearchViewModel", "Photos selection is: $button")
-        searchRepository.setPhotosRadioIndex(
-            when (button) {
-                context.getString(R.string.with_photo) -> 0
-                context.getString(R.string.without_photo) -> 1
-                else -> DEFAULT_RADIO_INDEX
+            RadioButtonCategory.PHOTOS.name -> {
+                Log.w("SearchViewModel", "Photos selection is: $button")
+                searchRepository.setPhotosRadioIndex(
+                    when (button) {
+                        R.string.with_photo -> 0
+                        R.string.without_photo -> 1
+                        else -> DEFAULT_RADIO_INDEX
+                    }
+                )
             }
-        )
+        }
     }
 
     fun getItemType(typeId: String, types: MutableList<Type>, stringTypes: MutableList<String>): String {

@@ -91,6 +91,14 @@ class SearchRepository {
      * Returns the repository private Int variable: agentIndex
      */
     fun getAgentIndex(): Int { return agentIndex }
+    /**
+     * For test only
+     * Set the repository private list: itemPois
+     */
+    fun setItemPois(poisList: MutableList<Poi>) {
+        itemPois.clear()
+        itemPois.addAll(poisList)
+    }
 
 
     /* GETTERS */

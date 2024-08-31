@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import com.aquaero.realestatemanager.AppContentType
 import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.RadioButtonCategory
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
@@ -109,8 +110,7 @@ fun SearchScreen(
     onFieldValueChange: (String, String?, String) -> Unit,
     onDropdownMenuValueChange: (String) -> Unit,
     onPoiClick: (String, Boolean) -> Unit,
-    onSalesRadioButtonClick: (String) -> Unit,
-    onPhotosRadioButtonClick: (String) -> Unit,
+    onRadioButtonClick: (String, Int) -> Unit,
     onClearButtonClick: (String, String?) -> Unit,
     onClearAllButtonClick: () -> Unit,
     popBackStack: () -> Unit,
@@ -325,23 +325,15 @@ fun SearchScreen(
         )
         // Sales status
         SearchScreenRadioButtons(
-            radioOptions = listOf(
-                stringResource(id = R.string.for_sale),
-                stringResource(id = R.string.sold),
-                stringResource(id = R.string.both)
-            ),
+            radioOptions = listOf(R.string.for_sale, R.string.sold, R.string.both),
             radioIndex = salesRadioIndex,
-            radioButtonClick = onSalesRadioButtonClick,
+            radioButtonClick = { onRadioButtonClick(RadioButtonCategory.SALES.name, it) },
         )
         // Photos status
         SearchScreenRadioButtons(
-            radioOptions = listOf(
-                stringResource(id = R.string.with_photo),
-                stringResource(id = R.string.without_photo),
-                stringResource(id = R.string.both)
-            ),
+            radioOptions = listOf(R.string.with_photo, R.string.without_photo, R.string.both),
             radioIndex = photosRadioIndex,
-            radioButtonClick = onPhotosRadioButtonClick,
+            radioButtonClick = { onRadioButtonClick(RadioButtonCategory.PHOTOS.name, it) },
         )
         // Points of interest
         Column(

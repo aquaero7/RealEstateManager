@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.DEFAULT_START_POSITION_DP
@@ -34,7 +33,6 @@ fun SearchComposable(
     photos: List<Photo>,
     popBackStack: () -> Unit,
 ) {
-    val context = LocalContext.current
     val density = LocalDensity.current
     val defaultStartPositionPxInt by remember {
         mutableIntStateOf(convertDpToPxInt(dpValue = DEFAULT_START_POSITION_DP, density = density))
@@ -76,11 +74,8 @@ fun SearchComposable(
     val onPoiClick: (String, Boolean) -> Unit = { poiItem, isSelected ->
         searchViewModel.onPoiClick(poiItem = poiItem, isSelected = isSelected)
     }
-    val onSalesRadioButtonClick: (String) -> Unit = {
-        searchViewModel.onSalesRadioButtonClick(context = context , button = it)
-    }
-    val onPhotosRadioButtonClick: (String) -> Unit = {
-        searchViewModel.onPhotosRadioButtonClick(context = context , button = it)
+    val onRadioButtonClick: (String, Int) -> Unit = { category, button ->
+        searchViewModel.onRadioButtonClick(category = category , button = button)
     }
     val onClearButtonClick: (String, String?) -> Unit = { field, bound ->
         searchViewModel.onClearButtonClick(field, bound)
@@ -161,8 +156,7 @@ fun SearchComposable(
         onFieldValueChange = onFieldValueChange,
         onDropdownMenuValueChange = onDropdownMenuValueChange,
         onPoiClick = onPoiClick,
-        onSalesRadioButtonClick = onSalesRadioButtonClick,
-        onPhotosRadioButtonClick = onPhotosRadioButtonClick,
+        onRadioButtonClick = onRadioButtonClick,
         onClearButtonClick = onClearButtonClick,
         onClearAllButtonClick = onClearAllButtonClick,
         popBackStack = popBackStack,

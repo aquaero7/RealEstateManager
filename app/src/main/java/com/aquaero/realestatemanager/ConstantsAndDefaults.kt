@@ -65,6 +65,15 @@ enum class DropdownMenuCategory {
     AGENT,
 }
 
+// Radio buttons
+/**
+ * Categories of radio buttons.
+ */
+enum class RadioButtonCategory {
+    SALES,
+    PHOTOS,
+}
+
 
 // Edition fields
 /**

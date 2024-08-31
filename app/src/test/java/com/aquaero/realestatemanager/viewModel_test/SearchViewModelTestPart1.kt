@@ -1,86 +1,81 @@
 package com.aquaero.realestatemanager.viewModel_test
 
-import android.content.Context
 import android.util.Log
-import com.aquaero.realestatemanager.DEFAULT_LIST_INDEX
 import com.aquaero.realestatemanager.DEFAULT_RADIO_INDEX
 import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.RadioButtonCategory
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
+import com.aquaero.realestatemanager.model.PoiEnum
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
 import com.aquaero.realestatemanager.model.Type
+import com.aquaero.realestatemanager.model.TypeEnum
 import com.aquaero.realestatemanager.repository.AddressRepository
 import com.aquaero.realestatemanager.repository.PhotoRepository
 import com.aquaero.realestatemanager.repository.SearchRepository
 import com.aquaero.realestatemanager.viewmodel.SearchViewModel
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.MockedStatic
-import org.mockito.Mockito.doAnswer
-import org.mockito.Mockito.doReturn
+import org.mockito.Mockito
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.mockStatic
-import org.mockito.Mockito.mockingDetails
-import org.mockito.Mockito.reset
-import org.mockito.Mockito.spy
-import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.KArgumentCaptor
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.spy
 import org.mockito.kotlin.times
-import kotlin.reflect.KMutableProperty1
-
-/*
+import org.mockito.kotlin.verify
+import kotlin.reflect.KFunction
 
 @RunWith(MockitoJUnitRunner::class)
 //@RunWith(RobolectricTestRunner::class)
 /**
- * Testing searchViewModel functions
- * except applyFilters(), onFieldValueChange() and onDropdownMenuValueChange()
+ * Testing SearchViewModel
  */
 class SearchViewModelTestPart1 {
     private lateinit var addressRepository: AddressRepository
     private lateinit var photoRepository: PhotoRepository
+    private lateinit var mockRepository: SearchRepository
+    private lateinit var spyRepository: SearchRepository
     private lateinit var searchRepository: SearchRepository
-    private lateinit var context: Context
     private lateinit var viewModel: SearchViewModel
 
-    private lateinit var stringArgumentCaptor: KArgumentCaptor<String?>
+    private lateinit var stringArgumentCaptor: KArgumentCaptor<String>
     private lateinit var intArgumentCaptor: KArgumentCaptor<Int>
-    private lateinit var listArgumentCaptor: KArgumentCaptor<MutableList<Property>>
+    private lateinit var booleanArgumentCaptor: KArgumentCaptor<Boolean>
 
-    private lateinit var poi1: Poi
+    private lateinit var listArgumentCaptor: KArgumentCaptor<MutableList<*>>
+    private lateinit var addressRepositoryArgumentCaptor: KArgumentCaptor<AddressRepository>
+    private lateinit var photoRepositoryArgumentCaptor: KArgumentCaptor<PhotoRepository>
+    private lateinit var poiArgumentCaptor: KArgumentCaptor<Poi>
+
     private lateinit var property1: Property
+    private lateinit var property2: Property
     private lateinit var address1: Address
     private lateinit var type1: Type
     private lateinit var agent1: Agent
     private lateinit var photo1: Photo
+    private lateinit var poi1: Poi
     private lateinit var propertyPoiJoin1: PropertyPoiJoin
-
+    private lateinit var properties: MutableList<Property>
     private lateinit var addresses: MutableList<Address>
     private lateinit var types: MutableList<Type>
     private lateinit var agents: MutableList<Agent>
     private lateinit var photos: MutableList<Photo>
-    private lateinit var itemPhotos: MutableList<Photo>
-
-    private lateinit var emptyPropertyList: MutableList<Property>
-    private lateinit var emptyPhotoList: MutableList<Photo>
-    private lateinit var filteredList: MutableList<Property>
-    private lateinit var properties: MutableList<Property>
     private lateinit var propertyPoiJoins: MutableList<PropertyPoiJoin>
-    private lateinit var itemPois: MutableList<Poi>
-    private lateinit var spyItemPois: MutableList<Poi>
-    private lateinit var poiId: String
-    private lateinit var poi: Poi
+    private lateinit var currency: String
+    private lateinit var filteredList: MutableList<Property>
+    private lateinit var stringTypes: MutableList<String>
+    private lateinit var typeId: String
 
     // Created to avoid class "LOG" error when tests are run with coverage
     private lateinit var logMock: MockedStatic<Log>
@@ -88,264 +83,335 @@ class SearchViewModelTestPart1 {
     @Before
     fun setup() {
         // Initialize logMock
-        logMock = mockStatic(Log::class.java)
+        logMock = Mockito.mockStatic(Log::class.java)
 
         addressRepository = mock(AddressRepository::class.java)
         photoRepository = mock(PhotoRepository::class.java)
-        searchRepository = mock(SearchRepository::class.java)
-        context = mock(Context::class.java)
+        mockRepository = mock(SearchRepository::class.java)
+        spyRepository = spy(SearchRepository())
 
-        poi1 = mock(Poi::class.java)
-        property1 = mock(Property::class.java)
-        address1 = mock(Address::class.java)
-        type1 = mock(Type::class.java)
-        agent1 = mock(Agent::class.java)
-        photo1 = mock(Photo::class.java)
-        propertyPoiJoin1 = mock(PropertyPoiJoin::class.java)
-        addresses = mock()
-        types = mock()
-        agents = mock()
-        photos = mock()
-        itemPhotos = mock()
-
-        emptyPropertyList = mutableListOf()
-        emptyPhotoList = mutableListOf()
-        filteredList = mutableListOf(property1)
+        property1 = Property(
+            1, TypeEnum.UNASSIGNED.name,
+            null, null, null, null, null,
+            null, null, null, null, 2
+        )
+        property2 = Property(
+            2, TypeEnum.UNASSIGNED.name,
+            null, null, null, null, null,
+            null, null, null, null, 3
+        )
+        address1 = Address(
+            1, null, null, null,
+            null, null, null, null, null, null
+        )
+        type1 = Type(TypeEnum.LOFT.key)
+        agent1 = Agent(1, "firstName", "lastName")
+        photo1 = Photo(1, "uri", "label", 2)
+        poi1 = Poi("poi1")
+        propertyPoiJoin1 = PropertyPoiJoin(1, PoiEnum.SHOP.key)
         properties = mutableListOf(property1)
+        addresses = mutableListOf(address1)
+        types = mutableListOf(type1)
+        agents = mutableListOf(agent1)
+        photos = mutableListOf(photo1)
         propertyPoiJoins = mutableListOf(propertyPoiJoin1)
-        itemPois = mutableListOf(poi1)
-        spyItemPois = spy(itemPois)
+        currency = "currency"
+        filteredList = mutableListOf(property2)
+        stringTypes = mutableListOf("type1")
+        typeId = TypeEnum.LOFT.key
 
-        poiId = "poiId"
-        poi = Poi(poiId = poiId)
+        // Default
+        setSpyMode(false)
 
+        initViewModel()
+        initCaptors()
+    }
+
+    @After
+    fun teardown() {
+        // Close logMock
+        logMock.close()
+    }
+
+    /**
+     * If false: The test will use searchViewModel with mockRepository (viewmodelM).
+     * If true: The test will use  searchViewModel with spyRepository (viewModelS).
+     */
+    private fun setSpyMode(spyMode: Boolean) {
+        searchRepository = if (spyMode) spyRepository else mockRepository
+    }
+
+    private fun initViewModel() {
         viewModel = SearchViewModel(addressRepository, photoRepository, searchRepository)
+    }
 
+    private fun initCaptors() {
         stringArgumentCaptor = argumentCaptor()
         intArgumentCaptor = argumentCaptor()
+        booleanArgumentCaptor = argumentCaptor()
         listArgumentCaptor = argumentCaptor()
-
-        doReturn(itemPois).`when`(searchRepository).itemPois
-        doReturn(filteredList).`when`(searchRepository).filteredList
+        addressRepositoryArgumentCaptor = argumentCaptor()
+        photoRepositoryArgumentCaptor = argumentCaptor()
+        poiArgumentCaptor = argumentCaptor()
     }
 
-     @After
-     fun teardown() {
-         // Close logMock
-         logMock.close()
-     }
-
-
-    private fun <T> captureSetterArgument(
-        setter: KMutableProperty1<SearchRepository, T>,
-        captor: KArgumentCaptor<T>
+    private fun captureFunctionArgument(
+        resetCaptors: Boolean,
+        function: KFunction<*>,
+        vararg captors: KArgumentCaptor<*>,
     ) {
+        if (resetCaptors) initCaptors()
         doAnswer {
-            println("Setter for ${setter.name} called with argument: ${it.arguments[0]}")
+            println("Function ${function.name} called with argument1: ${it.arguments.toList()}")
             it.callRealMethod()
-        }.`when`(searchRepository).apply { setter.set(this, captor.capture()) }
-    }
-
-    private fun launchPoiTest(isSelected: Boolean) {
-        spyItemPois = spy(itemPois)
-        doReturn(spyItemPois).`when`(searchRepository).itemPois
-
-        viewModel.onPoiClick(poiId, isSelected)
-
-        if (isSelected) {
-            // The poi is selected
-            verify(spyItemPois).add(poi)
-            assertTrue(spyItemPois.contains(poi))
-        } else {
-            // The poi is unselected
-            verify(spyItemPois).remove(poi)
-            assertFalse(spyItemPois.contains(poi))
+        }.`when`(searchRepository).apply {
+            function.call(this, *captors.map { it.capture() }.toTypedArray())
         }
     }
 
-    private fun <T> launchRadioButtonTest(setter: KMutableProperty1<SearchRepository, T>) {
-        val forSale = "For sale"
-        val sold = "Sold"
-        val withPhoto = "With photo"
-        val withoutPhoto = "Without photo"
-        val default = "Default"
-        val salesButtons = listOf(forSale, sold, default)
-        val photosButtons = listOf(withPhoto, withoutPhoto, default)
-        val indexes = listOf(0, 1, DEFAULT_RADIO_INDEX)
+    /**
+     * For tests onPoiClick()
+     */
+    private fun launchTestsForPois(
+        functionUnderTest: KFunction<*>,
+        vararg args: Any,
+        expectedPoisBefore: MutableList<Poi>,
+        expectedPoisAfter: MutableList<Poi>,
+    ) {
+        setSpyMode(true)
+        initViewModel()
 
-        doReturn(forSale).`when`(context).getString(R.string.for_sale)
-        doReturn(sold).`when`(context).getString(R.string.sold)
-        doReturn(withPhoto).`when`(context).getString(R.string.with_photo)
-        doReturn(withoutPhoto).`when`(context).getString(R.string.without_photo)
+        // Set and verify the pois list at the beginning of the test
+        searchRepository.setItemPois(expectedPoisBefore)
+        assertEquals(expectedPoisBefore, searchRepository.getItemPois())
 
-        indexes.forEach {
-            intArgumentCaptor = argumentCaptor()
-            captureSetterArgument(setter, intArgumentCaptor as KArgumentCaptor<T>)
-            when (setter) {
-                SearchRepository::salesRadioIndex -> viewModel.onSalesRadioButtonClick(context, salesButtons[it])
-                SearchRepository::photosRadioIndex -> viewModel.onPhotosRadioButtonClick(context, photosButtons[it])
-            }
-            assertEquals(it, intArgumentCaptor.allValues[0])
-        }
+        // Reset invocations and captors.
+        // Also needed so that captors do not take into account the init of the viewmodel
+        reset(searchRepository)
+        initCaptors()
+
+        // Function under test
+        viewModel.apply { functionUnderTest.call(this, *args) }
+
+        // Verifications and assertions
+        verify(searchRepository).updateItemPois(booleanArgumentCaptor.capture(), poiArgumentCaptor.capture())
+        assertEquals(args[1], booleanArgumentCaptor.allValues[0])
+        assertEquals(Poi(args[0].toString()), poiArgumentCaptor.allValues[0])
+        verify(searchRepository).getItemPois()
+        assertEquals(expectedPoisAfter, searchRepository.getItemPois())
+    }
+
+    /**
+     * For tests onRadioButtonClick()
+     */
+    private fun launchTestsForRadioButtons(
+        functionUnderTest: KFunction<*>,
+        vararg args: Any,
+        function: KFunction<*>,
+        expectedValueBefore: Int,
+        expectedValueAfter: Int,
+        getter: KFunction<*>,
+    ) {
+        setSpyMode(true)
+        initViewModel()
+
+        // Set and verify the index at the beginning of the test
+        function.call(searchRepository, expectedValueBefore)
+        assertEquals(expectedValueBefore, getter.call(searchRepository))
+
+        // Reset invocations and captors.
+        // Also needed so that captors do not take into account the init of the viewmodel
+        reset(searchRepository)
+        initCaptors()
+
+        // Function under test
+        viewModel.apply { functionUnderTest.call(this, *args) }
+
+        // Verifications and assertions
+        verify(searchRepository).apply { function.call(this, intArgumentCaptor.capture()) }
+        assertEquals(expectedValueAfter, intArgumentCaptor.allValues[0])
+        assertEquals(expectedValueAfter, getter.call(searchRepository))
     }
 
 
+    /**
+     * Also testing clearSearchResults(), updateSearchResultsFlow(),
+     * resetScrollToResults() and updateScrollToResultsFlow().
+     */
+    @Test
+    fun testInit() {
+        setSpyMode(true)
+        // Set captor
+        captureFunctionArgument(false, SearchRepository::updateScrollToResultsFlow, booleanArgumentCaptor)
+
+        // Init viewModel. That will trigger the viewModel init{} block
+        initViewModel()
+
+        verify(searchRepository).clearSearchResults()
+        verify(searchRepository).updateSearchResultsFlow()
+        verify(searchRepository).updateScrollToResultsFlow(scroll = false)
+
+        assertEquals(0, searchRepository.getScrollToResultsStateFlow().value)
+        assertEquals(false, booleanArgumentCaptor.allValues[0])
+    }
+
+    /**
+     * Also testing clearCriteria(), clearSearchResults(), updateSearchResultsFlow()
+     * and onClearButtonClick() that is tested apart.
+     */
     @Test
     fun testResetData() {
-        /* Also testing clearCriteria() and onClearButtonClick() */
+        setSpyMode(true)
+        // Set captors
+        captureFunctionArgument(false, SearchRepository::setSalesRadioIndex, intArgumentCaptor)
+        captureFunctionArgument(false, SearchRepository::setPhotosRadioIndex, intArgumentCaptor)
+        initViewModel()
 
-        // Capture setters arguments
-        captureSetterArgument(SearchRepository::description, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::priceMin, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::priceMax, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::surfaceMin, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::surfaceMax, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::roomsMin, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::roomsMax, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::bathroomsMin, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::bathroomsMax, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::bedroomsMin, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::bedroomsMax, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::typeIndex, intArgumentCaptor)
-        captureSetterArgument(SearchRepository::type, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::agentIndex, intArgumentCaptor)
-        captureSetterArgument(SearchRepository::agent, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::zip, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::city, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::state, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::country, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::registrationDateMin, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::registrationDateMax, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::saleDateMin, stringArgumentCaptor)
-        captureSetterArgument(SearchRepository::saleDateMax, stringArgumentCaptor)
-
-        assertEquals(1, searchRepository.itemPois.size)
-        assertEquals(1, searchRepository.filteredList.size)
-
+        // Function under test
         viewModel.resetData()
 
-        verify(searchRepository).description = null
-        verify(searchRepository).priceMin = null
-        verify(searchRepository).priceMax = null
-        verify(searchRepository).surfaceMin = null
-        verify(searchRepository).surfaceMax = null
-        verify(searchRepository).roomsMin = null
-        verify(searchRepository).roomsMax = null
-        verify(searchRepository).bathroomsMin = null
-        verify(searchRepository).bathroomsMax = null
-        verify(searchRepository).bedroomsMin = null
-        verify(searchRepository).bedroomsMax = null
-        verify(searchRepository).typeIndex = DEFAULT_LIST_INDEX
-        verify(searchRepository).type = null
-        verify(searchRepository).agentIndex = DEFAULT_LIST_INDEX
-        verify(searchRepository).agent = null
-        verify(searchRepository).zip = null
-        verify(searchRepository).city = null
-        verify(searchRepository).state = null
-        verify(searchRepository).country = null
-        verify(searchRepository).registrationDateMin = null
-        verify(searchRepository).registrationDateMax = null
-        verify(searchRepository).saleDateMin = null
-        verify(searchRepository).saleDateMax = null
+        // Through clearCriteria()
+        verify(searchRepository).setSalesRadioIndex(DEFAULT_RADIO_INDEX)
+        verify(searchRepository).setPhotosRadioIndex(DEFAULT_RADIO_INDEX)
+        verify(searchRepository).clearItemPois()
 
-        assertEquals(21, stringArgumentCaptor.allValues.size)
-        for (index: Int in 0..<stringArgumentCaptor.allValues.size) {
-            assertNull(stringArgumentCaptor.allValues[index])
-        }
+        assertEquals(DEFAULT_RADIO_INDEX, searchRepository.getSalesRadioIndex())
+        assertEquals(DEFAULT_RADIO_INDEX, intArgumentCaptor.allValues[0])
+        assertEquals(DEFAULT_RADIO_INDEX, searchRepository.getPhotosRadioIndex())
+        assertEquals(DEFAULT_RADIO_INDEX, intArgumentCaptor.allValues[1])
 
-        assertEquals(2, intArgumentCaptor.allValues.size)
-        for (index: Int in 0..<intArgumentCaptor.allValues.size) {
-            assertEquals(DEFAULT_LIST_INDEX, intArgumentCaptor.allValues[index])
-        }
+        // Through clearSearchResults() (triggered for the first time during viewModel init)
+        verify(searchRepository, times(2)).clearSearchResults()
 
-        verify(searchRepository).salesRadioIndex = DEFAULT_RADIO_INDEX
-        verify(searchRepository).photosRadioIndex = DEFAULT_RADIO_INDEX
-        assertEquals(0, searchRepository.itemPois.size)
-        assertEquals(0, searchRepository.filteredList.size)
-
-        val invocations = mockingDetails(searchRepository).invocations
-        val filteredInvocations = invocations.filter {
-            it.method.name == "updateSearchResultsFlow" && it.arguments[0] === filteredList
-        }
-        assertEquals(1, filteredInvocations.size)
+        // Through updateSearchResultsFlow() (triggered for the first time during viewModel init)
+        verify(searchRepository, times(2)).updateSearchResultsFlow()
     }
 
-    @Test
-    fun testResetScrollToResults() {
-        reset(searchRepository) // To reset invocations count during init
-        captureSetterArgument(SearchRepository::scrollToResults, intArgumentCaptor)
-
-        viewModel.resetScrollToResults()
-
-        verify(searchRepository).scrollToResults = 0
-        assertEquals(0, intArgumentCaptor.allValues[0])
-
-        val invocations = mockingDetails(searchRepository).invocations
-        val filteredInvocations = invocations.filter {
-            it.method.name == "updateScrollToResultsFlow" && it.arguments[0] == 0
-        }
-        assertEquals(1, filteredInvocations.size)
-
-        verify(searchRepository).updateScrollToResultsFlow(scroll = false)
-    }
-
+    /**
+     * Also testing updateSearchResults(), updateSearchResultsFlow() and updateScrollToResultsFlow()
+     */
+    @Suppress("UNCHECKED_CAST")
     @Test
     fun testOnClickMenu() {
-        val currency: String = "$"
-        val scrollValue = searchRepository.scrollToResults  // Reference value to test increment
-        reset(searchRepository)     // To reset invocations count (above and during init)
+        setSpyMode(true)
+        initViewModel()
+        reset(searchRepository) // Needed so that captors do not take into account the init of the viewmodel
 
-        captureSetterArgument(SearchRepository::searchResults, listArgumentCaptor)
-        captureSetterArgument(SearchRepository::scrollToResults, intArgumentCaptor)
+        doReturn(filteredList).`when`(searchRepository).applyFilters(
+            properties, addresses, types, agents, photos, propertyPoiJoins, currency,
+            addressRepository, photoRepository
+        )
 
+        // Function under test
         viewModel.onClickMenu(properties, addresses, types, agents, photos, propertyPoiJoins, currency)
 
-        verify(searchRepository).updateSearchResults = properties.toMutableList()
-        assertEquals(properties.toMutableList(), listArgumentCaptor.allValues[0])
+        // Verifications and assertions
+        verify(searchRepository).updateSearchResults(
+            (listArgumentCaptor as KArgumentCaptor<MutableList<Property>>).capture()
+        )
+        println("listArgumentCaptor size ${listArgumentCaptor.allValues.size}")
+        assertEquals(1, listArgumentCaptor.allValues.size)
+        assertEquals(filteredList, listArgumentCaptor.allValues[0])
 
-        verify(searchRepository, times(3)).scrollToResults
-//        verify(searchRepository).updateScrollToResultsFlow(anyInt())
-        verify(searchRepository).updateScrollToResultsFlow(scroll = true)
-        assertEquals(scrollValue + 1, intArgumentCaptor.allValues[0])
+        // First triggered during viewmodel init but not taken into account with searchRepository reset
+        verify(searchRepository).updateSearchResultsFlow()
+
+        // First triggered during viewmodel init but not taken into account with searchRepository reset
+        verify(searchRepository, times(1)).updateScrollToResultsFlow(booleanArgumentCaptor.capture())
+        println("booleanArgumentCaptor size ${booleanArgumentCaptor.allValues.size}")
+        assertEquals(1, booleanArgumentCaptor.allValues.size)
+        assertEquals(true, booleanArgumentCaptor.allValues[0])
+
+        // Through updateSearchResults()
+        verify(searchRepository).applyFilters(
+            (listArgumentCaptor as KArgumentCaptor<MutableList<Property>>).capture(),
+            (listArgumentCaptor as KArgumentCaptor<MutableList<Address>>).capture(),
+            (listArgumentCaptor as KArgumentCaptor<MutableList<Type>>).capture(),
+            (listArgumentCaptor as KArgumentCaptor<MutableList<Agent>>).capture(),
+            (listArgumentCaptor as KArgumentCaptor<MutableList<Photo>>).capture(),
+            (listArgumentCaptor as KArgumentCaptor<MutableList<PropertyPoiJoin>>).capture(),
+            stringArgumentCaptor.capture(),
+            addressRepositoryArgumentCaptor.capture(),
+            photoRepositoryArgumentCaptor.capture(),
+        )
+        println("listArgumentCaptor size ${listArgumentCaptor.allValues.size}")
+        println("stringArgumentCaptor size ${stringArgumentCaptor.allValues.size}")
+        println("addressRepositoryArgumentCaptor size ${addressRepositoryArgumentCaptor.allValues.size}")
+        println("photoRepositoryArgumentCaptor size ${photoRepositoryArgumentCaptor.allValues.size}")
+        assertEquals(7, listArgumentCaptor.allValues.size)
+        assertEquals(1, stringArgumentCaptor.allValues.size)
+        assertEquals(1, addressRepositoryArgumentCaptor.allValues.size)
+        assertEquals(1, photoRepositoryArgumentCaptor.allValues.size)
+        assertEquals(properties, listArgumentCaptor.allValues[1])
+        assertEquals(addresses, listArgumentCaptor.allValues[2])
+        assertEquals(types, listArgumentCaptor.allValues[3])
+        assertEquals(agents, listArgumentCaptor.allValues[4])
+        assertEquals(photos, listArgumentCaptor.allValues[5])
+        assertEquals(propertyPoiJoins, listArgumentCaptor.allValues[6])
+        assertEquals(currency, stringArgumentCaptor.allValues[0])
+        assertEquals(addressRepository, addressRepositoryArgumentCaptor.allValues[0])
+        assertEquals(photoRepository, photoRepositoryArgumentCaptor.allValues[0])
     }
 
     @Test
     fun testOnPoiClick() {
-        // Test selected poi
-        launchPoiTest(true)
-        // Test unselected poi
-        launchPoiTest(false)
+        launchTestsForPois(
+            functionUnderTest = SearchViewModel::onPoiClick, args = arrayOf("poi1", true),
+            expectedPoisBefore = mutableListOf(), expectedPoisAfter = mutableListOf(poi1),
+        )
+        launchTestsForPois(
+            functionUnderTest = SearchViewModel::onPoiClick, args = arrayOf("poi1", false),
+            expectedPoisBefore = mutableListOf(poi1), expectedPoisAfter = mutableListOf(),
+        )
     }
 
     @Test
-    fun testOnSalesRadioButtonClick() {
-        launchRadioButtonTest(SearchRepository::salesRadioIndex)
+    fun testOnRadioButtonClick() {
+        launchTestsForRadioButtons(
+            functionUnderTest = SearchViewModel::onRadioButtonClick,
+            args = arrayOf(RadioButtonCategory.SALES.name, R.string.sold),
+            function = SearchRepository::setSalesRadioIndex,
+            expectedValueBefore = DEFAULT_RADIO_INDEX, expectedValueAfter = 1,
+            getter = SearchRepository::getSalesRadioIndex
+        )
+        launchTestsForRadioButtons(
+            functionUnderTest = SearchViewModel::onRadioButtonClick,
+            args = arrayOf(RadioButtonCategory.SALES.name, -1),
+            function = SearchRepository::setSalesRadioIndex,
+            expectedValueBefore = 1, expectedValueAfter = DEFAULT_RADIO_INDEX,
+            getter = SearchRepository::getSalesRadioIndex
+        )
+        launchTestsForRadioButtons(
+            functionUnderTest = SearchViewModel::onRadioButtonClick,
+            args = arrayOf(RadioButtonCategory.PHOTOS.name, R.string.without_photo),
+            function = SearchRepository::setPhotosRadioIndex,
+            expectedValueBefore = DEFAULT_RADIO_INDEX, expectedValueAfter = 1,
+            getter = SearchRepository::getPhotosRadioIndex
+        )
+        launchTestsForRadioButtons(
+            functionUnderTest = SearchViewModel::onRadioButtonClick,
+            args = arrayOf(RadioButtonCategory.PHOTOS.name, -1),
+            function = SearchRepository::setPhotosRadioIndex,
+            expectedValueBefore = 1, expectedValueAfter = DEFAULT_RADIO_INDEX,
+            getter = SearchRepository::getPhotosRadioIndex
+        )
     }
 
+    @Suppress("UNCHECKED_CAST")
     @Test
-    fun testOnPhotosRadioButtonClick() {
-        launchRadioButtonTest(SearchRepository::photosRadioIndex)
+    fun testGetItemType() {
+        // Function under test
+        viewModel.getItemType(typeId, types, stringTypes)
+
+        // Verifications and assertions
+        verify(searchRepository).getItemType(
+            stringArgumentCaptor.capture(),
+            (listArgumentCaptor as KArgumentCaptor<MutableList<Type>>).capture(),
+            (listArgumentCaptor as KArgumentCaptor<MutableList<String>>).capture()
+        )
+
+        assertEquals(typeId, stringArgumentCaptor.allValues[0])
+        assertEquals(types, listArgumentCaptor.allValues[0])
+        assertEquals(stringTypes, listArgumentCaptor.allValues[1])
     }
-
-    @Test
-    fun testItemType() {
-        val typeId = "typeId"
-        val otherTypeId = "otherTypeId"
-        val type = Type(typeId = typeId)
-        val types = mutableListOf(type)
-        val stringType = "stringType"
-        val stringTypes = mutableListOf(stringType)
-        val emptyString = ""
-        val emptyStringTypes = mutableListOf<String>()
-
-        // types contains typeId and stringTypes isn't empty
-        assertEquals(stringType, viewModel.getItemType(typeId, types, stringTypes))
-        // types contains typeId and stringTypes is empty
-        assertEquals(emptyString, viewModel.getItemType(typeId, types, emptyStringTypes))
-        // types doesn't contain typeId
-        assertEquals(emptyString, viewModel.getItemType(otherTypeId, types, stringTypes))
-    }
-
 }
-
-*/

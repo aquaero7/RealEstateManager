@@ -8,9 +8,12 @@ import com.aquaero.realestatemanager.DropdownMenuCategory
 import com.aquaero.realestatemanager.EditField
 import com.aquaero.realestatemanager.MAX
 import com.aquaero.realestatemanager.MIN
+import com.aquaero.realestatemanager.R
+import com.aquaero.realestatemanager.RadioButtonCategory
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.Photo
+import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.PoiEnum
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
@@ -61,14 +64,20 @@ class SearchViewModelTest {
     private lateinit var listArgumentCaptor: KArgumentCaptor<MutableList<*>>
     private lateinit var addressRepositoryArgumentCaptor: KArgumentCaptor<AddressRepository>
     private lateinit var photoRepositoryArgumentCaptor: KArgumentCaptor<PhotoRepository>
+    private lateinit var poiCaptor: KArgumentCaptor<Poi>
 
     private lateinit var property1: Property
     private lateinit var property2: Property
     private lateinit var address1: Address
     private lateinit var type1: Type
+    private lateinit var type2: Type
     private lateinit var agent1: Agent
     private lateinit var photo1: Photo
+    private lateinit var poi1: Poi
     private lateinit var propertyPoiJoin1: PropertyPoiJoin
+    private lateinit var types: MutableList<Type>
+    private lateinit var stringTypes: MutableList<String>
+    private lateinit var stringAgents: MutableList<String>
 
     // Created to avoid class "LOG" error when tests are run with coverage
     private lateinit var logMock: MockedStatic<Log>
@@ -99,9 +108,14 @@ class SearchViewModelTest {
             null, null, null, null, null, null
         )
         type1 = Type(TypeEnum.UNASSIGNED.key)
+        type2 = Type(TypeEnum.LOFT.key)
         agent1 = Agent(1, "firstName", "lastName")
         photo1 = Photo(1, "uri", "label", 2)
+        poi1 = Poi("poi1")
         propertyPoiJoin1 = PropertyPoiJoin(1, PoiEnum.SHOP.key)
+        types = mutableListOf(type1, type2)
+        stringTypes = mutableListOf("type1", "type2")
+        stringAgents = mutableListOf("agent1", "agent2")
 
         // Default
         setSpyMode(false)
@@ -136,6 +150,7 @@ class SearchViewModelTest {
         listArgumentCaptor = argumentCaptor()
         addressRepositoryArgumentCaptor = argumentCaptor()
         photoRepositoryArgumentCaptor = argumentCaptor()
+        poiCaptor = argumentCaptor()
     }
 
     private fun captureFunctionArgument(
@@ -221,7 +236,7 @@ class SearchViewModelTest {
      */
     private fun <T> launchTestsForDropdownMenu(
         functionUnderTest: KFunction<*>,
-        field: String,
+        field: String = "",
         fieldValue: String = "",
         function: KFunction<*>,
         vararg captors: KArgumentCaptor<*>,
@@ -234,16 +249,17 @@ class SearchViewModelTest {
         captureFunctionArgument(true, function, *captors)
         initViewModel()
 
+        val category = field.ifEmpty {
+            fieldValue.substringBefore(delimiter = "#", missingDelimiterValue = "")
+        }
         val values = if (functionUnderTest == SearchViewModel::onDropdownMenuValueChange)
-            arrayOf(field, fieldValue) else arrayOf(field, null)
+            arrayOf(fieldValue, stringTypes, stringAgents) else arrayOf(category, null)
 
         // Function under test
         viewModel.apply { functionUnderTest.call(this, *values) }
 
         // Verifications and assertions
-        verify(searchRepository).apply {
-            function.call(this, field, *expectedValues)
-        }
+        verify(searchRepository).apply { function.call(this, category, *expectedValues) }
 
         val valuesFromRepository = with(searchRepository) {
             arrayOf(getters[0].call(this), getters[1].call(this))
@@ -251,9 +267,73 @@ class SearchViewModelTest {
         assertEquals(expectedValues[0], valuesFromRepository[0])
         assertEquals(expectedValues[1], valuesFromRepository[1])
 
-        assertEquals(field, captors[0].allValues[0])
+        assertEquals(category, captors[0].allValues[0])
         assertEquals(expectedValues[0], captors[1].allValues[0])
         assertEquals(expectedValues[1], captors[2].allValues[0])
+    }
+
+    /**
+     * For tests onPoiClick()
+     */
+    private fun launchTestsForPois(
+        functionUnderTest: KFunction<*>,
+        vararg args: Any,
+        expectedPoisBefore: MutableList<Poi>,
+        expectedPoisAfter: MutableList<Poi>,
+    ) {
+        setSpyMode(true)
+        initViewModel()
+
+        // Set and verify the pois list at the beginning of the test
+        searchRepository.setItemPois(expectedPoisBefore)
+        assertEquals(expectedPoisBefore, searchRepository.getItemPois())
+
+        // Reset invocations and captors.
+        // Also needed so that captors do not take into account the init of the viewmodel
+        reset(searchRepository)
+        initCaptors()
+
+        // Function under test
+        viewModel.apply { functionUnderTest.call(this, *args) }
+
+        // Verifications and assertions
+        verify(searchRepository).updateItemPois(booleanArgumentCaptor.capture(), poiCaptor.capture())
+        assertEquals(args[1], booleanArgumentCaptor.allValues[0])
+        assertEquals(Poi(args[0].toString()), poiCaptor.allValues[0])
+        verify(searchRepository).getItemPois()
+        assertEquals(expectedPoisAfter, searchRepository.getItemPois())
+    }
+
+    /**
+     * For tests onRadioButtonClick()
+     */
+    private fun launchTestsForRadioButtons(
+        functionUnderTest: KFunction<*>,
+        vararg args: Any,
+        function: KFunction<*>,
+        expectedValueBefore: Int,
+        expectedValueAfter: Int,
+        getter: KFunction<*>,
+    ) {
+        setSpyMode(true)
+        initViewModel()
+
+        // Set and verify the index at the beginning of the test
+        function.call(searchRepository, expectedValueBefore)
+        assertEquals(expectedValueBefore, getter.call(searchRepository))
+
+        // Reset invocations and captors.
+        // Also needed so that captors do not take into account the init of the viewmodel
+        reset(searchRepository)
+        initCaptors()
+
+        // Function under test
+        viewModel.apply { functionUnderTest.call(this, *args) }
+
+        // Verifications and assertions
+        verify(searchRepository).apply { function.call(this, intArgumentCaptor.capture()) }
+        assertEquals(expectedValueAfter, intArgumentCaptor.allValues[0])
+        assertEquals(expectedValueAfter, getter.call(searchRepository))
     }
 
 
@@ -663,14 +743,85 @@ class SearchViewModelTest {
 
     @Test
     fun testOnDropdownMenuValueChange() {
-
-
-
+        launchTestsForDropdownMenu(
+            functionUnderTest = SearchViewModel::onDropdownMenuValueChange,
+            fieldValue = "${DropdownMenuCategory.TYPE.name}#1",
+            function = SearchRepository::setDropdownMenuCategory,
+            captors = arrayOf(stringArgumentCaptor, intArgumentCaptor, nullableStringArgumentCaptor),
+            expectedValues = arrayOf(1, "type2"),
+            getters = arrayOf(SearchRepository::getTypeIndex, SearchRepository::getType),
+        )
+        launchTestsForDropdownMenu(
+            functionUnderTest = SearchViewModel::onDropdownMenuValueChange,
+            fieldValue = "${DropdownMenuCategory.AGENT.name}#1",
+            function = SearchRepository::setDropdownMenuCategory,
+            captors = arrayOf(stringArgumentCaptor, intArgumentCaptor, nullableStringArgumentCaptor),
+            expectedValues = arrayOf(1, "agent2"),
+            getters = arrayOf(SearchRepository::getAgentIndex, SearchRepository::getAgent),
+        )
     }
 
+    @Test
+    fun testOnPoiClick() {
+        launchTestsForPois(
+            functionUnderTest = SearchViewModel::onPoiClick, args = arrayOf("poi1", true),
+            expectedPoisBefore = mutableListOf(), expectedPoisAfter = mutableListOf(poi1),
+        )
+        launchTestsForPois(
+            functionUnderTest = SearchViewModel::onPoiClick, args = arrayOf("poi1", false),
+            expectedPoisBefore = mutableListOf(poi1), expectedPoisAfter = mutableListOf(),
+        )
+    }
 
+    @Test
+    fun testOnRadioButtonClick() {
+        launchTestsForRadioButtons(
+            functionUnderTest = SearchViewModel::onRadioButtonClick,
+            args = arrayOf(RadioButtonCategory.SALES.name, R.string.sold),
+            function = SearchRepository::setSalesRadioIndex,
+            expectedValueBefore = DEFAULT_RADIO_INDEX, expectedValueAfter = 1,
+            getter = SearchRepository::getSalesRadioIndex
+        )
+        launchTestsForRadioButtons(
+            functionUnderTest = SearchViewModel::onRadioButtonClick,
+            args = arrayOf(RadioButtonCategory.SALES.name, -1),
+            function = SearchRepository::setSalesRadioIndex,
+            expectedValueBefore = 1, expectedValueAfter = DEFAULT_RADIO_INDEX,
+            getter = SearchRepository::getSalesRadioIndex
+        )
+        launchTestsForRadioButtons(
+            functionUnderTest = SearchViewModel::onRadioButtonClick,
+            args = arrayOf(RadioButtonCategory.PHOTOS.name, R.string.without_photo),
+            function = SearchRepository::setPhotosRadioIndex,
+            expectedValueBefore = DEFAULT_RADIO_INDEX, expectedValueAfter = 1,
+            getter = SearchRepository::getPhotosRadioIndex
+        )
+        launchTestsForRadioButtons(
+            functionUnderTest = SearchViewModel::onRadioButtonClick,
+            args = arrayOf(RadioButtonCategory.PHOTOS.name, -1),
+            function = SearchRepository::setPhotosRadioIndex,
+            expectedValueBefore = 1, expectedValueAfter = DEFAULT_RADIO_INDEX,
+            getter = SearchRepository::getPhotosRadioIndex
+        )
+    }
 
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun testGetItemType() {
+        val typeId = TypeEnum.LOFT.key
 
+        // Function under test
+        viewModel.getItemType(typeId, types, stringTypes)
 
+        // Verifications and assertions
+        verify(searchRepository).getItemType(
+            stringArgumentCaptor.capture(),
+            (listArgumentCaptor as KArgumentCaptor<MutableList<Type>>).capture(),
+            (listArgumentCaptor as KArgumentCaptor<MutableList<String>>).capture()
+        )
 
+        assertEquals(typeId, stringArgumentCaptor.allValues[0])
+        assertEquals(types, listArgumentCaptor.allValues[0])
+        assertEquals(stringTypes, listArgumentCaptor.allValues[1])
+    }
 }

@@ -156,7 +156,7 @@ class SearchViewModelTestPart1 {
     }
 
     private fun captureFunctionArgument(
-        resetCaptors: Boolean,
+        resetCaptors: Boolean = false,
         function: KFunction<*>,
         vararg captors: KArgumentCaptor<*>,
     ) {
@@ -242,7 +242,10 @@ class SearchViewModelTestPart1 {
     fun testInit() {
         setSpyMode(true)
         // Set captor
-        captureFunctionArgument(false, SearchRepository::updateScrollToResultsFlow, booleanArgumentCaptor)
+        captureFunctionArgument(
+            function = SearchRepository::updateScrollToResultsFlow,
+            captors = arrayOf(booleanArgumentCaptor)
+        )
 
         // Init viewModel. That will trigger the viewModel init{} block
         initViewModel()
@@ -263,8 +266,14 @@ class SearchViewModelTestPart1 {
     fun testResetData() {
         setSpyMode(true)
         // Set captors
-        captureFunctionArgument(false, SearchRepository::setSalesRadioIndex, intArgumentCaptor)
-        captureFunctionArgument(false, SearchRepository::setPhotosRadioIndex, intArgumentCaptor)
+        captureFunctionArgument(
+            function = SearchRepository::setSalesRadioIndex,
+            captors = arrayOf(intArgumentCaptor)
+        )
+        captureFunctionArgument(
+            function = SearchRepository::setPhotosRadioIndex,
+            captors = arrayOf(intArgumentCaptor)
+        )
         initViewModel()
 
         // Function under test

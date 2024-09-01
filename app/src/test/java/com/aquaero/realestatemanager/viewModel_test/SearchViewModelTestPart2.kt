@@ -95,7 +95,7 @@ class SearchViewModelTestPart2 {
     }
 
     private fun captureFunctionArgument(
-        resetCaptors: Boolean,
+        resetCaptors: Boolean = true,
         function: KFunction<*>,
         vararg captors: KArgumentCaptor<*>,
     ) {
@@ -131,8 +131,9 @@ class SearchViewModelTestPart2 {
         reset(searchRepository)
         setSpyMode(true)
         // Set captors
-        captureFunctionArgument(true, function1, captor1)
-        if (function2 != null && captor2 != null) captureFunctionArgument(true, function2, captor2)
+        captureFunctionArgument(function = function1, captors = arrayOf(captor1))
+        if (function2 != null && captor2 != null)
+            captureFunctionArgument(function = function2, captors = arrayOf(captor2))
         initViewModel()
 
         val values1 = if (functionUnderTest == SearchViewModel::onFieldValueChange)
@@ -187,7 +188,7 @@ class SearchViewModelTestPart2 {
         reset(searchRepository)
         setSpyMode(true)
         // Set captors
-        captureFunctionArgument(true, function, *captors)
+        captureFunctionArgument(function = function, captors = captors)
         initViewModel()
 
         val category = field.ifEmpty {

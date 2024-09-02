@@ -170,7 +170,7 @@ class SearchViewModelTestPart1 {
     }
 
     /**
-     * For tests onPoiClick()
+     * For tests of onPoiClick()
      */
     private fun launchTestsForPois(
         functionUnderTest: KFunction<*>,
@@ -202,7 +202,7 @@ class SearchViewModelTestPart1 {
     }
 
     /**
-     * For tests onRadioButtonClick()
+     * For tests of onRadioButtonClick()
      */
     private fun launchTestsForRadioButtons(
         functionUnderTest: KFunction<*>,
@@ -225,7 +225,7 @@ class SearchViewModelTestPart1 {
         initCaptors()
 
         // Function under test
-        viewModel.apply { functionUnderTest.call(this, *args) }
+        functionUnderTest.call(viewModel, *args)
 
         // Verifications and assertions
         verify(searchRepository).apply { function.call(this, intArgumentCaptor.capture()) }

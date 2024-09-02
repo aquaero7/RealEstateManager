@@ -36,7 +36,7 @@ class SearchRepository {
     private var typeIndex: Int = DEFAULT_LIST_INDEX
     private var type: String? = null
     private var agentIndex: Int = DEFAULT_LIST_INDEX
-    private var agent : String? = null
+    private var agent: String? = null
     private var zip: String? = null
     private var city: String? = null
     private var state: String? = null
@@ -73,7 +73,7 @@ class SearchRepository {
     fun updateScrollToResultsFlow(scroll: Boolean) {
         scrollToResults = if (scroll) scrollToResults + 1 else 0
         _scrollToResultsFlow.value = scrollToResults
-        Log.w("SearchRepository", "Click on menu valid ${scrollToResults} times")
+        Log.w("SearchRepository", "Click on menu valid $scrollToResults times")
     }
 
     /**
@@ -350,7 +350,7 @@ class SearchRepository {
         return filteredList
     }
 
-    fun filterList(
+    private fun filterList(
         field: String,
         getter: KMutableProperty1<Any, Any?>,
         bound: String? = null,

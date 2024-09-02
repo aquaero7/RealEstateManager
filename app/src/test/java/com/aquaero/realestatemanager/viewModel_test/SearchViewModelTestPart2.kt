@@ -109,7 +109,7 @@ class SearchViewModelTestPart2 {
     }
 
     /**
-     * For tests onClearButtonClick() and onFieldValueChange()
+     * For tests of onClearButtonClick() and onFieldValueChange()
      */
     @Suppress("UNCHECKED_CAST")
     private fun <T> launchTestsForFields(
@@ -144,7 +144,7 @@ class SearchViewModelTestPart2 {
         when (bounds != null) {
             false -> {
                 // Function under test
-                viewModel.apply { functionUnderTest.call(this, field, null, *values1) }
+                functionUnderTest.call(viewModel, field, null, *values1)
 
                 // Verifications and assertions
                 println("bounds is false => no bound provided")
@@ -155,8 +155,8 @@ class SearchViewModelTestPart2 {
             }
             true -> {
                 // Functions under test
-                viewModel.apply { functionUnderTest.call(this, field, bounds[0], *values1) }
-                viewModel.apply { functionUnderTest.call(this, field, bounds[1], *values2) }
+                functionUnderTest.call(viewModel, field, bounds[0], *values1)
+                functionUnderTest.call(viewModel, field, bounds[1], *values2)
 
                 // Verifications and assertions
                 println("bounds is true =>  bounds provided")
@@ -174,7 +174,7 @@ class SearchViewModelTestPart2 {
     }
 
     /**
-     * For tests onClearButtonClick() and onFieldValueChange()
+     * For tests of onClearButtonClick() and onFieldValueChange()
      */
     private fun <T> launchTestsForDropdownMenu(
         functionUnderTest: KFunction<*>,
@@ -198,7 +198,7 @@ class SearchViewModelTestPart2 {
             arrayOf(fieldValue, stringTypes, stringAgents) else arrayOf(category, null)
 
         // Function under test
-        viewModel.apply { functionUnderTest.call(this, *values) }
+        functionUnderTest.call(viewModel, *values)
 
         // Verifications and assertions
         verify(searchRepository).apply { function.call(this, category, *expectedValues) }

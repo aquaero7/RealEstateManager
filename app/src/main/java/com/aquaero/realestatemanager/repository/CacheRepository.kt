@@ -22,9 +22,30 @@ class CacheRepository {
     private var initialItemPois: MutableList<Poi> = mutableListOf()
     private var cacheItemPois: MutableList<Poi> = mutableListOf()
     private var initialItemPhotos: MutableList<Photo> = mutableListOf()
+
     private var _cacheItemPhotos: MutableList<Photo> = mutableListOf()
     private val _cacheItemPhotosFlow: MutableStateFlow<MutableList<Photo>> = MutableStateFlow(_cacheItemPhotos)
     val cacheItemPhotosFlow: Flow<MutableList<Photo>> = _cacheItemPhotosFlow
+
+    /**
+     * For test only
+     * Returns the repository private MutableStateFlow variable: _cacheItemPhotosFlow
+     */
+    fun getCacheItemPhotosFlowForTest(): MutableStateFlow<MutableList<Photo>> { return _cacheItemPhotosFlow }   // TODO: To be deleted
+
+    // Getters
+    fun getCacheProperty() = cacheProperty
+    fun getInitialAddress() = initialAddress
+    fun getCacheAddress() = cacheAddress
+    fun getInitialItemPois() = initialItemPois
+    fun getCacheItemPois() = cacheItemPois
+    fun getInitialItemPhotos() = initialItemPhotos
+    fun getCacheItemPhotos() = _cacheItemPhotos
+
+
+    fun cacheData(): Triple<Property, Address, MutableList<Poi>> {
+        return Triple(cacheProperty, cacheAddress, cacheItemPois)
+    }
 
 
     fun initCache(
@@ -44,6 +65,7 @@ class CacheRepository {
         initialItemPois = itemPois.toMutableList()
         cacheItemPois = itemPois.toMutableList()
         initialItemPhotos = itemPhotos
+
         _cacheItemPhotos = itemPhotos.toMutableList()
         _cacheItemPhotosFlow.value = _cacheItemPhotos
     }
@@ -57,22 +79,9 @@ class CacheRepository {
         initialItemPois = mutableListOf()
         cacheItemPois = mutableListOf()
         initialItemPhotos = mutableListOf()
+
         _cacheItemPhotos = mutableListOf()
         _cacheItemPhotosFlow.value = _cacheItemPhotos
-    }
-
-    // Getter methods
-    fun getCacheProperty() = cacheProperty
-    fun getInitialAddress() = initialAddress
-    fun getCacheAddress() = cacheAddress
-    fun getInitialItemPois() = initialItemPois
-    fun getCacheItemPois() = cacheItemPois
-    fun getInitialItemPhotos() = initialItemPhotos
-    fun getCacheItemPhotos() = _cacheItemPhotos
-
-
-    fun cacheData(): Triple<Property, Address, MutableList<Poi>> {
-        return Triple(cacheProperty, cacheAddress, cacheItemPois)
     }
 
     fun updateCacheAddress(lat: Double?, lng: Double?) {

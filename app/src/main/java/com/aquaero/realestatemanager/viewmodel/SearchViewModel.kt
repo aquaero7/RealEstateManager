@@ -30,42 +30,14 @@ class SearchViewModel(
 ) : ViewModel() {
 
     /* SEARCH RESULTS FLOW */
-
-    /*  // TODO: Case 1: Only if the flow is handled in the viewModel
-    private var searchResults: MutableList<Property> = mutableListOf()
-    private val _searchResultsFlow: MutableStateFlow<MutableList<Property>> = MutableStateFlow(searchResults)
-    val searchResultsFlow: Flow<MutableList<Property>> = _searchResultsFlow
-    private fun clearSearchResults() { searchResults = mutableListOf() }
-    private fun updateSearchResults(results: MutableList<Property>) { searchResults = results }
-    private fun updateSearchResultsFlow() {
-        _searchResultsFlow.value = searchResults
-        Log.w("SearchViewModel", "Results list contains ${searchResults.size} items")
-    }
-    */
-    //  // TODO: Case 2: Only if the flow is handled in the repository
     val searchResultsFlow: Flow<MutableList<Property>> = searchRepository.searchResultsFlow
     private fun clearSearchResults() { searchRepository.clearSearchResults() }
     private fun updateSearchResults(results: MutableList<Property>) { searchRepository.updateSearchResults(results) }
     private fun updateSearchResultsFlow() { searchRepository.updateSearchResultsFlow() }
-    //
-
 
     /* SCROLL TO RESULTS FLOW */
-
-    /* // TODO: Case 1: Only if the flow is handled in the viewModel
-    private var scrollToResults: Int = 0
-    private val _scrollToResultsFlow: MutableStateFlow<Int> = MutableStateFlow(scrollToResults)
-    val scrollToResultsFlow: Flow<Int> = _scrollToResultsFlow
-    private fun updateScrollToResultsFlow(scroll: Boolean) {
-        scrollToResults = if (scroll) scrollToResults + 1 else 0
-        _scrollToResultsFlow.value = scrollToResults
-        Log.w("SearchViewModel", "Click on menu valid ${scrollToResults} times")
-    }
-    */
-    //  // TODO: Case 2: Only if the flow is handled in the repository
     val scrollToResultsFlow: Flow<Int> = searchRepository.scrollToResultsFlow
     private fun updateScrollToResultsFlow(scroll: Boolean) { searchRepository.updateScrollToResultsFlow(scroll) }
-    //
 
     /* GETTERS */
     fun getDescription(): String? { return searchRepository.getDescription() }

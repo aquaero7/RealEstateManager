@@ -182,7 +182,7 @@ class SearchViewModelTestPart1 {
         initViewModel()
 
         // Set and verify the pois list at the beginning of the test
-        searchRepository.setItemPois(expectedPoisBefore)
+        searchRepository.forTestingOnly_setItemPois(expectedPoisBefore)
         assertEquals(expectedPoisBefore, searchRepository.getItemPois())
 
         // Reset invocations and captors.
@@ -254,7 +254,7 @@ class SearchViewModelTestPart1 {
         verify(searchRepository).updateSearchResultsFlow()
         verify(searchRepository).updateScrollToResultsFlow(scroll = false)
 
-        assertEquals(0, searchRepository.getScrollToResultsStateFlow().value)
+        assertEquals(0, searchRepository.forTestingOnly_getScrollToResultsStateFlow().value)
         assertEquals(false, booleanArgumentCaptor.allValues[0])
     }
 
@@ -280,14 +280,7 @@ class SearchViewModelTestPart1 {
         viewModel.resetData()
 
         // Through clearCriteria()
-        verify(searchRepository).setSalesRadioIndex(DEFAULT_RADIO_INDEX)
-        verify(searchRepository).setPhotosRadioIndex(DEFAULT_RADIO_INDEX)
-        verify(searchRepository).clearItemPois()
-
-        assertEquals(DEFAULT_RADIO_INDEX, searchRepository.getSalesRadioIndex())
-        assertEquals(DEFAULT_RADIO_INDEX, intArgumentCaptor.allValues[0])
-        assertEquals(DEFAULT_RADIO_INDEX, searchRepository.getPhotosRadioIndex())
-        assertEquals(DEFAULT_RADIO_INDEX, intArgumentCaptor.allValues[1])
+        verify(searchRepository).clearCriteria()
 
         // Through clearSearchResults() (triggered for the first time during viewModel init)
         verify(searchRepository, times(2)).clearSearchResults()
@@ -423,4 +416,5 @@ class SearchViewModelTestPart1 {
         assertEquals(types, listArgumentCaptor.allValues[0])
         assertEquals(stringTypes, listArgumentCaptor.allValues[1])
     }
+
 }

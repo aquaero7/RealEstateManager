@@ -95,7 +95,6 @@ class LoanViewModel(
             value?.let { "Value $it ends with : ${it.last()}" } ?: "Value is null"
         )
 
-//        val digitalValue: Float? = value?.let { if (isDecimal(it)) it.toFloat() else null }
         val digitalValue: Float? = loanRepository.getDigitalValue(value)
 
         when (field) {

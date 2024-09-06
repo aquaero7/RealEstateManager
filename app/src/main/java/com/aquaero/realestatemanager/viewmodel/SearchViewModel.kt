@@ -81,33 +81,7 @@ class SearchViewModel(
         updateSearchResultsFlow()
     }
 
-    private fun clearCriteria() {
-        onClearButtonClick(field = EditField.DESCRIPTION.name)
-        onClearButtonClick(field = EditField.PRICE.name, bound = MIN)
-        onClearButtonClick(field = EditField.PRICE.name, bound = MAX)
-        onClearButtonClick(field = EditField.SURFACE.name, bound = MIN)
-        onClearButtonClick(field = EditField.SURFACE.name, bound = MAX)
-        onClearButtonClick(field = EditField.ROOMS.name, bound = MIN)
-        onClearButtonClick(field = EditField.ROOMS.name, bound = MAX)
-        onClearButtonClick(field = EditField.BATHROOMS.name, bound = MIN)
-        onClearButtonClick(field = EditField.BATHROOMS.name, bound = MAX)
-        onClearButtonClick(field = EditField.BEDROOMS.name, bound = MIN)
-        onClearButtonClick(field = EditField.BEDROOMS.name, bound = MAX)
-        onClearButtonClick(field = DropdownMenuCategory.TYPE.name)
-        onClearButtonClick(field = DropdownMenuCategory.AGENT.name)
-        onClearButtonClick(field = EditField.ZIP_CODE.name)
-        onClearButtonClick(field = EditField.CITY.name)
-        onClearButtonClick(field = EditField.STATE.name)
-        onClearButtonClick(field = EditField.COUNTRY.name)
-        onClearButtonClick(field = EditField.REGISTRATION_DATE.name, bound = MIN)
-        onClearButtonClick(field = EditField.REGISTRATION_DATE.name, bound = MAX)
-        onClearButtonClick(field = EditField.SALE_DATE.name, bound = MIN)
-        onClearButtonClick(field = EditField.SALE_DATE.name, bound = MAX)
-
-        searchRepository.setSalesRadioIndex(DEFAULT_RADIO_INDEX)
-        searchRepository.setPhotosRadioIndex(DEFAULT_RADIO_INDEX)
-        searchRepository.clearItemPois()
-    }
+    private fun clearCriteria() { searchRepository.clearCriteria() }
 
     fun onClearButtonClick(field: String, bound: String? = null) {
         when (field) {

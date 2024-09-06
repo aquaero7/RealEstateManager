@@ -14,10 +14,12 @@ import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
 import com.aquaero.realestatemanager.model.Type
+import com.aquaero.realestatemanager.utils.ForTestingOnly
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.reflect.KMutableProperty
+import kotlin.reflect.jvm.isAccessible
 
 class SearchRepository {
 
@@ -48,6 +50,7 @@ class SearchRepository {
     private var salesRadioIndex: Int = DEFAULT_RADIO_INDEX
     private var photosRadioIndex: Int = DEFAULT_RADIO_INDEX
     private val itemPois: MutableList<Poi> = mutableListOf()
+
     private var filteredList: MutableList<Property> = mutableListOf()
 
     /* SEARCH RESULTS FLOW */
@@ -72,27 +75,71 @@ class SearchRepository {
     }
 
     /**
-     * For test only
+     * For testing only
      * Returns the repository private MutableStateFlow variable: _scrollToResultsFlow
      */
-    fun getScrollToResultsStateFlow(): MutableStateFlow<Int> { return _scrollToResultsFlow }
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_getScrollToResultsStateFlow(): MutableStateFlow<Int> { return _scrollToResultsFlow }
     /**
-     * For test only
+     * For testing only
      * Returns the repository private Int variable: typeIndex
      */
-    fun getTypeIndex(): Int { return typeIndex }
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_getTypeIndex(): Int { return typeIndex }
     /**
-     * For test only
+     * For testing only
      * Returns the repository private Int variable: agentIndex
      */
-    fun getAgentIndex(): Int { return agentIndex }
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_getAgentIndex(): Int { return agentIndex }
     /**
-     * For test only
+     * For testing only
      * Set the repository private list: itemPois
      */
-    fun setItemPois(poisList: MutableList<Poi>) {
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_setItemPois(value: MutableList<Poi>) {
         itemPois.clear()
-        itemPois.addAll(poisList)
+        itemPois.addAll(value)
+    }
+    /**
+     * For testing only
+     * Set the repository private Int variable: typeIndex
+     */
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_setTypeIndex(value: Int) {
+        typeIndex = value
+    }
+    /**
+     * For testing only
+     * Set the repository private String variable: type
+     */
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_setType(value: String?) {
+        type = value
+    }
+    /**
+     * For testing only
+     * Set the repository private Int variable: agentIndex
+     */
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_setAgentIndex(value: Int) {
+        agentIndex = value
+    }
+    /**
+     * For testing only
+     * Set the repository private String variable: agent
+     */
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_setAgent(value: String?) {
+        agent = value
     }
 
     /* GETTERS */
@@ -145,12 +192,39 @@ class SearchRepository {
     fun setPhotosRadioIndex(value: Int) { photosRadioIndex = value }
 
 
+    fun clearCriteria() {
+        val nullableCriteria: Array<KMutableProperty<*>> =
+            arrayOf(
+                this::description, this::priceMin, this::priceMax, this::surfaceMin, this::surfaceMax,
+                this::roomsMin, this::roomsMax, this::bathroomsMin, this::bathroomsMax, this::bedroomsMin,
+                this::bedroomsMax, this::type, this::agent, this::zip, this::city, this::state, this::country,
+                this::registrationDateMin, this::registrationDateMax, this::saleDateMin, this::saleDateMax,
+            )
+        nullableCriteria.forEach {
+            it.isAccessible = true
+            it.setter.call(null)
+        }
+
+        val listCriteria: Array<KMutableProperty<*>> = arrayOf(this::typeIndex, this::agentIndex)
+        listCriteria.forEach {
+            it.isAccessible = true
+            it.setter.call(DEFAULT_LIST_INDEX)
+        }
+
+        val radioCriteria: Array<KMutableProperty<*>> =
+            arrayOf(this::salesRadioIndex, this::photosRadioIndex)
+        radioCriteria.forEach {
+            it.isAccessible = true
+            it.setter.call(DEFAULT_RADIO_INDEX)
+        }
+
+        itemPois.clear()
+    }
+
     fun getItemType(typeId: String, types: MutableList<Type>, stringTypes: MutableList<String>): String {
         val type = types.find { it.typeId == typeId }
         return type?.let { if (stringTypes.isNotEmpty()) stringTypes.elementAt(types.indexOf(it)) else "" } ?: ""
     }
-
-    fun clearItemPois() { itemPois.clear() }
 
     /**
      * Adds poi if trueAddFalseRemove is true.

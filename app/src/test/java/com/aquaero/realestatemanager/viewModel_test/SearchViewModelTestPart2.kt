@@ -268,14 +268,14 @@ class SearchViewModelTestPart2 {
             field = DropdownMenuCategory.TYPE.name, function = SearchRepository::setDropdownMenuCategory,
             captors = arrayOf(stringArgumentCaptor, intArgumentCaptor, nullableStringArgumentCaptor),
             expectedValues = arrayOf(DEFAULT_LIST_INDEX, null),
-            getters = arrayOf(SearchRepository::getTypeIndex, SearchRepository::getType),
+            getters = arrayOf(SearchRepository::forTestingOnly_getTypeIndex, SearchRepository::getType),
         )
         launchTestsForDropdownMenu(
             functionUnderTest = SearchViewModel::onClearButtonClick,
             field = DropdownMenuCategory.AGENT.name, function = SearchRepository::setDropdownMenuCategory,
             captors = arrayOf(stringArgumentCaptor, intArgumentCaptor, nullableStringArgumentCaptor),
             expectedValues = arrayOf(DEFAULT_LIST_INDEX, null),
-            getters = arrayOf(SearchRepository::getAgentIndex, SearchRepository::getAgent),
+            getters = arrayOf(SearchRepository::forTestingOnly_getAgentIndex, SearchRepository::getAgent),
         )
         launchTestsForFields(
             functionUnderTest = SearchViewModel::onClearButtonClick,
@@ -499,7 +499,7 @@ class SearchViewModelTestPart2 {
             function = SearchRepository::setDropdownMenuCategory,
             captors = arrayOf(stringArgumentCaptor, intArgumentCaptor, nullableStringArgumentCaptor),
             expectedValues = arrayOf(1, "type2"),
-            getters = arrayOf(SearchRepository::getTypeIndex, SearchRepository::getType),
+            getters = arrayOf(SearchRepository::forTestingOnly_getTypeIndex, SearchRepository::getType),
         )
         launchTestsForDropdownMenu(
             functionUnderTest = SearchViewModel::onDropdownMenuValueChange,
@@ -507,7 +507,8 @@ class SearchViewModelTestPart2 {
             function = SearchRepository::setDropdownMenuCategory,
             captors = arrayOf(stringArgumentCaptor, intArgumentCaptor, nullableStringArgumentCaptor),
             expectedValues = arrayOf(1, "agent2"),
-            getters = arrayOf(SearchRepository::getAgentIndex, SearchRepository::getAgent),
+            getters = arrayOf(SearchRepository::forTestingOnly_getAgentIndex, SearchRepository::getAgent),
         )
     }
+
 }

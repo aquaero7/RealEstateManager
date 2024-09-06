@@ -152,11 +152,8 @@ class SearchRepositoryTestPart1 {
         assert(result.isEmpty())
     }
 
-    /**
-     * Testing updateItemPois() and clearItemPois()
-     */
     @Test
-    fun testUpdateAndClearItemPois() {
+    fun testUpdateItemPois() {
         // Check test initial conditions (itemPois is empty)
         var result = repository.getItemPois()
         assert(result.isEmpty())
@@ -175,13 +172,6 @@ class SearchRepositoryTestPart1 {
         result = repository.getItemPois()
         assertEquals(1, result.size)
         assertEquals(mutableListOf(poi2), result)
-
-        // Function clearItemPois() under test
-        repository.clearItemPois()
-        // Verifications and assertions
-        result = repository.getItemPois()
-        assertEquals(0, result.size)
-        assert(result.isEmpty())
     }
 
     @Test

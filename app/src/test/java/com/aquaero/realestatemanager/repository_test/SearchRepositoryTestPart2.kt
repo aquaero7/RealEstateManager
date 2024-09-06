@@ -25,7 +25,6 @@ import org.mockito.MockedStatic
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
-import java.lang.reflect.Field
 import kotlin.reflect.KFunction
 
 @RunWith(MockitoJUnitRunner::class)
@@ -204,35 +203,7 @@ class SearchRepositoryTestPart2 {
         assertEquals(valueAfter, value)
     }
 
-    /**
-     * Sets the private repository fields by reflection
-     */
-    private fun setRepoField(fieldName: String, fieldValue: Any?) {
-        val field: Field = SearchRepository::class.java.getDeclaredField(fieldName)
-        field.isAccessible = true
-
-        field.set(repository, fieldValue)
-    }
-
-    private fun resetAllRepoFields() {
-        val fields = arrayOf(
-            "description", "priceMin", "priceMax", "surfaceMin", "surfaceMax", "roomsMin", "roomsMax",
-            "bathroomsMin", "bathroomsMax", "bedroomsMin", "bedroomsMax", "typeIndex", "type",
-            "agentIndex", "agent", "zip", "city", "state", "country", "registrationDateMin",
-            "registrationDateMax", "saleDateMin", "saleDateMax", "salesRadioIndex", "photosRadioIndex",
-            "itemPois", "filteredList"
-        )
-        fields.forEach {
-            when (it) {
-                "typeIndex", "agentIndex" -> setRepoField(it, DEFAULT_LIST_INDEX)
-                "salesRadioIndex", "photosRadioIndex" -> setRepoField(it, DEFAULT_RADIO_INDEX)
-                "itemPois" -> setRepoField(it, mutableListOf<Poi>())
-                "filteredList" -> setRepoField(it, mutableListOf<Property>())
-                else -> setRepoField(it, null)
-            }
-        }
-    }
-
+    @Suppress("UNCHECKED_CAST")
     private fun launchTestsForFilter(
         resetFields: Boolean = true,
         fieldNames: Array<String?>? = null,
@@ -242,15 +213,42 @@ class SearchRepositoryTestPart2 {
         expectedResult: MutableList<Property>
     ) {
         // Sets the private repository fields by reflection
-        if (resetFields) resetAllRepoFields()
+        if (resetFields) repository.clearCriteria()
         if (fieldNames != null && fieldValues != null) {
             fieldNames.forEach { fieldName ->
                 val fieldValue = fieldValues[fieldNames.indexOf(fieldName)]
                 if (fieldName != null) {
-                    setRepoField(fieldName = fieldName, fieldValue = fieldValue)
                     when (fieldName) {
-                        "type" -> setRepoField(fieldName = "typeIndex", fieldValue = index)
-                        "agent" -> setRepoField(fieldName = "agentIndex", fieldValue = index)
+                        "description" -> repository.setDescription(fieldValue as String?)
+                        "priceMin" -> repository.setPriceMin(fieldValue as String?)
+                        "priceMax" -> repository.setPriceMax(fieldValue as String?)
+                        "surfaceMin" -> repository.setSurfaceMin(fieldValue as String?)
+                        "surfaceMax" -> repository.setSurfaceMax(fieldValue as String?)
+                        "roomsMin" -> repository.setRoomsMin(fieldValue as String?)
+                        "roomsMax" -> repository.setRoomsMax(fieldValue as String?)
+                        "bathroomsMin" -> repository.setBathroomsMin(fieldValue as String?)
+                        "bathroomsMax" -> repository.setBathroomsMax(fieldValue as String?)
+                        "bedroomsMin" -> repository.setBedroomsMin(fieldValue as String?)
+                        "bedroomsMax" -> repository.setBedroomsMax(fieldValue as String?)
+                        "type" -> {
+                            repository.forTestingOnly_setType(fieldValue as String?)
+                            repository.forTestingOnly_setTypeIndex(index as Int)
+                        }
+                        "agent" -> {
+                            repository.forTestingOnly_setAgent(fieldValue as String?)
+                            repository.forTestingOnly_setAgentIndex(index as Int)
+                        }
+                        "zip" -> repository.setZip(fieldValue as String?)
+                        "city" -> repository.setCity(fieldValue as String?)
+                        "state" -> repository.setState(fieldValue as String?)
+                        "country" -> repository.setCountry(fieldValue as String?)
+                        "registrationDateMin" -> repository.setRegistrationDateMin(fieldValue as String?)
+                        "registrationDateMax" -> repository.setRegistrationDateMax(fieldValue as String?)
+                        "saleDateMin" -> repository.setSaleDateMin(fieldValue as String?)
+                        "saleDateMax" -> repository.setSaleDateMax(fieldValue as String?)
+                        "salesRadioIndex" -> repository.setSalesRadioIndex(fieldValue as Int)
+                        "photosRadioIndex" -> repository.setPhotosRadioIndex(fieldValue as Int)
+                        "itemPois" -> repository.forTestingOnly_setItemPois(fieldValue as MutableList<Poi>)
                     }
                 }
             }
@@ -273,12 +271,14 @@ class SearchRepositoryTestPart2 {
     fun testSetDropdownMenuCategory() {
         launchTestsForDropdownMenuCategory(
             category = DropdownMenuCategory.TYPE.name,
-            indexGetter = SearchRepository::getTypeIndex, valueGetter = SearchRepository::getType,
+            indexGetter = SearchRepository::forTestingOnly_getTypeIndex,
+            valueGetter = SearchRepository::getType,
             indexAfter = 1, valueAfter = stringType1
         )
         launchTestsForDropdownMenuCategory(
             category = DropdownMenuCategory.AGENT.name,
-            indexGetter = SearchRepository::getAgentIndex, valueGetter = SearchRepository::getAgent,
+            indexGetter = SearchRepository::forTestingOnly_getAgentIndex,
+            valueGetter = SearchRepository::getAgent,
             indexAfter = 1, valueAfter = stringAgent1
         )
     }

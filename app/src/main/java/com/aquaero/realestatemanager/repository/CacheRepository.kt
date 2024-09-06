@@ -9,6 +9,7 @@ import com.aquaero.realestatemanager.model.CACHE_PROPERTY
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
+import com.aquaero.realestatemanager.utils.ForTestingOnly
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -28,10 +29,12 @@ class CacheRepository {
     val cacheItemPhotosFlow: Flow<MutableList<Photo>> = _cacheItemPhotosFlow
 
     /**
-     * For test only
+     * For testing only
      * Returns the repository private MutableStateFlow variable: _cacheItemPhotosFlow
      */
-    fun getCacheItemPhotosFlowForTest(): MutableStateFlow<MutableList<Photo>> { return _cacheItemPhotosFlow }   // TODO: To be deleted
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_getCacheItemPhotosFlow(): MutableStateFlow<MutableList<Photo>> { return _cacheItemPhotosFlow }   // TODO: To be deleted
 
     // Getters
     fun getCacheProperty() = cacheProperty

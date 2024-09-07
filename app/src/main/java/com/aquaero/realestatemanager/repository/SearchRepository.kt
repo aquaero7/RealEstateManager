@@ -49,7 +49,7 @@ class SearchRepository {
     private var saleDateMax: String? = null
     private var salesRadioIndex: Int = DEFAULT_RADIO_INDEX
     private var photosRadioIndex: Int = DEFAULT_RADIO_INDEX
-    private val itemPois: MutableList<Poi> = mutableListOf()
+    private var itemPois: MutableList<Poi> = mutableListOf()
 
     private var filteredList: MutableList<Property> = mutableListOf()
 
@@ -101,10 +101,7 @@ class SearchRepository {
      */
     @ForTestingOnly
     @Suppress("FunctionName")
-    fun forTestingOnly_setItemPois(value: MutableList<Poi>) {
-        itemPois.clear()
-        itemPois.addAll(value)
-    }
+    fun forTestingOnly_setItemPois(value: MutableList<Poi>) { itemPois = value }
     /**
      * For testing only
      * Set the repository private Int variable: typeIndex

@@ -34,7 +34,44 @@ class CacheRepository {
      */
     @ForTestingOnly
     @Suppress("FunctionName")
-    fun forTestingOnly_getCacheItemPhotosFlow(): MutableStateFlow<MutableList<Photo>> { return _cacheItemPhotosFlow }   // TODO: To be deleted
+    fun forTestingOnly_getCacheItemPhotosStateFlow(): MutableStateFlow<MutableList<Photo>> {
+        return _cacheItemPhotosFlow
+    }
+    /**
+     * For testing only
+     * Returns the repository private String variable: cacheStringType
+     */
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_getCacheStringType(): String { return cacheStringType }
+    /**
+     * For testing only
+     * Returns the repository private String variable: cacheStringAgent
+     */
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_getCacheStringAgent(): String { return cacheStringAgent }
+    /**
+     * For testing only
+     * Set the repository private Property variable: cacheProperty
+     */
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_setCacheProperty(value: Property) { cacheProperty = value }
+    /**
+     * For testing only
+     * Set the repository private Address variable: cacheAddress
+     */
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_setCacheAddress(value: Address) { cacheAddress = value }
+    /**
+     * For testing only
+     * Set the repository private list: cacheItemPois
+     */
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_setCacheItemPois(value: MutableList<Poi>) { cacheItemPois = value }
 
     // Getters
     fun getCacheProperty() = cacheProperty
@@ -44,7 +81,6 @@ class CacheRepository {
     fun getCacheItemPois() = cacheItemPois
     fun getInitialItemPhotos() = initialItemPhotos
     fun getCacheItemPhotos() = _cacheItemPhotos
-
 
     fun cacheData(): Triple<Property, Address, MutableList<Poi>> {
         return Triple(cacheProperty, cacheAddress, cacheItemPois)

@@ -107,24 +107,28 @@ enum class NonEditField {
 /**
  * Search fields.
  */
-enum class SearchField {
-    SURFACE,
-    ROOMS,
-    BATHROOMS,
-    BEDROOMS,
-    PRICE,
-    DESCRIPTION,
-    ZIP_CODE,
-    CITY,
-    STATE,
-    COUNTRY,
-    REGISTRATION_DATE,
-    SALE_DATE,
-    TYPE,
-    AGENT,
-    SALES_STATUS,
-    PHOTOS_STATUS,
-    POIS,
+enum class SearchField(
+    val lone: String? = null,
+    val min: String? = null,
+    val max: String? = null,
+) {
+    SURFACE(min = "surfaceMin", max = "surfaceMax"),
+    ROOMS(min = "roomsMin", max = "roomsMax"),
+    BATHROOMS(min = "bathroomsMin", max = "bathroomsMax"),
+    BEDROOMS(min = "bedroomsMin", max = "bedroomsMax"),
+    PRICE(min = "priceMin", max = "priceMax"),
+    DESCRIPTION(lone = "description"),
+    ZIP_CODE(lone = "zip"),
+    CITY(lone = "city"),
+    STATE(lone = "state"),
+    COUNTRY(lone = "country"),
+    REGISTRATION_DATE(min = "registrationDateMin", max = "registrationDateMax"),
+    SALE_DATE(min = "saleDateMin", max = "saleDateMax"),
+    TYPE(lone = "type"),
+    AGENT(lone = "agent"),
+    SALES_STATUS(lone = "salesRadioIndex"),
+    PHOTOS_STATUS(lone = "photosRadioIndex"),
+    POIS(lone = "itemPois"),
 }
 
 

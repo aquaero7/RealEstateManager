@@ -4,6 +4,7 @@ import android.util.Log
 import com.aquaero.realestatemanager.DEFAULT_LIST_INDEX
 import com.aquaero.realestatemanager.DEFAULT_RADIO_INDEX
 import com.aquaero.realestatemanager.DropdownMenuCategory
+import com.aquaero.realestatemanager.SearchField
 import com.aquaero.realestatemanager.database.dao.AddressDao
 import com.aquaero.realestatemanager.database.dao.PhotoDao
 import com.aquaero.realestatemanager.model.Address
@@ -219,36 +220,39 @@ class SearchRepositoryTestPart2 {
                 val fieldValue = fieldValues[fieldNames.indexOf(fieldName)]
                 if (fieldName != null) {
                     when (fieldName) {
-                        "description" -> repository.setDescription(fieldValue as String?)
-                        "priceMin" -> repository.setPriceMin(fieldValue as String?)
-                        "priceMax" -> repository.setPriceMax(fieldValue as String?)
-                        "surfaceMin" -> repository.setSurfaceMin(fieldValue as String?)
-                        "surfaceMax" -> repository.setSurfaceMax(fieldValue as String?)
-                        "roomsMin" -> repository.setRoomsMin(fieldValue as String?)
-                        "roomsMax" -> repository.setRoomsMax(fieldValue as String?)
-                        "bathroomsMin" -> repository.setBathroomsMin(fieldValue as String?)
-                        "bathroomsMax" -> repository.setBathroomsMax(fieldValue as String?)
-                        "bedroomsMin" -> repository.setBedroomsMin(fieldValue as String?)
-                        "bedroomsMax" -> repository.setBedroomsMax(fieldValue as String?)
-                        "type" -> {
+                        SearchField.DESCRIPTION.lone -> repository.setDescription(fieldValue as String?)
+                        SearchField.PRICE.min -> repository.setPriceMin(fieldValue as String?)
+                        SearchField.PRICE.max -> repository.setPriceMax(fieldValue as String?)
+                        SearchField.SURFACE.min -> repository.setSurfaceMin(fieldValue as String?)
+                        SearchField.SURFACE.max -> repository.setSurfaceMax(fieldValue as String?)
+                        SearchField.ROOMS.min -> repository.setRoomsMin(fieldValue as String?)
+                        SearchField.ROOMS.max -> repository.setRoomsMax(fieldValue as String?)
+                        SearchField.BATHROOMS.min -> repository.setBathroomsMin(fieldValue as String?)
+                        SearchField.BATHROOMS.max -> repository.setBathroomsMax(fieldValue as String?)
+                        SearchField.BEDROOMS.min -> repository.setBedroomsMin(fieldValue as String?)
+                        SearchField.BEDROOMS.max -> repository.setBedroomsMax(fieldValue as String?)
+                        SearchField.TYPE.lone -> {
                             repository.forTestingOnly_setType(fieldValue as String?)
                             repository.forTestingOnly_setTypeIndex(index as Int)
                         }
-                        "agent" -> {
+                        SearchField.AGENT.lone -> {
                             repository.forTestingOnly_setAgent(fieldValue as String?)
                             repository.forTestingOnly_setAgentIndex(index as Int)
                         }
-                        "zip" -> repository.setZip(fieldValue as String?)
-                        "city" -> repository.setCity(fieldValue as String?)
-                        "state" -> repository.setState(fieldValue as String?)
-                        "country" -> repository.setCountry(fieldValue as String?)
-                        "registrationDateMin" -> repository.setRegistrationDateMin(fieldValue as String?)
-                        "registrationDateMax" -> repository.setRegistrationDateMax(fieldValue as String?)
-                        "saleDateMin" -> repository.setSaleDateMin(fieldValue as String?)
-                        "saleDateMax" -> repository.setSaleDateMax(fieldValue as String?)
-                        "salesRadioIndex" -> repository.setSalesRadioIndex(fieldValue as Int)
-                        "photosRadioIndex" -> repository.setPhotosRadioIndex(fieldValue as Int)
-                        "itemPois" -> repository.forTestingOnly_setItemPois(fieldValue as MutableList<Poi>)
+                        SearchField.ZIP_CODE.lone -> repository.setZip(fieldValue as String?)
+                        SearchField.CITY.lone -> repository.setCity(fieldValue as String?)
+                        SearchField.STATE.lone -> repository.setState(fieldValue as String?)
+                        SearchField.COUNTRY.lone -> repository.setCountry(fieldValue as String?)
+                        SearchField.REGISTRATION_DATE.min ->
+                            repository.setRegistrationDateMin(fieldValue as String?)
+                        SearchField.REGISTRATION_DATE.max ->
+                            repository.setRegistrationDateMax(fieldValue as String?)
+                        SearchField.SALE_DATE.min -> repository.setSaleDateMin(fieldValue as String?)
+                        SearchField.SALE_DATE.max -> repository.setSaleDateMax(fieldValue as String?)
+                        SearchField.SALES_STATUS.lone -> repository.setSalesRadioIndex(fieldValue as Int)
+                        SearchField.PHOTOS_STATUS.lone -> repository.setPhotosRadioIndex(fieldValue as Int)
+                        SearchField.POIS.lone -> 
+                            repository.forTestingOnly_setItemPois(fieldValue as MutableList<Poi>)
                     }
                 }
             }
@@ -293,11 +297,11 @@ class SearchRepositoryTestPart2 {
 
         // Filter on digital fields with bounds
         var repoFields = arrayOf(
-            arrayOf("surfaceMin", "surfaceMax"),
-            arrayOf("roomsMin", "roomsMax"),
-            arrayOf("bathroomsMin", "bathroomsMax"),
-            arrayOf("bedroomsMin", "bedroomsMax"),
-            arrayOf("priceMin", "priceMax"),
+            arrayOf(SearchField.SURFACE.min, SearchField.SURFACE.max),
+            arrayOf(SearchField.ROOMS.min, SearchField.ROOMS.max),
+            arrayOf(SearchField.BATHROOMS.min, SearchField.BATHROOMS.max),
+            arrayOf(SearchField.BEDROOMS.min, SearchField.BEDROOMS.max),
+            arrayOf(SearchField.PRICE.min, SearchField.PRICE.max),
         )
         repoFields.forEach {
             // Filter on field min
@@ -318,7 +322,9 @@ class SearchRepositoryTestPart2 {
         }
 
         // Filter on specific date fields "registrationDateMin" and "registrationDateMax" (with bounds)
-        repoFields = arrayOf(arrayOf("registrationDateMin", "registrationDateMax"))
+        repoFields = arrayOf(
+            arrayOf(SearchField.REGISTRATION_DATE.min, SearchField.REGISTRATION_DATE.max)
+        )
         with (repoFields[0]) {
             // Filter on field min
             launchTestsForFilter(
@@ -340,7 +346,7 @@ class SearchRepositoryTestPart2 {
         }
 
         // Filter on specific date fields "saleDateMin" and "saleDateMax" (with bounds)
-        repoFields = arrayOf(arrayOf("saleDateMin", "saleDateMax"))
+        repoFields = arrayOf(arrayOf(SearchField.SALE_DATE.min, SearchField.SALE_DATE.max))
         with (repoFields[0]) {
             // Filter on field min
             launchTestsForFilter(
@@ -361,7 +367,11 @@ class SearchRepositoryTestPart2 {
 
         // Filter on generic fields without bound
         repoFields = arrayOf(
-            arrayOf("description"), arrayOf("zip"), arrayOf("city"), arrayOf("state"), arrayOf("country"),
+            arrayOf(SearchField.DESCRIPTION.lone!!),
+            arrayOf(SearchField.ZIP_CODE.lone!!),
+            arrayOf(SearchField.CITY.lone!!),
+            arrayOf(SearchField.STATE.lone!!),
+            arrayOf(SearchField.COUNTRY.lone!!),
         )
         repoFields.forEach {
             // Filter on field
@@ -372,7 +382,7 @@ class SearchRepositoryTestPart2 {
         }
 
         // Filter on specific fields "type" and "agent" (without bound)
-        repoFields = arrayOf(arrayOf("type"), arrayOf("agent"))
+        repoFields = arrayOf(arrayOf(SearchField.TYPE.lone), arrayOf(SearchField.AGENT.lone))
         repoFields.forEach {
             // Filter on field
             launchTestsForFilter(
@@ -382,7 +392,9 @@ class SearchRepositoryTestPart2 {
         }
 
         // Filter on specific fields "salesRadioIndex" and "photosRadioIndex" (without bound)
-        repoFields = arrayOf(arrayOf("salesRadioIndex"), arrayOf("photosRadioIndex"))
+        repoFields = arrayOf(
+            arrayOf(SearchField.SALES_STATUS.lone), arrayOf(SearchField.PHOTOS_STATUS.lone)
+        )
         repoFields.forEach {
             // Filter on field when both criteria are selected
             launchTestsForFilter(
@@ -402,7 +414,7 @@ class SearchRepositoryTestPart2 {
         }
 
         // Filter on specific fields "itemPois" (without bound)
-        repoFields = arrayOf(arrayOf("itemPois"))
+        repoFields = arrayOf(arrayOf(SearchField.POIS.lone))
         with (repoFields[0]) {
             // Filter on field when "itemPois" contains 1 POI
             launchTestsForFilter(

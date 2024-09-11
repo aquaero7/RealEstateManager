@@ -165,6 +165,8 @@ dependencies {
 //     testImplementation ("org.mockito:mockito-inline:5.2.0")
     // Robolectric
     testImplementation("org.robolectric:robolectric:4.11.1")
+    // MockK (used to mock high level functions)
+    testImplementation("io.mockk:mockk:1.13.5")
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

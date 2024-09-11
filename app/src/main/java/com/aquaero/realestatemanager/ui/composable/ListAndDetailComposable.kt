@@ -8,17 +8,13 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.AppContentType
 import com.aquaero.realestatemanager.LatLngItem
-import com.aquaero.realestatemanager.NULL_PROPERTY_ID
 import com.aquaero.realestatemanager.model.Address
 import com.aquaero.realestatemanager.model.Agent
-import com.aquaero.realestatemanager.model.NO_PHOTO
 import com.aquaero.realestatemanager.model.Photo
 import com.aquaero.realestatemanager.model.Poi
 import com.aquaero.realestatemanager.model.Property
 import com.aquaero.realestatemanager.model.PropertyPoiJoin
 import com.aquaero.realestatemanager.model.Type
-import com.aquaero.realestatemanager.navigateToDetail
-import com.aquaero.realestatemanager.navigateToEditDetail
 import com.aquaero.realestatemanager.ui.screen.ListAndDetailScreen
 import com.aquaero.realestatemanager.utils.connectivityState
 import com.aquaero.realestatemanager.viewmodel.ListAndDetailViewModel

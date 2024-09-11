@@ -2,7 +2,6 @@ package com.aquaero.realestatemanager.utils
 
 import android.annotation.SuppressLint
 import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.DATE_PATTERN
 import com.aquaero.realestatemanager.RATE_OF_DOLLAR_IN_EURO
@@ -11,6 +10,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -38,21 +38,30 @@ fun convertDateMillisToString(millis: Long): String {
 fun convertDateStringToMillis(string: String): Long {
     val date = LocalDate.now()
     val formatter = DateTimeFormatter.ofPattern(DATE_PATTERN)
-    val localDate = if (string.isNotEmpty()/* && string != CACHE_STRING_VALUE*/) LocalDate.parse(string, formatter) else date
+    val localDate = if (string.isNotEmpty()) {
+        try {
+            LocalDate.parse(string, formatter)
+        } catch (e: DateTimeParseException) {
+            date
+        }
+    } else date
+
     val instant = localDate.atStartOfDay().toInstant(ZoneOffset.UTC)
     return instant.toEpochMilli()
-
-    /*  // Function using LocalDateTime but time part is useless and arbitrary set to 12:00
-    val date = LocalDateTime.now()
-    val formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)
-    val localDateTime = if (string.isNotEmpty()) LocalDateTime.parse("$string 12:00", formatter) else date
-    val instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant()
-    return instant.toEpochMilli()
-    */
 }
 
 fun calculateMonthlyPaymentWithInterest(amount: Int, annualInterestRate: Float, termInMonths: Int): Float {
-    return (amount * annualInterestRate / 100 / 12) / (1 - (1 + annualInterestRate / 100 / 12).pow(-termInMonths))
+    return if (annualInterestRate != 0F) {
+        if (termInMonths > 1) {
+            (amount * annualInterestRate / 100 / 12) / (
+                    1 - (1 + annualInterestRate / 100 / 12).pow(-termInMonths)
+                    )
+        } else {
+            amount.toFloat()
+        }
+    } else {
+        amount.toFloat() / maxOf(termInMonths, 1)
+    }
 }
 
 fun textWithEllipsis(fullText: String, maxLength: Int, maxLines: Int): String {
@@ -77,8 +86,7 @@ fun ellipsis(): String {
  * Otherwise returns false.
  */
 fun isDecimal(str: String): Boolean {
-//    val regex = "[0-9]+[.]?[0-9]*".toRegex()
-    val regex = Regex("^\\d+[.]?\\d*$")
+    val regex = Regex("^\\d*\\.?\\d*\$")
     return regex.matches(str)
 }
 

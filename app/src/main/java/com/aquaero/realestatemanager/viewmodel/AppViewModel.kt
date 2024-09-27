@@ -30,6 +30,7 @@ import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.selectedKey
 import com.aquaero.realestatemanager.utils.CurrencyStore
+import com.aquaero.realestatemanager.utils.ForTestingOnly
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,12 +43,9 @@ class AppViewModel(
     private val typeRepository : TypeRepository,
     poiRepository: PoiRepository,
     propertyPoiJoinRepository: PropertyPoiJoinRepository,
-    // For test (mock)                                                                                      // TODO: To be deleted
-//    private val currencyStoreFactory: (Context) -> CurrencyStore = { context -> CurrencyStore(context) }  // TODO: To be deleted
 ) : ViewModel() {
 
     /* Room */
-
     val properties = propertyRepository.getPropertiesFromRoom()
     val addresses = addressRepository.getAddressesFromRoom()
     val photos = photoRepository.getPhotosFromRoom()
@@ -57,8 +55,20 @@ class AppViewModel(
     val propertyPoiJoins = propertyPoiJoinRepository.getPropertyPoiJoinsFromRoom()
     fun stringTypesOrderedById(context: Context) = typeRepository.getStringTypesOrderedByIdFromRoom(context)
     fun stringAgentsOrderedByName(context: Context) = agentRepository.getStringAgentsOrderedByNameFromRoom(context)
-
     /**/
+
+    private var currencyStore: CurrencyStore? = null
+
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_getCurrencyStore(context: Context): CurrencyStore {
+        return currencyStore ?: CurrencyStore(context)
+    }
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_setCurrencyStore(store: CurrencyStore) {
+        currencyStore = store
+    }
 
 
     /**
@@ -71,23 +81,23 @@ class AppViewModel(
         else -> { AppContentType.LIST_OR_DETAIL }
     }
 
-    /* Currency */
-//    private fun currencyStore(context: Context): CurrencyStore = CurrencyStore(context)   // TODO: To be deleted
-//    private fun currencyStore(context: Context): CurrencyStore = currencyStoreFactory(context)  // For test (mock)    // TODO: To be deleted
-    fun currencyStore(context: Context): CurrencyStore = CurrencyStore(context)
 
-    fun currencyHelper(context: Context): Pair<CurrencyStore, String> {
+    /* Currency */
+
+    private fun currencyStore(context: Context): CurrencyStore = currencyStore ?: CurrencyStore(context)
+
+    fun currencyHelper(context: Context): Pair<CurrencyStore, Int> {
         val currencyStore = currencyStore(context = context)
         val defaultCurrency =
-            if (Locale.current.region == Region.FR.name) context.getString(R.string.euro)
-            else context.getString(R.string.dollar)
+            if (Locale.current.region == Region.FR.name) R.string.euro
+            else R.string.dollar
         return Pair(currencyStore, defaultCurrency)
     }
 
 
     /* Navigation data */
 
-    fun propertyId(currentBackStack: NavBackStackEntry?, properties: MutableList<Property>): Comparable<*> {
+    private fun propertyId(currentBackStack: NavBackStackEntry?, properties: MutableList<Property>): Comparable<*> {
         val defaultPropertyId = if (properties.isNotEmpty()) properties[0].propertyId else NULL_PROPERTY_ID
         return currentBackStack?.arguments?.getString(propertyKey) ?: defaultPropertyId
     }
@@ -128,20 +138,20 @@ class AppViewModel(
         currentScreen == Loan.route
     ) R.string.cd_check else R.string.cd_edit
 
-    private fun menuEnabled(currentScreen: String?, windowSize: WindowWidthSizeClass, propertySelected: Boolean) =
-        (currentScreen != GeolocMap.route) &&
+    private fun menuEnabled(
+        currentScreen: String?, windowSize: WindowWidthSizeClass, propertySelected: Boolean
+    ) = (currentScreen != GeolocMap.route) &&
             (currentScreen != ListAndDetail.routeWithArgs || propertySelected ||
                     contentType(windowSize) == AppContentType.LIST_AND_DETAIL)
 
     fun topBarMenu(
-        context: Context,
         currentBackStack: NavBackStackEntry?,
         currentScreen: String?,
         windowSize: WindowWidthSizeClass
-    ): Triple<ImageVector, String, Boolean> {
+    ): Triple<ImageVector, Int, Boolean> {
         val propertySelected = currentBackStack?.arguments?.getBoolean(selectedKey) ?: false
         val menuIcon = menuIcon(currentScreen = currentScreen)
-        val menuIconContentDesc = context.getString(menuIconContentDesc(currentScreen = currentScreen))
+        val menuIconContentDesc = menuIconContentDesc(currentScreen = currentScreen)
         val menuEnabled = menuEnabled(
             currentScreen = currentScreen,
             windowSize = windowSize,
@@ -150,8 +160,8 @@ class AppViewModel(
         return Triple(menuIcon, menuIconContentDesc, menuEnabled)
     }
 
-    fun onClickRadioButton(context: Context, currency: String) {
-        // Store selected currency with DataStore
+    fun onClickRadioButton(context: Context, currency: Int) {
+        // Store selected currency in DataStore
         CoroutineScope(Dispatchers.IO).launch {
             currencyStore(context).saveCurrency(currency)
         }

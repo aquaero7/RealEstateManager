@@ -15,11 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -106,11 +106,14 @@ private fun AppTab(
                 onClick = onSelected,
                 role = Role.Tab,
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(
-                    bounded = false,
-                    radius = Dp.Unspecified,
-                    color = Color.Unspecified
-                )
+                indication = remember {
+                    ripple(
+                        bounded = false,
+                        radius = Dp.Unspecified,
+                        color = Color.Unspecified
+                    )
+                }
+                // indication = LocalIndication.current
             )
             .clearAndSetSemantics { contentDescription = text },
         verticalAlignment = Alignment.CenterVertically,

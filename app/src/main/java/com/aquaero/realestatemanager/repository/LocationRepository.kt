@@ -15,6 +15,8 @@ import android.provider.Settings
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.aquaero.realestatemanager.utils.ConnectionState
+import com.aquaero.realestatemanager.utils.ForTestingOnly
+import com.aquaero.realestatemanager.utils.GeocoderHelper
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -31,8 +33,9 @@ import kotlin.properties.Delegates
 class LocationRepository {
 
     private var locPermsGranted by Delegates.notNull<Boolean>()
+    private var fusedLocationProviderClient: FusedLocationProviderClient? = null
     private val locationUpdatesFlow = MutableStateFlow<Location?>(null)
-    private val locationCallback = object: LocationCallback() {
+    private var locationCallback = object: LocationCallback() {
         override fun onLocationResult(p0: LocationResult) {
             p0.lastLocation?.let {
                 location -> locationUpdatesFlow.value = location
@@ -44,8 +47,29 @@ class LocationRepository {
         }
     }
 
+
+    /**
+     * For testing only
+     * Set the repository private variable: fusedLocationProviderClient
+     */
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_setFusedLocationProviderClient(client: FusedLocationProviderClient) {
+        fusedLocationProviderClient = client
+    }
+    /**
+     * For testing only
+     * Set a locationResult to the repository private variable: locationCallback
+     */
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    fun forTestingOnly_setLocationCallbackResult(locationResult: LocationResult) {
+        locationCallback.onLocationResult(locationResult)
+    }
+
+
     private fun fusedLocationClient(context: Context): FusedLocationProviderClient {
-        return LocationServices.getFusedLocationProviderClient(context)
+        return fusedLocationProviderClient ?: LocationServices.getFusedLocationProviderClient(context)
     }
 
     fun checkForConnection(connection: ConnectionState): Boolean {
@@ -92,6 +116,7 @@ class LocationRepository {
         return locationUpdatesFlow
     }
 
+    // TODO: To be deleted after test
     @Suppress("DEPRECATION")
     suspend fun getLocationFromAddress(context: Context, strAddress: String?, isInternetAvailable: Boolean): LatLng? =
         suspendCoroutine { continuation ->
@@ -129,13 +154,35 @@ class LocationRepository {
             }
         }
 
+    suspend fun getLocationFromAddress(
+        geocoderHelper: GeocoderHelper,
+        context: Context,
+        strAddress: String?,
+        isInternetAvailable: Boolean
+    ): LatLng? = suspendCoroutine { continuation ->
+        if (isInternetAvailable && strAddress != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // Android 13+ - API 33+
+                geocoderHelper.getLatLngFromAddressAsync(context, strAddress) { latLng ->
+                    continuation.resume(latLng)
+                }
+            } else {
+                // Android 12- - API 32-
+                val latLng = geocoderHelper.getLatLngFromAddress(context, strAddress)
+                continuation.resume(latLng)
+                Log.w("Geocoder.getFromLocName", "LatLng: $latLng")
+            }
+        } else {
+            continuation.resume(null)
+        }
+    }
+
     fun createAppSettingsIntent(context: Context): Intent {
         return Intent(
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
             Uri.fromParts("package", context.packageName, null)
         ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
-
 
 }
 

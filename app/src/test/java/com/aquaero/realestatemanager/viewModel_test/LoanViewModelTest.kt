@@ -96,6 +96,7 @@ class LoanViewModelTest {
         // Close logMock
         logMock.close()
     }
+
     private fun initTestData() {
         currency = defaultCurrency
         amountInDollar = 12000

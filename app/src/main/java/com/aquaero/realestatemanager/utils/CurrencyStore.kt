@@ -5,7 +5,7 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.Region
@@ -16,28 +16,40 @@ class CurrencyStore(private val context: Context) {
 
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("currency")
-        private val CURRENCY_KEY = stringPreferencesKey("currency_key")
+        private val CURRENCY_KEY = intPreferencesKey("currency_key")
     }
 
-    private val defaultCurrency: String =
-        if (Locale.current.region == Region.FR.name) context.getString(R.string.euro)
-        else context.getString(R.string.dollar)
+    private val defaultCurrency: Int =
+        if (Locale.current.region == Region.FR.name) R.string.euro
+        else R.string.dollar
 
-    val getDefaultCurrency: String = defaultCurrency
-
-    val getCurrency: Flow<String> = context.dataStore.data.map { value ->
+    val getCurrency: Flow<Int> = context.dataStore.data.map { value ->
         value[CURRENCY_KEY] ?: defaultCurrency
     }
 
-    suspend fun saveCurrency(currency: String) {
+    suspend fun saveCurrency(currency: Int) {
         context.dataStore.edit { value ->
             value[CURRENCY_KEY] = currency
         }
     }
 
-    suspend fun clearCurrency() {
-        context.dataStore.edit { value ->
-            value.remove(CURRENCY_KEY)
+    /**
+     * For testing only
+     * Returns the repository private Int variable: defaultCurrency
+     */
+    @ForTestingOnly
+    @Suppress("PropertyName")
+    val forTestingOnly_getDefaultCurrency: Int = defaultCurrency
+
+    /**
+     * For testing only
+     * Remove the preferences stored with the key: CURRENCY_KEY
+     */
+    @ForTestingOnly
+    @Suppress("FunctionName")
+    suspend fun forTestingOnly_clearCurrency() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(CURRENCY_KEY)
         }
     }
 

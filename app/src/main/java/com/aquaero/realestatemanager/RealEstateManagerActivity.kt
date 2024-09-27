@@ -28,6 +28,7 @@ import com.aquaero.realestatemanager.model.Type
 import com.aquaero.realestatemanager.ui.component.app.AppTabRow
 import com.aquaero.realestatemanager.ui.component.app.AppTopBar
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
+import com.aquaero.realestatemanager.utils.GeocoderHelper
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
 import com.aquaero.realestatemanager.viewmodel.ListAndDetailViewModel
@@ -130,7 +131,6 @@ fun RealEstateManagerApp(
          */
         // TopBar Menu
         val (menuIcon, menuIconContentDesc, menuEnabled) = appViewModel.topBarMenu(
-            context = context,
             currentBackStack = currentBackStack,
             currentScreen = currentScreen,
             windowSize = windowSize
@@ -138,8 +138,9 @@ fun RealEstateManagerApp(
 
         // TopBar RadioButtons
         val (currencyStore, defaultCurrency) = appViewModel.currencyHelper(context)
-        val currency = currencyStore.getCurrency.collectAsState(initial = defaultCurrency).value
-        val onClickRadioButton: (String) -> Unit = {
+        val currency =
+            context.getString(currencyStore.getCurrency.collectAsState(initial = defaultCurrency).value)
+        val onClickRadioButton: (Int) -> Unit = {
             appViewModel.onClickRadioButton(context = context, currency = it)
         }
 
@@ -148,7 +149,8 @@ fun RealEstateManagerApp(
                 { listAndDetailViewModel.onClickMenu(navController = navController, propertyId = propertyId) }
             }
             EditDetail.routeWithArgs -> {
-                { editViewModel.onClickMenu(navController = navController, context = context) }
+//                { editViewModel.onClickMenu(navController = navController, context = context) }   //TODO
+                { editViewModel.onClickMenu(navController = navController, geocoderHelper = GeocoderHelper(), context = context) }
             }
             SearchCriteria.route -> {
                 {

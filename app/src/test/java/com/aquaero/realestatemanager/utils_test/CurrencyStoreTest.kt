@@ -2,6 +2,7 @@ package com.aquaero.realestatemanager.utils_test
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.utils.CurrencyStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -11,10 +12,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import java.util.Locale
 
 //@RunWith(MockitoJUnitRunner::class)
 @RunWith(RobolectricTestRunner::class)
+@Config(manifest= Config.NONE)
 class CurrencyStoreTest {
 
     // Use of a real application context given by Robolectric
@@ -33,7 +36,7 @@ class CurrencyStoreTest {
     @After
     fun tearDown() {
         runTest {
-            currencyStore(context).clearCurrency()
+            currencyStore(context).forTestingOnly_clearCurrency()
         }
     }
 
@@ -41,45 +44,12 @@ class CurrencyStoreTest {
     @Test
     fun saveAndGetCurrencyWithSuccess() = runTest {
         // Euro
-        currencyStore(context).saveCurrency("€")
-        assertEquals("€", currencyStore(context).getCurrency.first())
+        currencyStore(context).saveCurrency(R.string.euro)
+        assertEquals(R.string.euro, currencyStore(context).getCurrency.first())
 
         // Dollar
-        currencyStore(context).saveCurrency("$")
-        assertEquals("$", currencyStore(context).getCurrency.first())
-    }
-
-    @Test
-    fun clearCurrencyWithSuccess() {
-        runTest {
-            // Save and check "dollar" as selected currency
-            currencyStore(context).saveCurrency("$")
-            assertEquals("$", currencyStore(context).getCurrency.first())
-
-            // Clear the selected currency
-            currencyStore(context).clearCurrency()
-
-            // Check that the currency is the default currency (€) according to Locale set in test setup
-            assertEquals("€", currencyStore(context).getCurrency.first())
-        }
-    }
-
-    @Test
-    fun getDefaultCurrencyWithSuccess() {
-        runTest {
-            // Clear the selected currency
-            currencyStore(context).clearCurrency()
-
-            // Verify the default currency for France
-            var locale = Locale("fr", "FR")
-            Locale.setDefault(locale)
-            assertEquals("€", currencyStore(context).getCurrency.first())
-
-            // Verify the default currency for USA
-            locale = Locale("en", "US")
-            Locale.setDefault(locale)
-            assertEquals("$", currencyStore(context).getCurrency.first())
-        }
+        currencyStore(context).saveCurrency(R.string.dollar)
+        assertEquals(R.string.dollar, currencyStore(context).getCurrency.first())
     }
 
 }

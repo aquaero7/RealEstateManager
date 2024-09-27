@@ -35,6 +35,7 @@ import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.AndroidLogger
 import com.aquaero.realestatemanager.utils.ConnectionState
+import com.aquaero.realestatemanager.utils.GeocoderHelper
 import com.aquaero.realestatemanager.utils.areDigitsOnly
 import com.aquaero.realestatemanager.utils.convertEuroToDollar
 import com.aquaero.realestatemanager.utils.generateProvisionalId
@@ -80,8 +81,10 @@ class EditViewModel(
 
     fun getInternetAvailability(): Boolean = isInternetAvailable
 
-    fun onClickMenu(navController: NavHostController, context: Context) {
-        updateRoomWithCacheData(navController, context)
+//    fun onClickMenu(navController: NavHostController, context: Context) {                         //TODO
+    fun onClickMenu(navController: NavHostController, geocoderHelper: GeocoderHelper, context: Context) {
+//        updateRoomWithCacheData(navController = navController, context = context)                 //TODO
+        updateRoomWithCacheData(navController = navController, geocoderHelper = geocoderHelper, context = context)
     }
 
     private fun propertyFromId(propertyId: Long, properties: MutableList<Property>): Property? {
@@ -349,11 +352,13 @@ class EditViewModel(
 
     /* Room */
 
-    private fun updateRoomWithCacheData(navController: NavHostController, context: Context) {
+//    private fun updateRoomWithCacheData(navController: NavHostController, context: Context) {     //TODO
+    private fun updateRoomWithCacheData(navController: NavHostController, geocoderHelper: GeocoderHelper, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 logger.w("EditViewModel", "Starting latLng update for address...")
-                updateAddressWithLatLng(context = context)
+//                updateAddressWithLatLng(context = context)                                        //TODO
+                updateAddressWithLatLng(geocoderHelper = geocoderHelper, context = context)
                 logger.w("EditViewModel", "Room's update jobs are starting...")
                 logger.w("EditViewModel", "Starting address update in Room...")
                 upDateRoomWithAddress()
@@ -382,7 +387,8 @@ class EditViewModel(
         }
     }
 
-    private suspend fun updateAddressWithLatLng(context: Context) {
+//    private suspend fun updateAddressWithLatLng(context: Context) {                               //TODO
+    private suspend fun updateAddressWithLatLng(geocoderHelper: GeocoderHelper, context: Context) {
         val hasNullLatLng = cacheRepository.getCacheAddress().latitude == null
                 || cacheRepository.getCacheAddress().longitude == null
         val isEmpty = cacheRepository.getCacheAddress().isNullOrBlank()
@@ -393,6 +399,7 @@ class EditViewModel(
         } else if (isModified || hasNullLatLng) {
             try {
                 val latLng = locationRepository.getLocationFromAddress(
+                    geocoderHelper = geocoderHelper, // GeocoderHelper(),                           //TODO: Added
                     context = context,
                     strAddress = cacheRepository.getCacheAddress().replaceBlankValuesWithNull().toString(),
                     isInternetAvailable = isInternetAvailable,

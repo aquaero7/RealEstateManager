@@ -27,6 +27,7 @@ import com.aquaero.realestatemanager.repository.PropertyRepository
 import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.CurrencyStore
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
@@ -39,16 +40,20 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.anyInt
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
+import org.mockito.kotlin.doCallRealMethod
 import org.mockito.kotlin.doReturn
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import java.util.Locale
 
 //@RunWith(AndroidJUnit4::class)
 //@RunWith(MockitoJUnitRunner::class)
 @RunWith(RobolectricTestRunner::class)
+@Config(manifest= Config.NONE)
 class AppViewModelTest {
     private lateinit var propertyRepository: PropertyRepository
     private lateinit var addressRepository: AddressRepository
@@ -137,7 +142,8 @@ class AppViewModelTest {
         // Prepare data for the test
         val expectedStringTypes = listOf("Type1", "Type2", "Type3")
         // Configure the mock of the repository to return a Flow
-        doReturn(flowOf(expectedStringTypes)).`when`(typeRepository).getStringTypesOrderedByIdFromRoom(context)
+        doReturn(flowOf(expectedStringTypes)).`when`(typeRepository)
+            .getStringTypesOrderedByIdFromRoom(context)
         // Call the function and collect the values emitted by the Flow
         val result = viewModel.stringTypesOrderedById(context).first()
         // Check the result
@@ -149,7 +155,8 @@ class AppViewModelTest {
         // Prepare data for the test
         val expectedStringAgents = listOf("Agent1", "Agent2", "Agent3")
         // Configure the mock of the repository to return a Flow
-        doReturn(flowOf(expectedStringAgents)).`when`(agentRepository).getStringAgentsOrderedByNameFromRoom(context)
+        doReturn(flowOf(expectedStringAgents)).`when`(agentRepository)
+            .getStringAgentsOrderedByNameFromRoom(context)
         // Call the function and collect the values emitted by the Flow
         val result = viewModel.stringAgentsOrderedByName(context).first()
         // Check the result
@@ -157,41 +164,24 @@ class AppViewModelTest {
     }
 
     @Test
-    fun getPropertyIdWithSuccess() {
-        // Prepare data for the test
-        val currentBackStack = mock(NavBackStackEntry::class.java)
-        val properties = mutableListOf(property1, property2, property3)
-        // Perform the mock
-        val arguments = mock(Bundle::class.java)
-        // Configure the mock behavior
-        doReturn(arguments).`when`(currentBackStack).arguments
-        doReturn("test_property_id").`when`(arguments).getString(propertyKey)
-        // Perform the test action
-        val result = viewModel.propertyId(currentBackStack, properties)
-        // Check the result
-        assertEquals("test_property_id", result)
-    }
-
-    @Test
     fun accessToCurrencyStoreWithSuccess() {
-
         /* Case 1: Test with the default US locale */
         // Set Locale US (default)
         Locale.setDefault(localeUS)
-        // Perform the test action
-        var currencyStore = viewModel.currencyStore(context)
+        // Perform the test action: Access to CurrencyStore through AppViewModel
+        var currencyStore = viewModel.forTestingOnly_getCurrencyStore(context)
         // Check the result and verify the default currency
         assertNotNull(currencyStore)
-        assertEquals("$", currencyStore.getDefaultCurrency)
+        assertEquals(R.string.dollar, currencyStore.forTestingOnly_getDefaultCurrency)
 
         /* Test with France locale */
         // Set Locale FR
         Locale.setDefault(localeFR)
-        // Perform the test action
-        currencyStore = viewModel.currencyStore(context)
+        // Perform the test action: Access to CurrencyStore through AppViewModel
+        currencyStore = viewModel.forTestingOnly_getCurrencyStore(context)
         // Check the result and verify the default currency
         assertNotNull(currencyStore)
-        assertEquals("€", currencyStore.getDefaultCurrency)
+        assertEquals(R.string.euro, currencyStore.forTestingOnly_getDefaultCurrency)
     }
 
     @Test
@@ -210,7 +200,7 @@ class AppViewModelTest {
         var (currencyStore, defaultCurrency) = viewModel.currencyHelper(context)
 
         assertNotNull(currencyStore)
-        assertEquals(context.getString(R.string.dollar), defaultCurrency)
+        assertEquals(R.string.dollar, defaultCurrency)
 
 
         // Set Locale FR
@@ -220,9 +210,12 @@ class AppViewModelTest {
         defaultCurrency = result.second
 
         assertNotNull(currencyStore)
-        assertEquals(context.getString(R.string.euro), defaultCurrency)
+        assertEquals(R.string.euro, defaultCurrency)
     }
 
+    /**
+     * Testing navigationData() and propertyId()
+     */
     @Test
     fun getNavigationDataWithSuccess() {
         // Prepare data for the test
@@ -291,20 +284,18 @@ class AppViewModelTest {
         /* Case 1 */
         var currentScreen = GeolocMap.route
         var (menuIcon, menuIconContentDesc, menuEnabled) = viewModel.topBarMenu(
-            context = context,
             currentBackStack = currentBackStack,
             currentScreen = currentScreen,
             windowSize = windowSize
         )
 
         assertEquals(Icons.Default.Edit, menuIcon)
-        assertEquals(context.getString(R.string.cd_edit), menuIconContentDesc)
+        assertEquals(R.string.cd_edit, menuIconContentDesc)
         assertFalse(menuEnabled)
 
         /* Case 2 */
         currentScreen = Loan.route
         val result = viewModel.topBarMenu(
-            context = context,
             currentBackStack = currentBackStack,
             currentScreen = currentScreen,
             windowSize = windowSize
@@ -314,38 +305,24 @@ class AppViewModelTest {
         menuEnabled = result.third
 
         assertEquals(Icons.Default.Check, menuIcon)
-        assertEquals(context.getString(R.string.cd_check), menuIconContentDesc)
+        assertEquals(R.string.cd_check, menuIconContentDesc)
         assertTrue(menuEnabled)
     }
 
     @Test
-    fun clickOnRadioButtonWithSuccess() = runTest {
+    fun clickOnRadioButtonWithSuccess() {
         // Prepare data for the test
-        val currency = "currency"
-        // Perform the mocks
-        val context: Context = mock(Context::class.java)
-        val currencyStore = mock(CurrencyStore::class.java)
-        // Spy on the ViewModel to mock currencyStore method
-        val viewModel = spy(AppViewModel(
-            propertyRepository = mock(PropertyRepository::class.java),
-            addressRepository = mock(AddressRepository::class.java),
-            photoRepository = mock(PhotoRepository::class.java),
-            agentRepository = mock(AgentRepository::class.java),
-            typeRepository = mock(TypeRepository::class.java),
-            poiRepository = mock(PoiRepository::class.java),
-            propertyPoiJoinRepository = mock(PropertyPoiJoinRepository::class.java)
-        ))
-        // Configure the mock behavior
-        doReturn(currencyStore).`when`(viewModel).currencyStore(context)
+        val currencyStore: CurrencyStore = mock()
+        viewModel.forTestingOnly_setCurrencyStore(currencyStore)
+        val currency = 0
 
         // Perform the test action
         viewModel.onClickRadioButton(context, currency)
 
         // Verify that saveCurrency was called with the correct parameter
-        runBlocking {
+        runBlocking(Dispatchers.IO) {
             verify(currencyStore).saveCurrency(currency)
         }
     }
-
 
 }

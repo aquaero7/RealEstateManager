@@ -1,6 +1,5 @@
 package com.aquaero.realestatemanager.ui.component.app
 
-import android.content.res.Resources.Theme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,43 +17,37 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aquaero.realestatemanager.ApplicationRoot
 import com.aquaero.realestatemanager.R
-import com.aquaero.realestatemanager.ui.theme.DarkGray
-import com.aquaero.realestatemanager.ui.theme.LightGray
 import com.aquaero.realestatemanager.ui.theme.White
-import com.aquaero.realestatemanager.ui.theme.Yellow
-import com.aquaero.realestatemanager.utils.CurrencyStore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
     modifier: Modifier = Modifier,
     menuIcon: ImageVector,
-    menuIconContentDesc: String,
+    menuIconContentDesc: Int,
     menuEnabled: Boolean,
     onClickMenu: () -> Unit,
-    onClickRadioButton: (String) -> Unit,
+    onClickRadioButton: (Int) -> Unit,
     currency: String,
 ) {
     val colors: TopAppBarColors =
         TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary)
     val titleText: String = stringResource(id = R.string.app_name)
-    val dollar: String = stringResource(id = R.string.dollar)
-    val euro: String = stringResource(id = R.string.euro)
+    val dollar: Int = R.string.dollar
+    val stringDollar = stringResource(id = dollar)
+    val euro: Int = R.string.euro
+    val stringEuro = stringResource(id = euro)
     var selectedOption by remember(currency) { mutableStateOf(currency) }
 
     TopAppBar(
@@ -69,15 +62,15 @@ fun AppTopBar(
         actions = {
             // RadioButton €
             TopBarRadioButton(
-                selected = selectedOption == euro,
-                onClick = { selectedOption = euro; run { onClickRadioButton(euro) } },
-                text = euro,
+                selected = selectedOption == stringEuro,
+                onClick = { selectedOption = stringEuro; run { onClickRadioButton(euro) } },
+                text = stringEuro,
             )
             // RadioButton $
             TopBarRadioButton(
-                selected = selectedOption == dollar,
-                onClick = { selectedOption = dollar; run { onClickRadioButton(dollar) } },
-                text = dollar,
+                selected = selectedOption == stringDollar,
+                onClick = { selectedOption = stringDollar; run { onClickRadioButton(dollar) } },
+                text = stringDollar,
             )
 
             // Menu
@@ -91,7 +84,7 @@ fun AppTopBar(
                 ) {
                     Icon(
                         imageVector = menuIcon,
-                        contentDescription = menuIconContentDesc,
+                        contentDescription = stringResource(id = menuIconContentDesc),
                         tint = White.copy(alpha = LocalContentColor.current.alpha),
                         // The alpha parameter makes the icon fade to gray when disabled
                     )

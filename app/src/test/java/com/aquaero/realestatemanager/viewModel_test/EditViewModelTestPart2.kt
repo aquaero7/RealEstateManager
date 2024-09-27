@@ -36,7 +36,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyList
 import org.mockito.ArgumentMatchers.anyLong
@@ -50,6 +49,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.any
 import org.mockito.kotlin.isNotNull
 import org.mockito.kotlin.isNull
 import org.mockito.kotlin.never

@@ -29,8 +29,14 @@ object ListAndDetail: AppDestination {
     override val labelResId = R.string.list
     val routeWithArgs = "$route/{$propertyKey}/{$selectedKey}"
     val arguments = listOf(
-        navArgument(propertyKey) { type = NavType.StringType },
-        navArgument(selectedKey) { type = NavType.BoolType }
+        navArgument(propertyKey) {
+            type = NavType.StringType
+            defaultValue = NULL_PROPERTY_ID.toString()
+        },
+        navArgument(selectedKey) {
+            type = NavType.BoolType
+            defaultValue = false
+        }
     )
 }
 
@@ -53,12 +59,17 @@ object Loan: AppDestination {
 }
 
 /* Destination not displayed in the bottom TabRow */
-object EditDetail: AppDestination {
+object EditDetail : AppDestination {
     override val icon = Icons.Filled.EditNote
     override val route = AppRoute.EDIT.value
     override val labelResId = R.string.edit_detail
     val routeWithArgs = "${route}/{$propertyKey}"
-    val arguments = listOf(navArgument(propertyKey) { type = NavType.StringType })
+    val arguments = listOf(
+        navArgument(propertyKey) {
+            type = NavType.StringType
+            defaultValue = NULL_PROPERTY_ID.toString()
+        }
+    )
 }
 
 

@@ -94,15 +94,24 @@ fun RealEstateManagerApp(
     RealEstateManagerTheme(dynamicColor = false) {
         val context = LocalContext.current
 
-        val properties: MutableList<Property> by appViewModel.properties.collectAsState(initial = mutableListOf())
-        val addresses: MutableList<Address> by appViewModel.addresses.collectAsState(initial = mutableListOf())
-        val photos: MutableList<Photo> by appViewModel.photos.collectAsState(initial = mutableListOf())
-        val agents: MutableList<Agent> by appViewModel.agentsOrderedByName.collectAsState(initial = mutableListOf())
-        val types: MutableList<Type> by appViewModel.typesOrderedById.collectAsState(initial = mutableListOf())
-        val pois: MutableList<Poi> by appViewModel.pois.collectAsState(initial = mutableListOf())
-        val propertyPoiJoins: MutableList<PropertyPoiJoin> by appViewModel.propertyPoiJoins.collectAsState(initial = mutableListOf())
-        val stringTypes: MutableList<String> by appViewModel.stringTypesOrderedById(context = context).collectAsState(initial = mutableListOf())
-        val stringAgents: MutableList<String> by appViewModel.stringAgentsOrderedByName(context = context).collectAsState(initial = mutableListOf())
+        val properties: MutableList<Property> by appViewModel.properties
+            .collectAsState(initial = mutableListOf())
+        val addresses: MutableList<Address> by appViewModel.addresses
+            .collectAsState(initial = mutableListOf())
+        val photos: MutableList<Photo> by appViewModel.photos
+            .collectAsState(initial = mutableListOf())
+        val agents: MutableList<Agent> by appViewModel.agentsOrderedByName
+            .collectAsState(initial = mutableListOf())
+        val types: MutableList<Type> by appViewModel.typesOrderedById
+            .collectAsState(initial = mutableListOf())
+        val pois: MutableList<Poi> by appViewModel.pois
+            .collectAsState(initial = mutableListOf())
+        val propertyPoiJoins: MutableList<PropertyPoiJoin> by appViewModel.propertyPoiJoins
+            .collectAsState(initial = mutableListOf())
+        val stringTypes: MutableList<String> by appViewModel.stringTypesOrderedById(context = context)
+            .collectAsState(initial = mutableListOf())
+        val stringAgents: MutableList<String> by appViewModel.stringAgentsOrderedByName(context = context)
+            .collectAsState(initial = mutableListOf())
 
         /*
          * Init content type, according to window's width,
@@ -139,18 +148,29 @@ fun RealEstateManagerApp(
         // TopBar RadioButtons
         val (currencyStore, defaultCurrency) = appViewModel.currencyHelper(context)
         val currency =
-            context.getString(currencyStore.getCurrency.collectAsState(initial = defaultCurrency).value)
+            context.getString(currencyStore.getCurrency
+                .collectAsState(initial = defaultCurrency).value)
         val onClickRadioButton: (Int) -> Unit = {
             appViewModel.onClickRadioButton(context = context, currency = it)
         }
 
         val onClickMenu: () -> Unit = when (currentScreen) {
             ListAndDetail.routeWithArgs -> {
-                { listAndDetailViewModel.onClickMenu(navController = navController, propertyId = propertyId) }
+                {
+                    listAndDetailViewModel.onClickMenu(
+                        navController = navController,
+                        propertyId = propertyId
+                    )
+                }
             }
             EditDetail.routeWithArgs -> {
-//                { editViewModel.onClickMenu(navController = navController, context = context) }   //TODO
-                { editViewModel.onClickMenu(navController = navController, geocoderHelper = GeocoderHelper(), context = context) }
+                {
+                    editViewModel.onClickMenu(
+                        navController = navController,
+                        geocoderHelper = GeocoderHelper(),
+                        context = context
+                    )
+                }
             }
             SearchCriteria.route -> {
                 {

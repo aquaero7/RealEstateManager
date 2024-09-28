@@ -19,7 +19,6 @@ class GeocoderHelper {
         } else {
             val geocoder = Geocoder(context)
             val addressList = geocoder.getFromLocationName(address, 5)
-//            addressList?.firstOrNull()?.let { LatLng(it.latitude, it.longitude) }                 //TODO: To be deleted
             addressList?.get(0)?.let {
                 Log.w("Geocoder.getFromLocName", "Locality: ${it.locality}")
                 Log.w("Geocoder.getFromLocName", "Latitude: ${it.latitude}")
@@ -35,8 +34,6 @@ class GeocoderHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             Geocoder(context).getFromLocationName(address, 5, object : Geocoder.GeocodeListener {
                 override fun onGeocode(addressList: MutableList<Address>) {
-//                val location = addressList.firstOrNull()                                          //TODO: To be deleted
-//                val latLng = location?.let { LatLng(it.latitude, it.longitude) }                  //TODO: To be deleted
                     val latLng = addressList[0].let {
                         Log.w("Geocoder.getFromLocName", "Locality: ${it.locality}")
                         Log.w("Geocoder.getFromLocName", "Latitude: ${it.latitude}")
@@ -57,6 +54,5 @@ class GeocoderHelper {
             callback(null)
         }
     }
-
 
 }

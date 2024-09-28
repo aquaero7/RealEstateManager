@@ -1,12 +1,15 @@
 package com.aquaero.realestatemanager.repository_test
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.net.Uri
 import android.os.Build
 import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.aquaero.realestatemanager.repository.LocationRepository
@@ -23,6 +26,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -50,8 +54,6 @@ import kotlin.properties.Delegates
  */
 class LocationRepositoryTest {
     private lateinit var repository: LocationRepository
-//    private lateinit var spyRepository: LocationRepository                                        //TODO: To be deleted
-
     private lateinit var context: Context
 
     private var lat by Delegates.notNull<Double>()
@@ -63,8 +65,8 @@ class LocationRepositoryTest {
     private lateinit var stringAddress: String
     private lateinit var geocoder: Geocoder
     private lateinit var geocoderHelper: GeocoderHelper
-
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
     private lateinit var locationRequestCaptor: KArgumentCaptor<LocationRequest>
     private lateinit var locationCallbackCaptor: KArgumentCaptor<LocationCallback>
     private lateinit var geocodeListenerCaptor: KArgumentCaptor<Geocoder.GeocodeListener>
@@ -78,17 +80,16 @@ class LocationRepositoryTest {
         logMock = Mockito.mockStatic(Log::class.java)
 
         repository = LocationRepository()
-//        spyRepository = spy(LocationRepository())                                                 //TODO: To be deleted
 
         context = mock(Context::class.java)
         geocoder = mock(Geocoder::class.java)
         geocoderHelper = mock(GeocoderHelper::class.java)
+        fusedLocationProviderClient = mock(FusedLocationProviderClient::class.java)
 
         lat = 1.1
         lng = 2.2
         latLng = LatLng(lat, lng)
 
-        fusedLocationProviderClient = mock(FusedLocationProviderClient::class.java)
         locationRequestCaptor = argumentCaptor()
         locationCallbackCaptor = argumentCaptor()
         geocodeListenerCaptor = argumentCaptor()
@@ -106,13 +107,13 @@ class LocationRepositoryTest {
 
         // Set Geocoder address and addresses
         address = mock(Address::class.java).apply {
-//            doReturn(52.52).`when`(this).latitude
-            `when`(latitude).thenReturn(52.52)
-//            doReturn(13.405).`when`(this).longitude
-            `when`(longitude).thenReturn(13.405)
+            `when`(latitude).thenReturn(lat)
+            `when`(longitude).thenReturn(lng)
         }
         addresses = mutableListOf(address)
         stringAddress = "stringAddress"
+
+        doReturn("packageName").`when`(context).packageName
     }
 
     @After
@@ -179,17 +180,17 @@ class LocationRepositoryTest {
                     val callback = invocation.getArgument<(LatLng?) -> Unit>(2)
                     callback(latLng)
                     null
-//                }.`when`(geocoderHelper).getLatLngFromAddressAsync(any(), anyString(), any())     //TODO: To be deleted
                 }.`when`(geocoderHelper).getLatLngFromAddressAsync(eq(context), eq(stringAddress), any())
             }
             apiVersion < 33 && stringAddress != null -> {
-//                doReturn(latLng).`when`(geocoderHelper).getLatLngFromAddress(any(), anyString())  //TODO: To be deleted
                 doReturn(latLng).`when`(geocoderHelper).getLatLngFromAddress(context, stringAddress)
             }
         }
 
         // Function under test
-        val result = repository.getLocationFromAddress(geocoderHelper, context, stringAddress, isInternetAvailable)
+        val result = repository.getLocationFromAddress(
+            geocoderHelper, context, stringAddress, isInternetAvailable
+        )
 
         // Assertion
         val assertion: LatLng? = if (isInternetAvailable) stringAddress?.let { latLng } else null
@@ -299,11 +300,18 @@ class LocationRepositoryTest {
         )
     }
 
+    @Test
+    fun testCreateAppSettingsIntent() {
+        // Function under test
+        val result = repository.createAppSettingsIntent(context)
 
-
-
-
-
-
+        // Assertions
+        assertEquals(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, result.action)
+        assertEquals(Uri.fromParts("package", "packageName", null), result.data)
+        assertEquals("package", result.data?.scheme)
+        assertEquals("packageName", result.data?.schemeSpecificPart)
+        assertNull(result.data?.fragment)
+        assertEquals(Intent.FLAG_ACTIVITY_NEW_TASK, result.flags)
+    }
 
 }

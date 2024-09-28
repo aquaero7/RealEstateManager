@@ -40,7 +40,6 @@ import org.mockito.Mockito.lenient
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
@@ -80,15 +79,15 @@ class EditViewModelTestPart1 {
 
     private lateinit var navController: NavHostController
     private lateinit var context: Context
-    private lateinit var geocoderHelper: GeocoderHelper                                             //TODO
+    private lateinit var geocoderHelper: GeocoderHelper
     private lateinit var viewModel: EditViewModel
 
     @Before
-    @OptIn(ExperimentalCoroutinesApi::class)                                                        //TODO
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun setup() {
         // Mock the Dispatcher.Main so that the coroutines can run properly in the test environment
         // i.e. outside a real Android environment.
-        Dispatchers.setMain(StandardTestDispatcher())                                               //TODO
+        Dispatchers.setMain(StandardTestDispatcher())
 
         propertyRepository = mock(PropertyRepository::class.java)
         addressRepository = mock(AddressRepository::class.java)
@@ -115,7 +114,7 @@ class EditViewModelTestPart1 {
 
         navController = mock(NavHostController::class.java)
         context = mock(Context::class.java)
-        geocoderHelper = mock(GeocoderHelper::class.java)                                           //TODO
+        geocoderHelper = mock(GeocoderHelper::class.java)
 
         viewModel = EditViewModel(
             propertyRepository,
@@ -136,7 +135,6 @@ class EditViewModelTestPart1 {
             doReturn(cacheAddress).`when`(cacheAddress).replaceBlankValuesWithNull()
             doReturn(initialAddress).`when`(cacheRepository).getInitialAddress()
             doReturn(latLng).`when`(locationRepository)
-//                .getLocationFromAddress(eq(context), anyString(), anyBoolean())                   //TODO
                 .getLocationFromAddress(eq(geocoderHelper), eq(context), anyString(), anyBoolean())
 
             // Init some more mocks for test updateRoomWithAddress()
@@ -158,9 +156,9 @@ class EditViewModelTestPart1 {
     }
 
     @After
-    @OptIn(ExperimentalCoroutinesApi::class)                                                        //TODO
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun tearDown() {
-        Dispatchers.resetMain()                                                                     //TODO
+        Dispatchers.resetMain()
     }
 
 
@@ -168,7 +166,6 @@ class EditViewModelTestPart1 {
     fun testOnClickMenu() {
         // Also testing updateRoomWithCacheData() and clearCache()
         runBlocking {
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(cacheRepository).clearCache("")
@@ -180,7 +177,6 @@ class EditViewModelTestPart1 {
         runBlocking {
             // Case 1: isEmpty = true
             doReturn(true).`when`(cacheAddress).isNullOrBlank()
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(cacheRepository).updateCacheAddress(null, null)
@@ -194,7 +190,6 @@ class EditViewModelTestPart1 {
             // Case 2a: isEmpty = false and isModified = true
             doReturn(false).`when`(cacheAddress).isNullOrBlank()
             doReturn(null).`when`(cacheRepository).getInitialAddress()
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(cacheRepository, never()).updateCacheAddress(null, null)
@@ -208,7 +203,6 @@ class EditViewModelTestPart1 {
             // Case 2b: isEmpty = false and isModified = true
             doReturn(initialAddress).`when`(cacheRepository).getInitialAddress()
             doReturn(true).`when`(cacheAddress).hasDifferencesWith(initialAddress)
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(cacheRepository, never()).updateCacheAddress(null, null)
@@ -224,7 +218,6 @@ class EditViewModelTestPart1 {
             doReturn(false).`when`(cacheAddress).hasDifferencesWith(initialAddress)
             doReturn(null).`when`(cacheAddress).latitude
             lenient().doReturn(null).`when`(cacheAddress).longitude
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(cacheRepository, never()).updateCacheAddress(null, null)
@@ -239,7 +232,6 @@ class EditViewModelTestPart1 {
             // Case 4: isEmpty = false and isModified = false and hasNullLatLng = false
             doReturn(lat).`when`(cacheAddress).latitude
             doReturn(lng).`when`(cacheAddress).longitude
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(cacheRepository, never()).updateCacheAddress(null, null)
@@ -253,7 +245,6 @@ class EditViewModelTestPart1 {
             // Case 1: isEmpty = true and isUpdate = true
             doReturn(true).`when`(cacheAddress).isNullOrBlank()
             doReturn(null).`when`(cacheRepository).getInitialAddress()
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(addressRepository, never()).deleteAddressFromRoom(cacheAddress)
@@ -263,7 +254,6 @@ class EditViewModelTestPart1 {
 
             // Case 2: isEmpty = true and isUpdate = false
             doReturn(initialAddress).`when`(cacheRepository).getInitialAddress()
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(addressRepository).deleteAddressFromRoom(cacheAddress)
@@ -275,11 +265,10 @@ class EditViewModelTestPart1 {
             reset(addressRepository, cacheRepository)
             doReturn(cacheAddress).`when`(cacheRepository).getCacheAddress()
             doReturn(addressId).`when`(addressRepository).upsertAddressInRoom(cacheAddress)
-            doReturn(cacheProperty).`when`(cacheRepository).getCacheProperty()                      //TODO
+            doReturn(cacheProperty).`when`(cacheRepository).getCacheProperty()
 
             // Case 3a: isEmpty = false and isUpdate = true
             doReturn(false).`when`(cacheAddress).isNullOrBlank()
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(addressRepository, never()).deleteAddressFromRoom(cacheAddress)
@@ -291,11 +280,10 @@ class EditViewModelTestPart1 {
             reset(addressRepository, cacheRepository)
             doReturn(cacheAddress).`when`(cacheRepository).getCacheAddress()
             doReturn(addressId).`when`(addressRepository).upsertAddressInRoom(cacheAddress)
-            doReturn(cacheProperty).`when`(cacheRepository).getCacheProperty()                      //TODO
+            doReturn(cacheProperty).`when`(cacheRepository).getCacheProperty()
 
             // Case 3b: isEmpty = false and isUpdate = false
             doReturn(null).`when`(cacheRepository).getInitialAddress()
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(addressRepository, never()).deleteAddressFromRoom(cacheAddress)
@@ -311,7 +299,6 @@ class EditViewModelTestPart1 {
             // Case 1: isNewProperty is false and newPropertyIdFromRoom <= 0
             doReturn(1L).`when`(cacheProperty).propertyId
             doReturn(0L).`when`(propertyRepository).upsertPropertyInRoom(cacheProperty)
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(cacheRepository, never()).updateCachePropertyItem(NonEditField.PROPERTY_ID.name, eq(anyLong()))
@@ -319,7 +306,6 @@ class EditViewModelTestPart1 {
 
             // Case 2: isNewProperty is true and newPropertyIdFromRoom <= 0
             doReturn(0L).`when`(cacheProperty).propertyId
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(cacheRepository, never()).updateCachePropertyItem(NonEditField.PROPERTY_ID.name, eq(anyLong()))
@@ -328,7 +314,6 @@ class EditViewModelTestPart1 {
             // Case 3: isNewProperty is false and newPropertyIdFromRoom > 0
             doReturn(1L).`when`(cacheProperty).propertyId
             doReturn(1L).`when`(propertyRepository).upsertPropertyInRoom(cacheProperty)
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(cacheRepository, never()).updateCachePropertyItem(NonEditField.PROPERTY_ID.name, eq(anyLong()))
@@ -341,7 +326,6 @@ class EditViewModelTestPart1 {
 
             // Case 4: isNewProperty is true and newPropertyIdFromRoom > 0
             doReturn(0L).`when`(cacheProperty).propertyId
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(cacheRepository).updateCachePropertyItem(NonEditField.PROPERTY_ID.name, 1L)
@@ -358,7 +342,6 @@ class EditViewModelTestPart1 {
             // Delete a photo
             doReturn(cachePhotos).`when`(cacheRepository).getCacheItemPhotos()
             doReturn(initialPhotos).`when`(cacheRepository).getInitialItemPhotos()
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(photoRepository).deletePhotosFromRoom(mutableListOf(photo2))
@@ -370,7 +353,6 @@ class EditViewModelTestPart1 {
             // Add a photo
             doReturn(initialPhotos).`when`(cacheRepository).getCacheItemPhotos()
             doReturn(cachePhotos).`when`(cacheRepository).getInitialItemPhotos()
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(photoRepository, never()).deletePhotosFromRoom(mutableListOf(photo2))
@@ -388,7 +370,6 @@ class EditViewModelTestPart1 {
             // Delete pois
             doReturn(cachePois).`when`(cacheRepository).getCacheItemPois()
             doReturn(initialPois).`when`(cacheRepository).getInitialItemPois()
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(propertyPoiJoinRepository).deletePropertyPoiJoinsFromRoom(propertyPoiJoinsModified)
@@ -400,7 +381,6 @@ class EditViewModelTestPart1 {
             // Add pois
             doReturn(initialPois).`when`(cacheRepository).getCacheItemPois()
             doReturn(cachePois).`when`(cacheRepository).getInitialItemPois()
-//            viewModel.onClickMenu(navController, context)                                         //TODO
             viewModel.onClickMenu(navController, geocoderHelper, context)
             delay(delayInMs)    // Allow the coroutine to execute
             verify(propertyPoiJoinRepository, never()).deletePropertyPoiJoinsFromRoom(propertyPoiJoinsModified)

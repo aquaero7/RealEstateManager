@@ -157,7 +157,8 @@ fun NavHostController.navigateSingleTopTo(
 ) {
     val selected = false
     val route =
-        if (destination == ListAndDetail) "${destination.route}/${propertyId}/${selected}" else destination.route
+        if (destination == ListAndDetail) "${destination.route}/${propertyId}/${selected}"
+        else destination.route
     when (destination) {
         SearchCriteria -> {
             with (viewModel as SearchViewModel) { resetData() }
@@ -183,5 +184,3 @@ fun NavHostController.navigateToDetail(propertyId: String, contentType: AppConte
 fun NavHostController.navigateToEditDetail(propertyId: String) {
     this.navigate(route = "${EditDetail.route}/$propertyId")
 }
-
-

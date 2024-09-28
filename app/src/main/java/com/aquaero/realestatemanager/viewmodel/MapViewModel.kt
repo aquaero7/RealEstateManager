@@ -1,10 +1,7 @@
 package com.aquaero.realestatemanager.viewmodel
 
 import android.content.Context
-import android.content.Intent
 import android.location.Location
-import android.net.Uri
-import android.provider.Settings
 import androidx.lifecycle.ViewModel
 import com.aquaero.realestatemanager.repository.LocationRepository
 import com.aquaero.realestatemanager.utils.ConnectionState

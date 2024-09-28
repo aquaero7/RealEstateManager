@@ -41,4 +41,3 @@ class PropertyRepository(private val propertyDao: PropertyDao) {
     }
 
 }
-

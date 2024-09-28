@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.aquaero.realestatemanager.AppContentType
-import com.aquaero.realestatemanager.LatLngItem
 import com.aquaero.realestatemanager.NULL_PROPERTY_ID
 import com.aquaero.realestatemanager.R
 import com.aquaero.realestatemanager.model.Address

@@ -22,7 +22,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.Objects
 
 class PhotoRepository(private val photoDao: PhotoDao) {
 
@@ -76,24 +75,28 @@ class PhotoRepository(private val photoDao: PhotoDao) {
         return photos.find { it.photoId == photoId }
     }
 
-    private fun Context.createImageFile(): File {
+    internal fun createImageFile(context: Context): File {
+        /*
+         * Function made internal instead of private to allow access from test class
+         * but not outside the module (if public)
+         */
+
         // Create an image file name
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.FRANCE).format(Date())
-        val imageFileName = "IMG_" + timeStamp + "_"
+        val imageFileName = "IMG_${timeStamp}_"
         return File.createTempFile(
-            imageFileName,      // Prefix
-            ".jpg",       // Suffix
-            externalCacheDir    // Directory
+            imageFileName,            // Prefix
+            ".jpg",             // Suffix
+            context.externalCacheDir  // Directory
         )
     }
 
     fun getPhotoUri(context: Context): Uri {
         return FileProvider.getUriForFile(
-            Objects.requireNonNull(context),
-//            BuildConfig.APPLICATION_ID + ".provider",         // TODO: To be deleted
-//            BuildConfig.APPLICATION_ID + ".fileprovider",     // TODO: To be deleted
+            // Objects.requireNonNull(context),
+            context,
             "${BuildConfig.APPLICATION_ID}.${Path.FILE_PROVIDER}",
-            context.createImageFile()
+            createImageFile(context)
         )
     }
 
@@ -150,6 +153,7 @@ class PhotoRepository(private val photoDao: PhotoDao) {
         }
         Log.w("PhotoRepository", "uri = $uri")
         Log.w("PhotoRepository", "pickerUri = ${outputFile.toUri()}")
+
         return outputFile.toUri()
     }
 

@@ -125,7 +125,7 @@ class EditViewModel(
         val address = addresses?.let {
             dataFromNullableProperty(
                 property = property,
-                function = address(propertyId = property?.addressId, addresses = addresses)
+                function = addressFromId(addressId = property?.addressId, addresses = addresses)
             )
         }
         return Triple(stringType, stringAgent, address)
@@ -143,8 +143,8 @@ class EditViewModel(
         return agentRepository.stringAgent(agentId = agentId, agents = agents, stringAgents = stringAgents)
     }
 
-    private fun address(propertyId: Long?, addresses: MutableList<Address>): Address? {
-        return addressRepository.address(propertyId = propertyId, addresses = addresses)
+    private fun addressFromId(addressId: Long?, addresses: MutableList<Address>): Address? {
+        return addressRepository.addressFromId(addressId = addressId, addresses = addresses)
     }
 
     fun itemPhotos(propertyId: Long, photos: MutableList<Photo>): MutableList<Photo> {

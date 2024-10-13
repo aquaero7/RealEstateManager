@@ -105,12 +105,12 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.9.2")                                      //TODO: ex = 1.8.2
     // For PickVisualMedia contract
     implementation("androidx.activity:activity-ktx:1.9.2")                                          //TODO: ex = 1.8.2
-    implementation(platform("androidx.compose:compose-bom:2024.09.02"))                             //TODO: ex = 2024.02.01
+    implementation(platform("androidx.compose:compose-bom:2024.09.03"))                             //TODO: ex = 2024.02.01
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     // Using icons extension, make sure to use R8 / ProGuard to remove unused icons from this application
-    implementation("androidx.compose.material:material-icons-extended:1.7.2")                       //TODO: ex = 1.6.2
+    implementation("androidx.compose.material:material-icons-extended:1.7.3")                       //TODO: ex = 1.6.2
 //    implementation("androidx.compose.material3:material3")    // Redundant with implementation for DatePickerColors ?
     implementation("androidx.compose.material3:material3-window-size-class:1.3.0")                  //TODO: ex = 1.2.0
     // DatePickerColors with complete customized colors
@@ -118,7 +118,7 @@ dependencies {
 //    implementation("androidx.compose.material3:material3-adaptive:1.0.0-alpha06")                 // Seems useless with a version of material3-adaptive-navigation-suite higher than 1.0.0-alpha03
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.3.0")          // Updating beyond version 1.0.0-alpha03 version could cause errors // No error with version 1.3.0
     //
-    implementation("androidx.navigation:navigation-compose:2.8.1")                                  //TODO: ex = 2.7.7
+    implementation("androidx.navigation:navigation-compose:2.8.2")                                  //TODO: ex = 2.7.7
     // Accompanist-Permissions
     implementation("com.google.accompanist:accompanist-permissions:0.33.2-alpha")
 
@@ -173,7 +173,7 @@ dependencies {
 
     androidTestImplementation("androidx.test.ext:junit:1.2.1")                                      //TODO: ex = 1.1.5
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")                         //TODO: ex = 3.5.1
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.09.02"))                  //TODO: ex = 2024.02.01
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.09.03"))                  //TODO: ex = 2024.02.01
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     // Mockito
     androidTestImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")

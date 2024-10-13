@@ -177,7 +177,7 @@ class EditViewModelTestPart2 {
                 .stringType(anyString(), anyList(), anyList())
             doReturn(stringAgent).`when`(agentRepository)
                 .stringAgent(anyLong(), anyList(), anyList())
-            doReturn(address).`when`(addressRepository).address(anyLong(), anyList())
+            doReturn(address).`when`(addressRepository).addressFromId(anyLong(), anyList())
         }
     }
 

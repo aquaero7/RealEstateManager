@@ -154,28 +154,28 @@ class AgentRepositoryTest {
     fun testStringAgent() {
         // 1- Function under test when :
         // - The agent ID corresponds to an agent from agents
-        // - agents ans stringAgents have the same size
+        // - agents and stringAgents have the same size
         var result = repository.stringAgent(agentId1, agents, stringAgents)
         // Assertion
         assertEquals(stringAgent1, result)
 
         // 2- Function under test when :
         // - The agent ID doesn't correspond to an agent from agents
-        // - agents ans stringAgents have the same size
+        // - agents and stringAgents have the same size
         result = repository.stringAgent(agentId3, agents, stringAgents)
         // Assertion (By default, should return the value at index 0 from stringAgents)
         assertEquals(stringAgent2, result)
 
         // 3- Function under test when :
         // - The agent ID corresponds to an agent from agents
-        // - agents ans stringAgents have different sizes
+        // - agents and stringAgents have different sizes
         result = repository.stringAgent(agentId2, agents, otherStringAgents)
         // Assertion
         assertEquals(agent2ToString, result)
 
         // 4- Function under test when :
         // - The agent ID doesn't correspond to an agent from agents
-        // - agents ans stringAgents have different sizes
+        // - agents and stringAgents have different sizes
         result = repository.stringAgent(agentId3, agents, otherStringAgents)
         // Assertion
         assertEquals(AgentEnum.UNASSIGNED.key, result)

@@ -29,6 +29,8 @@ import com.aquaero.realestatemanager.ui.component.app.AppTabRow
 import com.aquaero.realestatemanager.ui.component.app.AppTopBar
 import com.aquaero.realestatemanager.ui.theme.RealEstateManagerTheme
 import com.aquaero.realestatemanager.utils.GeocoderHelper
+import com.aquaero.realestatemanager.utils.translateStringAgents
+import com.aquaero.realestatemanager.utils.translateStringTypes
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
 import com.aquaero.realestatemanager.viewmodel.EditViewModel
 import com.aquaero.realestatemanager.viewmodel.ListAndDetailViewModel
@@ -36,6 +38,7 @@ import com.aquaero.realestatemanager.viewmodel.LoanViewModel
 import com.aquaero.realestatemanager.viewmodel.MapViewModel
 import com.aquaero.realestatemanager.viewmodel.SearchViewModel
 import com.aquaero.realestatemanager.viewmodel.ViewModelFactory
+import kotlinx.coroutines.flow.map
 
 class RealEstateManagerActivity : ComponentActivity() {
 
@@ -108,9 +111,11 @@ fun RealEstateManagerApp(
             .collectAsState(initial = mutableListOf())
         val propertyPoiJoins: MutableList<PropertyPoiJoin> by appViewModel.propertyPoiJoins
             .collectAsState(initial = mutableListOf())
-        val stringTypes: MutableList<String> by appViewModel.stringTypesOrderedById(context = context)
+        val stringTypes: MutableList<String> by appViewModel.typesOrderedById
+            .map { translateStringTypes(context = context, types = it) }
             .collectAsState(initial = mutableListOf())
-        val stringAgents: MutableList<String> by appViewModel.stringAgentsOrderedByName(context = context)
+        val stringAgents: MutableList<String> by appViewModel.agentsOrderedByName
+            .map { translateStringAgents(context = context, agents = it) }
             .collectAsState(initial = mutableListOf())
 
         /*

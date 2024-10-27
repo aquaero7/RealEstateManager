@@ -1,13 +1,10 @@
 package com.aquaero.realestatemanager.repository
 
-import android.annotation.SuppressLint
-import android.content.Context
 import com.aquaero.realestatemanager.database.dao.AgentDao
 import com.aquaero.realestatemanager.model.Agent
 import com.aquaero.realestatemanager.model.AgentEnum
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class AgentRepository(private val agentDao: AgentDao) {
@@ -43,46 +40,6 @@ class AgentRepository(private val agentDao: AgentDao) {
         return agentDao.getAgentsOrderedByName()
     }
 
-    @SuppressLint("DiscouragedApi")
-    fun getStringAgentsFromRoom(context: Context): Flow<MutableList<String>> {
-        return agentDao.getAgents()
-            .map { agents ->
-                agents.map {
-                    val reference = it.firstName
-                    if (reference != AgentEnum.UNASSIGNED.key) {
-                        it.toString()
-                    } else {
-                        val resourceId = context.resources.getIdentifier(
-                            reference,
-                            "string",
-                            context.packageName
-                        )
-                        if (resourceId != 0) context.getString(resourceId) else reference
-                    }
-                }.toMutableList()
-            }
-    }
-
-    @SuppressLint("DiscouragedApi")
-    fun getStringAgentsOrderedByNameFromRoom(context: Context): Flow<MutableList<String>> {
-        return agentDao.getAgentsOrderedByName()
-            .map { agents ->
-                agents.map {
-                    val reference = it.firstName
-                    if (reference != AgentEnum.UNASSIGNED.key) {
-                        it.toString()
-                    } else {
-                        val resourceId = context.resources.getIdentifier(
-                            reference,
-                            "string",
-                            context.packageName
-                        )
-                        if (resourceId != 0) context.getString(resourceId) else reference
-                    }
-                }.toMutableList()
-            }
-    }
-
     /**/
 
 
@@ -92,8 +49,9 @@ class AgentRepository(private val agentDao: AgentDao) {
 
     fun stringAgent(agentId: Long, agents: MutableList<Agent>, stringAgents: MutableList<String>): String {
         val agent = agents.find { it.agentId == agentId }
-        val agentIndex = agent?.let { agents.indexOf(agent) } ?: 0
-        return if (agentIndex != -1 && stringAgents.isNotEmpty()) stringAgents.elementAt(agentIndex) else agent.toString()
+        val agentIndex = agent?.let { agents.indexOf(it) } ?: 0  // Index 0 should correspond to "Unassigned"
+        return if (agentIndex != -1 && stringAgents.isNotEmpty() && stringAgents.size == agents.size)
+            stringAgents.elementAt(agentIndex) else agent?.toString() ?: AgentEnum.UNASSIGNED.key
     }
 
 }

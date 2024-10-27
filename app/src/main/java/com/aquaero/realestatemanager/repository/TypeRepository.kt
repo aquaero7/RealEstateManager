@@ -1,12 +1,10 @@
 package com.aquaero.realestatemanager.repository
 
-import android.annotation.SuppressLint
-import android.content.Context
 import com.aquaero.realestatemanager.database.dao.TypeDao
 import com.aquaero.realestatemanager.model.Type
+import com.aquaero.realestatemanager.model.TypeEnum
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class TypeRepository(private val typeDao: TypeDao) {
@@ -38,28 +36,6 @@ class TypeRepository(private val typeDao: TypeDao) {
         return typeDao.getTypesOrderedById()
     }
 
-    @SuppressLint("DiscouragedApi")
-    fun getStringTypesFromRoom(context: Context): Flow<MutableList<String>> {
-        return typeDao.getTypes().map { types ->
-            types.map {
-                val resourceId =
-                    context.resources.getIdentifier(it.typeId, "string", context.packageName)
-                if (resourceId != 0) context.getString(resourceId) else it.typeId
-            }.toMutableList()
-        }
-    }
-
-    @SuppressLint("DiscouragedApi")
-    fun getStringTypesOrderedByIdFromRoom(context: Context): Flow<MutableList<String>> {
-        return typeDao.getTypesOrderedById().map { types ->
-            types.map {
-                val resourceId =
-                    context.resources.getIdentifier(it.typeId, "string", context.packageName)
-                if (resourceId != 0) context.getString(resourceId) else it.typeId
-            }.toMutableList()
-        }
-    }
-
     /**/
 
 
@@ -68,8 +44,10 @@ class TypeRepository(private val typeDao: TypeDao) {
     }
 
     fun stringType(typeId: String, types: MutableList<Type>, stringTypes: MutableList<String>): String {
-        val typeIndex = types.indexOf(types.find { it.typeId == typeId } ?: 0)
-        return if (typeIndex != -1 && stringTypes.isNotEmpty()) stringTypes.elementAt(typeIndex) else typeId
+        val type = types.find { it.typeId == typeId }
+        val typeIndex = type?.let { types.indexOf(it) } ?: 0  // Index 0 should correspond to "Unassigned"
+        return if (typeIndex != -1 && stringTypes.isNotEmpty() && stringTypes.size == types.size)
+            stringTypes.elementAt(typeIndex) else TypeEnum.UNASSIGNED.key
     }
 
 }

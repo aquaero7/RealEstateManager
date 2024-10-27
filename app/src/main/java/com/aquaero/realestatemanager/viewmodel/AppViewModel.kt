@@ -39,8 +39,8 @@ class AppViewModel(
     propertyRepository: PropertyRepository,
     addressRepository: AddressRepository,
     photoRepository: PhotoRepository,
-    private val agentRepository : AgentRepository,
-    private val typeRepository : TypeRepository,
+    agentRepository : AgentRepository,
+    typeRepository : TypeRepository,
     poiRepository: PoiRepository,
     propertyPoiJoinRepository: PropertyPoiJoinRepository,
 ) : ViewModel() {
@@ -53,8 +53,6 @@ class AppViewModel(
     val typesOrderedById = typeRepository.getTypesOrderedByIdFromRoom()
     val pois = poiRepository.getPoisFromRoom()
     val propertyPoiJoins = propertyPoiJoinRepository.getPropertyPoiJoinsFromRoom()
-    fun stringTypesOrderedById(context: Context) = typeRepository.getStringTypesOrderedByIdFromRoom(context)
-    fun stringAgentsOrderedByName(context: Context) = agentRepository.getStringAgentsOrderedByNameFromRoom(context)
     /**/
 
     private var currencyStore: CurrencyStore? = null

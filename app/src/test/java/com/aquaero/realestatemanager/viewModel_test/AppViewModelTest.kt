@@ -28,10 +28,7 @@ import com.aquaero.realestatemanager.repository.TypeRepository
 import com.aquaero.realestatemanager.utils.CurrencyStore
 import com.aquaero.realestatemanager.viewmodel.AppViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -40,11 +37,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.anyInt
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
-import org.mockito.kotlin.doCallRealMethod
 import org.mockito.kotlin.doReturn
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -137,31 +131,6 @@ class AppViewModelTest {
         localeFR = Locale("fr", "FR")
     }
 
-    @Test
-    fun getStringTypesOrderedByIdWithSuccess() = runTest {
-        // Prepare data for the test
-        val expectedStringTypes = listOf("Type1", "Type2", "Type3")
-        // Configure the mock of the repository to return a Flow
-        doReturn(flowOf(expectedStringTypes)).`when`(typeRepository)
-            .getStringTypesOrderedByIdFromRoom(context)
-        // Call the function and collect the values emitted by the Flow
-        val result = viewModel.stringTypesOrderedById(context).first()
-        // Check the result
-        assertEquals(expectedStringTypes, result)
-    }
-
-    @Test
-    fun getStringAgentsOrderedByNameWithSuccess() = runTest {
-        // Prepare data for the test
-        val expectedStringAgents = listOf("Agent1", "Agent2", "Agent3")
-        // Configure the mock of the repository to return a Flow
-        doReturn(flowOf(expectedStringAgents)).`when`(agentRepository)
-            .getStringAgentsOrderedByNameFromRoom(context)
-        // Call the function and collect the values emitted by the Flow
-        val result = viewModel.stringAgentsOrderedByName(context).first()
-        // Check the result
-        assertEquals(expectedStringAgents, result)
-    }
 
     @Test
     fun accessToCurrencyStoreWithSuccess() {

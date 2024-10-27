@@ -1,10 +1,14 @@
 package com.aquaero.realestatemanager.utils
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.aquaero.realestatemanager.DATE_PATTERN
 import com.aquaero.realestatemanager.RATE_OF_DOLLAR_IN_EURO
+import com.aquaero.realestatemanager.model.Agent
+import com.aquaero.realestatemanager.model.AgentEnum
+import com.aquaero.realestatemanager.model.Type
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -96,6 +100,32 @@ fun isDecimal(str: String): Boolean {
  */
 fun String.areDigitsOnly(): Boolean {
     return this.all { it.isDigit() }
+}
+
+@SuppressLint("DiscouragedApi")
+fun translateStringAgents(context: Context, agents: MutableList<Agent>): MutableList<String> {
+    return agents.map { agent ->
+        val reference = agent.firstName
+        if (reference != AgentEnum.UNASSIGNED.key) {
+            agent.toString()
+        } else {
+            val resourceId = context.resources.getIdentifier(
+                reference,
+                "string",
+                context.packageName
+            )
+            if (resourceId != 0) context.getString(resourceId) else reference
+        }
+    }.toMutableList()
+}
+
+@SuppressLint("DiscouragedApi")
+fun translateStringTypes(context: Context, types: MutableList<Type>): MutableList<String> {
+    return types.map { type ->
+        val resourceId =
+            context.resources.getIdentifier(type.typeId, "string", context.packageName)
+        if (resourceId != 0) context.getString(resourceId) else type.typeId
+    }.toMutableList()
 }
 
 /**

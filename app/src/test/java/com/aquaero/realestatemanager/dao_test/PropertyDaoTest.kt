@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -43,6 +44,7 @@ class PropertyDaoTest {
     private lateinit var property2: Property
     private lateinit var property3: Property
     private lateinit var properties: List<Property>
+    private lateinit var property1updated: Property
 
     @Before
     fun setUp() {
@@ -75,6 +77,12 @@ class PropertyDaoTest {
             description = "Property3", surface = null, nbOfRooms = null, nbOfBathrooms = null,
             nbOfBedrooms = null, registrationDate = "2024-07-03", saleDate = null, agentId = 3L
         )
+        property1updated = Property(
+            propertyId = 1L, typeId = TypeEnum.UNASSIGNED.key, addressId = null, price = null,
+            description = "Property1Updated", surface = null, nbOfRooms = null, nbOfBathrooms = null,
+            nbOfBedrooms = null, registrationDate = "2024-07-01", saleDate = null, agentId = 1L
+        )
+
         properties = listOf(property2, property3, property1)
     }
 
@@ -95,16 +103,29 @@ class PropertyDaoTest {
      */
     @Test
     fun testUpsertAndGetProperty() = runBlocking {
-        // Function under test
+        // Function under test (inserting property)
         propertyDao.upsertProperty(property1)
 
         // Get the property from database to check the insertion (other function under test)
-        val result = propertyDao.getProperty(1L).first()
+        var result = propertyDao.getProperty(1L).first()
 
         // Assertions
         assertNotNull(result)
         assertEquals(property1.propertyId, result.propertyId)
         assertEquals(property1.description, result.description)
+
+        // Function under test (updating property)
+        propertyDao.upsertProperty(property1updated)
+
+        // Get the property from database to check the update (other function under test)
+        result = propertyDao.getProperty(1L).first()
+
+        // Assertions
+        assertNotNull(result)
+        assertEquals(property1.propertyId, result.propertyId)
+        assertEquals(property1updated.propertyId, result.propertyId)
+        assertNotEquals(property1.description, result.description)
+        assertEquals(property1updated.description, result.description)
     }
 
     /**

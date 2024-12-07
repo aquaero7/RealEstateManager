@@ -27,6 +27,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+/**
+ * Testing AddressDao
+ */
 class AddressDaoTest {
 
     // Use of InstantTaskExecutor rule to manage threading
@@ -63,19 +66,19 @@ class AddressDaoTest {
         addressDao = database.addressDao
 
         address1 = Address(
-            1L, null, null, null, "City3",
+            1L, null, null, null, "CityC",
             null, null, null, null, null
         )
         address2 = Address(
-            2L, null, null, null, "City2",
+            2L, null, null, null, "CityB",
             null, null, null, null, null
         )
         address3 = Address(
-            3L, null, null, null, "City1",
+            3L, null, null, null, "CityA",
             null, null, null, null, null
         )
         address1updated = Address(
-            1L, null, null, null, "City3Updated",
+            1L, null, null, null, "CityCUpdated",
             null, null, null, null, null
         )
 
@@ -125,7 +128,7 @@ class AddressDaoTest {
     }
 
     /**
-     * Testing prepopulateWithProperties() and getProperties()
+     * Testing prepopulateWithAddresses() and getAddresses()
      */
     @Test
     fun testPrepopulateWithAddressesAndGetAddresses() = runBlocking {
@@ -185,14 +188,14 @@ class AddressDaoTest {
         // Functions under test
         val result = addressDao.getAddressesOrderedByCity().first()
 
-        // Assertions (properties should be sorted by descending registration dates)
+        // Assertions (addresses should be sorted by ascending cities)
         assertEquals(3, result.size)
         assertEquals(3L, result[0].addressId)
-        assertEquals("City1", result[0].city)
+        assertEquals("CityA", result[0].city)
         assertEquals(2L, result[1].addressId)
-        assertEquals("City2", result[1].city)
+        assertEquals("CityB", result[1].city)
         assertEquals(1L, result[2].addressId)
-        assertEquals("City3", result[2].city)
+        assertEquals("CityC", result[2].city)
     }
 
 
@@ -209,6 +212,15 @@ class AddressDaoTest {
         // Assertions
         assertNotNull(cursor)
         assertEquals(3, cursor.count)
+        cursor.moveToPosition(0)
+        assertEquals(1L, cursor.getLong(0))
+        assertEquals("CityC", cursor.getString(4))
+        cursor.moveToPosition(1)
+        assertEquals(2L, cursor.getLong(0))
+        assertEquals("CityB", cursor.getString(4))
+        cursor.moveToPosition(2)
+        assertEquals(3L, cursor.getLong(0))
+        assertEquals("CityA", cursor.getString(4))
 
         // Close cursor
         cursor.close()

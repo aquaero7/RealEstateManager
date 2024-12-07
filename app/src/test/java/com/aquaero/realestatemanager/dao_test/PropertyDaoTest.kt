@@ -27,6 +27,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+/**
+ * Testing PropertyDao
+ */
 class PropertyDaoTest {
 
     // Use of InstantTaskExecutor rule to manage threading
@@ -194,6 +197,18 @@ class PropertyDaoTest {
         // Assertions
         assertNotNull(cursor)
         assertEquals(3, cursor.count)
+        cursor.moveToPosition(0)
+        assertEquals(1L, cursor.getLong(0))
+        assertEquals("Property1", cursor.getString(4))
+        assertEquals(null, cursor.getString(10))
+        cursor.moveToPosition(1)
+        assertEquals(2L, cursor.getLong(0))
+        assertEquals("Property2", cursor.getString(4))
+        assertEquals("2024-07-31", cursor.getString(10))
+        cursor.moveToPosition(2)
+        assertEquals(3L, cursor.getLong(0))
+        assertEquals("Property3", cursor.getString(4))
+        assertEquals(null, cursor.getString(10))
 
         // Close cursor
         cursor.close()
@@ -210,6 +225,14 @@ class PropertyDaoTest {
         // Assertions
         assertNotNull(cursor)
         assertEquals(2, cursor.count)
+        cursor.moveToPosition(0)
+        assertEquals(1L, cursor.getLong(0))
+        assertEquals("Property1", cursor.getString(4))
+        assertEquals(null, cursor.getString(10))
+        cursor.moveToPosition(1)
+        assertEquals(3L, cursor.getLong(0))
+        assertEquals("Property3", cursor.getString(4))
+        assertEquals(null, cursor.getString(10))
 
         // Close cursor
         cursor.close()
@@ -226,6 +249,10 @@ class PropertyDaoTest {
         // Assertions
         assertNotNull(cursor)
         assertEquals(1, cursor.count)
+        cursor.moveToPosition(0)
+        assertEquals(2L, cursor.getLong(0))
+        assertEquals("Property2", cursor.getString(4))
+        assertEquals("2024-07-31", cursor.getString(10))
 
         // Close cursor
         cursor.close()

@@ -144,6 +144,9 @@ class AddressDaoTest {
 
         // New assertion
         assertEquals(3, result.size)
+        assertTrue(result.contains(address1))
+        assertTrue(result.contains(address2))
+        assertTrue(result.contains(address3))
     }
 
     @Test

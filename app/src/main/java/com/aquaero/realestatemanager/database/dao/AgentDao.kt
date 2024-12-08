@@ -31,7 +31,8 @@ interface AgentDao {
     @Query("SELECT * FROM agent ORDER BY agentId ASC")
     fun getAgentsOrderedById(): Flow<MutableList<Agent>>
 
-    @Query("SELECT * FROM agent ORDER BY lastName + firstName ASC")
+    @Query("SELECT * FROM agent ORDER BY IFNULL(lastName, '') ASC, firstName ASC")  // Each column
+//    @Query("SELECT * FROM agent ORDER BY (IFNULL(lastName, '') || firstName) ASC")  // Concatenation
     fun getAgentsOrderedByName(): Flow<MutableList<Agent>>
 
 

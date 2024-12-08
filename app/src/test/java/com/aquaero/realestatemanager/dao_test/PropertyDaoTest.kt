@@ -148,6 +148,9 @@ class PropertyDaoTest {
 
         // New assertion
         assertEquals(3, result.size)
+        assertTrue(result.contains(property1))
+        assertTrue(result.contains(property2))
+        assertTrue(result.contains(property3))
     }
 
     @Test

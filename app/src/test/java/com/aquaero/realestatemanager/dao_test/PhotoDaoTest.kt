@@ -160,6 +160,9 @@ class PhotoDaoTest {
 
         // New assertion
         assertEquals(3, result.size)
+        assertTrue(result.contains(photo1))
+        assertTrue(result.contains(photo2))
+        assertTrue(result.contains(photo3))
     }
 
     @Test

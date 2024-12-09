@@ -25,8 +25,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
+@Config(manifest= Config.NONE)
 /**
  * Testing AddressDao
  */
@@ -135,14 +137,14 @@ class AddressDaoTest {
         // Function under test
         var result = addressDao.getAddresses().first()
 
-        // First assertion
+        // Initial assertion
         assertTrue(result.isEmpty())
 
         // Functions under test
         addressDao.prepopulateWithAddresses(addresses)
         result = addressDao.getAddresses().first()
 
-        // New assertion
+        // Final assertions
         assertEquals(3, result.size)
         assertTrue(result.contains(address1))
         assertTrue(result.contains(address2))
@@ -159,7 +161,7 @@ class AddressDaoTest {
         assertEquals(3, result.size)
         assertTrue(result.contains(address2))
 
-        // Functions under test
+        // Function under test
         addressDao.deleteAddress(address2)
 
         // Final assertions
@@ -173,7 +175,7 @@ class AddressDaoTest {
         // Prepopulate database
         addressDao.prepopulateWithAddresses(addresses)
 
-        // Functions under test
+        // Function under test
         val result = addressDao.getAddressesOrderedById().first()
 
         // Assertions
@@ -188,7 +190,7 @@ class AddressDaoTest {
         // Prepopulate database
         addressDao.prepopulateWithAddresses(addresses)
 
-        // Functions under test
+        // Function under test
         val result = addressDao.getAddressesOrderedByCity().first()
 
         // Assertions (addresses should be sorted by ascending cities)

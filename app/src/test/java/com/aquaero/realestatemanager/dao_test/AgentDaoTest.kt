@@ -25,8 +25,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
+@Config(manifest=Config.NONE)
 /**
  * Testing AgentDao
  */
@@ -119,7 +121,7 @@ class AgentDaoTest {
         // Function under test
         var result = agentDao.getAgents().first()
 
-        // First assertion
+        // Initial assertions
         assertEquals(4, result.size)    // Pre-populated in setup
         assertFalse(result.contains(agent5))
         assertFalse(result.contains(agent6))
@@ -129,7 +131,7 @@ class AgentDaoTest {
         agentDao.prepopulateWithAgents(agents)  // Add 3 agents to the first three pre-populated in setup
         result = agentDao.getAgents().first()
 
-        // New assertion
+        // Final assertions
         assertEquals(7, result.size)
         assertTrue(result.contains(agent5))
         assertTrue(result.contains(agent6))
@@ -146,7 +148,7 @@ class AgentDaoTest {
         assertEquals(7, result.size)
         assertTrue(result.contains(agent6))
 
-        // Functions under test
+        // Function under test
         agentDao.deleteAgent(agent6)
 
         // Final assertions
@@ -157,7 +159,7 @@ class AgentDaoTest {
 
     @Test
     fun testGetAgentsOrderedById() = runBlocking {
-        // Functions under test
+        // Function under test
         val result = agentDao.getAgentsOrderedById().first()
 
         // Assertions
@@ -176,7 +178,7 @@ class AgentDaoTest {
         agentDao.upsertAgent(Agent(3L, "FirstNameC", "LastNameB"))
         agentDao.upsertAgent(Agent(4L, "FirstNameD", "LastNameA"))
 
-        // Functions under test
+        // Function under test
         val result = agentDao.getAgentsOrderedByName().first()
 
         // Assertions (agents should be sorted by ascending [last names + first names])

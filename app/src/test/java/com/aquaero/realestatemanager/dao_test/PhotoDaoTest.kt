@@ -28,8 +28,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
+@Config(manifest= Config.NONE)
 /**
  * Testing PhotoDao
  */
@@ -151,14 +153,14 @@ class PhotoDaoTest {
         // Function under test
         var result = photoDao.getPhotos().first()
 
-        // First assertion
+        // Initial assertion
         assertTrue(result.isEmpty())
 
         // Functions under test
         photoDao.prepopulateWithPhotos(photos)
         result = photoDao.getPhotos().first()
 
-        // New assertion
+        // Final assertions
         assertEquals(3, result.size)
         assertTrue(result.contains(photo1))
         assertTrue(result.contains(photo2))
@@ -175,7 +177,7 @@ class PhotoDaoTest {
         assertEquals(3, result.size)
         assertTrue(result.contains(photo2))
 
-        // Functions under test
+        // Function under test
         photoDao.deletePhoto(photo2)
 
         // Final assertions
@@ -192,24 +194,24 @@ class PhotoDaoTest {
         // Function under test
         var result = photoDao.getPhotos().first()
 
-        // First assertion
+        // Initial assertion
         assertTrue(result.isEmpty())
 
         // Functions under test (inserting photos)
         photoDao.upsertPhotos(mutableListOf(photo2, photo3, photo1))
         result = photoDao.getPhotos().first()
 
-        // New assertion
+        // New assertions
         assertEquals(3, result.size)
         assertTrue(result.contains(photo1))
         assertTrue(result.contains(photo2))
         assertTrue(result.contains(photo3))
 
-        // Function under test (updating photos)
+        // Functions under test (updating photos)
         photoDao.upsertPhotos(mutableListOf(photo2, photo3, photo1updated))
         result = photoDao.getPhotos().first()
 
-        // New assertion
+        // Final assertions
         assertEquals(3, result.size)
         assertTrue(result.contains(photo1updated))
         assertTrue(result.contains(photo2))
@@ -228,7 +230,7 @@ class PhotoDaoTest {
         assertTrue(result.contains(photo2))
         assertTrue(result.contains(photo3))
 
-        // Functions under test
+        // Function under test
         photoDao.deletePhotos(photosToDelete)
 
         // Final assertions
@@ -244,7 +246,7 @@ class PhotoDaoTest {
         // Prepopulate database
         photoDao.prepopulateWithPhotos(photos)
 
-        // Functions under test
+        // Function under test
         val result = photoDao.getPhotosOrderedById().first()
 
         // Assertions
@@ -259,7 +261,7 @@ class PhotoDaoTest {
         // Prepopulate database
         photoDao.prepopulateWithPhotos(photos)
 
-        // Functions under test
+        // Function under test
         val result = photoDao.getPhotosOrderedByLabel().first()
 
         // Assertions (photos should be sorted by ascending labels)

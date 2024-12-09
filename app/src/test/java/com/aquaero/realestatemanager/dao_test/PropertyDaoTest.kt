@@ -25,8 +25,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
+@Config(manifest= Config.NONE)
 /**
  * Testing PropertyDao
  */
@@ -139,14 +141,14 @@ class PropertyDaoTest {
         // Function under test
         var result = propertyDao.getProperties().first()
 
-        // First assertion
+        // Initial assertion
         assertTrue(result.isEmpty())
 
         // Functions under test
         propertyDao.prepopulateWithProperties(properties)
         result = propertyDao.getProperties().first()
 
-        // New assertion
+        // Final assertions
         assertEquals(3, result.size)
         assertTrue(result.contains(property1))
         assertTrue(result.contains(property2))
@@ -158,7 +160,7 @@ class PropertyDaoTest {
         // Prepopulate database
         propertyDao.prepopulateWithProperties(properties)
 
-        // Functions under test
+        // Function under test
         val result = propertyDao.getPropertiesOrderedById().first()
 
         // Assertions
@@ -173,7 +175,7 @@ class PropertyDaoTest {
         // Prepopulate database
         propertyDao.prepopulateWithProperties(properties)
 
-        // Functions under test
+        // Function under test
         val result = propertyDao.getPropertiesOrderedByRegistrationDate().first()
 
         // Assertions (properties should be sorted by descending registration dates)

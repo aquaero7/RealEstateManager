@@ -28,4 +28,4 @@ val POI_PREPOPULATION_DATA = listOf(
     Poi(PoiEnum.SHOP.key),
     Poi(PoiEnum.RAILWAY_STATION.key),
     Poi(PoiEnum.CAR_PARK.key),
-)
+).sortedBy { it.poiId }

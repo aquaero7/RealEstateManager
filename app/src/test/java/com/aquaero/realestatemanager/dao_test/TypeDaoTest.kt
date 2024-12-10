@@ -45,7 +45,6 @@ class TypeDaoTest {
     private lateinit var type2: Type
     private lateinit var type3: Type
     private lateinit var types: List<Type>
-    private lateinit var type1updated: Type
 
     @Before
     fun setUp() {
@@ -64,7 +63,6 @@ class TypeDaoTest {
         type1 = Type("Type1")
         type2 = Type("Type2")
         type3 = Type("Type3")
-        type1updated = Type("Type1Updated")
 
         types = listOf(type2, type3, type1)
     }
@@ -96,7 +94,7 @@ class TypeDaoTest {
         assertNotNull(result)
         assertEquals(type1.typeId, result.typeId)
 
-        // The type update is impossible because type ID is the only property of the "Type" object
+        // The type update is impossible because the type ID is the only property of the "Type" object
     }
 
     /**
